@@ -12,6 +12,15 @@
   const examStorageKey = "java-study-exam-v1";
   const cloudConfigStorageKey = "java-study-cloud-sync-config-v1";
   const cloudStateStorageKey = "java-study-cloud-sync-state-v1";
+  const DEFAULT_FIREBASE_CONFIG = Object.freeze({
+    apiKey: "AIzaSyBm_OMaIUyO15Sri5GR_fQ2g8iTXjlj_mo",
+    authDomain: "javasilver-study.firebaseapp.com",
+    projectId: "javasilver-study",
+    storageBucket: "javasilver-study.firebasestorage.app",
+    messagingSenderId: "948152294720",
+    appId: "1:948152294720:web:f6dfd6fbf14fed5a8c6ea5",
+    measurementId: "G-R8M646RW54"
+  });
   const memoryStore = {};
   let cloud = {
     initialized: false,
@@ -155,7 +164,12 @@
 
   function readCloudConfig() {
     const cfg = readJson(cloudConfigStorageKey, {});
-    return cfg && typeof cfg === "object" ? cfg : {};
+    const savedConfig = cfg && typeof cfg === "object" && cfg.firebaseConfig && typeof cfg.firebaseConfig === "object" ? cfg.firebaseConfig : null;
+    return {
+      ...(cfg && typeof cfg === "object" ? cfg : {}),
+      enabled: true,
+      firebaseConfig: savedConfig || DEFAULT_FIREBASE_CONFIG
+    };
   }
 
   function writeCloudConfig(cfg) {
@@ -173,7 +187,7 @@
 
   function cloudEnabled() {
     const cfg = readCloudConfig();
-    return Boolean(cfg.enabled && cfg.firebaseConfig && typeof cfg.firebaseConfig === "object");
+    return Boolean(cfg.firebaseConfig && typeof cfg.firebaseConfig === "object" && cfg.firebaseConfig.apiKey && cfg.firebaseConfig.projectId);
   }
 
   function cloudAutoSyncEnabled() {
@@ -195,12 +209,8 @@
     const cfg = readCloudConfig();
     const state = readCloudState();
     document.querySelectorAll("#cloudSyncPanel").forEach(panel => {
-      const configInput = panel.querySelector("[data-cloud-config]");
-      if (configInput && !configInput.matches(":focus")) {
-        configInput.value = cfg.firebaseConfig ? JSON.stringify(cfg.firebaseConfig, null, 2) : "";
-      }
       const enabledInput = panel.querySelector("[data-cloud-enabled]");
-      if (enabledInput) enabledInput.checked = Boolean(cfg.enabled);
+      if (enabledInput) enabledInput.checked = true;
       const autoInput = panel.querySelector("[data-cloud-auto]");
       if (autoInput) autoInput.checked = Boolean(state.autoSync);
       const account = panel.querySelector("[data-cloud-account]");
@@ -212,7 +222,7 @@
   }
 
   async function ensureCloudReady() {
-    if (!cloudEnabled()) throw new Error("Firebase設定が未登録です。");
+    if (!cloudEnabled()) throw new Error("クラウド同期の初期設定を読み込めません。");
     if (cloud.initialized && cloud.auth && cloud.db) return cloud;
     if (cloud.initializing) {
       while (cloud.initializing) await new Promise(resolve => setTimeout(resolve, 120));
@@ -340,7 +350,7 @@ service cloud.firestore {
       <div class="sync-panel-head">
         <div>
           <h2>クラウド同期（GitHub Pages用）</h2>
-          <p>GitHub Pagesは静的サイトなので、端末間共有には外部DBが必要です。この画面はFirebase Authentication + Firestoreに学習履歴だけを保存します。問題文・解説データは保存しません。</p>
+          <p>Googleログインしたアカウントごとに、Firebase Authentication + Firestoreへ学習履歴だけを保存します。問題文・解説データは保存しません。</p>
         </div>
         <div class="sync-actions compact-actions">
           <button class="btn" data-cloud-signin>Googleでログイン</button>
@@ -349,19 +359,8 @@ service cloud.firestore {
       </div>
       <div class="cloud-status-row">
         <span>アカウント: <strong data-cloud-account>未ログイン</strong></span>
-        <label class="check-label"><input type="checkbox" data-cloud-enabled> Firebase設定を使う</label>
         <label class="check-label"><input type="checkbox" data-cloud-auto> 自動でクラウド保存</label>
       </div>
-      <details class="sync-details">
-        <summary>Firebase設定</summary>
-        <p class="inline-note">FirebaseのWebアプリ設定JSONを貼り付けます。apiKeyは公開値であり、秘密鍵ではありません。Firestore Rulesでユーザー本人の履歴だけ読めるようにしてください。</p>
-        <textarea class="sync-textarea" data-cloud-config spellcheck="false" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","appId":"..."}'></textarea>
-        <div class="sync-actions">
-          <button class="btn" data-cloud-save-config>設定を保存</button>
-          <button class="btn ghost" data-cloud-copy-rules>Firestore Rulesをコピー</button>
-        </div>
-        <pre class="rules-box"><code>${escapeHtml(firebaseRulesText())}</code></pre>
-      </details>
       <div class="sync-actions">
         <button class="btn primary" data-cloud-push data-cloud-needs-auth>この端末の履歴をクラウドへ保存</button>
         <button class="btn" data-cloud-pull-merge data-cloud-needs-auth>クラウドからマージ</button>
@@ -375,25 +374,6 @@ service cloud.firestore {
     const panel = scope.querySelector ? scope.querySelector("#cloudSyncPanel") : null;
     if (!panel || panel.dataset.bound === "1") return;
     panel.dataset.bound = "1";
-    panel.querySelector("[data-cloud-save-config]")?.addEventListener("click", () => {
-      const raw = panel.querySelector("[data-cloud-config]")?.value || "";
-      try {
-        const firebaseConfig = JSON.parse(raw);
-        if (!firebaseConfig || typeof firebaseConfig !== "object" || !firebaseConfig.apiKey || !firebaseConfig.projectId) {
-          throw new Error("apiKey と projectId を含むFirebase設定JSONを貼り付けてください。");
-        }
-        writeCloudConfig({ ...readCloudConfig(), firebaseConfig, enabled: true });
-        cloud = { initialized: false, initializing: false, app: null, auth: null, db: null, user: null, modules: null, lastError: "" };
-        setCloudMessage("Firebase設定を保存しました。次にGoogleログインしてください。", false);
-        updateCloudUi();
-      } catch (e) {
-        setCloudMessage(e.message || "Firebase設定JSONを読めません。", true);
-      }
-    });
-    panel.querySelector("[data-cloud-enabled]")?.addEventListener("change", event => {
-      writeCloudConfig({ ...readCloudConfig(), enabled: Boolean(event.target.checked) });
-      updateCloudUi();
-    });
     panel.querySelector("[data-cloud-auto]")?.addEventListener("change", event => {
       writeCloudState({ ...readCloudState(), autoSync: Boolean(event.target.checked) });
       updateCloudUi();
@@ -419,14 +399,6 @@ service cloud.firestore {
       try { await pullCloudHistory("replace", false); }
       catch (e) { setCloudMessage(e.message || "クラウド読み込みに失敗しました。", true); }
     });
-    panel.querySelector("[data-cloud-copy-rules]")?.addEventListener("click", async () => {
-      try {
-        await navigator.clipboard.writeText(firebaseRulesText());
-        setCloudMessage("Firestore Rulesをコピーしました。", false);
-      } catch (_) {
-        setCloudMessage("自動コピーできません。表示されているRulesを手動でコピーしてください。", true);
-      }
-    });
     updateCloudUi();
     if (cloudEnabled()) ensureCloudReady().catch(err => setCloudMessage(err.message || "Firebase初期化に失敗しました。", true));
   }
@@ -444,29 +416,7 @@ service cloud.firestore {
   }
 
   function syncPanelHtml() {
-    return `<div class="sync-panel" id="historySyncPanel">
-      <div class="sync-panel-head">
-        <div>
-          <h2>学習履歴の共有</h2>
-          <p>localStorageは端末ごとに別です。別端末へ移す場合は、履歴JSONを書き出して、移行先で読み込んでください。</p>
-        </div>
-        <div class="sync-actions compact-actions">
-          <button class="btn" data-history-download>履歴を書き出す</button>
-          <label class="btn ghost file-btn">履歴ファイルを選択<input type="file" accept="application/json,.json,text/plain" data-history-file></label>
-        </div>
-      </div>
-      <details class="sync-details">
-        <summary>テキストでコピー・貼り付けする</summary>
-        <textarea class="sync-textarea" data-history-text spellcheck="false" placeholder="ここに履歴JSONを表示、または貼り付け"></textarea>
-        <div class="sync-actions">
-          <button class="btn" data-history-to-text>履歴をここに表示</button>
-          <button class="btn" data-history-copy>コピー</button>
-          <button class="btn primary" data-history-merge>マージ読み込み</button>
-          <button class="btn ghost" data-history-replace>完全上書き</button>
-          <span class="inline-note" data-history-message></span>
-        </div>
-      </details>
-    </div>`;
+    return "";
   }
 
   function bindSyncPanel(scope = document) {
