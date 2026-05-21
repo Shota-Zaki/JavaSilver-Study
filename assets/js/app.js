@@ -5,7 +5,8 @@
   const isSingleFile = Boolean(window.OFFLINE_SINGLE_FILE);
   let chapterId = window.CHAPTER_ID || getChapterIdFromHash();
   let currentMode = getInitialMode();
-  let currentQuestionId = null;
+  let currentQuestionId = getInitialQuestionId();
+  let currentTagFilter = getInitialTagFilter();
   let timerHandle = null;
 
   const storageKey = "java-study-progress-v1";
@@ -178,7 +179,7 @@
 
   function readCloudState() {
     const state = readJson(cloudStateStorageKey, {});
-    return state && typeof state === "object" ? state : {};
+    return state && typeof state === "object" ? { autoSync: true, ...state } : { autoSync: true };
   }
 
   function writeCloudState(state) {
@@ -194,11 +195,59 @@
     return Boolean(readCloudState().autoSync);
   }
 
-  function setCloudMessage(text, isError) {
+  let cloudToastTimer = null;
+
+  function ensureToastHost() {
+    let host = document.querySelector(".toast-host");
+    if (!host) {
+      host = document.createElement("div");
+      host.className = "toast-host";
+      host.setAttribute("aria-live", "polite");
+      host.setAttribute("aria-atomic", "true");
+      document.body.appendChild(host);
+    }
+    return host;
+  }
+
+  function showToast(text, isError) {
+    if (!text) return;
+    const host = ensureToastHost();
+    host.innerHTML = `<div class="toast ${isError ? "error" : "success"}">${escapeHtml(text)}</div>`;
+    if (cloudToastTimer) clearTimeout(cloudToastTimer);
+    cloudToastTimer = setTimeout(() => {
+      const toast = host.querySelector(".toast");
+      if (toast) toast.classList.add("hide");
+      setTimeout(() => { if (host.parentNode) host.innerHTML = ""; }, 220);
+    }, isError ? 5200 : 2600);
+  }
+
+  function setCloudMessage(text, isError, options = {}) {
     document.querySelectorAll("[data-cloud-message]").forEach(el => {
       el.textContent = text || "";
       el.classList.toggle("error", Boolean(isError));
     });
+    if (text && !options.silentToast) showToast(text, isError);
+  }
+
+  async function runCloudAction(button, workingText, action) {
+    const originalText = button ? button.textContent : "";
+    try {
+      if (button) {
+        button.disabled = true;
+        button.classList.add("is-loading");
+        button.setAttribute("aria-busy", "true");
+        button.textContent = workingText;
+      }
+      setCloudMessage(workingText, false);
+      return await action();
+    } finally {
+      if (button) {
+        button.classList.remove("is-loading");
+        button.removeAttribute("aria-busy");
+        button.textContent = originalText;
+        updateCloudUi();
+      }
+    }
   }
 
   function currentCloudEmail() {
@@ -238,6 +287,9 @@
       ]);
       const app = appMod.getApps().length ? appMod.getApps()[0] : appMod.initializeApp(cfg);
       const auth = authMod.getAuth(app);
+      if (authMod.browserLocalPersistence && authMod.setPersistence) {
+        await authMod.setPersistence(auth, authMod.browserLocalPersistence);
+      }
       const db = firestoreMod.getFirestore(app);
       cloud = {
         ...cloud,
@@ -301,7 +353,7 @@
       schemaVersion: payload.schemaVersion || 1
     }, { merge: true });
     writeCloudState({ ...readCloudState(), lastPushedAt: new Date().toISOString() });
-    setCloudMessage("クラウドへ保存しました。", false);
+    setCloudMessage(silent ? "自動保存しました。" : "クラウドへ保存しました。", false, { silentToast: Boolean(silent) });
     updateCloudUi();
   }
 
@@ -349,8 +401,8 @@ service cloud.firestore {
     return `<div class="cloud-panel" id="cloudSyncPanel">
       <div class="sync-panel-head">
         <div>
-          <h2>クラウド同期（GitHub Pages用）</h2>
-          <p>Googleログインしたアカウントごとに、Firebase Authentication + Firestoreへ学習履歴だけを保存します。問題文・解説データは保存しません。</p>
+          <h2>クラウド同期</h2>
+          <p>Googleアカウントごとに学習履歴だけを保存します。問題文・解説データは保存しません。</p>
         </div>
         <div class="sync-actions compact-actions">
           <button class="btn" data-cloud-signin>Googleでログイン</button>
@@ -359,14 +411,21 @@ service cloud.firestore {
       </div>
       <div class="cloud-status-row">
         <span>アカウント: <strong data-cloud-account>未ログイン</strong></span>
-        <label class="check-label"><input type="checkbox" data-cloud-auto> 自動でクラウド保存</label>
+        <label class="check-label"><input type="checkbox" data-cloud-auto> 自動保存</label>
       </div>
       <div class="sync-actions">
-        <button class="btn primary" data-cloud-push data-cloud-needs-auth>この端末の履歴をクラウドへ保存</button>
+        <button class="btn primary" data-cloud-push data-cloud-needs-auth>この端末の履歴を保存</button>
         <button class="btn" data-cloud-pull-merge data-cloud-needs-auth>クラウドからマージ</button>
         <button class="btn ghost" data-cloud-pull-replace data-cloud-needs-auth>クラウドで完全上書き</button>
         <span class="inline-note" data-cloud-message></span>
       </div>
+    </div>`;
+  }
+
+  function cloudSaveMiniHtml() {
+    return `<div class="cloud-mini-panel" id="cloudSyncPanel" aria-label="クラウド保存">
+      <button class="btn primary" data-cloud-push data-cloud-needs-auth>クラウドへ保存</button>
+      <span class="inline-note" data-cloud-message></span>
     </div>`;
   }
 
@@ -375,28 +434,36 @@ service cloud.firestore {
     if (!panel || panel.dataset.bound === "1") return;
     panel.dataset.bound = "1";
     panel.querySelector("[data-cloud-auto]")?.addEventListener("change", event => {
-      writeCloudState({ ...readCloudState(), autoSync: Boolean(event.target.checked) });
+      const enabled = Boolean(event.target.checked);
+      writeCloudState({ ...readCloudState(), autoSync: enabled });
       updateCloudUi();
-      if (event.target.checked) scheduleCloudUpload();
+      setCloudMessage(enabled ? "自動クラウド保存をONにしました。" : "自動クラウド保存をOFFにしました。", false);
+      if (enabled) scheduleCloudUpload();
     });
-    panel.querySelector("[data-cloud-signin]")?.addEventListener("click", async () => {
-      try { await cloudSignIn(); setCloudMessage("ログインしました。", false); }
+    panel.querySelector("[data-cloud-signin]")?.addEventListener("click", async event => {
+      try {
+        await runCloudAction(event.currentTarget, "Googleログイン中...", async () => cloudSignIn());
+        setCloudMessage("ログインしました。", false);
+      }
       catch (e) { setCloudMessage(e.message || "ログインに失敗しました。", true); }
     });
-    panel.querySelector("[data-cloud-signout]")?.addEventListener("click", async () => {
-      try { await cloudSignOut(); setCloudMessage("ログアウトしました。", false); }
+    panel.querySelector("[data-cloud-signout]")?.addEventListener("click", async event => {
+      try {
+        await runCloudAction(event.currentTarget, "ログアウト中...", async () => cloudSignOut());
+        setCloudMessage("ログアウトしました。", false);
+      }
       catch (e) { setCloudMessage(e.message || "ログアウトに失敗しました。", true); }
     });
-    panel.querySelector("[data-cloud-push]")?.addEventListener("click", async () => {
-      try { await pushCloudHistory(false); }
+    panel.querySelector("[data-cloud-push]")?.addEventListener("click", async event => {
+      try { await runCloudAction(event.currentTarget, "クラウドへ保存中...", async () => pushCloudHistory(false)); }
       catch (e) { setCloudMessage(e.message || "クラウド保存に失敗しました。", true); }
     });
-    panel.querySelector("[data-cloud-pull-merge]")?.addEventListener("click", async () => {
-      try { await pullCloudHistory("merge", false); }
+    panel.querySelector("[data-cloud-pull-merge]")?.addEventListener("click", async event => {
+      try { await runCloudAction(event.currentTarget, "クラウドから読み込み中...", async () => pullCloudHistory("merge", false)); }
       catch (e) { setCloudMessage(e.message || "クラウド読み込みに失敗しました。", true); }
     });
-    panel.querySelector("[data-cloud-pull-replace]")?.addEventListener("click", async () => {
-      try { await pullCloudHistory("replace", false); }
+    panel.querySelector("[data-cloud-pull-replace]")?.addEventListener("click", async event => {
+      try { await runCloudAction(event.currentTarget, "クラウド履歴で上書き中...", async () => pullCloudHistory("replace", false)); }
       catch (e) { setCloudMessage(e.message || "クラウド読み込みに失敗しました。", true); }
     });
     updateCloudUi();
@@ -516,7 +583,25 @@ service cloud.firestore {
     const hashQuery = (location.hash || "").split("?")[1] || "";
     const hashParams = new URLSearchParams(hashQuery);
     const mode = hashParams.get("mode") || params.get("mode") || "all";
-    return ["all", "unanswered", "wrong", "flagged"].includes(mode) ? mode : "all";
+    return ["all", "unanswered", "wrong", "flagged", "tag"].includes(mode) ? mode : "all";
+  }
+
+  function getRouteParams() {
+    const params = new URLSearchParams(location.search || "");
+    const hashQuery = (location.hash || "").split("?")[1] || "";
+    const hashParams = new URLSearchParams(hashQuery);
+    return {
+      q: hashParams.get("q") || params.get("q") || "",
+      tag: hashParams.get("tag") || params.get("tag") || ""
+    };
+  }
+
+  function getInitialQuestionId() {
+    return getRouteParams().q || null;
+  }
+
+  function getInitialTagFilter() {
+    return normalizeTag(getRouteParams().tag || "");
   }
 
   function escapeHtml(value) {
@@ -553,9 +638,14 @@ service cloud.firestore {
     return DATA.chapters.find(ch => ch.id === id);
   }
 
-  function chapterHref(ch, mode) {
-    if (isSingleFile) return mode ? `#${ch.id}?mode=${mode}` : `#${ch.id}`;
-    return mode ? `${ch.page}?mode=${encodeURIComponent(mode)}` : ch.page;
+  function chapterHref(ch, mode, extra = {}) {
+    const params = new URLSearchParams();
+    if (mode) params.set("mode", mode);
+    if (extra.q) params.set("q", extra.q);
+    if (extra.tag) params.set("tag", extra.tag);
+    const query = params.toString();
+    if (isSingleFile) return query ? `#${ch.id}?${query}` : `#${ch.id}`;
+    return query ? `${ch.page}?${query}` : ch.page;
   }
 
   function questionType(q) {
@@ -766,22 +856,24 @@ service cloud.firestore {
     const tips = listHtml(exp.examTips);
     const steps = listHtml(exp.judgeSteps);
 
-    return `<h4>${isCorrect ? "正解" : "不正解"}</h4>
+    const detail = (title, body, open = false) => body ? `<details class="explanation-detail" ${open ? "open" : ""}>
+        <summary>${escapeHtml(title)}</summary>
+        <div class="explanation-body">${body}</div>
+      </details>` : "";
+
+    return `<div class="result-headline">
+        <h4>${isCorrect ? "正解" : "不正解"}</h4>
+        <span class="result-badge ${isCorrect ? "ok" : "bad"}">${isCorrect ? "OK" : "REVIEW"}</span>
+      </div>
       <div class="answer-summary">
         <p><strong>あなたの解答:</strong> ${escapeHtml(selectedText)}</p>
         <p><strong>正解:</strong> ${escapeHtml(answerText)}</p>
       </div>
-      <section class="explanation-section">
-        <h5>正解になる理由</h5>
-        <p>${escapeHtml(correctReason)}</p>
-      </section>
-      <section class="explanation-section">
-        <h5>選択肢ごとの判定</h5>
-        ${optionAnalysisHtml(q)}
-      </section>
-      ${related ? `<section class="explanation-section"><h5>関連知識</h5>${related}</section>` : ""}
-      ${tips ? `<section class="explanation-section"><h5>試験での注意点</h5>${tips}</section>` : ""}
-      ${steps ? `<section class="explanation-section"><h5>解き方の手順</h5>${steps}</section>` : ""}`;
+      ${detail("正解になる理由", `<p>${escapeHtml(correctReason)}</p>`, true)}
+      ${detail("選択肢ごとの判定", optionAnalysisHtml(q))}
+      ${detail("関連知識", related)}
+      ${detail("試験での注意点", tips)}
+      ${detail("解き方の手順", steps)}`;
   }
 
   function applyResult(card, q, selected, persist) {
@@ -952,6 +1044,84 @@ service cloud.firestore {
       .slice(0, 12);
   }
 
+  function findQuestionById(id) {
+    for (const ch of DATA.chapters) {
+      const q = (DATA.questions[ch.id] || []).find(item => item.id === id);
+      if (q) return { chapter: ch, question: q };
+    }
+    return null;
+  }
+
+  function findResumeTarget() {
+    const progress = readProgress();
+    let latest = null;
+    for (const ch of DATA.chapters) {
+      const questions = DATA.questions[ch.id] || [];
+      questions.forEach((q, index) => {
+        const record = progress[q.id];
+        const t = Date.parse(record && record.answeredAt || "") || 0;
+        if (t && (!latest || t > latest.time)) latest = { chapter: ch, question: q, index, time: t };
+      });
+    }
+    if (latest) {
+      const list = DATA.questions[latest.chapter.id] || [];
+      const next = list.slice(latest.index + 1).find(q => !isAnswered(progress[q.id])) || list.find(q => !isAnswered(progress[q.id])) || latest.question;
+      return { chapter: latest.chapter, question: next };
+    }
+    for (const ch of DATA.chapters) {
+      const q = (DATA.questions[ch.id] || []).find(item => !isAnswered(progress[item.id]));
+      if (q) return { chapter: ch, question: q };
+    }
+    const first = DATA.chapters[0];
+    return first ? { chapter: first, question: (DATA.questions[first.id] || [])[0] } : null;
+  }
+
+  function findFirstChapterForMode(mode, tag) {
+    const progress = readProgress();
+    for (const ch of DATA.chapters) {
+      const list = DATA.questions[ch.id] || [];
+      const q = list.find(item => {
+        const record = progress[item.id];
+        if (mode === "wrong") return isAnswered(record) && !record.isCorrect;
+        if (mode === "flagged") return isFlagged(record);
+        if (mode === "unanswered") return !isAnswered(record);
+        if (mode === "tag") {
+          const tags = record && record.tags && record.tags.length ? record.tags : getQuestionTags(item);
+          return tags.map(normalizeTag).includes(normalizeTag(tag)) && (!record || !record.isCorrect || isFlagged(record));
+        }
+        return true;
+      });
+      if (q) return { chapter: ch, question: q };
+    }
+    return null;
+  }
+
+  function quickActionHtml(label, detail, target, kind) {
+    const href = target ? chapterHref(target.chapter, kind === "resume" ? "all" : kind, { q: target.question && target.question.id, tag: target.tag }) : "#chapterGrid";
+    const disabled = target ? "" : " is-disabled";
+    return `<a class="quick-card${disabled}" href="${escapeHtml(href)}">
+      <span>${escapeHtml(label)}</span>
+      <strong>${escapeHtml(detail)}</strong>
+    </a>`;
+  }
+
+  function todayReviewHtml(stats) {
+    const wrongTarget = findFirstChapterForMode("wrong");
+    const flaggedTarget = findFirstChapterForMode("flagged");
+    const unansweredTarget = findFirstChapterForMode("unanswered");
+    return `<div class="today-panel">
+      <div>
+        <h2>今日の復習</h2>
+        <p>迷ったら、間違い→見直し→未回答の順で潰してください。</p>
+      </div>
+      <div class="today-actions">
+        <a class="btn primary" href="${escapeHtml(wrongTarget ? chapterHref(wrongTarget.chapter, "wrong", { q: wrongTarget.question.id }) : "#chapterGrid")}">間違い ${stats.wrong}問</a>
+        <a class="btn" href="${escapeHtml(flaggedTarget ? chapterHref(flaggedTarget.chapter, "flagged", { q: flaggedTarget.question.id }) : "#chapterGrid")}">見直し ${stats.flagged}問</a>
+        <a class="btn ghost" href="${escapeHtml(unansweredTarget ? chapterHref(unansweredTarget.chapter, "unanswered", { q: unansweredTarget.question.id }) : "#chapterGrid")}">未回答 ${Math.max(stats.total - stats.answered, 0)}問</a>
+      </div>
+    </div>`;
+  }
+
   function renderDashboard() {
     const main = document.querySelector(".main");
     if (!main || chapterId) return;
@@ -967,19 +1137,33 @@ service cloud.firestore {
     const stats = globalStats();
     const rate = stats.answered ? Math.round(stats.correct / stats.answered * 100) : 0;
     const weak = weakTagStats();
-    root.innerHTML = `<div class="stat-grid">
+    const resume = findResumeTarget();
+    const wrong = findFirstChapterForMode("wrong");
+    const flagged = findFirstChapterForMode("flagged");
+    const exam1 = chapterById("ch07");
+    const exam2 = chapterById("ch08");
+    root.innerHTML = `<div class="quick-actions">
+        ${quickActionHtml("前回の続き", resume ? `${resume.chapter.title} / 問${resume.question.number}` : "第1章から開始", resume, "resume")}
+        ${quickActionHtml("間違い復習", wrong ? `${stats.wrong}問を復習` : "対象なし", wrong, "wrong")}
+        ${quickActionHtml("見直し復習", flagged ? `${stats.flagged}問を復習` : "対象なし", flagged, "flagged")}
+        <a class="quick-card" href="${escapeHtml(exam1 ? chapterHref(exam1, "all") : "#chapterGrid")}"><span>模試を開始</span><strong>模試① / 模試②</strong></a>
+      </div>
+      ${todayReviewHtml(stats)}
+      <div class="stat-grid">
         <div class="stat-card"><span>総問題数</span><strong>${stats.total}</strong></div>
         <div class="stat-card"><span>解答済み</span><strong>${stats.answered}</strong></div>
         <div class="stat-card"><span>正解率</span><strong>${rate}%</strong></div>
         <div class="stat-card"><span>要復習</span><strong>${stats.wrong + stats.flagged}</strong></div>
       </div>
-      ${syncPanelHtml()}
       ${cloudPanelHtml()}
       <div class="weak-panel">
-        <h2>苦手タグ</h2>
-        ${weak.length ? `<div class="weak-tags">${weak.map(item => `<span class="weak-tag">${escapeHtml(item.tag)} <b>${item.wrong}</b>/<small>${item.answered}</small></span>`).join("")}</div>` : `<p class="inline-note">まだ間違いデータがありません。まず各章を解いてください。</p>`}
+        <div class="panel-title-row"><h2>苦手タグ</h2><span class="inline-note">押すとタグ復習へ移動</span></div>
+        ${weak.length ? `<div class="weak-tags">${weak.map(item => {
+          const target = findFirstChapterForMode("tag", item.tag);
+          const href = target ? chapterHref(target.chapter, "tag", { q: target.question.id, tag: item.tag }) : "#chapterGrid";
+          return `<a class="weak-tag" href="${escapeHtml(href)}">${escapeHtml(item.tag)} <b>${item.wrong}</b>/<small>${item.answered}</small></a>`;
+        }).join("")}</div>` : `<p class="inline-note">まだ間違いデータがありません。まず各章を解いてください。</p>`}
       </div>`;
-    bindSyncPanel(root);
     bindCloudPanel(root);
   }
 
@@ -1026,6 +1210,13 @@ service cloud.firestore {
     if (currentMode === "unanswered") return questions.filter(q => !isAnswered(progress[q.id]));
     if (currentMode === "wrong") return questions.filter(q => isAnswered(progress[q.id]) && !progress[q.id].isCorrect);
     if (currentMode === "flagged") return questions.filter(q => isFlagged(progress[q.id]));
+    if (currentMode === "tag" && currentTagFilter) {
+      return questions.filter(q => {
+        const record = progress[q.id];
+        const tags = record && record.tags && record.tags.length ? record.tags : getQuestionTags(q);
+        return tags.map(normalizeTag).includes(currentTagFilter);
+      });
+    }
     return questions;
   }
 
@@ -1034,7 +1225,8 @@ service cloud.firestore {
       all: "全問",
       unanswered: "未回答",
       wrong: "間違いのみ",
-      flagged: "見直し"
+      flagged: "見直し",
+      tag: currentTagFilter ? `タグ: ${currentTagFilter}` : "タグ復習"
     }[mode] || "全問";
   }
 
@@ -1042,10 +1234,13 @@ service cloud.firestore {
     const root = document.getElementById("modeButtons");
     if (!root) return;
     const modes = ["all", "unanswered", "wrong", "flagged"];
-    root.innerHTML = modes.map(mode => `<button class="mode-btn ${mode === currentMode ? "active" : ""}" data-mode="${mode}">${modeLabel(mode)}</button>`).join("");
+    const base = modes.map(mode => `<button class="mode-btn ${mode === currentMode ? "active" : ""}" data-mode="${mode}">${modeLabel(mode)}</button>`).join("");
+    const tagButton = currentTagFilter ? `<button class="mode-btn ${currentMode === "tag" ? "active" : ""}" data-mode="tag">${escapeHtml(modeLabel("tag"))}</button>` : "";
+    root.innerHTML = base + tagButton;
     root.querySelectorAll("[data-mode]").forEach(btn => {
       btn.addEventListener("click", () => {
         currentMode = btn.dataset.mode;
+        if (currentMode !== "tag") currentTagFilter = "";
         currentQuestionId = null;
         renderModeButtons();
         renderActiveQuestion();
@@ -1062,6 +1257,12 @@ service cloud.firestore {
       <div class="stat-card"><span>解答済み</span><strong>${s.answered}</strong></div>
       <div class="stat-card"><span>正解率</span><strong>${s.rate}%</strong></div>
       <div class="stat-card"><span>復習対象</span><strong>${s.wrong + s.flagged}</strong></div>
+    </div>
+    <div class="palette-legend" aria-label="問題番号の状態">
+      <span><i class="legend-dot unanswered"></i>未回答</span>
+      <span><i class="legend-dot correct"></i>正解</span>
+      <span><i class="legend-dot wrong"></i>不正解</span>
+      <span><i class="legend-dot flagged"></i>見直し</span>
     </div>`;
   }
 
@@ -1154,6 +1355,15 @@ service cloud.firestore {
     const card = shell.querySelector(`[data-question-id="${cssEscape(q.id)}"]`);
     bindQuestion(card, q);
     restoreQuestion(card, q);
+    const bottomSubmit = document.querySelector("[data-bottom-submit]");
+    if (bottomSubmit) {
+      const saved = readProgress()[q.id];
+      bottomSubmit.textContent = isAnswered(saved) && !isExamActive(chapterId) ? "もう一度解く" : "解答する";
+      bottomSubmit.onclick = () => {
+        if (isAnswered(saved) && !isExamActive(chapterId)) resetQuestion(card, q);
+        else card.querySelector("[data-submit]")?.click();
+      };
+    }
     renderJump(list);
     renderQuestionPalette();
     updateNavButtons(index, list.length);
@@ -1180,6 +1390,17 @@ service cloud.firestore {
     renderActiveQuestion();
   }
 
+  function examSummaryHtml(state, stats) {
+    if (!state || state.active || !state.finishedAt) return "";
+    const score = `${stats.correct}/${stats.total}`;
+    const wrongTags = weakTagStats().slice(0, 6);
+    return `<div class="exam-summary">
+      <strong>前回結果 ${score}・正解率 ${stats.rate}%</strong>
+      ${wrongTags.length ? `<span>弱点: ${wrongTags.map(item => escapeHtml(item.tag)).join(" / ")}</span>` : `<span>不正解タグはまだありません。</span>`}
+      <a class="btn" href="${escapeHtml(chapterHref(chapterById(chapterId), "wrong"))}">不正解を復習</a>
+    </div>`;
+  }
+
   function renderExamPanel() {
     const panel = document.getElementById("examPanel");
     if (!panel || !chapterId) return;
@@ -1193,15 +1414,17 @@ service cloud.firestore {
     const state = getExamState(chapterId);
     const active = Boolean(state && state.active);
     const s = chapterStats(chapterId);
+    const unanswered = Math.max(s.total - s.answered, 0);
     panel.innerHTML = `<div class="exam-box ${active ? "active" : ""}">
       <div>
         <h2>模試モード</h2>
         <p>${active ? "採点結果と解説を隠して解答を保存します。" : "90分で60問を解く想定のモードです。開始時にこの章の解答履歴はリセットされます。見直しフラグは残します。"}</p>
+        ${examSummaryHtml(state, s)}
       </div>
       <div class="exam-actions">
         <span class="timer" id="examTimer">${active ? formatSeconds(remainingSeconds(state)) : "90:00"}</span>
+        <span class="exam-count">解答済み ${s.answered} / 未回答 ${unanswered} / 見直し ${s.flagged}</span>
         ${active ? `<button class="btn primary" id="finishExam">模試を終了して採点</button>` : `<button class="btn primary" id="startExam">模試開始</button>`}
-        <span class="inline-note">解答済み ${s.answered}/${s.total}</span>
       </div>
     </div>`;
     document.getElementById("startExam")?.addEventListener("click", startExam);
@@ -1306,21 +1529,25 @@ service cloud.firestore {
       <div id="chapterStatsRoot" class="chapter-stats"></div>
       <div id="examPanel" class="exam-panel"></div>
       ${syncPanelHtml()}
-      ${cloudPanelHtml()}
+      ${cloudSaveMiniHtml()}
       <div class="mode-row" id="modeButtons"></div>
       <div class="question-toolbar">
-        <button class="btn" data-prev-question>前の問題</button>
-        <span id="questionPosition" class="question-position">0 / 0</span>
-        <button class="btn" data-next-question>次の問題</button>
-        <select id="questionJump" class="question-jump" aria-label="問題番号を選択"></select>
-        <button id="toggleFlag" class="btn flag-btn">後で見直す</button>
+        <div class="question-toolbar-main">
+          <button class="btn" data-prev-question>前の問題</button>
+          <span id="questionPosition" class="question-position">0 / 0</span>
+          <button class="btn" data-next-question>次の問題</button>
+        </div>
+        <div class="question-toolbar-sub">
+          <select id="questionJump" class="question-jump" aria-label="問題番号を選択"></select>
+          <button id="toggleFlag" class="btn flag-btn">後で見直す</button>
+        </div>
       </div>
       <div id="questionPalette" class="question-palette" aria-label="問題一覧"></div>
       <div id="questionShell"></div>
       <div class="viewer-footer">
         <button class="btn" data-prev-question>前へ</button>
-        <span id="bottomPosition" class="inline-note">問題移動</span>
-        <button class="btn primary" data-next-question>次へ</button>
+        <button class="btn primary" data-bottom-submit>解答する</button>
+        <button class="btn" data-next-question>次へ</button>
       </div>
     </div>`;
 
@@ -1366,7 +1593,8 @@ service cloud.firestore {
         stopTimer();
         chapterId = getChapterIdFromHash();
         currentMode = getInitialMode();
-        currentQuestionId = null;
+        currentTagFilter = getInitialTagFilter();
+        currentQuestionId = getInitialQuestionId();
         renderAll();
       });
     }
