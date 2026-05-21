@@ -292,18 +292,55 @@
     </article>`;
   }
 
+  function listHtml(items) {
+    return Array.isArray(items) && items.length
+      ? `<ul>${items.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`
+      : "";
+  }
+
+  function optionAnalysisHtml(q) {
+    const analyses = q.explanation && Array.isArray(q.explanation.optionAnalysis)
+      ? q.explanation.optionAnalysis
+      : [];
+    if (analyses.length) {
+      return `<div class="option-analysis-list">${analyses.map(item => `<div class="option-analysis ${item.isCorrect ? "is-correct" : "is-wrong"}">
+        <div class="option-analysis-head"><span class="option-key">${escapeHtml(item.key)}.</span><span>${item.isCorrect ? "正しい選択肢" : "誤りの選択肢"}</span></div>
+        <p>${escapeHtml(item.detail || "")}</p>
+      </div>`).join("")}</div>`;
+    }
+
+    const points = q.explanation && Array.isArray(q.explanation.points) && q.explanation.points.length
+      ? q.explanation.points
+      : [];
+    return points.length ? listHtml(points) : `<p class="muted">選択肢別の解説は未入力です。</p>`;
+  }
+
   function explanationHtml(q, isCorrect, selected) {
+    const exp = q.explanation || {};
     const answerText = (q.answer || []).join("・");
     const selectedText = selected.length ? selected.join("・") : "未選択";
-    const points = q.explanation && Array.isArray(q.explanation.points) && q.explanation.points.length
-      ? `<ul>${q.explanation.points.map(p => `<li>${escapeHtml(p)}</li>`).join("")}</ul>`
-      : "";
-    const summary = q.explanation && q.explanation.summary ? q.explanation.summary : "解説未入力。";
+    const summary = exp.summary || "解説未入力。";
+    const correctReason = exp.correctReason || summary;
+    const related = listHtml(exp.relatedKnowledge);
+    const tips = listHtml(exp.examTips);
+    const steps = listHtml(exp.judgeSteps);
+
     return `<h4>${isCorrect ? "正解" : "不正解"}</h4>
-      <p><strong>あなたの解答:</strong> ${escapeHtml(selectedText)}</p>
-      <p><strong>正解:</strong> ${escapeHtml(answerText)}</p>
-      <p>${escapeHtml(summary)}</p>
-      ${points}`;
+      <div class="answer-summary">
+        <p><strong>あなたの解答:</strong> ${escapeHtml(selectedText)}</p>
+        <p><strong>正解:</strong> ${escapeHtml(answerText)}</p>
+      </div>
+      <section class="explanation-section">
+        <h5>正解になる理由</h5>
+        <p>${escapeHtml(correctReason)}</p>
+      </section>
+      <section class="explanation-section">
+        <h5>選択肢ごとの判定</h5>
+        ${optionAnalysisHtml(q)}
+      </section>
+      ${related ? `<section class="explanation-section"><h5>関連知識</h5>${related}</section>` : ""}
+      ${tips ? `<section class="explanation-section"><h5>試験での注意点</h5>${tips}</section>` : ""}
+      ${steps ? `<section class="explanation-section"><h5>解き方の手順</h5>${steps}</section>` : ""}`;
   }
 
   function applyResult(card, q, selected, persist) {
