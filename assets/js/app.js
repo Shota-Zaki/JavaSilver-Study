@@ -772,7 +772,7 @@ service cloud.firestore {
       progress[q.id] = record;
     }
     writeProgress(progress);
-    renderActiveQuestion();
+    renderActiveQuestion({ focus: true });
     updateProgressUi();
   }
 
@@ -1243,7 +1243,7 @@ service cloud.firestore {
         if (currentMode !== "tag") currentTagFilter = "";
         currentQuestionId = null;
         renderModeButtons();
-        renderActiveQuestion();
+        renderActiveQuestion({ focus: true });
       });
     });
   }
@@ -1284,7 +1284,7 @@ service cloud.firestore {
         currentQuestionId = btn.dataset.qid;
         currentMode = "all";
         renderModeButtons();
-        renderActiveQuestion();
+        renderActiveQuestion({ focus: true });
       });
     });
   }
@@ -1296,7 +1296,7 @@ service cloud.firestore {
     if (currentQuestionId) jump.value = currentQuestionId;
     jump.onchange = () => {
       currentQuestionId = jump.value;
-      renderActiveQuestion();
+      renderActiveQuestion({ focus: true });
     };
   }
 
@@ -1319,7 +1319,20 @@ service cloud.firestore {
     btn.onclick = () => toggleFlag(q);
   }
 
-  function renderActiveQuestion() {
+  function scrollToQuestionFocus() {
+    const target = document.querySelector("#questionShell .question-card") || document.getElementById("questionShell");
+    if (!target) return;
+    const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.requestAnimationFrame(() => {
+      target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+      if (target.classList) {
+        target.classList.add("focus-pulse");
+        window.setTimeout(() => target.classList.remove("focus-pulse"), 520);
+      }
+    });
+  }
+
+  function renderActiveQuestion(options = {}) {
     const shell = document.getElementById("questionShell");
     if (!shell || !chapterId) return;
     const list = filteredQuestions();
@@ -1336,7 +1349,7 @@ service cloud.firestore {
         currentMode = "all";
         currentQuestionId = null;
         renderModeButtons();
-        renderActiveQuestion();
+        renderActiveQuestion({ focus: true });
       });
       renderJump([]);
       renderQuestionPalette();
@@ -1368,6 +1381,7 @@ service cloud.firestore {
     renderQuestionPalette();
     updateNavButtons(index, list.length);
     updateFlagButton(q);
+    if (options.focus) scrollToQuestionFocus();
   }
 
   function moveQuestion(delta) {
@@ -1376,8 +1390,7 @@ service cloud.firestore {
     const index = Math.max(0, list.findIndex(q => q.id === currentQuestionId));
     const nextIndex = Math.min(Math.max(index + delta, 0), list.length - 1);
     currentQuestionId = list[nextIndex].id;
-    renderActiveQuestion();
-    document.getElementById("questionShell")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    renderActiveQuestion({ focus: true });
   }
 
   function firstUnanswered() {
@@ -1387,7 +1400,7 @@ service cloud.firestore {
     currentMode = "all";
     currentQuestionId = q.id;
     renderModeButtons();
-    renderActiveQuestion();
+    renderActiveQuestion({ focus: true });
   }
 
   function examSummaryHtml(state, stats) {
@@ -1446,7 +1459,7 @@ service cloud.firestore {
     currentMode = "all";
     currentQuestionId = (DATA.questions[chapterId] || [])[0]?.id || null;
     renderModeButtons();
-    renderActiveQuestion();
+    renderActiveQuestion({ focus: true });
   }
 
   function finishExam(autoFinished) {
@@ -1459,7 +1472,7 @@ service cloud.firestore {
       autoFinished: Boolean(autoFinished)
     });
     stopTimer();
-    renderActiveQuestion();
+    renderActiveQuestion({ focus: true });
   }
 
   function remainingSeconds(state) {
@@ -1554,7 +1567,7 @@ service cloud.firestore {
     bindSyncPanel(root);
     bindCloudPanel(root);
     renderModeButtons();
-    renderActiveQuestion();
+    renderActiveQuestion({ focus: true });
     updateProgressUi();
     root.querySelectorAll("[data-prev-question]").forEach(btn => btn.addEventListener("click", () => moveQuestion(-1)));
     root.querySelectorAll("[data-next-question]").forEach(btn => btn.addEventListener("click", () => moveQuestion(1)));

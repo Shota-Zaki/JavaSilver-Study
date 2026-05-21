@@ -238,7 +238,6 @@ code { font-family: var(--mono); font-size: 14px; }
   min-width: 2.75em;
 }
 
-
 .options { display: grid; gap: 10px; margin: 16px 0; }
 .option {
   display: grid;
@@ -320,7 +319,6 @@ code { font-family: var(--mono); font-size: 14px; }
   .q-head { display: block; }
   .q-meta { margin-top: 4px; }
 }
-
 
 .q-image-list {
   display: grid;
@@ -1075,29 +1073,7 @@ pre, .command {
   }
 }
 
-/* History export/import panel */
-.sync-panel {
-  padding: 16px;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: rgba(255,255,255,.86);
-  box-shadow: 0 8px 20px rgba(31, 41, 55, .05);
-}
-.sync-panel-head {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 12px;
-  align-items: start;
-}
-.sync-panel h2 {
-  margin: 0 0 4px;
-  font-size: 18px;
-}
-.sync-panel p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 14px;
-}
+/* Shared action row for cloud controls */
 .sync-actions {
   display: flex;
   flex-wrap: wrap;
@@ -1108,53 +1084,6 @@ pre, .command {
 .sync-actions.compact-actions {
   justify-content: flex-end;
   margin-top: 0;
-}
-.file-btn input {
-  position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
-  opacity: 0;
-  pointer-events: none;
-}
-.sync-details {
-  margin-top: 12px;
-}
-.sync-details summary {
-  cursor: pointer;
-  color: var(--muted);
-  font-weight: 800;
-}
-.sync-textarea {
-  width: 100%;
-  min-height: 150px;
-  margin-top: 10px;
-  padding: 10px 12px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: #fff;
-  color: var(--ink);
-  font-family: var(--mono);
-  font-size: 12px;
-  line-height: 1.5;
-  resize: vertical;
-}
-@media (max-width: 860px) {
-  .sync-panel {
-    padding: 13px;
-  }
-  .sync-panel-head {
-    grid-template-columns: 1fr;
-  }
-  .sync-actions.compact-actions,
-  .sync-actions {
-    display: grid;
-    grid-template-columns: 1fr;
-  }
-  .sync-actions .btn,
-  .file-btn {
-    width: 100%;
-    text-align: center;
-  }
 }
 
 /* GitHub Pages cloud sync */
@@ -1181,16 +1110,6 @@ pre, .command {
   align-items: center;
   cursor: pointer;
   user-select: none;
-}
-.rules-box {
-  margin: 12px 0 0;
-  padding: 12px;
-  overflow-x: auto;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--code-bg, #f6f8fa);
-  font-size: 0.82rem;
-  line-height: 1.45;
 }
 .inline-note.error {
   color: #b42318;
@@ -1591,3 +1510,13 @@ pre {
   color: #0f172a;
 }
 .option .numbered-code { margin-top: 2px; }
+
+
+/* Focus movement: when a question starts or changes, move the viewport to the problem card. */
+.question-card.focus-pulse {
+  animation: focus-pulse-ring .52s ease;
+}
+@keyframes focus-pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, .28), var(--shadow-sm); }
+  100% { box-shadow: 0 0 0 12px rgba(37, 99, 235, 0), var(--shadow-sm); }
+}
