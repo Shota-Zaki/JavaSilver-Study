@@ -1,252 +1,400 @@
-(function () {
-  const DATA = window.JAVA_STUDY_DATA;
-  const chapterId = window.CHAPTER_ID || null;
-  const storageKey = "java-study-progress-v1";
+(() => {
+  'use strict';
 
-  function readProgress() {
-    try { return JSON.parse(localStorage.getItem(storageKey)) || {}; }
-    catch (_) { return {}; }
+  const UNSAFE_PATTERNS = [
+    /黒本/g,
+    /\bPDF\b/gi,
+    /[0-9０-９]+章[-ー－]?[12]?\s*[^\s/\\]*\.pdf/gi,
+    /模擬試験\.pdf/gi,
+    /模擬問題2?\.pdf/gi,
+    /解説\.pdf/gi,
+    /問題\.pdf/gi,
+    /Z0[-ー－]?8\d{2}[-ー－]?JPN/gi
+  ];
+
+  const state = {
+    data: null,
+    chapterId: null,
+    questions: [],
+    currentIndex: 0,
+    selected: new Set(),
+    answered: false,
+    filter: 'all',
+    keyword: ''
+  };
+
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+  function safeText(value) {
+    if (value == null) return '';
+    let text = String(value);
+    for (const pattern of UNSAFE_PATTERNS) text = text.replace(pattern, '');
+    return text.replace(/\s{2,}/g, ' ').trim();
   }
 
-  function writeProgress(progress) {
-    localStorage.setItem(storageKey, JSON.stringify(progress));
+  function normalizeChapterTitle(title, id) {
+    const cleaned = safeText(title || '');
+    if (!cleaned) return `セクション ${String(id || '').replace(/\D/g, '')}`;
+    return cleaned
+      .replace(/^第\s*([0-9０-９]+)\s*章[：:　\s-]*/u, 'セクション$1：')
+      .replace(/模擬試験/g, '総合演習')
+      .replace(/模擬問題/g, '総合演習');
   }
 
-  function escapeHtml(value) {
-    return String(value ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+  function getStorageKey() {
+    return `java-study-state:${state.chapterId}`;
   }
 
-  function arraysEqual(a, b) {
-    const aa = [...a].sort();
-    const bb = [...b].sort();
-    return aa.length === bb.length && aa.every((v, i) => v === bb[i]);
+  function loadProgress() {
+    try {
+      return JSON.parse(localStorage.getItem(getStorageKey()) || '{}');
+    } catch (_) {
+      return {};
+    }
   }
 
-  function chapterById(id) {
-    return DATA.chapters.find(ch => ch.id === id);
+  function saveProgressEntry(q, entry) {
+    const progress = loadProgress();
+    progress[q.id] = { ...(progress[q.id] || {}), ...entry, updatedAt: new Date().toISOString() };
+    localStorage.setItem(getStorageKey(), JSON.stringify(progress));
   }
 
-  function renderNav() {
-    const nav = document.getElementById("chapterNav");
-    if (!nav) return;
-    nav.innerHTML = DATA.chapters.map(ch => {
-      const count = (DATA.questions[ch.id] || []).length;
-      const active = ch.id === chapterId ? " active" : "";
-      const status = ch.status === "ready" ? `${count}問` : "準備中";
-      return `<a class="nav-link${active}" href="${escapeHtml(ch.page)}">
-        ${escapeHtml(ch.title.replace(/^第/, "第"))}
-        <span class="small">${escapeHtml(status)}</span>
-      </a>`;
-    }).join("");
+  function setCurrentIndex(index) {
+    const max = state.questions.length - 1;
+    state.currentIndex = Math.max(0, Math.min(index, max));
+    state.selected = new Set();
+    state.answered = false;
+    renderQuestion();
+  }
+
+  function getChapterMeta(id) {
+    return (state.data.chapters || []).find(ch => ch.id === id) || { id, title: id };
+  }
+
+  function getCurrentQuestion() {
+    return state.questions[state.currentIndex];
+  }
+
+  function answerLabel(q) {
+    return (q.answer || []).join(', ');
+  }
+
+  function selectedLabel() {
+    return Array.from(state.selected).sort().join(', ');
+  }
+
+  function isCorrect(q) {
+    const selected = Array.from(state.selected).sort().join(',');
+    const answer = (q.answer || []).slice().sort().join(',');
+    return selected === answer;
+  }
+
+  function optionBody(option) {
+    if (option.code) return `<pre class="inline-code"><code>${escapeHtml(safeText(option.code))}</code></pre>`;
+    return `<span>${escapeHtml(safeText(option.text || option.label || ''))}</span>`;
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
+  }
+
+  function createLayout() {
+    const main = $('main') || document.body.appendChild(document.createElement('main'));
+    main.className = 'dojo-page';
+    main.innerHTML = `
+      <header class="dojo-header">
+        <div>
+          <p class="eyebrow">Java Practice</p>
+          <h1 id="chapterTitle"></h1>
+          <p id="chapterMeta" class="chapter-meta"></p>
+        </div>
+        <a class="home-link" href="index.html">一覧へ戻る</a>
+      </header>
+      <section class="dojo-toolbar" aria-label="問題操作">
+        <div class="toolbar-group">
+          <label class="select-label">表示
+            <select id="filterSelect">
+              <option value="all">全問</option>
+              <option value="wrong">間違えた問題</option>
+              <option value="marked">見直し</option>
+              <option value="unanswered">未回答</option>
+            </select>
+          </label>
+          <input id="keywordInput" type="search" placeholder="キーワード検索" autocomplete="off" />
+        </div>
+        <div class="toolbar-group right">
+          <span id="scoreBadge" class="score-badge">0 / 0</span>
+          <button id="resetBtn" class="plain-btn" type="button">章の履歴をリセット</button>
+        </div>
+      </section>
+      <div class="dojo-grid">
+        <aside class="question-nav-panel">
+          <div class="nav-title">問題一覧</div>
+          <div id="questionNav" class="question-nav"></div>
+        </aside>
+        <section class="question-panel">
+          <div id="questionMount"></div>
+        </section>
+      </div>
+    `;
+
+    $('#filterSelect').addEventListener('change', e => {
+      state.filter = e.target.value;
+      applyFilter();
+    });
+    $('#keywordInput').addEventListener('input', e => {
+      state.keyword = e.target.value.trim().toLowerCase();
+      applyFilter();
+    });
+    $('#resetBtn').addEventListener('click', () => {
+      if (!confirm('この章の回答履歴を削除します。よろしいですか？')) return;
+      localStorage.removeItem(getStorageKey());
+      renderAll();
+    });
+  }
+
+  function questionMatches(q, progress) {
+    const entry = progress[q.id] || {};
+    if (state.filter === 'wrong' && entry.correct !== false) return false;
+    if (state.filter === 'marked' && !entry.marked) return false;
+    if (state.filter === 'unanswered' && entry.answered) return false;
+    if (!state.keyword) return true;
+    const text = [q.title, q.prompt, ...(q.codeBlocks || []).map(b => b.code), ...(q.options || []).map(o => o.text || o.code || '')].join(' ').toLowerCase();
+    return text.includes(state.keyword);
+  }
+
+  function applyFilter() {
+    const all = state.data.questions[state.chapterId] || [];
+    const progress = loadProgress();
+    state.questions = all.filter(q => questionMatches(q, progress));
+    state.currentIndex = 0;
+    state.selected = new Set();
+    state.answered = false;
+    renderAll();
+  }
+
+  function renderAll() {
+    const meta = getChapterMeta(state.chapterId);
+    $('#chapterTitle').textContent = normalizeChapterTitle(meta.title, meta.id);
+    $('#chapterMeta').textContent = `${state.questions.length}問 / 1問ずつ演習`;
+    renderQuestionNav();
+    renderQuestion();
+    renderScore();
+  }
+
+  function renderQuestionNav() {
+    const nav = $('#questionNav');
+    const progress = loadProgress();
+    nav.innerHTML = state.questions.map((q, idx) => {
+      const entry = progress[q.id] || {};
+      const cls = ['qnum'];
+      if (idx === state.currentIndex) cls.push('current');
+      if (entry.answered) cls.push(entry.correct ? 'ok' : 'ng');
+      if (entry.marked) cls.push('marked');
+      return `<button type="button" class="${cls.join(' ')}" data-index="${idx}" title="問${q.number}">${q.number}</button>`;
+    }).join('');
+    $$('.qnum', nav).forEach(btn => btn.addEventListener('click', () => setCurrentIndex(Number(btn.dataset.index))));
+  }
+
+  function renderScore() {
+    const progress = loadProgress();
+    const all = state.data.questions[state.chapterId] || [];
+    const answered = all.filter(q => progress[q.id]?.answered).length;
+    const correct = all.filter(q => progress[q.id]?.correct).length;
+    $('#scoreBadge').textContent = `${correct} / ${answered} 正解`;
+  }
+
+  function renderQuestion() {
+    const mount = $('#questionMount');
+    const q = getCurrentQuestion();
+    if (!q) {
+      mount.innerHTML = `<div class="empty-card">条件に合う問題がありません。</div>`;
+      $('#questionNav').innerHTML = '';
+      renderScore();
+      return;
+    }
+    const progress = loadProgress();
+    const entry = progress[q.id] || {};
+    const selectCount = q.selectCount || (q.answer || []).length || 1;
+    const qTypeText = selectCount > 1 ? `${selectCount}つ選択` : '1つ選択';
+    const codeBlocks = (q.codeBlocks || []).map(block => `
+      <div class="code-block">
+        ${block.title ? `<div class="code-title">${escapeHtml(safeText(block.title))}</div>` : ''}
+        <pre><code>${escapeHtml(safeText(block.code || ''))}</code></pre>
+      </div>
+    `).join('');
+    const command = q.command ? `<div class="command-line"><span>実行条件</span><code>${escapeHtml(safeText(q.command))}</code></div>` : '';
+    const options = (q.options || []).map(option => {
+      const checked = state.selected.has(option.key) ? 'checked' : '';
+      const correct = state.answered && (q.answer || []).includes(option.key) ? 'correct-option' : '';
+      const wrong = state.answered && state.selected.has(option.key) && !(q.answer || []).includes(option.key) ? 'wrong-option' : '';
+      return `
+        <label class="choice ${correct} ${wrong}">
+          <input type="${selectCount > 1 ? 'checkbox' : 'radio'}" name="answer" value="${option.key}" ${checked} ${state.answered ? 'disabled' : ''}>
+          <span class="choice-key">${option.key}</span>
+          <span class="choice-body">${optionBody(option)}</span>
+        </label>
+      `;
+    }).join('');
+    const marked = entry.marked ? 'marked' : '';
+
+    mount.innerHTML = `
+      <article class="question-card">
+        <div class="question-top">
+          <div>
+            <div class="question-count">問 ${q.number} / ${state.questions.length}</div>
+            <h2>${escapeHtml(safeText(q.title || `問${q.number}`))}</h2>
+          </div>
+          <button id="markBtn" type="button" class="mark-btn ${marked}">${entry.marked ? '見直し中' : '見直しに追加'}</button>
+        </div>
+        <div class="question-type">${qTypeText}</div>
+        <p class="prompt">${escapeHtml(safeText(q.prompt || '次の問題に答えなさい。'))}</p>
+        ${command}
+        ${codeBlocks}
+        <form id="answerForm" class="choices">${options}</form>
+        <div class="action-row">
+          <button id="prevBtn" type="button" class="secondary">前の問題</button>
+          <button id="answerBtn" type="button" class="primary">回答する</button>
+          <button id="nextBtn" type="button" class="secondary">次の問題</button>
+        </div>
+        <div id="resultMount"></div>
+      </article>
+    `;
+
+    $$('#answerForm input').forEach(input => {
+      input.addEventListener('change', () => {
+        if (selectCount === 1) state.selected = new Set([input.value]);
+        else {
+          if (input.checked) state.selected.add(input.value);
+          else state.selected.delete(input.value);
+        }
+      });
+    });
+    $('#prevBtn').addEventListener('click', () => setCurrentIndex(state.currentIndex - 1));
+    $('#nextBtn').addEventListener('click', () => setCurrentIndex(state.currentIndex + 1));
+    $('#answerBtn').addEventListener('click', () => submitAnswer());
+    $('#markBtn').addEventListener('click', () => {
+      const now = !loadProgress()[q.id]?.marked;
+      saveProgressEntry(q, { marked: now });
+      renderQuestion();
+      renderQuestionNav();
+    });
+    if (state.answered) renderResult(q);
+  }
+
+  function submitAnswer() {
+    const q = getCurrentQuestion();
+    const selectCount = q.selectCount || (q.answer || []).length || 1;
+    if (state.selected.size !== selectCount) {
+      alert(`${selectCount}個選択してください。`);
+      return;
+    }
+    state.answered = true;
+    const correct = isCorrect(q);
+    saveProgressEntry(q, { answered: true, selected: selectedLabel(), correct });
+    renderQuestion();
+    renderScore();
+    renderQuestionNav();
+  }
+
+  function buildExplanation(q) {
+    const ex = q.explanation || {};
+    const points = Array.isArray(ex.points) ? ex.points.map(safeText).filter(Boolean) : [];
+    const answerKeys = new Set(q.answer || []);
+    const selectedKeys = new Set(state.selected);
+    const choicesReview = (q.options || []).map(o => {
+      const isAns = answerKeys.has(o.key);
+      const picked = selectedKeys.has(o.key);
+      const label = isAns ? '正解選択肢' : (picked ? '選んだが誤り' : '誤り選択肢');
+      const text = safeText(o.text || o.code || '');
+      let reason = '';
+      if (isAns) reason = 'この選択肢が、問題条件を満たす。上の判定手順と解説本文を合わせて確認する。';
+      else reason = 'この選択肢は、コンパイル可否・実行時の制御・出力結果のいずれかが条件と一致しない。';
+      return `<li class="${isAns ? 'choice-ok' : picked ? 'choice-ng' : ''}"><b>${o.key}. ${label}</b><br><span>${escapeHtml(text)}</span><p>${reason}</p></li>`;
+    }).join('');
+
+    return `
+      <section class="explanation-box">
+        <h3>解説</h3>
+        <div class="answer-line"><span>正解</span><strong>${escapeHtml(answerLabel(q))}</strong></div>
+        <div class="explain-section">
+          <h4>判定手順</h4>
+          <ol>
+            <li>まずコンパイル可否を確認する。</li>
+            <li>コンパイルできる場合だけ、実行時例外の有無を確認する。</li>
+            <li>最後に出力結果、戻り値、参照先、スコープ、型変換を確認する。</li>
+          </ol>
+        </div>
+        <div class="explain-section">
+          <h4>正解になる理由</h4>
+          <p>${escapeHtml(safeText(ex.summary || 'この問題は、コードの実行順とJavaの仕様を正確に追う必要がある。'))}</p>
+          ${points.length ? `<ul>${points.map(p => `<li>${escapeHtml(p)}</li>`).join('')}</ul>` : ''}
+        </div>
+        <div class="explain-section">
+          <h4>選択肢別チェック</h4>
+          <ul class="choice-review">${choicesReview}</ul>
+        </div>
+        <div class="explain-section exam-tip">
+          <h4>試験での注意点</h4>
+          <p>出力問題は暗算で飛ばさず、スコープ、参照型、static、例外、break/continue、オーバーロード/オーバーライドの順に機械的に見る。感覚で選ぶと落とされる。</p>
+        </div>
+      </section>
+    `;
+  }
+
+  function renderResult(q) {
+    const correct = isCorrect(q);
+    const mount = $('#resultMount');
+    mount.innerHTML = `
+      <div class="result ${correct ? 'correct' : 'incorrect'}">
+        <div class="result-title">${correct ? '正解' : '不正解'}</div>
+        <div>あなたの回答：<strong>${escapeHtml(selectedLabel())}</strong></div>
+        <div>正解：<strong>${escapeHtml(answerLabel(q))}</strong></div>
+      </div>
+      ${buildExplanation(q)}
+    `;
   }
 
   function renderIndex() {
-    const grid = document.getElementById("chapterGrid");
-    if (!grid) return;
-    grid.innerHTML = DATA.chapters.map(ch => {
-      const count = (DATA.questions[ch.id] || []).length;
-      const badge = ch.status === "ready" ? `${count}問 実装済み` : "ページのみ作成済み";
-      return `<a class="chapter-card" href="${escapeHtml(ch.page)}">
-        <span class="badge ${escapeHtml(ch.status)}">${escapeHtml(badge)}</span>
-        <strong>${escapeHtml(ch.title)}</strong>
-        <span class="inline-note">${ch.status === "ready" ? "問題表示 → 解答選択 → 正解・解説表示に対応" : "次工程で問題データを投入"}</span>
-      </a>`;
-    }).join("");
+    const data = window.JAVA_STUDY_DATA;
+    const main = $('main') || document.body.appendChild(document.createElement('main'));
+    const chapters = data.chapters || Object.keys(data.questions || {}).map(id => ({ id, title: id, page: `${id}.html` }));
+    main.className = 'index-page';
+    main.innerHTML = `
+      <section class="hero">
+        <p class="eyebrow">Java Practice</p>
+        <h1>Java 学習ドリル</h1>
+        <p>1問ずつ解いて、回答後に正解・解説を確認する形式です。</p>
+      </section>
+      <section class="chapter-list">
+        ${chapters.map(ch => {
+          const count = (data.questions?.[ch.id] || []).length;
+          return `<a class="chapter-card" href="${escapeHtml(ch.page || `${ch.id}.html`)}">
+            <span>${escapeHtml(normalizeChapterTitle(ch.title, ch.id))}</span>
+            <strong>${count}問</strong>
+          </a>`;
+        }).join('')}
+      </section>
+    `;
   }
 
-  function selectedKeys(card) {
-    return Array.from(card.querySelectorAll("input[data-option]:checked")).map(input => input.value);
-  }
-
-  function optionHtml(q, opt) {
-    const inputType = q.type === "multi" ? "checkbox" : "radio";
-    const body = opt.code
-      ? `<pre><code>${escapeHtml(opt.code)}</code></pre>`
-      : `<span>${escapeHtml(opt.text)}</span>`;
-    return `<label class="option" data-key="${escapeHtml(opt.key)}">
-      <input type="${inputType}" name="${escapeHtml(q.id)}" value="${escapeHtml(opt.key)}" data-option>
-      <div><span class="option-key">${escapeHtml(opt.key)}.</span>${body}</div>
-    </label>`;
-  }
-
-  function questionHtml(q) {
-    const codeBlocks = (q.codeBlocks || []).map(block => `<div class="code-block">
-      ${block.title ? `<span class="code-title">${escapeHtml(block.title)}</span>` : ""}
-      <pre><code>${escapeHtml(block.code)}</code></pre>
-    </div>`).join("");
-    const command = q.command ? `<div class="command">${escapeHtml(q.command)}</div>` : "";
-    const images = (q.images || []).map(img => `<figure class="q-image-figure">
-      <img class="q-image" src="${escapeHtml(img.src)}" alt="${escapeHtml(img.caption || q.title)}" loading="lazy">
-      ${img.caption ? `<figcaption>${escapeHtml(img.caption)}</figcaption>` : ""}
-    </figure>`).join("");
-    const selectText = q.type === "multi" ? `${q.selectCount}つ選択` : "1つ選択";
-    return `<article class="question-card" id="${escapeHtml(q.id)}" data-question-id="${escapeHtml(q.id)}">
-      <div class="q-head">
-        <h2 class="q-title">問${q.number}. ${escapeHtml(q.title)}</h2>
-        <div class="q-meta">${escapeHtml(selectText)}</div>
-      </div>
-      <p class="prompt">${escapeHtml(q.prompt)}</p>
-      ${command}
-      ${codeBlocks}
-      ${images ? `<div class="q-image-list">${images}</div>` : ""}
-      <div class="options">${q.options.map(opt => optionHtml(q, opt)).join("")}</div>
-      <div class="answer-actions">
-        <button class="btn primary" data-submit>解答する</button>
-        <button class="btn ghost" data-clear>この問題をリセット</button>
-        <span class="inline-note" data-message></span>
-      </div>
-      <div class="result" data-result></div>
-    </article>`;
-  }
-
-  function applyResult(card, q, selected, persist) {
-    const isCorrect = arraysEqual(selected, q.answer);
-    const result = card.querySelector("[data-result]");
-    const answerText = q.answer.join("・");
-    card.querySelectorAll(".option").forEach(label => {
-      const key = label.dataset.key;
-      label.classList.remove("correct", "incorrect", "missed");
-      if (q.answer.includes(key)) label.classList.add("correct");
-      if (selected.includes(key) && !q.answer.includes(key)) label.classList.add("incorrect");
-      if (!selected.includes(key) && q.answer.includes(key) && !isCorrect) label.classList.add("missed");
-    });
-    result.className = `result visible ${isCorrect ? "ok" : "bad"}`;
-    result.innerHTML = `<h4>${isCorrect ? "正解" : "不正解"}</h4>
-      <p><strong>正解:</strong> ${escapeHtml(answerText)}</p>
-      <p>${escapeHtml(q.explanation.summary)}</p>
-      ${q.explanation.points ? `<ul>${q.explanation.points.map(p => `<li>${escapeHtml(p)}</li>`).join("")}</ul>` : ""}
-      <div class="source-note">出典メモ: ${escapeHtml(q.source)}</div>`;
-
-    if (persist) {
-      const progress = readProgress();
-      progress[q.id] = { selected, isCorrect, answeredAt: new Date().toISOString() };
-      writeProgress(progress);
-      updateProgressUi();
-    }
-  }
-
-  function resetQuestion(card, q) {
-    card.querySelectorAll("input[data-option]").forEach(input => { input.checked = false; });
-    card.querySelectorAll(".option").forEach(label => label.classList.remove("correct", "incorrect", "missed"));
-    const result = card.querySelector("[data-result]");
-    result.className = "result";
-    result.innerHTML = "";
-    card.querySelector("[data-message]").textContent = "";
-    const progress = readProgress();
-    delete progress[q.id];
-    writeProgress(progress);
-    updateProgressUi();
-  }
-
-  function updateProgressUi() {
-    if (!chapterId) return;
-    const questions = DATA.questions[chapterId] || [];
-    const progress = readProgress();
-    const answered = questions.filter(q => progress[q.id]).length;
-    const correct = questions.filter(q => progress[q.id]?.isCorrect).length;
-    const fill = document.getElementById("progressFill");
-    const text = document.getElementById("progressText");
-    if (fill) fill.style.width = questions.length ? `${Math.round(answered / questions.length * 100)}%` : "0%";
-    if (text) text.textContent = questions.length ? `${answered}/${questions.length} 解答済み・正解 ${correct}` : "0/0";
-  }
-
-  function bindQuestion(card, q) {
-    const submit = card.querySelector("[data-submit]");
-    const clear = card.querySelector("[data-clear]");
-    const message = card.querySelector("[data-message]");
-    submit.addEventListener("click", () => {
-      const selected = selectedKeys(card);
-      if (q.type === "multi" && selected.length !== q.selectCount) {
-        message.textContent = `${q.selectCount}つ選択してください。現在 ${selected.length}つです。`;
-        return;
-      }
-      if (q.type === "single" && selected.length !== 1) {
-        message.textContent = "1つ選択してください。";
-        return;
-      }
-      message.textContent = "";
-      applyResult(card, q, selected, true);
-    });
-    clear.addEventListener("click", () => resetQuestion(card, q));
-  }
-
-  function restoreProgress() {
-    const progress = readProgress();
-    const questions = DATA.questions[chapterId] || [];
-    questions.forEach(q => {
-      const saved = progress[q.id];
-      if (!saved) return;
-      const card = document.querySelector(`[data-question-id="${q.id}"]`);
-      if (!card) return;
-      saved.selected.forEach(key => {
-        const input = card.querySelector(`input[value="${CSS.escape(key)}"]`);
-        if (input) input.checked = true;
-      });
-      applyResult(card, q, saved.selected, false);
-    });
-    updateProgressUi();
-  }
-
-  function renderChapter() {
-    const root = document.getElementById("questionRoot");
-    if (!root || !chapterId) return;
-    const chapter = chapterById(chapterId);
-    const title = document.getElementById("chapterTitle");
-    const desc = document.getElementById("chapterDesc");
-    if (title) title.textContent = chapter ? chapter.title : "章が見つかりません";
-    const questions = DATA.questions[chapterId] || [];
-    if (desc) desc.textContent = questions.length
-      ? "問題を読み、選択肢を選んでから「解答する」を押すと、正解と解説が表示されます。"
-      : "この章はページ枠のみ作成済みです。次工程で問題・解答・解説データを投入します。";
-
-    if (!questions.length) {
-      root.innerHTML = `<div class="empty-state">
-        <h2>この章は未実装です</h2>
-        <p>1章でUIとデータ形式を確定させた後、OCR補正済みデータをこの形式に合わせて追加します。</p>
-        <p><a class="btn" href="ch01.html">1章のプロトタイプを見る</a></p>
-      </div>`;
-      updateProgressUi();
+  function init() {
+    if (!window.JAVA_STUDY_DATA) {
+      document.body.innerHTML = '<main class="empty-card">data/questions.js が読み込めませんでした。</main>';
       return;
     }
-    root.innerHTML = questions.map(questionHtml).join("");
-    questions.forEach(q => {
-      const card = document.querySelector(`[data-question-id="${q.id}"]`);
-      bindQuestion(card, q);
-    });
-    restoreProgress();
+    state.data = window.JAVA_STUDY_DATA;
+    const chapterId = document.body.dataset.chapter;
+    if (!chapterId) {
+      renderIndex();
+      return;
+    }
+    state.chapterId = chapterId;
+    state.questions = state.data.questions[chapterId] || [];
+    createLayout();
+    renderAll();
   }
 
-  function bindChapterToolbar() {
-    const reset = document.getElementById("resetChapter");
-    if (reset) {
-      reset.addEventListener("click", () => {
-        const questions = DATA.questions[chapterId] || [];
-        const progress = readProgress();
-        questions.forEach(q => delete progress[q.id]);
-        writeProgress(progress);
-        location.reload();
-      });
-    }
-    const firstUnanswered = document.getElementById("firstUnanswered");
-    if (firstUnanswered) {
-      firstUnanswered.addEventListener("click", () => {
-        const progress = readProgress();
-        const questions = DATA.questions[chapterId] || [];
-        const target = questions.find(q => !progress[q.id]);
-        if (target) document.getElementById(target.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
-    }
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    renderNav();
-    renderIndex();
-    renderChapter();
-    bindChapterToolbar();
-  });
+  document.addEventListener('DOMContentLoaded', init);
 })();
