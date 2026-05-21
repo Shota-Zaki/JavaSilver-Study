@@ -1,52 +1,52 @@
 window.JAVA_STUDY_DATA = {
-  "title": "Java Silver 黒本 勉強用ページ",
+  "title": "Java Silver 勉強用ページ",
   "version": "ch01-ch08-mobile-text-no-images-2026-05-21",
   "chapters": [
     {
       "id": "ch01",
-      "title": "第1章 Javaの概要と簡単なJavaプログラムの作成",
+      "title": "Javaの概要と簡単なJavaプログラムの作成",
       "status": "ready",
       "page": "ch01.html"
     },
     {
       "id": "ch02",
-      "title": "第2章 Javaの基本データ型と文字列の操作",
+      "title": "Javaの基本データ型と文字列の操作",
       "status": "ready",
       "page": "ch02.html"
     },
     {
       "id": "ch03",
-      "title": "第3章 演算子と制御構造",
+      "title": "演算子と制御構造",
       "status": "ready",
       "page": "ch03.html"
     },
     {
       "id": "ch04",
-      "title": "第4章 クラスの定義とインスタンスの使用",
+      "title": "クラスの定義とインスタンスの使用",
       "status": "ready",
       "page": "ch04.html"
     },
     {
       "id": "ch05",
-      "title": "第5章 継承とインタフェースの使用",
+      "title": "継承とインタフェースの使用",
       "status": "ready",
       "page": "ch05.html"
     },
     {
       "id": "ch06",
-      "title": "第6章 例外処理",
+      "title": "例外処理",
       "status": "ready",
       "page": "ch06.html"
     },
     {
       "id": "ch07",
-      "title": "第7章 模擬試験",
+      "title": "模擬試験",
       "status": "ready",
       "page": "ch07.html"
     },
     {
       "id": "ch08",
-      "title": "第8章 模擬問題②",
+      "title": "模擬問題②",
       "status": "ready",
       "page": "ch08.html"
     }
