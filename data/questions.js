@@ -1,6 +1,6 @@
 window.JAVA_STUDY_DATA = {
   "title": "Java Silver 勉強用ページ",
-  "version": "ch01-ch08-detailed-explanations-2026-05-21",
+  "version": "ch01-ch08-detailed-explanations-q23-review-2026-05-21",
   "chapters": [
     {
       "id": "ch01",
@@ -7368,7 +7368,7 @@ window.JAVA_STUDY_DATA = {
         "number": 23,
         "type": "single",
         "selectCount": 1,
-        "title": "switch式の戻り値",
+        "title": "switch式と文末セミコロン",
         "prompt": "次のプログラムをコンパイル、実行したときの結果として、正しいものを選びなさい。",
         "options": [
           {
@@ -7389,66 +7389,67 @@ window.JAVA_STUDY_DATA = {
           }
         ],
         "answer": [
-          "A"
+          "C"
         ],
         "explanation": {
-          "summary": "switch式の -> では、右側に値を返す式を書ける。a は 3 なので result は \"C\" になり、C が表示される。",
+          "summary": "正解はC。設問のコードは9行目の閉じ波カッコ「}」の後にセミコロンがないため、switch式を使った変数宣言文が終了しておらず、コンパイルエラーになります。",
           "points": [
-            "switch式内で return を書く必要はない。",
-            "switch式全体を代入文として使うため、式の後にはセミコロンが必要。"
+            "switch式は値を返せるため、case 3 -> \"C\" のように右辺へ式を書けます。ここにreturnは不要です。",
+            "ただし、String result = switch (a) { ... }; という変数宣言文として使う場合、switch式全体の後にセミコロンが必要です。",
+            "設問では9行目が「}」で終わっており、「};」ではありません。したがって実行前にコンパイルエラーになります。"
           ],
-          "correctReason": "正解は A です。この問題は、コンパイルできることを確認したうえで、実行順と参照・値の変化から出力を確定する問題です。 switch式の -> では、右側に値を返す式を書ける。a は 3 なので result は \"C\" になり、C が表示される。 判定の軸は「switch式の戻り値」で、オーバーライドは、同じシグネチャ、同じまたは共変戻り値、同じかより広いアクセス権、チェック例外を広げないことが条件。オーバーロードはメソッド名が同じで引数リストが異なる定義。",
+          "correctReason": "Cが正解です。4行目は `String result = switch (a) {` で変数 result の初期化式としてswitch式を開始しています。switch式の本体は9行目の `}` で閉じていますが、変数宣言文そのものを終える `;` がありません。Javaではローカル変数宣言文はセミコロンで終端する必要があるため、10行目の `System.out.println(result);` に進む前にコンパイルエラーになります。もし9行目が `};` であれば、aは3なので `case 3 -> \"C\"` が選ばれ、Aの「Cが表示される」が正しくなります。しかし設問はそうなっていません。",
           "optionAnalysis": [
             {
               "key": "A",
-              "isCorrect": true,
-              "detail": "この選択肢は正解です。オーバーライドは、同じシグネチャ、同じまたは共変戻り値、同じかより広いアクセス権、チェック例外を広げないことが条件。オーバーロードはメソッド名が同じで引数リストが異なる定義。 選択肢「Cが表示される」は、問題の条件とこのルールに矛盾しません。"
+              "isCorrect": false,
+              "detail": "誤りです。9行目が `};` であれば `result` に \"C\" が代入されて表示されます。しかし設問では9行目の `}` の後にセミコロンがないため、コンパイルできません。出力結果を考える段階まで進みません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "この選択肢は誤りです。戻り値だけを変えてもオーバーロードにはならない。privateメソッドは継承先でのオーバーライド対象ではなく、finalメソッドはオーバーライドできない。 選択肢「値を戻すときにreturnを記述していないためコンパイルエラーとなる」は、問題の中心論点である「switch式の戻り値」の条件を満たしません。"
+              "detail": "誤りです。switch式のアロー形式では、`case 3 -> \"C\";` のように右側へ値を返す式を書けます。メソッドから値を返すわけではないため、`return` は不要です。"
             },
             {
               "key": "C",
-              "isCorrect": false,
-              "detail": "この選択肢は誤りです。戻り値だけを変えてもオーバーロードにはならない。privateメソッドは継承先でのオーバーライド対象ではなく、finalメソッドはオーバーライドできない。 選択肢「9行目の終わりにセミコロンがないためコンパイルエラーとなる」は、問題の中心論点である「switch式の戻り値」の条件を満たしません。"
+              "isCorrect": true,
+              "detail": "正しいです。`String result = switch (a) { ... }` はローカル変数宣言文なので、switch式の閉じ波カッコの後にセミコロンが必要です。設問ではそれがないため、コンパイルエラーになります。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "この選択肢は誤りです。戻り値だけを変えてもオーバーロードにはならない。privateメソッドは継承先でのオーバーライド対象ではなく、finalメソッドはオーバーライドできない。 選択肢「実行時に例外がスローされる」は、問題の中心論点である「switch式の戻り値」の条件を満たしません。"
+              "detail": "誤りです。実行時例外ではなく、文法上のコンパイルエラーです。Javaはコンパイルできないコードを実行できません。"
             }
           ],
           "relatedKnowledge": [
-            "実行時にどのオーバーライドメソッドが呼ばれるかは実体の型で決まる。一方、どのオーバーロード候補を選べるかはコンパイル時の引数型で決まる。",
-            "switch式は値を返すため、必要に応じてyieldやアロー構文を使う。switch文のコロン形式ではbreakがなければフォールスルーする。",
-            "String[] args と String... args はどちらもエントリポイントとして有効。配列の添字は0始まりなので、表示対象やparseIntの対象を1つずらして読まないこと。"
+            "switch文は処理を分岐する文です。一方、switch式は値を生成する式です。値を変数に代入できる点が大きな違いです。",
+            "アロー形式 `case 値 -> 式;` では、その式の値がswitch式の結果になります。ブロック `{ ... }` を使って値を返す場合は `yield 値;` を使います。",
+            "switch式をローカル変数の初期化に使う典型形は `String result = switch (x) { ... };` です。最後のセミコロンまで含めて1つの変数宣言文です。"
           ],
           "examTips": [
-            "メソッド問題は「同名だから上書き」と雑に判断しない。シグネチャ、戻り値、アクセス修飾子、例外、static/final/privateを順に確認する。",
-            "演算問題は暗算で飛ばさない。変数の値を表にして、各演算子の直後に値がどう変わるかを1ステップずつ更新する。",
-            "コマンド付き問題は、コードだけでなく `java クラス名 引数...` の引数列を必ず横に書き出す。最初の1個だけ使っているのか、複数使っているのかを確認する。",
-            "インタフェース問題は「抽象メソッドかdefaultかstaticかprivateか」を最初に分類する。本文に実装クラスが空で出てきたら、default実装があるかを確認する。"
+            "switch問題では、まず「switch文」なのか「switch式」なのかを区別してください。`String result = switch (...)` のように代入されていればswitch式です。",
+            "アローの右辺だけを見て出力を即決しないこと。switch式全体の後ろに `;` があるか、defaultまたは網羅性があるかを確認してください。",
+            "`returnがないからエラー` という選択肢は、switch式ではひっかけになりやすいです。値を返すのはswitch式であり、メソッドのreturnとは別です。"
           ],
           "judgeSteps": [
-            "コンパイル可否を先に確認する。構文、型、アクセス修飾子、未初期化ローカル変数、例外処理の不足を見る。",
-            "コンパイルできる場合だけ、実行時の参照先、配列添字、null、キャスト、catch順序を追う。",
-            "最後に出力・戻り値・正しい選択肢を確定する。途中で例外が処理されずに送出される場合、通常の出力はそこで止まる。"
+            "1. 変数宣言 `String result =` の右辺としてswitch式が使われていることを確認する。",
+            "2. switch式の各caseが値を返せているか確認する。ここは問題ない。",
+            "3. switch式を閉じた後、変数宣言文を終えるセミコロンがあるか確認する。設問ではない。",
+            "4. コンパイルエラーと判断し、出力や実行時例外の選択肢を除外する。"
           ]
         },
         "source": "3章 問題PDF p.131 / 3章 解説PDF p.175",
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n    public static void main(String[] args) {\n        int a = 3;\n        String result = switch (a) {\n            case 1 -> \"A\";\n            case 2 -> \"B\";\n            case 3 -> \"C\";\n            default -> \"D\";\n        };\n        System.out.println(result);\n    }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        int a = 3;\n        String result = switch (a) {\n            case 1 -> \"A\";\n            case 2 -> \"B\";\n            case 3 -> \"C\";\n            default -> \"D\";\n        }\n        System.out.println(result);\n    }\n}"
           }
         ],
         "tags": [
-          "override/overload",
-          "operator/control",
-          "main/args",
-          "interface/default"
+          "switch",
+          "switch-expression",
+          "semicolon",
+          "compile-error"
         ]
       },
       {

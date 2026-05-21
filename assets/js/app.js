@@ -97,6 +97,16 @@
       .replace(/'/g, "&#039;");
   }
 
+
+  function numberedCodeHtml(code, className = "") {
+    const source = String(code ?? "");
+    const normalized = source.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+    const lineCount = normalized.length ? normalized.split("\n").length : 1;
+    const numbers = Array.from({ length: lineCount }, (_, i) => `<span>${i + 1}</span>`).join("");
+    const classAttr = className ? ` ${className}` : "";
+    return `<div class="numbered-code${classAttr}"><div class="line-numbers" aria-hidden="true">${numbers}</div><pre><code>${escapeHtml(normalized)}</code></pre></div>`;
+  }
+
   function cssEscape(value) {
     if (window.CSS && typeof window.CSS.escape === "function") return window.CSS.escape(value);
     return String(value).replace(/[^a-zA-Z0-9_-]/g, "\\$&");
@@ -252,7 +262,7 @@
   function optionHtml(q, opt) {
     const inputType = questionType(q) === "multi" ? "checkbox" : "radio";
     const body = opt.code
-      ? `<pre><code>${escapeHtml(opt.code)}</code></pre>`
+      ? numberedCodeHtml(opt.code, "option-code")
       : `<span class="option-text">${escapeHtml(opt.text)}</span>`;
     return `<label class="option" data-key="${escapeHtml(opt.key)}">
       <input type="${inputType}" name="${escapeHtml(q.id)}" value="${escapeHtml(opt.key)}" data-option>
@@ -263,7 +273,7 @@
   function questionHtml(q) {
     const codeBlocks = (q.codeBlocks || []).map(block => `<div class="code-block">
       ${block.title ? `<span class="code-title">${escapeHtml(block.title)}</span>` : ""}
-      <pre><code>${escapeHtml(block.code)}</code></pre>
+      ${numberedCodeHtml(block.code)}
     </div>`).join("");
     const command = q.command ? `<div class="command">${escapeHtml(q.command)}</div>` : "";
     const images = (q.images || []).map(img => `<figure class="q-image-figure">
