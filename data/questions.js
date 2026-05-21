@@ -1,6 +1,6 @@
 window.JAVA_STUDY_DATA = {
   "title": "Java Silver 勉強用ページ",
-  "version": "ch01-ch08-mobile-text-no-images-2026-05-21",
+  "version": "ch01-ch08-review-exam-mobile-2026-05-21",
   "chapters": [
     {
       "id": "ch01",
@@ -8819,7 +8819,7 @@ window.JAVA_STUDY_DATA = {
       {
         "id": "ch07-q02",
         "number": 2,
-        "type": "multiple",
+        "type": "multi",
         "selectCount": 2,
         "title": "別パッケージのimport宣言",
         "prompt": "次の問題文・コード・選択肢を読み、正しい選択肢を選びなさい。",
@@ -8960,7 +8960,7 @@ window.JAVA_STUDY_DATA = {
       {
         "id": "ch07-q05",
         "number": 5,
-        "type": "multiple",
+        "type": "multi",
         "selectCount": 2,
         "title": "クラス宣言の修飾子",
         "prompt": "次の問題文・コード・選択肢を読み、正しい選択肢を選びなさい。",
@@ -9073,7 +9073,7 @@ window.JAVA_STUDY_DATA = {
       {
         "id": "ch07-q07",
         "number": 7,
-        "type": "multiple",
+        "type": "multi",
         "selectCount": 2,
         "title": "sealedクラスのサブクラス",
         "prompt": "次の問題文・コード・選択肢を読み、正しい選択肢を選びなさい。",
@@ -9130,7 +9130,7 @@ window.JAVA_STUDY_DATA = {
       {
         "id": "ch07-q08",
         "number": 8,
-        "type": "multiple",
+        "type": "multi",
         "selectCount": 2,
         "title": "チェック例外",
         "prompt": "次の問題文・コード・選択肢を読み、正しい選択肢を選びなさい。",
@@ -9187,7 +9187,7 @@ window.JAVA_STUDY_DATA = {
       {
         "id": "ch07-q09",
         "number": 9,
-        "type": "multiple",
+        "type": "multi",
         "selectCount": 2,
         "title": "オーバーライドの条件",
         "prompt": "次の問題文・コード・選択肢を読み、正しい選択肢を選びなさい。",
@@ -9624,7 +9624,7 @@ window.JAVA_STUDY_DATA = {
       {
         "id": "ch07-q18",
         "number": 18,
-        "type": "multiple",
+        "type": "multi",
         "selectCount": 2,
         "title": "オーバーロード",
         "prompt": "次の問題文・コード・選択肢を読み、正しい選択肢を選びなさい。",
@@ -9673,7 +9673,7 @@ window.JAVA_STUDY_DATA = {
       {
         "id": "ch07-q19",
         "number": 19,
-        "type": "multiple",
+        "type": "multi",
         "selectCount": 2,
         "title": "sealed / final / abstract",
         "prompt": "次の問題文・コード・選択肢を読み、正しい選択肢を選びなさい。",
@@ -9730,7 +9730,7 @@ window.JAVA_STUDY_DATA = {
       {
         "id": "ch07-q20",
         "number": 20,
-        "type": "multiple",
+        "type": "multi",
         "selectCount": 3,
         "title": "recordクラス",
         "prompt": "次の問題文・コード・選択肢を読み、正しい選択肢を選びなさい。",
@@ -9880,7 +9880,7 @@ window.JAVA_STUDY_DATA = {
       {
         "id": "ch07-q23",
         "number": 23,
-        "type": "multiple",
+        "type": "multi",
         "selectCount": 2,
         "title": "メソッド名の規則",
         "prompt": "次の問題文・コード・選択肢を読み、正しい選択肢を選びなさい。",
@@ -10029,7 +10029,7 @@ window.JAVA_STUDY_DATA = {
       {
         "id": "ch07-q26",
         "number": 26,
-        "type": "multiple",
+        "type": "multi",
         "selectCount": 2,
         "title": "チェック例外とthrows",
         "prompt": "次の問題文・コード・選択肢を読み、正しい選択肢を選びなさい。",
@@ -10674,7 +10674,7 @@ window.JAVA_STUDY_DATA = {
       {
         "id": "ch07-q40",
         "number": 40,
-        "type": "multiple",
+        "type": "multi",
         "selectCount": 2,
         "title": "多次元配列",
         "prompt": "次の問題文・コード・選択肢を読み、正しい選択肢を選びなさい。",
@@ -10759,7 +10759,7 @@ window.JAVA_STUDY_DATA = {
       {
         "id": "ch07-q42",
         "number": 42,
-        "type": "multiple",
+        "type": "multi",
         "selectCount": 3,
         "title": "オーバーライドとオーバーロード",
         "prompt": "次の問題文・コード・選択肢を読み、正しい選択肢を選びなさい。",
@@ -10901,7 +10901,7 @@ window.JAVA_STUDY_DATA = {
       {
         "id": "ch07-q45",
         "number": 45,
-        "type": "multiple",
+        "type": "multi",
         "selectCount": 3,
         "title": "インタフェースと抽象クラス",
         "prompt": "次の問題文・コード・選択肢を読み、正しい選択肢を選びなさい。",
@@ -11031,7 +11031,7 @@ window.JAVA_STUDY_DATA = {
       {
         "id": "ch07-q48",
         "number": 48,
-        "type": "multiple",
+        "type": "multi",
         "selectCount": 2,
         "title": "メソッドの戻り値型",
         "prompt": "次の問題文・コード・選択肢を読み、正しい選択肢を選びなさい。",
@@ -11304,7 +11304,7 @@ window.JAVA_STUDY_DATA = {
       {
         "id": "ch07-q54",
         "number": 54,
-        "type": "multiple",
+        "type": "multi",
         "selectCount": 2,
         "title": "try-catch-finallyの構文",
         "prompt": "次の問題文・コード・選択肢を読み、正しい選択肢を選びなさい。",

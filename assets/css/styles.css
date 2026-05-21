@@ -607,3 +607,361 @@ pre, .command {
 
 /* ch07 precision: preserve code and option line breaks */
 .choice span, .option-text { white-space: pre-wrap; }
+
+/* =========================================================
+   One-question viewer, review mode, weak-tag dashboard, exam mode
+   ========================================================= */
+[hidden] { display: none !important; }
+
+.dashboard,
+.study-panel {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.stat-grid.compact {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.stat-card {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(31, 41, 55, .05);
+}
+
+.stat-card span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.stat-card strong {
+  display: block;
+  margin-top: 2px;
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.weak-panel,
+.chapter-stats,
+.exam-panel,
+.mode-row,
+.question-toolbar,
+.question-palette {
+  border-radius: 16px;
+}
+
+.weak-panel {
+  padding: 16px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.86);
+}
+
+.weak-panel h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+
+.weak-tags,
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.weak-tag,
+.tag-chip {
+  display: inline-flex;
+  gap: 3px;
+  align-items: center;
+  width: fit-content;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.weak-tag b {
+  color: var(--bad);
+}
+
+.tag-list {
+  margin: 10px 0 14px;
+}
+
+.mode-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.82);
+}
+
+.mode-btn {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 12px;
+  color: var(--muted);
+  background: #fff;
+  font-weight: 700;
+}
+
+.mode-btn.active {
+  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.question-toolbar {
+  position: sticky;
+  top: 12px;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: auto auto auto minmax(220px, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(10px);
+}
+
+.question-position {
+  min-width: 64px;
+  text-align: center;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.question-jump {
+  width: 100%;
+  min-width: 0;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+}
+
+.flag-btn.active {
+  color: #fff;
+  background: var(--warn);
+  border-color: var(--warn);
+}
+
+.question-palette {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 10px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.78);
+  -webkit-overflow-scrolling: touch;
+}
+
+.q-dot {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.q-dot.active {
+  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.q-dot.answered.correct:not(.active) {
+  color: var(--ok);
+  background: var(--ok-bg);
+  border-color: #10b981;
+}
+
+.q-dot.answered.wrong:not(.active) {
+  color: var(--bad);
+  background: var(--bad-bg);
+  border-color: #ef4444;
+}
+
+.q-dot.flagged::after {
+  content: "★";
+  display: inline;
+  margin-left: 1px;
+  color: var(--warn);
+  font-size: 10px;
+}
+
+.q-dot.active.flagged::after {
+  color: #fff;
+}
+
+.result.neutral {
+  border-color: #93c5fd;
+  background: var(--accent-weak);
+}
+
+.select-ok {
+  color: var(--ok);
+  font-weight: 800;
+}
+
+.exam-box {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+}
+
+.exam-box.active {
+  border-color: #f59e0b;
+  background: #fffbeb;
+}
+
+.exam-box h2 {
+  margin: 0 0 4px;
+  font-size: 18px;
+}
+
+.exam-box p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.exam-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.timer {
+  min-width: 74px;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #111827;
+  color: #fff;
+  font-family: var(--mono);
+  font-weight: 800;
+  text-align: center;
+}
+
+.viewer-footer {
+  position: sticky;
+  bottom: 10px;
+  z-index: 30;
+  display: none;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 8px;
+  align-items: center;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255,255,255,.94);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+}
+
+.chapter-progress-line {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.prompt,
+.option-text {
+  white-space: pre-wrap;
+}
+
+@media (max-width: 860px) {
+  .stat-grid,
+  .stat-grid.compact {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stat-card {
+    padding: 12px;
+  }
+
+  .stat-card strong {
+    font-size: 21px;
+  }
+
+  .question-toolbar {
+    top: 78px;
+    grid-template-columns: 1fr 72px 1fr;
+  }
+
+  .question-jump,
+  .flag-btn {
+    grid-column: 1 / -1;
+  }
+
+  .question-palette {
+    padding: 8px;
+  }
+
+  .q-dot {
+    width: 32px;
+    height: 32px;
+  }
+
+  .exam-box {
+    grid-template-columns: 1fr;
+    padding: 13px;
+  }
+
+  .exam-actions {
+    justify-content: flex-start;
+  }
+
+  .viewer-footer {
+    display: grid;
+  }
+}
+
+@media (max-width: 420px) {
+  .stat-grid,
+  .stat-grid.compact {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .mode-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .mode-btn {
+    width: 100%;
+  }
+
+  .timer {
+    width: 100%;
+  }
+}
