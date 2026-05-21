@@ -26,11 +26,41 @@
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
-  function safeText(value) {
+  function sanitizeUnsafe(value) {
     if (value == null) return '';
     let text = String(value);
     for (const pattern of UNSAFE_PATTERNS) text = text.replace(pattern, '');
-    return text.replace(/\s{2,}/g, ' ').trim();
+    return text;
+  }
+
+  function safeText(value) {
+    return sanitizeUnsafe(value).replace(/\s{2,}/g, ' ').trim();
+  }
+
+  function safeCodeText(value) {
+    return sanitizeUnsafe(value)
+      .replace(/\r\n?/g, '\n')
+      .replace(/[ \t]+$/gm, '')
+      .replace(/^\n+|\n+$/g, '');
+  }
+
+  function getSelectCount(q) {
+    return Number(q.selectCount || (q.answer || []).length || 1);
+  }
+
+  function selectInstruction(q) {
+    const count = getSelectCount(q);
+    const optionCount = (q.options || []).length;
+    if (optionCount > 0 && count === optionCount) return `すべて選択（${count}個）`;
+    if (count > 1) return `${count}つ選択`;
+    return '1つ選択';
+  }
+
+  function selectAlertText(q) {
+    const count = getSelectCount(q);
+    const optionCount = (q.options || []).length;
+    if (optionCount > 0 && count === optionCount) return 'この問題はすべての選択肢を選択してください。';
+    return `${count}個選択してください。`;
   }
 
   function normalizeChapterTitle(title, id) {
@@ -91,7 +121,7 @@
   }
 
   function optionBody(option) {
-    if (option.code) return `<pre class="inline-code"><code>${escapeHtml(safeText(option.code))}</code></pre>`;
+    if (option.code) return `<pre class="inline-code"><code>${escapeHtml(safeCodeText(option.code))}</code></pre>`;
     return `<span>${escapeHtml(safeText(option.text || option.label || ''))}</span>`;
   }
 
@@ -216,12 +246,12 @@
     }
     const progress = loadProgress();
     const entry = progress[q.id] || {};
-    const selectCount = q.selectCount || (q.answer || []).length || 1;
-    const qTypeText = selectCount > 1 ? `${selectCount}つ選択` : '1つ選択';
+    const selectCount = getSelectCount(q);
+    const qTypeText = selectInstruction(q);
     const codeBlocks = (q.codeBlocks || []).map(block => `
       <div class="code-block">
         ${block.title ? `<div class="code-title">${escapeHtml(safeText(block.title))}</div>` : ''}
-        <pre><code>${escapeHtml(safeText(block.code || ''))}</code></pre>
+        <pre><code>${escapeHtml(safeCodeText(block.code || ''))}</code></pre>
       </div>
     `).join('');
     const command = q.command ? `<div class="command-line"><span>実行条件</span><code>${escapeHtml(safeText(q.command))}</code></div>` : '';
@@ -248,7 +278,7 @@
           </div>
           <button id="markBtn" type="button" class="mark-btn ${marked}">${entry.marked ? '見直し中' : '見直しに追加'}</button>
         </div>
-        <div class="question-type">${qTypeText}</div>
+        <div class="question-type" aria-label="選択数"><span>選択数</span><strong>${qTypeText}</strong></div>
         <p class="prompt">${escapeHtml(safeText(q.prompt || '次の問題に答えなさい。'))}</p>
         ${command}
         ${codeBlocks}
@@ -285,9 +315,9 @@
 
   function submitAnswer() {
     const q = getCurrentQuestion();
-    const selectCount = q.selectCount || (q.answer || []).length || 1;
+    const selectCount = getSelectCount(q);
     if (state.selected.size !== selectCount) {
-      alert(`${selectCount}個選択してください。`);
+      alert(selectAlertText(q));
       return;
     }
     state.answered = true;
@@ -307,7 +337,7 @@
       const isAns = answerKeys.has(o.key);
       const picked = selectedKeys.has(o.key);
       const label = isAns ? '正解選択肢' : (picked ? '選んだが誤り' : '誤り選択肢');
-      const text = safeText(o.text || o.code || '');
+      const text = o.code ? safeCodeText(o.code) : safeText(o.text || o.label || '');
       let reason = '';
       if (isAns) reason = 'この選択肢が、問題条件を満たす。上の判定手順と解説本文を合わせて確認する。';
       else reason = 'この選択肢は、コンパイル可否・実行時の制御・出力結果のいずれかが条件と一致しない。';

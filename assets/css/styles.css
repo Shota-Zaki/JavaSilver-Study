@@ -174,3 +174,47 @@ code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberat
     padding: 22px;
   }
 }
+
+/* code/select-count fixes */
+.question-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #eef2ff;
+  color: #3730a3;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 1rem;
+  margin: 4px 0 14px;
+}
+.question-type span {
+  opacity: .72;
+  font-size: .86em;
+}
+.question-type strong {
+  white-space: nowrap;
+}
+.code-block pre,
+.inline-code {
+  white-space: pre-wrap;
+  overflow-x: auto;
+  tab-size: 4;
+}
+.code-block code,
+.inline-code code {
+  white-space: pre-wrap;
+}
+.choice-body span {
+  white-space: pre-wrap;
+}
+.choice-review span {
+  white-space: pre-wrap;
+}
+@media (max-width: 520px) {
+  .question-type {
+    width: 100%;
+    justify-content: center;
+    border-radius: 12px;
+  }
+}
