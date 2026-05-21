@@ -111,3 +111,66 @@ code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberat
   .question-card { padding: 14px; }
   pre { font-size: .86rem; }
 }
+
+/* index layout adjustment: larger chapter cards and fixed count alignment */
+.index-page {
+  width: min(1440px, calc(100% - 40px));
+  padding-top: 32px;
+}
+.hero {
+  padding: clamp(36px, 4vw, 56px);
+  margin-bottom: 28px;
+}
+.hero h1 {
+  font-size: clamp(2.1rem, 4.6vw, 3.25rem);
+  line-height: 1.2;
+  letter-spacing: .02em;
+}
+.hero p:not(.eyebrow) {
+  font-size: clamp(1.05rem, 1.7vw, 1.25rem);
+  margin-top: 22px;
+}
+.chapter-list {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+.chapter-card {
+  min-height: 116px;
+  padding: 26px 28px;
+  align-items: center;
+  gap: 24px;
+  font-size: 1.12rem;
+}
+.chapter-card > span {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-weight: 700;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.chapter-card > strong {
+  flex: 0 0 auto;
+  min-width: 70px;
+  text-align: right;
+  white-space: nowrap;
+  font-size: 1.18rem;
+  line-height: 1.2;
+  letter-spacing: .02em;
+}
+@media (max-width: 760px) {
+  .index-page {
+    width: min(100% - 24px, 1440px);
+    padding-top: 16px;
+  }
+  .hero {
+    padding: 28px 22px;
+  }
+  .chapter-list {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .chapter-card {
+    min-height: 92px;
+    padding: 22px;
+  }
+}
