@@ -1678,3 +1678,75 @@ pre {
   .ref-table { min-width: 560px; }
   .reference-main { padding-bottom: 72px; }
 }
+
+
+/* Compact cloud panel: remove unused vertical space on the top page */
+.cloud-panel-compact {
+  display: grid;
+  gap: 12px;
+  padding: 16px 18px;
+}
+.cloud-panel-compact h2 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.35;
+}
+.cloud-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.cloud-login-actions,
+.cloud-main-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.cloud-panel-body {
+  display: grid;
+  grid-template-columns: minmax(180px, auto) minmax(0, 1fr);
+  gap: 10px 14px;
+  align-items: center;
+}
+.cloud-account-line {
+  color: var(--muted);
+  font-size: 14px;
+  white-space: nowrap;
+}
+.cloud-main-actions {
+  min-width: 0;
+}
+.cloud-message {
+  grid-column: 2;
+}
+.cloud-panel-compact .btn {
+  min-height: 38px;
+  padding: 7px 13px;
+}
+@media (max-width: 760px) {
+  .cloud-panel-compact {
+    padding: 14px;
+  }
+  .cloud-panel-header,
+  .cloud-panel-body {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .cloud-login-actions,
+  .cloud-main-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+  .cloud-message {
+    grid-column: auto;
+  }
+  .cloud-account-line {
+    white-space: normal;
+  }
+  .cloud-panel-compact .btn {
+    width: 100%;
+  }
+}

@@ -22,13 +22,19 @@
 </section><section class="article-card">
 <h2>== と equals</h2>
 <div class="table-scroll"><table class="ref-table"><thead><tr><th>比較</th><th>対象</th><th>例</th></tr></thead><tbody><tr><td>==</td><td>参照が同じか</td><td>new String("a") == "a" は通常false</td></tr><tr><td>equals</td><td>内容が同じか</td><td>"a".equals(new String("a")) はtrue</td></tr><tr><td>equalsIgnoreCase</td><td>大文字小文字を無視</td><td>null側から呼ぶとNullPointerException</td></tr></tbody></table></div>
-</section><pre><code>String a = new String(&quot;sample&quot;);
-String b = a;
-String c = a.intern();
-String d = &quot;sample&quot;;
-System.out.println(a == b); // true
-System.out.println(a == d); // false
-System.out.println(c == d); // true</code></pre><section class="article-card">
+<p><a class="btn primary" href="equality.html">宣言別の比較例を見る</a></p>
+</section><section class="article-card">
+<h2>宣言で結果が変わる例</h2>
+<pre><code>String a = "sample";
+String b = "sample";
+String c = new String("sample");
+String d = c;
+System.out.println(a == b);      // true
+System.out.println(a == c);      // false
+System.out.println(c == d);      // true
+System.out.println(a.equals(c)); // true</code></pre>
+<ul><li>リテラル同士は同じ文字列プールを参照する。</li><li><code>new String(...)</code> は別インスタンスを作る。</li><li>参照代入はオブジェクトをコピーしない。</li></ul>
+</section><section class="article-card">
 <h2>Stringは不変</h2>
 <pre><code>String s = &quot;abc&quot;;
 s.concat(&quot;d&quot;);

@@ -139,13 +139,9 @@
   function importHistoryFromText(text, mode) {
     const parsed = parseHistoryPayload(text);
     if (mode === "replace") {
-      const ok = confirm("現在の学習履歴を、読み込んだ履歴で完全に上書きします。続行しますか？");
-      if (!ok) return false;
       writeProgress(parsed.progress);
       writeExamStore(parsed.exam);
     } else {
-      const ok = confirm("読み込んだ履歴を現在の端末の履歴にマージします。同じ問題は新しい解答日時を優先し、見直しフラグは残します。続行しますか？");
-      if (!ok) return false;
       writeProgress(mergeProgress(readProgress(), parsed.progress));
       // 模試タイマーは端末差で壊れやすいため、マージ時は現在端末の状態を優先する。
     }
@@ -396,24 +392,22 @@ service cloud.firestore {
   }
 
   function cloudPanelHtml() {
-    return `<div class="cloud-panel" id="cloudSyncPanel">
-      <div class="sync-panel-head">
-        <div>
-          <h2>クラウド同期</h2>
-        </div>
-        <div class="sync-actions compact-actions">
+    return `<div class="cloud-panel cloud-panel-compact" id="cloudSyncPanel">
+      <div class="cloud-panel-header">
+        <h2>クラウド同期</h2>
+        <div class="cloud-login-actions">
           <button class="btn" data-cloud-signin>Googleでログイン</button>
           <button class="btn ghost" data-cloud-signout>ログアウト</button>
         </div>
       </div>
-      <div class="cloud-status-row">
-        <span>アカウント: <strong data-cloud-account>未ログイン</strong></span>
-      </div>
-      <div class="sync-actions">
-        <button class="btn primary" data-cloud-push data-cloud-needs-auth>この端末の履歴を保存</button>
-        <button class="btn" data-cloud-pull-merge data-cloud-needs-auth>クラウドからマージ</button>
-        <button class="btn ghost" data-cloud-pull-replace data-cloud-needs-auth>クラウドで完全上書き</button>
-        <span class="inline-note" data-cloud-message></span>
+      <div class="cloud-panel-body">
+        <span class="cloud-account-line">アカウント: <strong data-cloud-account>未ログイン</strong></span>
+        <div class="cloud-main-actions">
+          <button class="btn primary" data-cloud-push data-cloud-needs-auth>この端末の履歴を保存</button>
+          <button class="btn" data-cloud-pull-merge data-cloud-needs-auth>クラウドからマージ</button>
+          <button class="btn ghost" data-cloud-pull-replace data-cloud-needs-auth>クラウドで完全上書き</button>
+        </div>
+        <span class="inline-note cloud-message" data-cloud-message></span>
       </div>
     </div>`;
   }
@@ -1167,13 +1161,14 @@ service cloud.firestore {
       </a>`;
     }).join("");
     const path = (location.pathname || "").split("/").pop();
-    const knowledgeActive = ["reference.html", "glossary.html", "syntax-basics.html", "datatypes.html", "strings.html", "collections-arrays.html", "operators-control.html", "methods-constructors.html", "object-oriented.html", "inheritance-interface.html", "exceptions.html", "compile-runtime.html", "cheatsheet.html", "exam-traps.html"].includes(path);
+    const knowledgeActive = ["reference.html", "glossary.html", "syntax-basics.html", "datatypes.html", "strings.html", "equality.html", "collections-arrays.html", "operators-control.html", "methods-constructors.html", "object-oriented.html", "inheritance-interface.html", "exceptions.html", "compile-runtime.html", "cheatsheet.html", "exam-traps.html"].includes(path);
     const knowledgeLinks = `<div class="nav-divider"></div>
       <a class="nav-link${knowledgeActive && path === "reference.html" ? " active" : ""}" href="reference.html">学習記事トップ<span class="small">入口</span></a>
       <a class="nav-link${knowledgeActive && path === "glossary.html" ? " active" : ""}" href="glossary.html">単語集<span class="small">頻出用語</span></a>
       <a class="nav-link${knowledgeActive && path === "syntax-basics.html" ? " active" : ""}" href="syntax-basics.html">実行・package/import<span class="small">基礎</span></a>
       <a class="nav-link${knowledgeActive && path === "datatypes.html" ? " active" : ""}" href="datatypes.html">データ型・型変換<span class="small">primitive</span></a>
       <a class="nav-link${knowledgeActive && path === "strings.html" ? " active" : ""}" href="strings.html">String/StringBuilder<span class="small">文字列</span></a>
+      <a class="nav-link${knowledgeActive && path === "equality.html" ? " active" : ""}" href="equality.html">同一性・同値性比較<span class="small">==/equals</span></a>
       <a class="nav-link${knowledgeActive && path === "collections-arrays.html" ? " active" : ""}" href="collections-arrays.html">配列・ArrayList<span class="small">List</span></a>
       <a class="nav-link${knowledgeActive && path === "operators-control.html" ? " active" : ""}" href="operators-control.html">演算子・制御構造<span class="small">switch/loop</span></a>
       <a class="nav-link${knowledgeActive && path === "methods-constructors.html" ? " active" : ""}" href="methods-constructors.html">メソッド・コンストラクタ<span class="small">overload</span></a>
@@ -1450,8 +1445,6 @@ service cloud.firestore {
 
   function startExam() {
     if (!chapterId) return;
-    const ok = confirm("模試モードを開始します。この章の解答履歴はリセットされます。見直しフラグは残します。続行しますか？");
-    if (!ok) return;
     clearChapterProgress(chapterId, true);
     setExamState(chapterId, {
       active: true,
@@ -1577,8 +1570,6 @@ service cloud.firestore {
     const reset = document.getElementById("resetChapter");
     if (reset) {
       reset.onclick = () => {
-        const ok = confirm("この章の解答履歴と見直しフラグをすべて削除します。続行しますか？");
-        if (!ok) return;
         clearChapterProgress(chapterId, false);
         setExamState(chapterId, null);
         currentMode = "all";

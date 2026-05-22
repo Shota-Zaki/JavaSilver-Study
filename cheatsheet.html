@@ -31,6 +31,16 @@
 </section><section class="article-card">
 <h2>例外</h2>
 <div class="table-scroll"><table class="ref-table"><thead><tr><th>ルール</th><th>確認</th></tr></thead><tbody><tr><td>チェック例外は処理必須</td><td>catchまたはthrows。</td></tr><tr><td>catchは子から親へ</td><td>逆は到達不能。</td></tr><tr><td>finallyは基本必ず実行</td><td>returnより後に割り込む。</td></tr><tr><td>try-with-resourcesは逆順close</td><td>finallyより前。</td></tr></tbody></table></div>
+</section><section class="article-card">
+<h2>同一性・同値性の即判定</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>コードの形</th><th>==</th><th>equals</th></tr></thead><tbody>
+<tr><td><code>String a="x"; String b="x";</code></td><td>true</td><td>true</td></tr>
+<tr><td><code>String b=new String("x");</code></td><td>別参照なのでfalse</td><td>true</td></tr>
+<tr><td><code>String a=x+"y";</code> 変数を含む</td><td>リテラルとはfalse</td><td>内容次第</td></tr>
+<tr><td><code>final String x="a"; x+"b"</code></td><td>コンパイル時定数ならtrue</td><td>true</td></tr>
+<tr><td><code>new StringBuilder("x")</code>同士</td><td>false</td><td>false</td></tr>
+<tr><td>配列同士</td><td>同じ配列参照だけtrue</td><td>要素比較ではない</td></tr>
+</tbody></table></div>
 </section>
     </main>
   </div>
