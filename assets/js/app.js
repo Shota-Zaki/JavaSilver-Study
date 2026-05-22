@@ -1105,7 +1105,8 @@ service cloud.firestore {
 
   function renderDashboard() {
     const main = document.querySelector(".main");
-    if (!main || chapterId) return;
+    const isIndexPage = Boolean(document.getElementById("chapterGrid"));
+    if (!main || chapterId || !isIndexPage) return;
     let root = document.getElementById("dashboardRoot");
     if (!root) {
       const hero = main.querySelector(".hero");
