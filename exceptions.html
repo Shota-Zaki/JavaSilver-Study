@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - 例外処理</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main">
+<section class="hero reference-hero">
+  <p class="eyebrow">Exceptions</p>
+  <h1>例外処理</h1>
+  <p>例外は「コンパイルで処理を要求されるか」「実行時にどのcatchへ行くか」「finally/closeの順序」で解きます。</p>
+</section><section class="article-card">
+<h2>例外の分類</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>分類</th><th>代表例</th><th>処理</th></tr></thead><tbody><tr><td>チェック例外</td><td>Exception, IOException</td><td>catchまたはthrowsが必要。</td></tr><tr><td>非チェック例外</td><td>RuntimeException, NullPointerException, ArrayIndexOutOfBoundsException</td><td>コンパイラは処理を強制しない。</td></tr><tr><td>Error</td><td>OutOfMemoryErrorなど</td><td>通常アプリで捕捉対象にしない。</td></tr></tbody></table></div>
+</section><section class="article-card">
+<h2>catch順序</h2>
+<pre><code>try {
+  sample();
+} catch (SubException e) {
+} catch (SuperException e) {
+}</code></pre><ul><li>サブクラス例外を先に書く。</li><li>親例外を先に書くと、後続の子例外catchは到達不能でコンパイルエラー。</li></ul>
+</section><section class="article-card">
+<h2>finallyの順序</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>状況</th><th>流れ</th></tr></thead><tbody><tr><td>例外なし</td><td>try → finally</td></tr><tr><td>catchあり</td><td>try → catch → finally</td></tr><tr><td>catchなしで外へ投げる</td><td>try → finally → 呼び出し元へ</td></tr><tr><td>returnあり</td><td>return値評価 → finally → return</td></tr></tbody></table></div>
+</section><section class="article-card">
+<h2>try-with-resources</h2>
+<pre><code>try (A a = new A(&quot;A&quot;); A b = new A(&quot;B&quot;)) {
+  System.out.println(&quot;try&quot;);
+} finally {
+  System.out.println(&quot;finally&quot;);
+}
+// close順は B → A → finally</code></pre><ul><li>AutoCloseableが必要。</li><li>リソースは宣言の逆順にclose。</li><li>closeはfinallyより前。</li></ul>
+</section><section class="article-card">
+<h2>throw と throws</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>キーワード</th><th>意味</th><th>例</th></tr></thead><tbody><tr><td>throw</td><td>実際に例外を投げる</td><td>throw new IOException();</td></tr><tr><td>throws</td><td>メソッド宣言で例外可能性を示す</td><td>void test() throws IOException</td></tr></tbody></table></div>
+</section>
+    </main>
+  </div>
+  <script src="data/questions.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

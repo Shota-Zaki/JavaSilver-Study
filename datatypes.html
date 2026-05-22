@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - データ型・文字列</title>
+  <title>Java Silver Study - データ型・リテラル・型変換</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -14,38 +14,29 @@
       <p class="brand"><a href="index.html">Java Silver Study</a></p>
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
-    <main class="main">
-      
-<section class="hero reference-hero"><p class="eyebrow">Types</p><h1>データ型・文字列・配列</h1><p>第2章系の問題は「値」ではなく「型」を見落とすと落ちます。代入できるか、演算後の型は何か、ローカル変数は初期化済みかを固定順で確認します。</p></section>
-<section class="article-card"><h2>プリミティブ型早見表</h2><table class="ref-table"><tr><th>型</th><th>サイズ/範囲</th><th>初期値</th><th>注意</th></tr>
-<tr><td>boolean</td><td>true / false</td><td>false</td><td>0/1とは互換性なし。</td></tr>
-<tr><td>byte</td><td>8bit -128〜127</td><td>0</td><td>リテラルが範囲内なら代入可。</td></tr>
-<tr><td>short</td><td>16bit -32768〜32767</td><td>0</td><td>byte/short演算結果は基本int。</td></tr>
-<tr><td>int</td><td>32bit</td><td>0</td><td>整数リテラルの基本型。</td></tr>
-<tr><td>long</td><td>64bit</td><td>0L</td><td>L/lサフィックス。小文字lは1と紛らわしい。</td></tr>
-<tr><td>char</td><td>16bit Unicode</td><td>'\u0000'</td><td>数値としても扱えるがStringとは別。</td></tr>
-<tr><td>float</td><td>32bit浮動小数</td><td>0.0f</td><td>小数リテラルはFなしだとdouble。</td></tr>
-<tr><td>double</td><td>64bit浮動小数</td><td>0.0d</td><td>浮動小数リテラルの基本型。</td></tr>
-</table></section>
-<section class="article-card"><h2>コンパイル可否のルール</h2><div class="rule-grid">
-<div><h3>代入</h3><ul><li>小さい型 → 大きい型は暗黙変換可。</li><li>大きい型 → 小さい型は基本キャストが必要。</li><li>byte/short/charへの整数リテラル代入は範囲内なら可。</li><li>変数を使った式は範囲が分かっていても基本int扱い。</li></ul></div>
-<div><h3>演算</h3><ul><li>byte, short, charは演算時にintへ昇格。</li><li>int + long はlong。</li><li>整数除算は小数部切り捨て。</li><li>booleanは算術演算不可。</li></ul></div>
-<div><h3>var</h3><ul><li>初期化式が必須。</li><li>null単独不可。</li><li>配列初期化子単独不可。</li><li>ラムダ式単独不可。</li><li>フィールド・引数・戻り値には不可。</li></ul></div>
-</div></section>
-<section class="article-card"><h2>Stringの頻出ルール</h2><table class="ref-table"><tr><th>項目</th><th>内容</th><th>注意</th></tr>
-<tr><td>不変性</td><td>Stringは変更不可。メソッドは新しいStringを返す。</td><td>戻り値を受け取らないと変わらない。</td></tr>
-<tr><td>==</td><td>参照が同じか比較。</td><td>文字列内容比較ではない。</td></tr>
-<tr><td>equals</td><td>文字列内容を比較。</td><td>null変数から呼ぶとNullPointerException。</td></tr>
-<tr><td>intern</td><td>文字列プール上の参照を返す。</td><td>new String("x")とは参照が異なることが多い。</td></tr>
-<tr><td>substring</td><td>開始index以上、終了index未満。</td><td>範囲外はStringIndexOutOfBoundsException。</td></tr>
-<tr><td>length()</td><td>文字数を返すメソッド。</td><td>配列はlengthフィールド、Stringはlength()。</td></tr>
-</table></section>
-<section class="article-card"><h2>StringBuilder / 配列 / ArrayList</h2><div class="rule-grid">
-<div><h3>StringBuilder</h3><ul><li>可変。append, insert, delete, reverseなどは自分自身を変更。</li><li>capacityは内部容量。lengthとは別。</li><li>Stringとはequalsで内容比較にならない点に注意。</li></ul></div>
-<div><h3>配列</h3><ul><li>長さ固定。要素は型ごとの初期値で初期化。</li><li>添字は0始まり。範囲外はArrayIndexOutOfBoundsException。</li><li>多次元配列は配列の配列。各行の長さは不揃い可。</li></ul></div>
-<div><h3>ArrayList</h3><ul><li>addは追加、setは置換。</li><li>remove(int)は添字削除、remove(Object)は一致要素削除。</li><li>List.ofは不変リスト。add/remove/setはUnsupportedOperationException。</li></ul></div>
-</div></section>
-
+    <main class="main reference-main">
+<section class="hero reference-hero">
+  <p class="eyebrow">Data Types</p>
+  <h1>データ型・リテラル・型変換</h1>
+  <p>Java Silverでは「代入できるか」「演算後の型は何か」「実行時に落ちるか」を分けて判定します。</p>
+</section><section class="article-card">
+<h2>プリミティブ型</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>型</th><th>サイズ</th><th>範囲/性質</th><th>注意</th></tr></thead><tbody><tr><td>byte</td><td>8bit</td><td>-128〜127</td><td>整数演算ではintへ昇格しやすい</td></tr><tr><td>short</td><td>16bit</td><td>-32768〜32767</td><td>リテラル代入と演算結果代入を分ける</td></tr><tr><td>int</td><td>32bit</td><td>約±21億</td><td>整数リテラルの基本型</td></tr><tr><td>long</td><td>64bit</td><td>大きい整数</td><td>L/l接尾辞。小文字lは1と紛らわしい</td></tr><tr><td>float</td><td>32bit</td><td>単精度</td><td>F/f接尾辞が必要になりやすい</td></tr><tr><td>double</td><td>64bit</td><td>倍精度</td><td>浮動小数点リテラルの基本型</td></tr><tr><td>char</td><td>16bit</td><td>0〜65535</td><td>文字だが数値として演算される</td></tr><tr><td>boolean</td><td>true/false</td><td>2値</td><td>数値と互換性なし</td></tr></tbody></table></div>
+</section><section class="article-card">
+<h2>初期値の違い</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>場所</th><th>初期化</th><th>例</th></tr></thead><tbody><tr><td>フィールド/配列要素</td><td>自動初期化される</td><td>intは0、booleanはfalse、参照型はnull</td></tr><tr><td>ローカル変数</td><td>自動初期化されない</td><td>使う前に必ず代入が必要</td></tr><tr><td>finalローカル変数</td><td>一度だけ代入可</td><td>代入前使用はコンパイルエラー</td></tr></tbody></table></div>
+</section><section class="article-card">
+<h2>リテラルと接尾辞</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>書き方</th><th>意味</th><th>注意</th></tr></thead><tbody><tr><td>10</td><td>int</td><td>整数リテラルの基本。</td></tr><tr><td>10L</td><td>long</td><td>longを明示。</td></tr><tr><td>3.14</td><td>double</td><td>floatにはそのまま代入不可。</td></tr><tr><td>3.14F</td><td>float</td><td>floatリテラル。</td></tr><tr><td>0b1010</td><td>2進数</td><td>b/B可。</td></tr><tr><td>010</td><td>8進数</td><td>10進数の10ではなく8。</td></tr><tr><td>0x10</td><td>16進数</td><td>16。</td></tr><tr><td>'A'</td><td>char</td><td>文字1つ。Stringではない。</td></tr><tr><td>"A"</td><td>String</td><td>参照型。charではない。</td></tr></tbody></table></div>
+</section><section class="article-card">
+<h2>暗黙変換・明示キャスト</h2>
+<pre><code>byte b = 10;      // リテラルが範囲内なので可
+int i = b;        // 小さい型から大きい型へ
+byte x = (byte)i; // 大きい型から小さい型へはキャスト</code></pre><div class="table-scroll"><table class="ref-table"><thead><tr><th>ケース</th><th>結果</th></tr></thead><tbody><tr><td>byte + byte</td><td>結果はint。byteへ戻すならキャストが必要。</td></tr><tr><td>int + long</td><td>intがlongへ昇格し、結果はlong。</td></tr><tr><td>float + double</td><td>結果はdouble。</td></tr><tr><td>char + int</td><td>charが数値として扱われ、結果はint。</td></tr><tr><td>booleanと数値</td><td>相互変換不可。</td></tr></tbody></table></div>
+</section><section class="article-card">
+<h2>var の使用可否</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>場所</th><th>可否</th><th>例</th></tr></thead><tbody><tr><td>ローカル変数</td><td>可</td><td>var s = "abc";</td></tr><tr><td>初期化なし</td><td>不可</td><td>var x;</td></tr><tr><td>null単独</td><td>不可</td><td>var x = null;</td></tr><tr><td>フィールド</td><td>不可</td><td>private var value;</td></tr><tr><td>メソッド引数</td><td>不可</td><td>void test(var x)</td></tr><tr><td>戻り値型</td><td>不可</td><td>var test()</td></tr><tr><td>ラムダ式だけ</td><td>不可</td><td>var f = () -> {}; は対象型がない</td></tr><tr><td>配列初期化子だけ</td><td>不可</td><td>var a = {1,2,3};</td></tr></tbody></table></div>
+</section>
     </main>
   </div>
   <script src="data/questions.js"></script>

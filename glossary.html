@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - 単語集</title>
+  <title>Java Silver Study - Java Silver単語集</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -14,166 +14,19 @@
       <p class="brand"><a href="index.html">Java Silver Study</a></p>
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
-    <main class="main">
-      <section class="hero reference-hero">
-        <p class="eyebrow">Glossary</p>
-        <h1>Java Silver単語集</h1>
-      </section>
-      <section class="glossary-nav" aria-label="単語カテゴリ">
-        <a href="#g1">実行環境・ファイル</a><a href="#g2">型・変数</a><a href="#g3">クラス・オブジェクト</a><a href="#g4">継承・インタフェース</a><a href="#g5">例外・判定</a>
-      </section>
-      <section class="article-card glossary-section" id="g1">
-  <div class="panel-title-row"><h2>実行環境・ファイル</h2><span class="badge">6語</span></div>
-  <div class="term-grid"><article class="term-card">
-  <div class="term-head"><span class="term-name">JDK</span></div>
-  <p>Java開発キット。`javac` など開発用ツールを含む。</p>
-  <div class="term-point"><b>注意</b><span>コンパイルは `javac`、実行は `java`。JREだけでは開発ツールが足りない。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">JVM</span></div>
-  <p>classファイルを実行する仮想マシン。</p>
-  <div class="term-point"><b>注意</b><span>実行時例外は、コンパイル後にJVM上で動かしたときに発生する。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">ソースファイル</span></div>
-  <p>Javaコードを書いた `.java` ファイル。</p>
-  <div class="term-point"><b>注意</b><span>publicなトップレベルクラスがある場合、ファイル名は `クラス名.java`。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">classファイル</span></div>
-  <p>コンパイル後に作られるバイトコード。</p>
-  <div class="term-point"><b>注意</b><span>1つの `.java` から複数の `.class` が作られることがある。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">package</span></div>
-  <p>クラスを分類し、名前空間を作る宣言。</p>
-  <div class="term-point"><b>注意</b><span>コメントを除いてソースの先頭。`import` より前に書く。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">import</span></div>
-  <p>完全修飾名を書かずにクラスを使うための宣言。</p>
-  <div class="term-point"><b>注意</b><span>`java.lang` と同一パッケージ内はimport不要。サブパッケージは含まれない。</span></div>
-</article></div>
+    <main class="main reference-main">
+<section class="hero reference-hero">
+  <p class="eyebrow">Glossary</p>
+  <h1>Java Silver単語集</h1>
+  <p>頻出語を「意味」と「注意」に分けています。暗記より、問題でどう問われるかを優先して読んでください。</p>
 </section>
-<section class="article-card glossary-section" id="g2">
-  <div class="panel-title-row"><h2>型・変数</h2><span class="badge">6語</span></div>
-  <div class="term-grid"><article class="term-card">
-  <div class="term-head"><span class="term-name">primitive型</span></div>
-  <p>値そのものを扱う型。boolean, byte, short, int, long, char, float, double。</p>
-  <div class="term-point"><b>注意</b><span>`null` は入らない。booleanと数値は互換性なし。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">参照型</span></div>
-  <p>オブジェクトへの参照を持つ型。String、配列、クラス型など。</p>
-  <div class="term-point"><b>注意</b><span>`null` 可。`==` は原則として参照の同一性比較。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">リテラル</span></div>
-  <p>コードに直接書いた値。例: `10`, `10L`, `"abc"`。</p>
-  <div class="term-point"><b>注意</b><span>整数は基本int、小数は基本double。longはL、floatはF。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">var</span></div>
-  <p>ローカル変数の型推論。右辺から型を決める。</p>
-  <div class="term-point"><b>注意</b><span>フィールド、引数、戻り値、catch引数、配列要素型には使えない。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">スコープ</span></div>
-  <p>変数を参照できる範囲。</p>
-  <div class="term-point"><b>注意</b><span>if/for/tryブロック内で宣言したローカル変数は外で使えない。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">初期化</span></div>
-  <p>変数に最初の値を入れること。</p>
-  <div class="term-point"><b>注意</b><span>ローカル変数は使う前に必ず代入が必要。フィールドは型ごとの初期値を持つ。</span></div>
-</article></div>
+<section class="article-card compact">
+  <h2>カテゴリ</h2>
+  <div class="anchor-grid">
+    <a href="#jdk">基礎</a><a href="#primitive">型</a><a href="#string">文字列</a><a href="#array">配列</a><a href="#static">OOP</a><a href="#interface">継承</a><a href="#checked">例外</a>
+  </div>
 </section>
-<section class="article-card glossary-section" id="g3">
-  <div class="panel-title-row"><h2>クラス・オブジェクト</h2><span class="badge">8語</span></div>
-  <div class="term-grid"><article class="term-card">
-  <div class="term-head"><span class="term-name">class</span></div>
-  <p>オブジェクトの設計図。</p>
-  <div class="term-point"><b>注意</b><span>トップレベルclassにprivate/protectedは使えない。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">instance</span></div>
-  <p>`new` で生成された実体。</p>
-  <div class="term-point"><b>注意</b><span>変数にはインスタンスそのものではなく参照が入る。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">constructor</span></div>
-  <p>インスタンス生成時の初期化処理。</p>
-  <div class="term-point"><b>注意</b><span>戻り値型を書かない。継承されない。先頭で `this()` / `super()`。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">this</span></div>
-  <p>現在のインスタンスを指す。</p>
-  <div class="term-point"><b>注意</b><span>staticメソッド内では使えない。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">super</span></div>
-  <p>スーパークラス側を指す。</p>
-  <div class="term-point"><b>注意</b><span>`super()` はコンストラクタ先頭でのみ明示呼び出し可能。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">static</span></div>
-  <p>インスタンスではなくクラスに属する。</p>
-  <div class="term-point"><b>注意</b><span>staticメソッドから非staticメンバへ直接アクセス不可。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">final</span></div>
-  <p>再代入・継承・オーバーライドを禁止する。</p>
-  <div class="term-point"><b>注意</b><span>final参照変数でも、参照先オブジェクトの状態変更は別問題。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">abstract</span></div>
-  <p>未実装メソッドを持てる。インスタンス化不可。</p>
-  <div class="term-point"><b>注意</b><span>abstract methodは本文なし。具象サブクラスで実装が必要。</span></div>
-</article></div>
-</section>
-<section class="article-card glossary-section" id="g4">
-  <div class="panel-title-row"><h2>継承・インタフェース</h2><span class="badge">7語</span></div>
-  <div class="term-grid"><article class="term-card">
-  <div class="term-head"><span class="term-name">extends</span></div>
-  <p>クラス継承、またはインタフェース継承。</p>
-  <div class="term-point"><b>注意</b><span>クラスの多重継承は不可。インタフェースは複数継承可。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">implements</span></div>
-  <p>クラスがインタフェースを実装する。</p>
-  <div class="term-point"><b>注意</b><span>抽象メソッド未実装ならクラスをabstractにする。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">override</span></div>
-  <p>親のインスタンスメソッドを子で再定義。</p>
-  <div class="term-point"><b>注意</b><span>シグネチャ同一。戻り値は同じか共変。アクセスは狭くできない。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">overload</span></div>
-  <p>同名メソッドを引数違いで複数定義。</p>
-  <div class="term-point"><b>注意</b><span>戻り値だけ違うのは不可。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">polymorphism</span></div>
-  <p>親型変数で子インスタンスを扱う性質。</p>
-  <div class="term-point"><b>注意</b><span>呼べるメンバは変数の型、実行されるオーバーライドメソッドは実体の型で決まる。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">cast</span></div>
-  <p>型変換。参照型ではダウンキャストが問われやすい。</p>
-  <div class="term-point"><b>注意</b><span>コンパイル可能でも実行時にClassCastExceptionになる場合がある。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">sealed</span></div>
-  <p>継承/実装できる型を制限する。</p>
-  <div class="term-point"><b>注意</b><span>許可されたサブクラスはfinal, sealed, non-sealedのいずれかが必要。</span></div>
-</article></div>
-</section>
-<section class="article-card glossary-section" id="g5">
-  <div class="panel-title-row"><h2>例外・判定</h2><span class="badge">6語</span></div>
-  <div class="term-grid"><article class="term-card">
-  <div class="term-head"><span class="term-name">コンパイルエラー</span></div>
-  <p>実行前にコンパイラが検出する誤り。</p>
-  <div class="term-point"><b>注意</b><span>型不一致、未初期化ローカル変数、到達不能コード、構文ミスなど。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">実行時例外</span></div>
-  <p>コンパイル後、実行中に発生する例外。</p>
-  <div class="term-point"><b>注意</b><span>NullPointerException、ArrayIndexOutOfBoundsException、ClassCastExceptionなど。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">checked例外</span></div>
-  <p>コンパイラが処理を要求する例外。</p>
-  <div class="term-point"><b>注意</b><span>catchするかthrowsで宣言する。IOExceptionなど。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">unchecked例外</span></div>
-  <p>RuntimeException系。コンパイラは処理を強制しない。</p>
-  <div class="term-point"><b>注意</b><span>試験では「コンパイルは通るが実行時に落ちる」判定で出る。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">try-catch-finally</span></div>
-  <p>例外処理の構文。</p>
-  <div class="term-point"><b>注意</b><span>finallyは例外の有無に関係なく原則実行される。</span></div>
-</article><article class="term-card">
-  <div class="term-head"><span class="term-name">try-with-resources</span></div>
-  <p>AutoCloseableなリソースを自動で閉じる構文。</p>
-  <div class="term-point"><b>注意</b><span>closeは宣言と逆順に呼ばれる。</span></div>
-</article></div>
-</section>
+<div class="term-grid"><article class="term-card" id="jdk"><div class="term-head"><h3>JDK</h3><span>基礎</span></div><p><strong>意味：</strong>Javaプログラムの開発に使う一式。javacなどを含む。</p><p><strong>注意：</strong>JREやJVMと混同しない。開発にはJDKが必要。</p></article><article class="term-card" id="jre"><div class="term-head"><h3>JRE</h3><span>基礎</span></div><p><strong>意味：</strong>Javaプログラムの実行環境。</p><p><strong>注意：</strong>現在の学習ではJDK/JVMの役割差を押さえれば十分。</p></article><article class="term-card" id="jvm"><div class="term-head"><h3>JVM</h3><span>基礎</span></div><p><strong>意味：</strong>classファイルを実行する仮想マシン。</p><p><strong>注意：</strong>Javaはソースを直接実行するのではなく、基本的にコンパイル後のclassを実行する。</p></article><article class="term-card" id="javac"><div class="term-head"><h3>javac</h3><span>基礎</span></div><p><strong>意味：</strong>Javaソースをclassファイルへコンパイルするコマンド。</p><p><strong>注意：</strong>コンパイルエラーはここで発生し、実行以前に止まる。</p></article><article class="term-card" id="java-command"><div class="term-head"><h3>java</h3><span>基礎</span></div><p><strong>意味：</strong>classファイルをJVMで実行するコマンド。</p><p><strong>注意：</strong>実行時例外は基本的にこちらの段階で発生する。</p></article><article class="term-card" id="package"><div class="term-head"><h3>package</h3><span>基礎</span></div><p><strong>意味：</strong>クラスを分類し、名前空間やアクセス制御に関係する宣言。</p><p><strong>注意：</strong>ソース先頭、importより前。前に書けるのはコメント程度。</p></article><article class="term-card" id="import"><div class="term-head"><h3>import</h3><span>基礎</span></div><p><strong>意味：</strong>他パッケージのクラス名を短く書くための宣言。</p><p><strong>注意：</strong>java.langは暗黙import。サブパッケージはワイルドカードで含まれない。</p></article><article class="term-card" id="main"><div class="term-head"><h3>mainメソッド</h3><span>基礎</span></div><p><strong>意味：</strong>プログラムの開始点。public static void main(String[] args)など。</p><p><strong>注意：</strong>String... argsも可。戻り値、static、引数型が崩れると実行開始点にならない。</p></article><article class="term-card" id="primitive"><div class="term-head"><h3>プリミティブ型</h3><span>型</span></div><p><strong>意味：</strong>値そのものを保持する基本型。byte/short/int/long/float/double/char/boolean。</p><p><strong>注意：</strong>nullは入らない。booleanと数値に互換性はない。</p></article><article class="term-card" id="reference-type"><div class="term-head"><h3>参照型</h3><span>型</span></div><p><strong>意味：</strong>オブジェクトへの参照を保持する型。String、配列、ArrayListなど。</p><p><strong>注意：</strong>==は基本的に参照の同一性比較。中身比較はequals。</p></article><article class="term-card" id="literal"><div class="term-head"><h3>リテラル</h3><span>型</span></div><p><strong>意味：</strong>コード中に直接書く値。10, 10L, 3.14, "abc", nullなど。</p><p><strong>注意：</strong>整数は基本int、浮動小数点は基本double。</p></article><article class="term-card" id="underscore"><div class="term-head"><h3>数値リテラルの_</h3><span>型</span></div><p><strong>意味：</strong>数値を読みやすくする区切り。1_000など。</p><p><strong>注意：</strong>先頭末尾、小数点の隣、接尾辞の直前などは不可。</p></article><article class="term-card" id="cast"><div class="term-head"><h3>キャスト</h3><span>型</span></div><p><strong>意味：</strong>型を明示的に変換する記法。</p><p><strong>注意：</strong>コンパイルは通っても実行時にClassCastExceptionになる場合がある。</p></article><article class="term-card" id="promotion"><div class="term-head"><h3>型昇格</h3><span>型</span></div><p><strong>意味：</strong>演算時に小さい型がint以上へ広がる仕組み。</p><p><strong>注意：</strong>byte+byteの結果は基本int。代入先がbyteなら注意。</p></article><article class="term-card" id="var"><div class="term-head"><h3>var</h3><span>型</span></div><p><strong>意味：</strong>ローカル変数の型推論。</p><p><strong>注意：</strong>フィールド、引数、戻り値、catchパラメータなどには使えない。null単独も不可。</p></article><article class="term-card" id="string"><div class="term-head"><h3>String</h3><span>文字列</span></div><p><strong>意味：</strong>不変の文字列クラス。変更に見える操作は新しい文字列を作る。</p><p><strong>注意：</strong>==とequals、substring、replace、trim、indexOfが頻出。</p></article><article class="term-card" id="stringbuilder"><div class="term-head"><h3>StringBuilder</h3><span>文字列</span></div><p><strong>意味：</strong>可変の文字列バッファ。append/delete/insert/reverseなど。</p><p><strong>注意：</strong>equalsをオーバーライドしていないため、中身比較に注意。</p></article><article class="term-card" id="intern"><div class="term-head"><h3>intern</h3><span>文字列</span></div><p><strong>意味：</strong>文字列プール上の同値文字列への参照を返す。</p><p><strong>注意：</strong>new String("x")と"x"は通常別参照。intern後は比較結果が変わる。</p></article><article class="term-card" id="array"><div class="term-head"><h3>配列</h3><span>配列</span></div><p><strong>意味：</strong>固定長の連続要素。lengthフィールドを持つ。</p><p><strong>注意：</strong>length()メソッドではない。範囲外はArrayIndexOutOfBoundsException。</p></article><article class="term-card" id="arraylist"><div class="term-head"><h3>ArrayList</h3><span>配列</span></div><p><strong>意味：</strong>可変長リスト。add/remove/set/get/sizeなど。</p><p><strong>注意：</strong>配列とはAPIが違う。intなどプリミティブは直接型引数にできない。</p></article><article class="term-card" id="list-of"><div class="term-head"><h3>List.of</h3><span>配列</span></div><p><strong>意味：</strong>変更不可リストを作るファクトリメソッド。</p><p><strong>注意：</strong>add/remove/set不可。null要素不可。</p></article><article class="term-card" id="static"><div class="term-head"><h3>static</h3><span>OOP</span></div><p><strong>意味：</strong>インスタンスではなくクラス側に属するメンバ。</p><p><strong>注意：</strong>staticメソッドから非staticメンバへ直接アクセス不可。</p></article><article class="term-card" id="this"><div class="term-head"><h3>this</h3><span>OOP</span></div><p><strong>意味：</strong>現在のインスタンスを指す参照。</p><p><strong>注意：</strong>static文脈では使えない。コンストラクタ呼び出しthis(...)は先頭。</p></article><article class="term-card" id="super"><div class="term-head"><h3>super</h3><span>OOP</span></div><p><strong>意味：</strong>スーパークラス側を参照するキーワード。</p><p><strong>注意：</strong>super(...)もコンストラクタ先頭。省略時はsuper()が入る。</p></article><article class="term-card" id="constructor"><div class="term-head"><h3>コンストラクタ</h3><span>OOP</span></div><p><strong>意味：</strong>インスタンス生成時に呼ばれる初期化処理。</p><p><strong>注意：</strong>戻り値型を書かない。クラス名と同じ。継承されない。</p></article><article class="term-card" id="overload"><div class="term-head"><h3>オーバーロード</h3><span>OOP</span></div><p><strong>意味：</strong>同名メソッドを引数違いで複数定義する。</p><p><strong>注意：</strong>戻り値だけ違っても不可。解決はコンパイル時の引数型で決まる。</p></article><article class="term-card" id="override"><div class="term-head"><h3>オーバーライド</h3><span>OOP</span></div><p><strong>意味：</strong>継承先で同じシグネチャのメソッドを再定義する。</p><p><strong>注意：</strong>アクセスは狭くできない。戻り値は同じか共変戻り値。</p></article><article class="term-card" id="polymorphism"><div class="term-head"><h3>ポリモーフィズム</h3><span>OOP</span></div><p><strong>意味：</strong>親型の変数で子インスタンスを扱う仕組み。</p><p><strong>注意：</strong>メソッドは実体の型、フィールドは変数の型で決まる点が罠。</p></article><article class="term-card" id="interface"><div class="term-head"><h3>interface</h3><span>継承</span></div><p><strong>意味：</strong>実装クラスに扱い方を定める型。</p><p><strong>注意：</strong>抽象メソッドは暗黙public abstract。フィールドはpublic static final。</p></article><article class="term-card" id="default-method"><div class="term-head"><h3>defaultメソッド</h3><span>継承</span></div><p><strong>意味：</strong>インタフェースに実装を持たせるメソッド。</p><p><strong>注意：</strong>Object由来メソッドとの関係、実装クラスでの競合解決に注意。</p></article><article class="term-card" id="abstract"><div class="term-head"><h3>abstract</h3><span>継承</span></div><p><strong>意味：</strong>未実装を含み得るクラスやメソッド。</p><p><strong>注意：</strong>abstractクラスはnewできない。抽象メソッドは本体なし。</p></article><article class="term-card" id="final"><div class="term-head"><h3>final</h3><span>OOP</span></div><p><strong>意味：</strong>変数・メソッド・クラスに再代入不可/override不可/継承不可を与える。</p><p><strong>注意：</strong>参照型finalは参照の再代入不可で、オブジェクト内部変更不可ではない。</p></article><article class="term-card" id="sealed"><div class="term-head"><h3>sealed</h3><span>継承</span></div><p><strong>意味：</strong>継承・実装できる型をpermitsで制限する。</p><p><strong>注意：</strong>サブクラスはfinal/sealed/non-sealedのいずれかが必要。</p></article><article class="term-card" id="instanceof"><div class="term-head"><h3>instanceof</h3><span>OOP</span></div><p><strong>意味：</strong>実行時に型互換性を判定する演算子。</p><p><strong>注意：</strong>パターン変数はtrue側のスコープで使える。nullはfalse。</p></article><article class="term-card" id="checked"><div class="term-head"><h3>チェック例外</h3><span>例外</span></div><p><strong>意味：</strong>コンパイラが処理を要求する例外。Exception直下やIOExceptionなど。</p><p><strong>注意：</strong>catchするかthrows宣言が必要。RuntimeException系は別。</p></article><article class="term-card" id="unchecked"><div class="term-head"><h3>非チェック例外</h3><span>例外</span></div><p><strong>意味：</strong>RuntimeException系。コンパイラは処理を強制しない。</p><p><strong>注意：</strong>NullPointerExceptionなどは実行時に出る。</p></article><article class="term-card" id="throw"><div class="term-head"><h3>throw</h3><span>例外</span></div><p><strong>意味：</strong>例外インスタンスを投げる文。</p><p><strong>注意：</strong>throw new XxxException(); の形。throwsと混同しない。</p></article><article class="term-card" id="throws"><div class="term-head"><h3>throws</h3><span>例外</span></div><p><strong>意味：</strong>メソッドが投げ得る例外を宣言する。</p><p><strong>注意：</strong>チェック例外では特に重要。override時に広げられない。</p></article><article class="term-card" id="finally"><div class="term-head"><h3>finally</h3><span>例外</span></div><p><strong>意味：</strong>例外発生有無に関わらず実行されるブロック。</p><p><strong>注意：</strong>System.exitなど特殊ケースを除き、returnが絡む問題で頻出。</p></article><article class="term-card" id="try-with-resources"><div class="term-head"><h3>try-with-resources</h3><span>例外</span></div><p><strong>意味：</strong>AutoCloseableリソースを自動closeするtry。</p><p><strong>注意：</strong>close順は宣言の逆順。finallyより先にcloseされる。</p></article></div>
     </main>
   </div>
   <script src="data/questions.js"></script>

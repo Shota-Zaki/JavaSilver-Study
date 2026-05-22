@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - 試験ひっかけ集</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main">
+<section class="hero reference-hero">
+  <p class="eyebrow">Exam Traps</p>
+  <h1>試験ひっかけ集</h1>
+  <p>選択肢を切るための罠リストです。問題で見たら即確認してください。</p>
+</section><section class="article-card">
+<h2>記号・見た目の罠</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>罠</th><th>見るポイント</th></tr></thead><tbody><tr><td>;の有無</td><td>do-while末尾、変数宣言、switch式代入、クラス/メソッドブロック後。</td></tr><tr><td>{}の対応</td><td>try/catch/finally、switch、ラムダ、匿名クラス。</td></tr><tr><td>== と =</td><td>if条件内、代入式、boolean代入。</td></tr><tr><td>0/O、1/l/I</td><td>識別子、数値リテラル、メソッド名。</td></tr><tr><td>String[] args / String... args</td><td>mainとして有効か。</td></tr><tr><td>System.out.println</td><td>Systemの大文字、out、printlnの綴り。</td></tr></tbody></table></div>
+</section><section class="article-card">
+<h2>型の罠</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>罠</th><th>結論</th></tr></thead><tbody><tr><td>byte b = 128</td><td>範囲外で不可。</td></tr><tr><td>short s = 10 + 20</td><td>定数式かつ範囲内なら可。</td></tr><tr><td>short s = a + b</td><td>変数演算結果はintで不可。</td></tr><tr><td>float f = 1.0</td><td>doubleなので不可。1.0F。</td></tr><tr><td>char c = 65</td><td>範囲内int定数なら可。</td></tr><tr><td>boolean b = 0</td><td>不可。</td></tr></tbody></table></div>
+</section><section class="article-card">
+<h2>実行時の罠</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>罠</th><th>結果</th></tr></thead><tbody><tr><td>null.toString()</td><td>NullPointerException。</td></tr><tr><td>args[0]で引数なし</td><td>ArrayIndexOutOfBoundsException。</td></tr><tr><td>Integer.parseInt("1a")</td><td>NumberFormatException。</td></tr><tr><td>(Child)new Parent()</td><td>ClassCastException。</td></tr><tr><td>10 / 0</td><td>ArithmeticException。</td></tr><tr><td>10.0 / 0</td><td>Infinityなど。整数0除算と違う。</td></tr></tbody></table></div>
+</section><section class="article-card">
+<h2>OOPの罠</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>罠</th><th>結論</th></tr></thead><tbody><tr><td>親型変数で子専用メソッド呼び出し</td><td>コンパイルエラー。キャストが必要。</td></tr><tr><td>privateメソッドのoverride</td><td>overrideではない。</td></tr><tr><td>staticメソッドのoverride</td><td>隠蔽。動的束縛ではない。</td></tr><tr><td>フィールド同名</td><td>変数型で決まる。</td></tr><tr><td>interfaceのフィールド</td><td>public static final。再代入不可。</td></tr><tr><td>sealedの子</td><td>final/sealed/non-sealed必須。</td></tr></tbody></table></div>
+</section>
+    </main>
+  </div>
+  <script src="data/questions.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

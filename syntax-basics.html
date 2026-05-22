@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - Java実行・package/import</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main">
+<section class="hero reference-hero">
+  <p class="eyebrow">Basics</p>
+  <h1>Java実行・package/import</h1>
+  <p>最初の章で落とされるのは、Javaの実行単位、ファイル名、main、package/importの順序です。</p>
+</section><section class="article-card">
+<h2>public class とファイル名</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>条件</th><th>正しい理解</th><th>試験での罠</th></tr></thead><tbody><tr><td>publicなトップレベルクラス</td><td>ソースファイル名と一致する必要がある。</td><td>public class MainならMain.java。</td></tr><tr><td>publicでないクラス</td><td>1ファイルに複数書ける。</td><td>mainがあればjavaコマンドで実行対象にできる場合がある。</td></tr><tr><td>トップレベルクラス</td><td>private/protected/staticは基本不可。</td><td>static classはインナークラスで使う。</td></tr></tbody></table></div>
+</section><section class="article-card">
+<h2>mainメソッド</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>形</th><th>可否</th><th>注意</th></tr></thead><tbody><tr><td>public static void main(String[] args)</td><td>可</td><td>標準形。</td></tr><tr><td>public static void main(String... args)</td><td>可</td><td>可変長引数でも可。</td></tr><tr><td>static public void main(String[] args)</td><td>可</td><td>修飾子の順序は固定ではない。</td></tr><tr><td>public void main(String[] args)</td><td>不可</td><td>staticがないため開始点ではない。</td></tr><tr><td>public static int main(String[] args)</td><td>不可</td><td>戻り値がvoidではない。</td></tr></tbody></table></div><pre><code>public class Main {
+  public static void main(String[] args) {
+    System.out.println(args.length);
+  }
+}</code></pre>
+</section><section class="article-card">
+<h2>package / import の順序</h2>
+<pre><code>// コメントは可
+package com.example;
+
+import java.util.ArrayList;
+
+public class Sample {}</code></pre><div class="table-scroll"><table class="ref-table"><thead><tr><th>項目</th><th>ルール</th></tr></thead><tbody><tr><td>package</td><td>ある場合はソースの先頭。importより前。</td></tr><tr><td>import</td><td>packageの後、クラス宣言の前。</td></tr><tr><td>java.lang</td><td>import不要。String/System/Integerなど。</td></tr><tr><td>ワイルドカード</td><td>import java.util.*; はjava.util直下だけ。サブパッケージは含まない。</td></tr><tr><td>static import</td><td>staticメンバを短く書くため。クラスそのもののimportではない。</td></tr></tbody></table></div>
+</section><section class="article-card">
+<h2>javac / java コマンド</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>操作</th><th>例</th><th>意味</th></tr></thead><tbody><tr><td>コンパイル</td><td>javac Main.java</td><td>Main.classを生成。構文・型エラーはここで止まる。</td></tr><tr><td>実行</td><td>java Main</td><td>mainメソッドから実行。拡張子.javaや.classは通常付けない。</td></tr><tr><td>起動引数</td><td>java Main a b</td><td>args[0]が"a"、args[1]が"b"。</td></tr></tbody></table></div>
+</section>
+    </main>
+  </div>
+  <script src="data/questions.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

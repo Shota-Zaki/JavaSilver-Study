@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - String・StringBuilder</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main">
+<section class="hero reference-hero">
+  <p class="eyebrow">String</p>
+  <h1>String・StringBuilder</h1>
+  <p>文字列問題は、参照の同一性、同値比較、不変性、メソッドの戻り値を落とさないことが中心です。</p>
+</section><section class="article-card">
+<h2>== と equals</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>比較</th><th>対象</th><th>例</th></tr></thead><tbody><tr><td>==</td><td>参照が同じか</td><td>new String("a") == "a" は通常false</td></tr><tr><td>equals</td><td>内容が同じか</td><td>"a".equals(new String("a")) はtrue</td></tr><tr><td>equalsIgnoreCase</td><td>大文字小文字を無視</td><td>null側から呼ぶとNullPointerException</td></tr></tbody></table></div>
+</section><pre><code>String a = new String(&quot;sample&quot;);
+String b = a;
+String c = a.intern();
+String d = &quot;sample&quot;;
+System.out.println(a == b); // true
+System.out.println(a == d); // false
+System.out.println(c == d); // true</code></pre><section class="article-card">
+<h2>Stringは不変</h2>
+<pre><code>String s = &quot;abc&quot;;
+s.concat(&quot;d&quot;);
+System.out.println(s); // abc
+s = s.concat(&quot;d&quot;);
+System.out.println(s); // abcd</code></pre><ul><li>replace、substring、trim、toUpperCaseなどは元のStringを変えず、新しいStringを返す。</li><li>戻り値を受け取っていない処理は、結果が捨てられる。</li></ul>
+</section><section class="article-card">
+<h2>頻出Stringメソッド</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>注意</th></tr></thead><tbody><tr><td>length()</td><td>int</td><td>配列はlengthフィールド。</td></tr><tr><td>charAt(index)</td><td>char</td><td>0始まり。範囲外はStringIndexOutOfBoundsException。</td></tr><tr><td>substring(begin,end)</td><td>String</td><td>begin含む、end含まない。</td></tr><tr><td>indexOf(str)</td><td>int</td><td>見つからない場合-1。</td></tr><tr><td>replace(old,new)</td><td>String</td><td>全置換。元は変わらない。</td></tr><tr><td>trim()</td><td>String</td><td>前後の空白除去。元は変わらない。</td></tr><tr><td>startsWith/endsWith</td><td>boolean</td><td>大文字小文字は区別。</td></tr><tr><td>contains</td><td>boolean</td><td>部分文字列を含むか。</td></tr></tbody></table></div>
+</section><section class="article-card">
+<h2>StringBuilder</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>メソッド</th><th>動作</th><th>注意</th></tr></thead><tbody><tr><td>append</td><td>末尾追加</td><td>自身を変更して自身を返す。</td></tr><tr><td>insert</td><td>指定位置に挿入</td><td>index境界に注意。</td></tr><tr><td>delete</td><td>範囲削除</td><td>endは含まない。</td></tr><tr><td>deleteCharAt</td><td>1文字削除</td><td>範囲外例外。</td></tr><tr><td>reverse</td><td>反転</td><td>自身が変わる。</td></tr><tr><td>toString</td><td>String化</td><td>StringBuilderとStringはequalsで同値にならない。</td></tr><tr><td>capacity</td><td>容量</td><td>lengthとは別。</td></tr></tbody></table></div>
+</section>
+    </main>
+  </div>
+  <script src="data/questions.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

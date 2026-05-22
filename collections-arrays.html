@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - 配列・ArrayList・List</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main">
+<section class="hero reference-hero">
+  <p class="eyebrow">Arrays / List</p>
+  <h1>配列・ArrayList・List</h1>
+  <p>配列は固定長、ArrayListは可変長。API、初期値、参照代入の違いが問われます。</p>
+</section><section class="article-card">
+<h2>配列の基本</h2>
+<pre><code>int[] a = new int[3];      // {0,0,0}
+String[] s = new String[2]; // {null,null}
+int[][] m = {{1,2}, {3,4}};
+System.out.println(a.length);</code></pre><div class="table-scroll"><table class="ref-table"><thead><tr><th>項目</th><th>配列</th></tr></thead><tbody><tr><td>長さ</td><td>生成後に固定。</td></tr><tr><td>length</td><td>フィールド。length()ではない。</td></tr><tr><td>初期値</td><td>要素は型ごとの初期値。</td></tr><tr><td>範囲外</td><td>ArrayIndexOutOfBoundsException。</td></tr><tr><td>型</td><td>配列自体は参照型。</td></tr></tbody></table></div>
+</section><section class="article-card">
+<h2>多次元配列と拡張for</h2>
+<pre><code>int[][] data = {{1, 2}, {3, 4}};
+for (int[] row : data) {
+  for (int value : row) {
+    System.out.println(value);
+  }
+}</code></pre><ul><li>int[][]から1つ取り出すとint[]。</li><li>int[]から1つ取り出すとint。</li><li>ジャグ配列では行ごとに長さが違ってよい。</li></ul>
+</section><section class="article-card">
+<h2>ArrayList</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>操作</th><th>例</th><th>注意</th></tr></thead><tbody><tr><td>追加</td><td>list.add("A")</td><td>末尾追加。</td></tr><tr><td>挿入</td><td>list.add(0,"A")</td><td>指定位置以降が右へずれる。index範囲に注意。</td></tr><tr><td>置換</td><td>list.set(0,"B")</td><td>既存要素が必要。空リストには不可。</td></tr><tr><td>取得</td><td>list.get(0)</td><td>範囲外はIndexOutOfBoundsException。</td></tr><tr><td>削除</td><td>list.remove(0)</td><td>index指定。</td></tr><tr><td>削除</td><td>list.remove("A")</td><td>最初に一致した要素を削除。</td></tr><tr><td>要素数</td><td>list.size()</td><td>配列のlengthと混同しない。</td></tr></tbody></table></div>
+</section><section class="article-card">
+<h2>List.of と Arrays.asList</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>作成方法</th><th>変更</th><th>null</th><th>注意</th></tr></thead><tbody><tr><td>List.of("A","B")</td><td>構造変更不可</td><td>不可</td><td>add/remove/set不可。</td></tr><tr><td>Arrays.asList(array)</td><td>サイズ変更不可</td><td>可の場合あり</td><td>setは可、add/remove不可。元配列と連動。</td></tr><tr><td>new ArrayList<>()</td><td>可変</td><td>可</td><td>通常の可変リスト。</td></tr></tbody></table></div>
+</section>
+    </main>
+  </div>
+  <script src="data/questions.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
