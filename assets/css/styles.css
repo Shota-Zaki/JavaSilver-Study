@@ -1551,3 +1551,93 @@ pre {
 .check-list { columns: 2; column-gap: 28px; }
 .check-list li { break-inside: avoid; margin: 5px 0; }
 @media (max-width: 860px) { .reference-grid, .reference-grid.large { grid-template-columns: 1fr; } .article-card { padding: 16px; border-radius: 16px; } .article-card h2 { font-size: 19px; } .ref-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; } .check-list { columns: 1; } }
+
+
+/* Glossary readability upgrade */
+.glossary-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 20px;
+}
+.glossary-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 7px 12px;
+  border: 1px solid rgba(148, 163, 184, .42);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 13px;
+}
+.glossary-nav a:hover {
+  color: var(--accent);
+  border-color: rgba(37, 99, 235, .36);
+  background: #f8fbff;
+}
+.glossary-section {
+  scroll-margin-top: 24px;
+}
+.term-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+.term-card {
+  display: grid;
+  gap: 8px;
+  min-height: 150px;
+  padding: 15px;
+  border: 1px solid rgba(148, 163, 184, .36);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(31, 41, 55, .045);
+}
+.term-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+}
+.term-name {
+  font-family: var(--mono);
+  font-size: 17px;
+  font-weight: 900;
+  color: #111827;
+}
+.term-card p {
+  margin: 0;
+  color: #374151;
+  line-height: 1.65;
+}
+.term-point {
+  display: grid;
+  gap: 4px;
+  margin-top: auto;
+  padding: 10px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.term-point b {
+  color: var(--accent);
+  font-size: 12px;
+  letter-spacing: .06em;
+}
+@media (max-width: 720px) {
+  .glossary-nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+  }
+  .glossary-nav a { flex: 0 0 auto; }
+  .term-grid { grid-template-columns: 1fr; }
+  .term-card { min-height: 0; }
+}

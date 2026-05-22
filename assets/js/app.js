@@ -179,7 +179,10 @@
 
   function readCloudState() {
     const state = readJson(cloudStateStorageKey, {});
-    return state && typeof state === "object" ? { autoSync: false, ...state } : { autoSync: false };
+    if (state && typeof state === "object") {
+      return { ...state, autoSync: false };
+    }
+    return { autoSync: false };
   }
 
   function writeCloudState(state) {
@@ -192,7 +195,7 @@
   }
 
   function cloudAutoSyncEnabled() {
-    return Boolean(readCloudState().autoSync);
+    return false;
   }
 
   let cloudToastTimer = null;
@@ -260,8 +263,6 @@
     document.querySelectorAll("#cloudSyncPanel").forEach(panel => {
       const enabledInput = panel.querySelector("[data-cloud-enabled]");
       if (enabledInput) enabledInput.checked = true;
-      const autoInput = panel.querySelector("[data-cloud-auto]");
-      if (autoInput) autoInput.checked = Boolean(state.autoSync);
       const account = panel.querySelector("[data-cloud-account]");
       if (account) account.textContent = currentCloudEmail();
       panel.querySelectorAll("[data-cloud-needs-auth]").forEach(btn => {
@@ -303,9 +304,7 @@
       authMod.onAuthStateChanged(auth, user => {
         cloud.user = user || null;
         updateCloudUi();
-        if (user && cloudAutoSyncEnabled()) {
-          pullCloudHistory("merge", false).catch(err => setCloudMessage(err.message || "クラウド読み込みに失敗しました。", true));
-        }
+        // 自動同期は使わない。保存・読み込みはボタン操作時のみ。
       });
       updateCloudUi();
       return cloud;
@@ -379,7 +378,6 @@
   }
 
   function scheduleCloudUpload() {
-    // 自動クラウド保存は無効化。クラウド同期は手動保存のみ行う。
     if (cloudUploadTimer) {
       clearTimeout(cloudUploadTimer);
       cloudUploadTimer = null;
