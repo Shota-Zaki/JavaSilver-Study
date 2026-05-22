@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - 頻出ルール早見表</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main">
+      
+<section class="hero reference-hero"><p class="eyebrow">Cheat Sheet</p><h1>頻出ルール早見表</h1><p>演習直前・復習直前に見るページです。細かい理屈より、まず試験で落とされるルールを高速に確認する目的です。</p></section>
+<section class="article-card"><h2>演算子・制御構造</h2><div class="rule-grid"><div><h3>インクリメント</h3><ul><li>++num：増やした後の値を使う。</li><li>num++：元の値を使ってから増やす。</li><li>同じ式に複数出ると読み違いが起きやすい。左から実際に値をメモする。</li></ul></div><div><h3>短絡評価</h3><ul><li>&&：左がfalseなら右を評価しない。</li><li>||：左がtrueなら右を評価しない。</li><li>& と | はbooleanにも使えるが右も評価する。</li></ul></div><div><h3>switch</h3><ul><li>switch文はbreakなしでフォールスルー。</li><li>switch式は値を返す。->形式はフォールスルーしない。</li><li>case値は定数式が必要。</li></ul></div><div><h3>for/while</h3><ul><li>拡張for文の変数型は要素型。</li><li>breakはループ/switchを抜ける。</li><li>continueは次の繰り返しへ進む。</li></ul></div></div></section>
+<section class="article-card"><h2>OOP頻出ルール</h2><table class="ref-table"><tr><th>項目</th><th>ルール</th><th>注意</th></tr>
+<tr><td>コンストラクタ</td><td>戻り値型なし。名前はクラス名と同じ。</td><td>戻り値型を書くと普通のメソッドになる。</td></tr>
+<tr><td>this()/super()</td><td>コンストラクタの先頭文。</td><td>両方同時には書けない。</td></tr>
+<tr><td>オーバーロード</td><td>引数リストが違う同名メソッド。</td><td>戻り値だけ違うのは不可。</td></tr>
+<tr><td>オーバーライド</td><td>親のインスタンスメソッド再定義。</td><td>static/private/finalは通常のoverride対象ではない。</td></tr>
+<tr><td>フィールド隠蔽</td><td>同名フィールドは変数の型で決まる。</td><td>メソッドは実体の型で動的ディスパッチ。</td></tr>
+<tr><td>アクセス修飾子</td><td>public > protected > package-private > private。</td><td>overrideで狭くできない。</td></tr>
+<tr><td>interface</td><td>抽象メソッドはpublic abstract扱い。</td><td>フィールドはpublic static final扱い。</td></tr>
+</table></section>
+<section class="article-card"><h2>例外処理</h2><div class="rule-grid"><div><h3>分類</h3><ul><li>checked例外：原則catch/throws必須。</li><li>RuntimeException系：非チェック例外。</li><li>Error系：通常アプリで処理対象にしない。</li></ul></div><div><h3>catch</h3><ul><li>子例外を先、親例外を後に書く。</li><li>multi-catchでは継承関係のある例外を同時に書けない。</li><li>catch変数は実質final。</li></ul></div><div><h3>finally</h3><ul><li>例外の有無にかかわらず基本実行。</li><li>try→finally、try→catch→finally。</li><li>System.exitなど特殊ケースは別。</li></ul></div><div><h3>try-with-resources</h3><ul><li>AutoCloseableが対象。</li><li>closeは宣言と逆順に呼ばれる。</li><li>finallyより先にcloseされる。</li></ul></div></div></section>
+<section class="article-card"><h2>頻出メソッド</h2><table class="ref-table"><tr><th>クラス</th><th>メソッド</th><th>注意</th></tr>
+<tr><td>String</td><td>length(), charAt(), substring(), indexOf(), equals(), equalsIgnoreCase(), replace(), trim(), strip(), intern()</td><td>Stringは不変。戻り値を受け取る。</td></tr>
+<tr><td>StringBuilder</td><td>append(), insert(), delete(), deleteCharAt(), reverse(), length(), capacity(), toString()</td><td>自分自身を変更する。</td></tr>
+<tr><td>ArrayList</td><td>add(), add(index,e), set(), get(), remove(), size(), contains(), clear()</td><td>addは追加、setは置換。</td></tr>
+<tr><td>Wrapper</td><td>parseInt(), valueOf(), xxxValue()</td><td>parse系はプリミティブ、valueOfはラッパーを返す。</td></tr>
+<tr><td>Object</td><td>toString(), equals(), hashCode()</td><td>参照型の共通親。</td></tr>
+</table></section>
+<section class="article-card"><h2>試験での即チェックリスト</h2><ul class="check-list"><li>package宣言は先頭か。</li><li>public class名とファイル名が一致しているか。</li><li>mainメソッドの形は正しいか。</li><li>ローカル変数は初期化済みか。</li><li>varを使える場所か。</li><li>数値リテラルの型と代入先は合うか。</li><li>byte/short/char演算がintになっていないか。</li><li>String比較で==とequalsを混同していないか。</li><li>nullからメソッドを呼んでいないか。</li><li>catch順序は子から親か。</li><li>overrideの戻り値・アクセス・throwsは正しいか。</li><li>staticから非staticへ直接触っていないか。</li><li>キャストは実体型として成立するか。</li><li>switch式とswitch文を混同していないか。</li><li>try-with-resourcesのclose順は逆順か。</li></ul></section>
+
+    </main>
+  </div>
+  <script src="data/questions.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

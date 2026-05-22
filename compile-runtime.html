@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - コンパイルエラーと例外</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main">
+      
+<section class="hero reference-hero"><p class="eyebrow">Compile vs Runtime</p><h1>コンパイルエラーと例外の違い</h1><p>Java Silverで最初に判定すべきなのは出力ではありません。まずコンパイルできるか。コンパイルできるなら実行時例外があるか。最後に出力です。</p></section>
+<section class="article-card important"><h2>最重要フロー</h2><ol class="flow-list big"><li><strong>コンパイルエラー</strong>：Javaの文法・型・宣言ルールに違反している。実行されない。</li><li><strong>実行時例外</strong>：コンパイルは通るが、実行中に問題が起きる。</li><li><strong>正常出力</strong>：コンパイルも実行も通った後に初めて出力を追う。</li></ol></section>
+<section class="article-card"><h2>コンパイルエラーになりやすいもの</h2><table class="ref-table"><tr><th>分類</th><th>例</th><th>見抜き方</th></tr>
+<tr><td>構文ミス</td><td>;不足、{}不一致、package/import順序違い</td><td>まず記号を確認。特に問題文の行番号に注意。</td></tr>
+<tr><td>型不一致</td><td>longをintへ代入、doubleをfloatへ代入、booleanに数値</td><td>代入先の型と式全体の型を見る。</td></tr>
+<tr><td>未初期化ローカル変数</td><td>int x; System.out.println(x);</td><td>ローカル変数は自動初期化されない。</td></tr>
+<tr><td>到達不能コード</td><td>return後の通常文</td><td>コンパイラが絶対に実行不能と判断するとエラー。</td></tr>
+<tr><td>override違反</td><td>戻り値不正、アクセスを狭くする、throwsを広げる</td><td>@Overrideがあると検出しやすい。</td></tr>
+<tr><td>catch順序</td><td>Exceptionの後にIOExceptionをcatch</td><td>親例外を先にcatchすると子が到達不能。</td></tr>
+<tr><td>checked例外未処理</td><td>IOExceptionをcatch/throwsしない</td><td>RuntimeException以外の例外は処理義務がある。</td></tr>
+<tr><td>static文脈</td><td>staticメソッドから非staticフィールドへ直接アクセス</td><td>インスタンスがない場所からインスタンスメンバは触れない。</td></tr>
+<tr><td>var誤用</td><td>フィールドvar、var a;、var b=null;</td><td>varは初期化ありのローカル変数だけ。</td></tr>
+</table></section>
+<section class="article-card"><h2>実行時例外になりやすいもの</h2><table class="ref-table"><tr><th>例外</th><th>典型例</th><th>試験での見方</th></tr>
+<tr><td>NullPointerException</td><td>null.toString(), null.equals(...)</td><td>null変数からインスタンスメソッド/フィールド参照。</td></tr>
+<tr><td>ArrayIndexOutOfBoundsException</td><td>array[array.length]</td><td>添字は0〜length-1。</td></tr>
+<tr><td>StringIndexOutOfBoundsException</td><td>charAt(length), substring範囲外</td><td>Stringのindexも0始まり。</td></tr>
+<tr><td>ArithmeticException</td><td>int x = 10 / 0;</td><td>整数の0除算。浮動小数点ではInfinity/NaNになり得る。</td></tr>
+<tr><td>ClassCastException</td><td>親型参照を実体と無関係な子型へキャスト</td><td>コンパイル時の型変換可能性と実体の型は別。</td></tr>
+<tr><td>NumberFormatException</td><td>Integer.parseInt("abc")</td><td>文字列が数値形式でない。</td></tr>
+<tr><td>UnsupportedOperationException</td><td>List.of(...).add(...)</td><td>不変コレクションの変更操作。</td></tr>
+</table></section>
+<section class="article-card"><h2>コンパイルエラーではなく例外になる例</h2><pre><code>String s = null;
+System.out.println(s.length()); // コンパイル可。実行時にNullPointerException</code></pre><pre><code>Object obj = "abc";
+Integer i = (Integer) obj; // コンパイル可。実行時にClassCastException</code></pre><pre><code>int[] a = new int[2];
+System.out.println(a[2]); // コンパイル可。実行時にArrayIndexOutOfBoundsException</code></pre></section>
+<section class="article-card"><h2>例外ではなくコンパイルエラーになる例</h2><pre><code>int x;
+System.out.println(x); // ローカル変数未初期化</code></pre><pre><code>float f = 1.0; // doubleをfloatへ暗黙代入不可</code></pre><pre><code>try {
+} catch (Exception e) {
+} catch (RuntimeException e) { // 到達不能
+}</code></pre></section>
+
+    </main>
+  </div>
+  <script src="data/questions.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

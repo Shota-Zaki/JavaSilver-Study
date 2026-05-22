@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - データ型・文字列</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main">
+      
+<section class="hero reference-hero"><p class="eyebrow">Types</p><h1>データ型・文字列・配列</h1><p>第2章系の問題は「値」ではなく「型」を見落とすと落ちます。代入できるか、演算後の型は何か、ローカル変数は初期化済みかを固定順で確認します。</p></section>
+<section class="article-card"><h2>プリミティブ型早見表</h2><table class="ref-table"><tr><th>型</th><th>サイズ/範囲</th><th>初期値</th><th>注意</th></tr>
+<tr><td>boolean</td><td>true / false</td><td>false</td><td>0/1とは互換性なし。</td></tr>
+<tr><td>byte</td><td>8bit -128〜127</td><td>0</td><td>リテラルが範囲内なら代入可。</td></tr>
+<tr><td>short</td><td>16bit -32768〜32767</td><td>0</td><td>byte/short演算結果は基本int。</td></tr>
+<tr><td>int</td><td>32bit</td><td>0</td><td>整数リテラルの基本型。</td></tr>
+<tr><td>long</td><td>64bit</td><td>0L</td><td>L/lサフィックス。小文字lは1と紛らわしい。</td></tr>
+<tr><td>char</td><td>16bit Unicode</td><td>'\u0000'</td><td>数値としても扱えるがStringとは別。</td></tr>
+<tr><td>float</td><td>32bit浮動小数</td><td>0.0f</td><td>小数リテラルはFなしだとdouble。</td></tr>
+<tr><td>double</td><td>64bit浮動小数</td><td>0.0d</td><td>浮動小数リテラルの基本型。</td></tr>
+</table></section>
+<section class="article-card"><h2>コンパイル可否のルール</h2><div class="rule-grid">
+<div><h3>代入</h3><ul><li>小さい型 → 大きい型は暗黙変換可。</li><li>大きい型 → 小さい型は基本キャストが必要。</li><li>byte/short/charへの整数リテラル代入は範囲内なら可。</li><li>変数を使った式は範囲が分かっていても基本int扱い。</li></ul></div>
+<div><h3>演算</h3><ul><li>byte, short, charは演算時にintへ昇格。</li><li>int + long はlong。</li><li>整数除算は小数部切り捨て。</li><li>booleanは算術演算不可。</li></ul></div>
+<div><h3>var</h3><ul><li>初期化式が必須。</li><li>null単独不可。</li><li>配列初期化子単独不可。</li><li>ラムダ式単独不可。</li><li>フィールド・引数・戻り値には不可。</li></ul></div>
+</div></section>
+<section class="article-card"><h2>Stringの頻出ルール</h2><table class="ref-table"><tr><th>項目</th><th>内容</th><th>注意</th></tr>
+<tr><td>不変性</td><td>Stringは変更不可。メソッドは新しいStringを返す。</td><td>戻り値を受け取らないと変わらない。</td></tr>
+<tr><td>==</td><td>参照が同じか比較。</td><td>文字列内容比較ではない。</td></tr>
+<tr><td>equals</td><td>文字列内容を比較。</td><td>null変数から呼ぶとNullPointerException。</td></tr>
+<tr><td>intern</td><td>文字列プール上の参照を返す。</td><td>new String("x")とは参照が異なることが多い。</td></tr>
+<tr><td>substring</td><td>開始index以上、終了index未満。</td><td>範囲外はStringIndexOutOfBoundsException。</td></tr>
+<tr><td>length()</td><td>文字数を返すメソッド。</td><td>配列はlengthフィールド、Stringはlength()。</td></tr>
+</table></section>
+<section class="article-card"><h2>StringBuilder / 配列 / ArrayList</h2><div class="rule-grid">
+<div><h3>StringBuilder</h3><ul><li>可変。append, insert, delete, reverseなどは自分自身を変更。</li><li>capacityは内部容量。lengthとは別。</li><li>Stringとはequalsで内容比較にならない点に注意。</li></ul></div>
+<div><h3>配列</h3><ul><li>長さ固定。要素は型ごとの初期値で初期化。</li><li>添字は0始まり。範囲外はArrayIndexOutOfBoundsException。</li><li>多次元配列は配列の配列。各行の長さは不揃い可。</li></ul></div>
+<div><h3>ArrayList</h3><ul><li>addは追加、setは置換。</li><li>remove(int)は添字削除、remove(Object)は一致要素削除。</li><li>List.ofは不変リスト。add/remove/setはUnsupportedOperationException。</li></ul></div>
+</div></section>
+
+    </main>
+  </div>
+  <script src="data/questions.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

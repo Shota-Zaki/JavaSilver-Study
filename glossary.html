@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - 単語集</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main">
+      
+<section class="hero reference-hero"><p class="eyebrow">Glossary</p><h1>Java Silver単語集</h1><p>単語の意味を暗記するだけでは不十分です。試験では「その単語がコード上で何を許すか・何を禁止するか」まで問われます。</p></section>
+<section class="article-card"><h2>実行環境・ファイル</h2><table class="ref-table"><tr><th>用語</th><th>意味</th><th>試験での注意</th></tr>
+<tr><td>JDK</td><td>Java開発キット。javacなど開発用ツールを含む。</td><td>コンパイルにはjavac、実行にはjavaを使う。</td></tr>
+<tr><td>JVM</td><td>Java仮想マシン。classファイルを実行する。</td><td>実行時例外はJVM上でプログラム実行中に発生する。</td></tr>
+<tr><td>ソースファイル</td><td>.javaファイル。</td><td>publicなトップレベルクラスがある場合、ファイル名はそのクラス名.java。</td></tr>
+<tr><td>classファイル</td><td>コンパイル後のバイトコード。</td><td>1つのソースから複数classファイルが作られることがある。</td></tr>
+<tr><td>package</td><td>クラスを分類し名前空間を作る。</td><td>package宣言はコメントを除いて先頭。importより前。</td></tr>
+<tr><td>import</td><td>完全修飾名を書かずにクラスを使うための宣言。</td><td>java.langは自動import。サブパッケージまではワイルドカードで含まれない。</td></tr>
+</table></section>
+<section class="article-card"><h2>型・変数</h2><table class="ref-table"><tr><th>用語</th><th>意味</th><th>試験での注意</th></tr>
+<tr><td>primitive型</td><td>boolean, byte, short, int, long, char, float, double。</td><td>null不可。booleanは数値と互換性なし。</td></tr>
+<tr><td>参照型</td><td>オブジェクトへの参照を保持する型。</td><td>null可。== は参照の同一性比較。</td></tr>
+<tr><td>リテラル</td><td>コードに直接書いた値。</td><td>整数は基本int、小数は基本double。longはL、floatはF。</td></tr>
+<tr><td>var</td><td>ローカル変数の型推論。</td><td>フィールド、引数、戻り値、catch引数、配列要素型には使えない。</td></tr>
+<tr><td>スコープ</td><td>変数を参照できる範囲。</td><td>if/for/tryブロック内で宣言したローカル変数は外で使えない。</td></tr>
+<tr><td>初期化</td><td>変数へ値を入れること。</td><td>ローカル変数は自動初期化されない。フィールドは型ごとの初期値あり。</td></tr>
+</table></section>
+<section class="article-card"><h2>クラス・オブジェクト</h2><table class="ref-table"><tr><th>用語</th><th>意味</th><th>試験での注意</th></tr>
+<tr><td>class</td><td>オブジェクトの設計図。</td><td>トップレベルclassにprivate/protectedは使えない。</td></tr>
+<tr><td>instance</td><td>newで生成された実体。</td><td>変数にはインスタンスそのものではなく参照が入る。</td></tr>
+<tr><td>constructor</td><td>インスタンス生成時の初期化処理。</td><td>戻り値型を書かない。継承されない。先頭でthis()/super()。</td></tr>
+<tr><td>this</td><td>現在のインスタンス。</td><td>staticメソッド内では使えない。</td></tr>
+<tr><td>super</td><td>スーパークラス側を指す。</td><td>super()はコンストラクタ先頭でのみ明示呼び出し可能。</td></tr>
+<tr><td>static</td><td>インスタンスではなくクラスに属する。</td><td>staticメソッドから非staticメンバへ直接アクセス不可。</td></tr>
+<tr><td>final</td><td>変更・継承・オーバーライドを禁止する。</td><td>変数finalは再代入不可。参照先オブジェクトの状態変更とは別。</td></tr>
+<tr><td>abstract</td><td>未実装メソッドを持てる/インスタンス化不可。</td><td>abstract methodは本文なし。具象サブクラスで実装が必要。</td></tr>
+</table></section>
+<section class="article-card"><h2>継承・インタフェース</h2><table class="ref-table"><tr><th>用語</th><th>意味</th><th>試験での注意</th></tr>
+<tr><td>extends</td><td>クラス継承、またはインタフェース継承。</td><td>クラスの多重継承は不可。インタフェースは複数継承可。</td></tr>
+<tr><td>implements</td><td>クラスがインタフェースを実装する。</td><td>抽象メソッド未実装ならクラスをabstractにする。</td></tr>
+<tr><td>override</td><td>親のインスタンスメソッドを子で再定義。</td><td>シグネチャ同一、戻り値は同じか共変、アクセスは狭くできない。</td></tr>
+<tr><td>overload</td><td>同名メソッドを引数違いで複数定義。</td><td>戻り値だけ違うのは不可。</td></tr>
+<tr><td>polymorphism</td><td>親型変数で子インスタンスを扱う。</td><td>呼べるメンバは変数の型で決まり、動くメソッドは実体の型で決まる。</td></tr>
+<tr><td>cast</td><td>型変換。</td><td>コンパイル可能でも実行時にClassCastExceptionになる場合あり。</td></tr>
+<tr><td>sealed</td><td>継承/実装を許可制にする。</td><td>サブクラスはfinal, sealed, non-sealedのいずれかが必要。</td></tr>
+</table></section>
+
+    </main>
+  </div>
+  <script src="data/questions.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
