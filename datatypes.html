@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - データ型・リテラル・型変換</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main">
+      <section class="hero reference-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>データ型・リテラル・型変換</h1>
+        <p>型の範囲、リテラル表記、暗黙変換を出題目線で整理します。</p>
+      </section>
+      <section class="article-card ">
+<h2>primitive型の範囲と初期値</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>型</th><th>サイズ/値域の目安</th><th>デフォルト値</th><th>注意</th></tr></thead><tbody><tr><td>boolean</td><td>true/false</td><td>false</td><td>数値との互換性なし。0/1は代入不可。</td></tr><tr><td>byte</td><td>8bit -128〜127</td><td>0</td><td>リテラルが範囲内なら代入可能。演算するとint。</td></tr><tr><td>short</td><td>16bit</td><td>0</td><td>演算結果はintになりやすい。</td></tr><tr><td>char</td><td>16bit Unicode</td><td>\u0000</td><td>数値として演算に参加するとintへ昇格。</td></tr><tr><td>int</td><td>32bit</td><td>0</td><td>整数リテラルの基本型。</td></tr><tr><td>long</td><td>64bit</td><td>0L</td><td>リテラルにはL推奨。小文字lは読みにくい。</td></tr><tr><td>float</td><td>32bit</td><td>0.0f</td><td>小数リテラルにはFが必要。</td></tr><tr><td>double</td><td>64bit</td><td>0.0d</td><td>小数リテラルの基本型。</td></tr></tbody></table></div>
+</section><section class="article-card ">
+<h2>ローカル変数とフィールドの初期値</h2>
+<pre><code>class Sample {
+  int field; // 0で初期化される
+  void test() {
+    int local;
+    // System.out.println(local); // コンパイルエラー
+  }
+}</code></pre><p>フィールドはデフォルト初期化されます。ローカル変数は明示的に初期化するまで使えません。</p>
+</section><section class="article-card ">
+<h2>整数リテラル</h2>
+<pre><code>int a = 267;       // 10進数
+int b = 0413;      // 8進数
+int c = 0x10B;     // 16進数
+int d = 0b100001011; // 2進数
+// int e = 0827;   // 8進数として不正</code></pre><p>先頭0は8進数です。8や9を含むとコンパイルエラーになります。</p>
+</section><section class="article-card ">
+<h2>アンダースコア</h2>
+<pre><code>int a = 123_456;
+int b = 5_____2;
+// int c = _123;
+// int d = 123_;
+// float e = 3_.14F;</code></pre><p>アンダースコアは数字と数字の間だけに置けます。</p>
+</section><section class="article-card ">
+<h2>型変換と昇格</h2>
+<pre><code>byte a = 10;
+byte b = 20;
+// byte c = a + b; // intになるためコンパイルエラー
+byte c = (byte)(a + b);
+
+short s = 10;      // 範囲内のintリテラルなのでOK
+// short t = 40000; // 範囲外</code></pre><p>byte/short/charは演算時にintへ昇格します。複合代入は暗黙キャストを含む点も頻出です。</p>
+</section><section class="article-card ">
+<h2>varの使い方</h2>
+<pre><code>var x = 10;          // int
+var s = &quot;java&quot;;      // String
+// var n = null;      // 型推論不可
+// private var field; // フィールド不可</code></pre><p>varは型を省略する構文であり、動的型付けではありません。コンパイル時に型は確定します。</p>
+</section>
+    </main>
+  </div>
+  <script src="data/questions.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

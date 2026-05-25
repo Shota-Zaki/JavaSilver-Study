@@ -139,13 +139,9 @@
   function importHistoryFromText(text, mode) {
     const parsed = parseHistoryPayload(text);
     if (mode === "replace") {
-      const ok = confirm("現在の学習履歴を、読み込んだ履歴で完全に上書きします。続行しますか？");
-      if (!ok) return false;
       writeProgress(parsed.progress);
       writeExamStore(parsed.exam);
     } else {
-      const ok = confirm("読み込んだ履歴を現在の端末の履歴にマージします。同じ問題は新しい解答日時を優先し、見直しフラグは残します。続行しますか？");
-      if (!ok) return false;
       writeProgress(mergeProgress(readProgress(), parsed.progress));
       // 模試タイマーは端末差で壊れやすいため、マージ時は現在端末の状態を優先する。
     }
@@ -179,7 +175,10 @@
 
   function readCloudState() {
     const state = readJson(cloudStateStorageKey, {});
-    return state && typeof state === "object" ? { autoSync: true, ...state } : { autoSync: true };
+    if (state && typeof state === "object") {
+      return { ...state, autoSync: false };
+    }
+    return { autoSync: false };
   }
 
   function writeCloudState(state) {
@@ -192,7 +191,7 @@
   }
 
   function cloudAutoSyncEnabled() {
-    return Boolean(readCloudState().autoSync);
+    return false;
   }
 
   let cloudToastTimer = null;
@@ -260,8 +259,6 @@
     document.querySelectorAll("#cloudSyncPanel").forEach(panel => {
       const enabledInput = panel.querySelector("[data-cloud-enabled]");
       if (enabledInput) enabledInput.checked = true;
-      const autoInput = panel.querySelector("[data-cloud-auto]");
-      if (autoInput) autoInput.checked = Boolean(state.autoSync);
       const account = panel.querySelector("[data-cloud-account]");
       if (account) account.textContent = currentCloudEmail();
       panel.querySelectorAll("[data-cloud-needs-auth]").forEach(btn => {
@@ -303,9 +300,7 @@
       authMod.onAuthStateChanged(auth, user => {
         cloud.user = user || null;
         updateCloudUi();
-        if (user && cloudAutoSyncEnabled()) {
-          pullCloudHistory("merge", false).catch(err => setCloudMessage(err.message || "クラウド読み込みに失敗しました。", true));
-        }
+        // 自動同期は使わない。保存・読み込みはボタン操作時のみ。
       });
       updateCloudUi();
       return cloud;
@@ -353,7 +348,7 @@
       schemaVersion: payload.schemaVersion || 1
     }, { merge: true });
     writeCloudState({ ...readCloudState(), lastPushedAt: new Date().toISOString() });
-    setCloudMessage(silent ? "自動保存しました。" : "クラウドへ保存しました。", false, { silentToast: Boolean(silent) });
+    setCloudMessage("クラウドへ保存しました。", false, { silentToast: Boolean(silent) });
     updateCloudUi();
   }
 
@@ -379,11 +374,10 @@
   }
 
   function scheduleCloudUpload() {
-    if (!cloudEnabled() || !cloudAutoSyncEnabled() || !cloud.user) return;
-    if (cloudUploadTimer) clearTimeout(cloudUploadTimer);
-    cloudUploadTimer = setTimeout(() => {
-      pushCloudHistory(true).catch(err => setCloudMessage(err.message || "自動保存に失敗しました。", true));
-    }, 1200);
+    if (cloudUploadTimer) {
+      clearTimeout(cloudUploadTimer);
+      cloudUploadTimer = null;
+    }
   }
 
   function firebaseRulesText() {
@@ -398,26 +392,22 @@ service cloud.firestore {
   }
 
   function cloudPanelHtml() {
-    return `<div class="cloud-panel" id="cloudSyncPanel">
-      <div class="sync-panel-head">
-        <div>
-          <h2>クラウド同期</h2>
-          <p>Googleアカウントごとに学習履歴だけを保存します。問題文・解説データは保存しません。</p>
-        </div>
-        <div class="sync-actions compact-actions">
+    return `<div class="cloud-panel cloud-panel-compact" id="cloudSyncPanel">
+      <div class="cloud-panel-header">
+        <h2>クラウド同期</h2>
+        <div class="cloud-login-actions">
           <button class="btn" data-cloud-signin>Googleでログイン</button>
           <button class="btn ghost" data-cloud-signout>ログアウト</button>
         </div>
       </div>
-      <div class="cloud-status-row">
-        <span>アカウント: <strong data-cloud-account>未ログイン</strong></span>
-        <label class="check-label"><input type="checkbox" data-cloud-auto> 自動保存</label>
-      </div>
-      <div class="sync-actions">
-        <button class="btn primary" data-cloud-push data-cloud-needs-auth>この端末の履歴を保存</button>
-        <button class="btn" data-cloud-pull-merge data-cloud-needs-auth>クラウドからマージ</button>
-        <button class="btn ghost" data-cloud-pull-replace data-cloud-needs-auth>クラウドで完全上書き</button>
-        <span class="inline-note" data-cloud-message></span>
+      <div class="cloud-panel-body">
+        <span class="cloud-account-line">アカウント: <strong data-cloud-account>未ログイン</strong></span>
+        <div class="cloud-main-actions">
+          <button class="btn primary" data-cloud-push data-cloud-needs-auth>この端末の履歴を保存</button>
+          <button class="btn" data-cloud-pull-merge data-cloud-needs-auth>クラウドからマージ</button>
+          <button class="btn ghost" data-cloud-pull-replace data-cloud-needs-auth>クラウドで完全上書き</button>
+        </div>
+        <span class="inline-note cloud-message" data-cloud-message></span>
       </div>
     </div>`;
   }
@@ -433,13 +423,6 @@ service cloud.firestore {
     const panel = scope.querySelector ? scope.querySelector("#cloudSyncPanel") : null;
     if (!panel || panel.dataset.bound === "1") return;
     panel.dataset.bound = "1";
-    panel.querySelector("[data-cloud-auto]")?.addEventListener("change", event => {
-      const enabled = Boolean(event.target.checked);
-      writeCloudState({ ...readCloudState(), autoSync: enabled });
-      updateCloudUi();
-      setCloudMessage(enabled ? "自動クラウド保存をONにしました。" : "自動クラウド保存をOFFにしました。", false);
-      if (enabled) scheduleCloudUpload();
-    });
     panel.querySelector("[data-cloud-signin]")?.addEventListener("click", async event => {
       try {
         await runCloudAction(event.currentTarget, "Googleログイン中...", async () => cloudSignIn());
@@ -772,7 +755,7 @@ service cloud.firestore {
       progress[q.id] = record;
     }
     writeProgress(progress);
-    renderActiveQuestion();
+    renderActiveQuestion({ focus: true });
     updateProgressUi();
   }
 
@@ -901,8 +884,7 @@ service cloud.firestore {
     const result = card.querySelector("[data-result]");
     card.querySelectorAll(".option").forEach(label => label.classList.remove("correct", "incorrect", "missed"));
     result.className = "result visible neutral";
-    result.innerHTML = `<h4>解答を保存しました</h4>
-      <p>模試モード中は正解・解説を表示しません。終了後に採点結果を確認してください。</p>`;
+    result.innerHTML = `<h4>解答を保存しました</h4>`;
     if (persist) {
       saveAnswer(q, selected);
       updateProgressUi();
@@ -1112,7 +1094,6 @@ service cloud.firestore {
     return `<div class="today-panel">
       <div>
         <h2>今日の復習</h2>
-        <p>迷ったら、間違い→見直し→未回答の順で潰してください。</p>
       </div>
       <div class="today-actions">
         <a class="btn primary" href="${escapeHtml(wrongTarget ? chapterHref(wrongTarget.chapter, "wrong", { q: wrongTarget.question.id }) : "#chapterGrid")}">間違い ${stats.wrong}問</a>
@@ -1124,7 +1105,8 @@ service cloud.firestore {
 
   function renderDashboard() {
     const main = document.querySelector(".main");
-    if (!main || chapterId) return;
+    const isIndexPage = Boolean(document.getElementById("chapterGrid"));
+    if (!main || chapterId || !isIndexPage) return;
     let root = document.getElementById("dashboardRoot");
     if (!root) {
       const hero = main.querySelector(".hero");
@@ -1170,7 +1152,7 @@ service cloud.firestore {
   function renderNav() {
     const nav = document.getElementById("chapterNav");
     if (!nav) return;
-    nav.innerHTML = DATA.chapters.map(ch => {
+    const chapterLinks = DATA.chapters.map(ch => {
       const count = (DATA.questions[ch.id] || []).length;
       const active = ch.id === chapterId ? " active" : "";
       const status = ch.status === "ready" ? `${count}問` : "準備中";
@@ -1179,6 +1161,25 @@ service cloud.firestore {
         <span class="small">${escapeHtml(status)}</span>
       </a>`;
     }).join("");
+    const path = (location.pathname || "").split("/").pop();
+    const knowledgeActive = ["reference.html", "glossary.html", "syntax-basics.html", "datatypes.html", "strings.html", "equality.html", "collections-arrays.html", "operators-control.html", "methods-constructors.html", "object-oriented.html", "inheritance-interface.html", "exceptions.html", "compile-runtime.html", "cheatsheet.html", "exam-traps.html"].includes(path);
+    const knowledgeLinks = `<div class="nav-divider"></div>
+      <a class="nav-link${knowledgeActive && path === "reference.html" ? " active" : ""}" href="reference.html">学習記事トップ<span class="small">入口</span></a>
+      <a class="nav-link${knowledgeActive && path === "glossary.html" ? " active" : ""}" href="glossary.html">単語集<span class="small">頻出用語</span></a>
+      <a class="nav-link${knowledgeActive && path === "syntax-basics.html" ? " active" : ""}" href="syntax-basics.html">実行・package/import<span class="small">基礎</span></a>
+      <a class="nav-link${knowledgeActive && path === "datatypes.html" ? " active" : ""}" href="datatypes.html">データ型・型変換<span class="small">primitive</span></a>
+      <a class="nav-link${knowledgeActive && path === "strings.html" ? " active" : ""}" href="strings.html">String/StringBuilder<span class="small">文字列</span></a>
+      <a class="nav-link${knowledgeActive && path === "equality.html" ? " active" : ""}" href="equality.html">同一性・同値性比較<span class="small">==/equals</span></a>
+      <a class="nav-link${knowledgeActive && path === "collections-arrays.html" ? " active" : ""}" href="collections-arrays.html">配列・ArrayList<span class="small">List</span></a>
+      <a class="nav-link${knowledgeActive && path === "operators-control.html" ? " active" : ""}" href="operators-control.html">演算子・制御構造<span class="small">switch/loop</span></a>
+      <a class="nav-link${knowledgeActive && path === "methods-constructors.html" ? " active" : ""}" href="methods-constructors.html">メソッド・コンストラクタ<span class="small">overload</span></a>
+      <a class="nav-link${knowledgeActive && path === "object-oriented.html" ? " active" : ""}" href="object-oriented.html">クラス・static・参照<span class="small">OOP</span></a>
+      <a class="nav-link${knowledgeActive && path === "inheritance-interface.html" ? " active" : ""}" href="inheritance-interface.html">継承・interface<span class="small">override/sealed</span></a>
+      <a class="nav-link${knowledgeActive && path === "exceptions.html" ? " active" : ""}" href="exceptions.html">例外処理<span class="small">try/catch</span></a>
+      <a class="nav-link${knowledgeActive && path === "compile-runtime.html" ? " active" : ""}" href="compile-runtime.html">コンパイル/例外判定<span class="small">判定フロー</span></a>
+      <a class="nav-link${knowledgeActive && path === "cheatsheet.html" ? " active" : ""}" href="cheatsheet.html">頻出ルール早見表<span class="small">直前確認</span></a>
+      <a class="nav-link${knowledgeActive && path === "exam-traps.html" ? " active" : ""}" href="exam-traps.html">試験ひっかけ集<span class="small">落とし穴</span></a>`;
+    nav.innerHTML = chapterLinks + knowledgeLinks;
   }
 
   function renderIndex() {
@@ -1192,7 +1193,6 @@ service cloud.firestore {
         <span class="badge ${escapeHtml(ch.status)}">${escapeHtml(badge)}</span>
         <strong>${escapeHtml(ch.title)}</strong>
         <span class="chapter-progress-line">${s.answered}/${s.total} 解答済み・正解率 ${s.rate}%・復習 ${s.wrong + s.flagged}</span>
-        <span class="inline-note">1問ずつ解答・復習モード・学習履歴保存に対応</span>
       </a>`;
     }).join("");
     renderDashboard();
@@ -1243,7 +1243,7 @@ service cloud.firestore {
         if (currentMode !== "tag") currentTagFilter = "";
         currentQuestionId = null;
         renderModeButtons();
-        renderActiveQuestion();
+        renderActiveQuestion({ focus: true });
       });
     });
   }
@@ -1284,7 +1284,7 @@ service cloud.firestore {
         currentQuestionId = btn.dataset.qid;
         currentMode = "all";
         renderModeButtons();
-        renderActiveQuestion();
+        renderActiveQuestion({ focus: true });
       });
     });
   }
@@ -1296,7 +1296,7 @@ service cloud.firestore {
     if (currentQuestionId) jump.value = currentQuestionId;
     jump.onchange = () => {
       currentQuestionId = jump.value;
-      renderActiveQuestion();
+      renderActiveQuestion({ focus: true });
     };
   }
 
@@ -1319,7 +1319,20 @@ service cloud.firestore {
     btn.onclick = () => toggleFlag(q);
   }
 
-  function renderActiveQuestion() {
+  function scrollToQuestionFocus() {
+    const target = document.querySelector("#questionShell .question-card") || document.getElementById("questionShell");
+    if (!target) return;
+    const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.requestAnimationFrame(() => {
+      target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+      if (target.classList) {
+        target.classList.add("focus-pulse");
+        window.setTimeout(() => target.classList.remove("focus-pulse"), 520);
+      }
+    });
+  }
+
+  function renderActiveQuestion(options = {}) {
     const shell = document.getElementById("questionShell");
     if (!shell || !chapterId) return;
     const list = filteredQuestions();
@@ -1329,14 +1342,13 @@ service cloud.firestore {
     if (!list.length) {
       shell.innerHTML = `<div class="empty-state">
         <h2>${escapeHtml(modeLabel(currentMode))}の問題はありません</h2>
-        <p>条件に一致する問題がないため、全問表示に戻してください。</p>
         <button class="btn primary" id="backToAll">全問に戻る</button>
       </div>`;
       document.getElementById("backToAll")?.addEventListener("click", () => {
         currentMode = "all";
         currentQuestionId = null;
         renderModeButtons();
-        renderActiveQuestion();
+        renderActiveQuestion({ focus: true });
       });
       renderJump([]);
       renderQuestionPalette();
@@ -1368,6 +1380,7 @@ service cloud.firestore {
     renderQuestionPalette();
     updateNavButtons(index, list.length);
     updateFlagButton(q);
+    if (options.focus) scrollToQuestionFocus();
   }
 
   function moveQuestion(delta) {
@@ -1376,8 +1389,7 @@ service cloud.firestore {
     const index = Math.max(0, list.findIndex(q => q.id === currentQuestionId));
     const nextIndex = Math.min(Math.max(index + delta, 0), list.length - 1);
     currentQuestionId = list[nextIndex].id;
-    renderActiveQuestion();
-    document.getElementById("questionShell")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    renderActiveQuestion({ focus: true });
   }
 
   function firstUnanswered() {
@@ -1387,7 +1399,7 @@ service cloud.firestore {
     currentMode = "all";
     currentQuestionId = q.id;
     renderModeButtons();
-    renderActiveQuestion();
+    renderActiveQuestion({ focus: true });
   }
 
   function examSummaryHtml(state, stats) {
@@ -1418,7 +1430,6 @@ service cloud.firestore {
     panel.innerHTML = `<div class="exam-box ${active ? "active" : ""}">
       <div>
         <h2>模試モード</h2>
-        <p>${active ? "採点結果と解説を隠して解答を保存します。" : "90分で60問を解く想定のモードです。開始時にこの章の解答履歴はリセットされます。見直しフラグは残します。"}</p>
         ${examSummaryHtml(state, s)}
       </div>
       <div class="exam-actions">
@@ -1435,8 +1446,6 @@ service cloud.firestore {
 
   function startExam() {
     if (!chapterId) return;
-    const ok = confirm("模試モードを開始します。この章の解答履歴はリセットされます。見直しフラグは残します。続行しますか？");
-    if (!ok) return;
     clearChapterProgress(chapterId, true);
     setExamState(chapterId, {
       active: true,
@@ -1446,7 +1455,7 @@ service cloud.firestore {
     currentMode = "all";
     currentQuestionId = (DATA.questions[chapterId] || [])[0]?.id || null;
     renderModeButtons();
-    renderActiveQuestion();
+    renderActiveQuestion({ focus: true });
   }
 
   function finishExam(autoFinished) {
@@ -1459,7 +1468,7 @@ service cloud.firestore {
       autoFinished: Boolean(autoFinished)
     });
     stopTimer();
-    renderActiveQuestion();
+    renderActiveQuestion({ focus: true });
   }
 
   function remainingSeconds(state) {
@@ -1515,9 +1524,7 @@ service cloud.firestore {
     const desc = document.getElementById("chapterDesc");
     if (title) title.textContent = chapter ? chapter.title : "章が見つかりません";
     const questions = DATA.questions[chapterId] || [];
-    if (desc) desc.textContent = questions.length
-      ? "1問ずつ表示します。解答後に正解・解説を表示し、履歴は端末内に保存します。"
-      : "この章はページ枠のみ作成済みです。";
+    if (desc) desc.textContent = "";
 
     if (!questions.length) {
       root.innerHTML = `<div class="empty-state"><h2>この章は未実装です</h2></div>`;
@@ -1554,7 +1561,7 @@ service cloud.firestore {
     bindSyncPanel(root);
     bindCloudPanel(root);
     renderModeButtons();
-    renderActiveQuestion();
+    renderActiveQuestion({ focus: true });
     updateProgressUi();
     root.querySelectorAll("[data-prev-question]").forEach(btn => btn.addEventListener("click", () => moveQuestion(-1)));
     root.querySelectorAll("[data-next-question]").forEach(btn => btn.addEventListener("click", () => moveQuestion(1)));
@@ -1564,8 +1571,6 @@ service cloud.firestore {
     const reset = document.getElementById("resetChapter");
     if (reset) {
       reset.onclick = () => {
-        const ok = confirm("この章の解答履歴と見直しフラグをすべて削除します。続行しますか？");
-        if (!ok) return;
         clearChapterProgress(chapterId, false);
         setExamState(chapterId, null);
         currentMode = "all";

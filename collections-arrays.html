@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - 配列・ArrayList・List</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main">
+      <section class="hero reference-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>配列・ArrayList・List</h1>
+        <p>固定長配列、可変長リスト、変更不可リストの違いを整理します。</p>
+      </section>
+      <section class="article-card ">
+<h2>配列の基本</h2>
+<pre><code>int[] a = new int[3];
+a[0] = 10;
+a[1] = 20;
+a[2] = 30;
+System.out.println(a.length); // 3
+// System.out.println(a[3]);  // 実行時例外</code></pre><p>配列は固定長です。lengthはメソッドではなくフィールドです。</p>
+</section><section class="article-card ">
+<h2>多次元配列</h2>
+<pre><code>int[][] a = {{1, 2}, {3, 4, 5}};
+for (int[] row : a) {
+  for (int v : row) {
+    System.out.println(v);
+  }
+}</code></pre><p>int[][]から1つ取り出すとint[]です。行ごとの長さが違うジャグ配列も作れます。</p>
+</section><section class="article-card ">
+<h2>ArrayListの基本操作</h2>
+<pre><code>ArrayList&lt;String&gt; list = new ArrayList&lt;&gt;();
+list.add(&quot;A&quot;);
+list.add(&quot;C&quot;);
+list.add(1, &quot;B&quot;); // A, B, C
+list.set(0, &quot;X&quot;); // X, B, C
+list.remove(&quot;B&quot;); // X, C</code></pre><p>add(index, value)は挿入、set(index, value)は置換です。</p>
+</section><section class="article-card ">
+<h2>removeの罠</h2>
+<pre><code>ArrayList&lt;Integer&gt; list = new ArrayList&lt;&gt;();
+list.add(1);
+list.add(2);
+list.add(3);
+list.remove(1); // 添字1を削除 → [1, 3]
+list.remove(Integer.valueOf(3)); // 値3を削除 → [1]</code></pre><p>int引数なら添字削除、Object引数なら要素削除です。</p>
+</section><section class="article-card ">
+<h2>List.of</h2>
+<pre><code>List&lt;String&gt; list = List.of(&quot;A&quot;, &quot;B&quot;);
+// list.add(&quot;C&quot;); // UnsupportedOperationException
+// list.set(0, &quot;X&quot;); // UnsupportedOperationException</code></pre><p>List.ofの戻り値は変更不可です。null要素も不可です。</p>
+</section>
+    </main>
+  </div>
+  <script src="data/questions.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

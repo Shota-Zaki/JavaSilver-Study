@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - 試験ひっかけ集</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main">
+      <section class="hero reference-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>試験ひっかけ集</h1>
+        <p>Java Silverで落とされやすい典型罠をまとめます。</p>
+      </section>
+      <section class="article-card ">
+<h2>出力問題の罠</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>罠</th><th>間違い方</th><th>正しい見方</th></tr></thead><tbody><tr><td>コンパイルエラーを見落とす</td><td>出力を追ってしまう</td><td>先に型・構文・例外処理を見る。</td></tr><tr><td>後置++</td><td>増えた値をその場で使うと思う</td><td>現在値を使ってから増える。</td></tr><tr><td>短絡評価</td><td>右辺も実行したと思う</td><td>&&/||は右辺が飛ぶ場合がある。</td></tr><tr><td>String比較</td><td>内容が同じなら== trueと思う</td><td>==は参照比較。</td></tr><tr><td>static</td><td>インスタンスごとに値があると思う</td><td>staticはクラス側に1つ。</td></tr><tr><td>フィールド多態性</td><td>子フィールドが出ると思う</td><td>フィールドは宣言型で決まる。</td></tr><tr><td>catch順序</td><td>どのcatchでもよいと思う</td><td>上から評価。親が先だと子が到達不能。</td></tr><tr><td>List.of</td><td>ArrayListと同じように変更する</td><td>変更不可。add/set/removeで例外。</td></tr></tbody></table></div>
+</section><section class="article-card ">
+<h2>選択肢の読み方</h2>
+<ul><li><strong>コンパイルエラー：</strong>型・構文・アクセス・チェック例外の根拠が必要。</li><li><strong>実行時例外：</strong>コンパイルでき、実行時に該当行へ到達する必要がある。</li><li><strong>何も表示されない：</strong>条件分岐やループによりprintlnへ到達しない根拠が必要。</li><li><strong>複数選択：</strong>正しいものを探すだけでなく、誤りの根拠も言える状態にする。</li></ul>
+</section><section class="article-card ">
+<h2>見直しチェックリスト</h2>
+<ol class="flow-list"><li>問題文の「何個選択」を確認したか。</li><li>コードの行末セミコロン・括弧を確認したか。</li><li>実行コマンドの引数を確認したか。</li><li>newの回数と参照代入を確認したか。</li><li>catch/finallyの順序を確認したか。</li></ol>
+</section>
+    </main>
+  </div>
+  <script src="data/questions.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - 演算子・制御構造</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main">
+      <section class="hero reference-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>演算子・制御構造</h1>
+        <p>前置/後置、短絡評価、switch、ループ制御を例題で確認します。</p>
+      </section>
+      <section class="article-card ">
+<h2>前置++と後置++</h2>
+<pre><code>int a = 10;
+int b = a++ + ++a;
+// a++ は10を使ってから a=11
+// ++a は先に a=12 にして12を使う
+System.out.println(b); // 22
+System.out.println(a); // 12</code></pre><p>値を使うタイミングと変数が更新されるタイミングを分けます。</p>
+</section><section class="article-card ">
+<h2>短絡評価</h2>
+<pre><code>int a = 10;
+if (a &lt; 0 &amp;&amp; ++a &gt; 0) { }
+System.out.println(a); // 10
+
+if (a &lt; 0 &amp; ++a &gt; 0) { }
+System.out.println(a); // 11</code></pre><p><code>&&</code>は左辺がfalseなら右辺を評価しません。<code>&</code>はbooleanでも右辺を評価します。</p>
+</section><section class="article-card ">
+<h2>複合代入</h2>
+<pre><code>byte b = 10;
+b += 1;      // OK。暗黙キャストを含む
+// b = b + 1; // コンパイルエラー。b + 1 はint</code></pre><p>複合代入は単純な書き換えではなく、代入先型への暗黙変換が入ります。</p>
+</section><section class="article-card ">
+<h2>switch文とswitch式</h2>
+<pre><code>int n = 2;
+switch (n) {
+  case 1: System.out.println(&quot;A&quot;);
+  case 2: System.out.println(&quot;B&quot;);
+  default: System.out.println(&quot;C&quot;);
+}
+// B C
+
+String result = switch (n) {
+  case 1 -&gt; &quot;A&quot;;
+  case 2 -&gt; &quot;B&quot;;
+  default -&gt; &quot;C&quot;;
+};</code></pre><p>switch文はbreakがないとフォールスルーします。switch式は値を返すため、式全体の末尾にセミコロンが必要です。</p>
+</section><section class="article-card ">
+<h2>ループとbreak/continue</h2>
+<pre><code>for (int i = 0; i &lt; 5; i++) {
+  if (i == 1) continue;
+  if (i == 3) break;
+  System.out.println(i);
+}
+// 0, 2</code></pre><p>continueは次の繰り返しへ、breakはループを抜けます。ネスト時はどのループに効くかを確認します。</p>
+</section>
+    </main>
+  </div>
+  <script src="data/questions.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

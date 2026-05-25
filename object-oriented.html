@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - クラス・static・参照</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main">
+      <section class="hero reference-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>クラス・static・参照</h1>
+        <p>インスタンス、参照、static、GC、recordの違いを整理します。</p>
+      </section>
+      <section class="article-card ">
+<h2>クラスとインスタンス</h2>
+<pre><code>class Item {
+  int price;
+}
+Item a = new Item();
+Item b = new Item();
+a.price = 100;
+b.price = 200;</code></pre><p>newするたびに別インスタンスができます。フィールド値はインスタンスごとに別です。</p>
+</section><section class="article-card ">
+<h2>参照のコピー</h2>
+<pre><code>Item a = new Item();
+a.price = 100;
+Item b = a;
+b.price = 200;
+System.out.println(a.price); // 200</code></pre><p>b=aは同じインスタンスを指す参照のコピーです。</p>
+</section><section class="article-card ">
+<h2>static</h2>
+<pre><code>class Counter {
+  static int count;
+  int id;
+}
+Counter a = new Counter();
+Counter b = new Counter();
+a.count++;
+b.count++;
+System.out.println(Counter.count); // 2</code></pre><p>staticフィールドはインスタンスごとではなくクラス側に1つです。</p>
+</section><section class="article-card ">
+<h2>ガベージコレクション</h2>
+<pre><code>Object a = new Object();
+Object b = new Object();
+Object c = a;
+a = null;
+b = null;
+// ここで参照されていないのは、元bのインスタンスだけ</code></pre><p>どの変数からも到達できないインスタンスがGC対象です。GCがいつ実行されるかは保証されません。</p>
+</section><section class="article-card ">
+<h2>record</h2>
+<pre><code>record User(String name, int age) {}
+User u = new User(&quot;A&quot;, 20);
+System.out.println(u.name());
+System.out.println(u);</code></pre><p>recordはコンパクトなデータ保持用クラスです。アクセサ、equals、hashCode、toStringが自動生成されます。</p>
+</section>
+    </main>
+  </div>
+  <script src="data/questions.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

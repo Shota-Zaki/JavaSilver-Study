@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - 学習記事トップ</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main">
+      <section class="hero reference-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>学習記事トップ</h1>
+        <p>Java Silverで間違えやすい規則を、例題と判定手順で整理します。</p>
+      </section>
+      <section class="reference-grid large">
+<a class="reference-card" href="glossary.html"><span>用語</span><strong>Java Silver単語集</strong><small>頻出用語を「意味・試験での注意」に分けて確認</small></a>
+<a class="reference-card" href="syntax-basics.html"><span>基礎</span><strong>Java実行・package/import</strong><small>main・javac・java・package宣言</small></a>
+<a class="reference-card" href="datatypes.html"><span>型</span><strong>データ型・リテラル・型変換</strong><small>primitive・キャスト・数値表記</small></a>
+<a class="reference-card" href="strings.html"><span>文字列</span><strong>String・StringBuilder</strong><small>不変・可変・比較・頻出メソッド</small></a>
+<a class="reference-card" href="equality.html"><span>比較</span><strong>同一性・同値性比較</strong><small>==・equals・宣言別の例題</small></a>
+<a class="reference-card" href="collections-arrays.html"><span>配列/リスト</span><strong>配列・ArrayList・List</strong><small>固定長・可変長・List.of</small></a>
+<a class="reference-card" href="operators-control.html"><span>制御</span><strong>演算子・制御構造</strong><small>++・短絡評価・switch・ループ</small></a>
+<a class="reference-card" href="methods-constructors.html"><span>メソッド</span><strong>メソッド・コンストラクタ</strong><small>overload・this・super・初期化</small></a>
+<a class="reference-card" href="object-oriented.html"><span>OOP</span><strong>クラス・static・参照</strong><small>インスタンス・static・GC・record</small></a>
+<a class="reference-card" href="inheritance-interface.html"><span>継承</span><strong>継承・インタフェース・sealed</strong><small>override・多態性・defaultメソッド</small></a>
+<a class="reference-card" href="exceptions.html"><span>例外</span><strong>例外処理</strong><small>try・catch・finally・throws</small></a>
+<a class="reference-card" href="compile-runtime.html"><span>判定</span><strong>コンパイルエラーと実行時例外</strong><small>出力問題の判定順</small></a>
+<a class="reference-card" href="cheatsheet.html"><span>早見表</span><strong>頻出ルール早見表</strong><small>直前確認用</small></a>
+<a class="reference-card" href="exam-traps.html"><span>罠</span><strong>試験ひっかけ集</strong><small>典型ミスを潰す</small></a>
+</section><section class="article-card important">
+<h2>まず身につける判定順</h2>
+
+<ol class="flow-list">
+<li><strong>コンパイルできるか。</strong> 構文、型、アクセス、未初期化、チェック例外、到達不能コードを確認する。</li>
+<li><strong>実行時に例外が出るか。</strong> null、配列範囲外、キャスト失敗、数値変換失敗、0除算を見る。</li>
+<li><strong>出力が何か。</strong> 値の変化、参照先、メソッド呼び出し、catch/finallyの順序を追う。</li>
+<li><strong>選択肢を照合する。</strong> 複数選択では、正しいものだけでなく誤りの根拠も確認する。</li>
+</ol>
+
+</section><section class="article-card ">
+<h2>記事の読み方</h2>
+
+<div class="flow-cards">
+<div><span>1</span><strong>まず例題を見る</strong><p>先にコードを読んで、自分で結果を予想してから解説を見る。</p></div>
+<div><span>2</span><strong>判定理由を言語化する</strong><p>「なんとなく」ではなく、型・参照・実行順のどれが根拠かを明確にする。</p></div>
+<div><span>3</span><strong>似た罠を確認する</strong><p>同じ論点でも宣言方法や修飾子が変わると結果が変わる。</p></div>
+<div><span>4</span><strong>問題へ戻る</strong><p>記事だけ読んで終わらず、同じタグの問題で再確認する。</p></div>
+</div>
+
+</section>
+    </main>
+  </div>
+  <script src="data/questions.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

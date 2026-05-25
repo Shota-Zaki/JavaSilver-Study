@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - Java実行・package/import</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main">
+      <section class="hero reference-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>Java実行・package/import</h1>
+        <p>javac/java、main、package、importの基本を確認します。</p>
+      </section>
+      <section class="article-card ">
+<h2>コンパイルと実行</h2>
+<pre><code>javac Sample.java
+java Sample one two</code></pre><p><code>javac</code>はソースをコンパイルし、<code>java</code>はクラスを実行します。javaコマンドでは拡張子.classを書きません。</p>
+</section><section class="article-card ">
+<h2>mainメソッド</h2>
+<pre><code>public static void main(String[] args) {}
+public static void main(String... args) {}</code></pre><p>どちらも起動用mainとして有効です。<code>String args[]</code> も配列宣言としては可能です。</p>
+</section><section class="article-card ">
+<h2>publicクラスとファイル名</h2>
+<pre><code>// Sample.java
+public class Sample {}
+class Helper {}</code></pre><p>1つのソースファイルにpublicクラスは最大1つ。publicクラス名とファイル名は一致が必要です。</p>
+</section><section class="article-card ">
+<h2>package/importの順序</h2>
+<pre><code>package com.example;
+
+import java.util.List;
+
+public class Sample {}</code></pre><p>package宣言は先頭、importはその後、class宣言はさらに後です。</p>
+</section><section class="article-card ">
+<h2>java.lang</h2>
+<p><code>String</code>、<code>System</code>、<code>Integer</code> など <code>java.lang</code> の型はimport不要です。</p>
+</section>
+    </main>
+  </div>
+  <script src="data/questions.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

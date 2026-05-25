@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - 継承・インタフェース・sealed</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main">
+      <section class="hero reference-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>継承・インタフェース・sealed</h1>
+        <p>多態性、オーバーライド、interface、sealedを判定できるようにします。</p>
+      </section>
+      <section class="article-card ">
+<h2>継承の基本</h2>
+<pre><code>class Parent {
+  void hello() { System.out.println(&quot;Parent&quot;); }
+}
+class Child extends Parent {
+  @Override
+  void hello() { System.out.println(&quot;Child&quot;); }
+}
+Parent p = new Child();
+p.hello(); // Child</code></pre><p>変数の型はParentでも、オーバーライドメソッドは実体Childのものが動きます。</p>
+</section><section class="article-card ">
+<h2>フィールドは多態的ではない</h2>
+<pre><code>class A { String name = &quot;A&quot;; }
+class B extends A { String name = &quot;B&quot;; }
+A obj = new B();
+System.out.println(obj.name); // A</code></pre><p>フィールドアクセスは宣言型で決まります。メソッド呼び出しと区別します。</p>
+</section><section class="article-card ">
+<h2>オーバーライド条件</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>条件</th><th>説明</th></tr></thead><tbody><tr><td>シグネチャ</td><td>メソッド名と引数リストが同じ。</td></tr><tr><td>戻り値</td><td>同じ型または共変戻り値。</td></tr><tr><td>アクセス</td><td>親より狭くできない。</td></tr><tr><td>例外</td><td>チェック例外は親より広げられない。</td></tr></tbody></table></div>
+</section><section class="article-card ">
+<h2>インタフェース</h2>
+<pre><code>interface A {
+  void test(); // public abstract
+  default void log() { System.out.println(&quot;log&quot;); }
+}
+class B implements A {
+  public void test() {}
+}</code></pre><p>インタフェースの抽象メソッドはpublic扱いです。実装側でpublicを省くとアクセスを弱めることになりエラーです。</p>
+</section><section class="article-card ">
+<h2>sealed</h2>
+<pre><code>sealed class A permits B, C {}
+final class B extends A {}
+non-sealed class C extends A {}
+class D extends C {}</code></pre><p>sealedの直接の子は許可リストに必要で、さらにfinal/sealed/non-sealedのいずれかを宣言します。</p>
+</section>
+    </main>
+  </div>
+  <script src="data/questions.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
