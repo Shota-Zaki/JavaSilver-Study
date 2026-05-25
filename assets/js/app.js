@@ -791,7 +791,7 @@ service cloud.firestore {
     const tags = getQuestionTags(q).map(tag => `<span class="tag-chip">${escapeHtml(tag)}</span>`).join("");
     return `<article class="question-card" id="${escapeHtml(q.id)}" data-question-id="${escapeHtml(q.id)}">
       <div class="q-head">
-        <h2 class="q-title">問${q.number}. ${escapeHtml(q.title)}</h2>
+        <h2 class="q-title">問${q.number}</h2>
         <div class="q-meta"><span data-select-status>${escapeHtml(selectInstruction(q))}</span></div>
       </div>
       <p class="prompt">${escapeHtml(q.prompt)}</p>
@@ -1323,7 +1323,7 @@ service cloud.firestore {
   function renderJump(list) {
     const jump = document.getElementById("questionJump");
     if (!jump) return;
-    jump.innerHTML = list.map(q => `<option value="${escapeHtml(q.id)}">問${q.number}. ${escapeHtml(q.title)}</option>`).join("");
+    jump.innerHTML = list.map(q => `<option value="${escapeHtml(q.id)}">問${q.number}</option>`).join("");
     if (currentQuestionId) jump.value = currentQuestionId;
     jump.onchange = () => {
       currentQuestionId = jump.value;
