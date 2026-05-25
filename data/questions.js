@@ -1,6 +1,6 @@
 window.JAVA_STUDY_DATA = {
   "title": "Java Silver 勉強用ページ",
-  "version": "targeted-additional-explanations-complete-2026-05-25",
+  "version": "codeblocks-split-by-class-2026-05-25",
   "chapters": [
     {
       "id": "ch01",
@@ -11341,8 +11341,12 @@ window.JAVA_STUDY_DATA = {
         "source": "4章 問題PDF p.206 / 4章 解説PDF p.231",
         "codeBlocks": [
           {
-            "title": "Item.java / Main.java",
-            "code": "public class Item {\n    private int num = 10;\n    public void setNum(int num) { this.num = num; }\n    public int getNum() { return this.num; }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Item a = new Item();\n        Item b = new Item();\n        b.setNum(20);\n        System.out.println(a.getNum());\n    }\n}"
+            "title": "Item.java",
+            "code": "public class Item {\n    private int num = 10;\n    public void setNum(int num) { this.num = num; }\n    public int getNum() { return this.num; }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Item a = new Item();\n        Item b = new Item();\n        b.setNum(20);\n        System.out.println(a.getNum());\n    }\n}"
           }
         ],
         "tags": [
@@ -11466,8 +11470,12 @@ window.JAVA_STUDY_DATA = {
         "source": "4章 問題PDF / 4章 解説PDF",
         "codeBlocks": [
           {
-            "title": "Item.java / Main.java",
-            "code": "public class Item {\n    public String name;\n    public int price;\n    public void printInfo() {\n        System.out.println(name + \", \" + price);\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Item a = new Item();\n        Item b = new Item();\n        a.name = \"apple\";\n        b.price = 100;\n        a.price = 200;\n        b.name = \"banana\";\n        a = b;\n        a.printInfo();\n    }\n}"
+            "title": "Item.java",
+            "code": "public class Item {\n    public String name;\n    public int price;\n    public void printInfo() {\n        System.out.println(name + \", \" + price);\n    }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Item a = new Item();\n        Item b = new Item();\n        a.name = \"apple\";\n        b.price = 100;\n        a.price = 200;\n        b.name = \"banana\";\n        a = b;\n        a.printInfo();\n    }\n}"
           }
         ],
         "tags": [
@@ -15696,8 +15704,16 @@ window.JAVA_STUDY_DATA = {
         "source": "5章 問題PDF p.299 / 5章 解説PDF p.320",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "public interface A {\n    void sample() {\n        System.out.println(\"sample\");\n    }\n}\npublic class B implements A { }\npublic class Main {\n    public static void main(String[] args) {\n        A a = new B();\n        a.sample();\n    }\n}"
+            "title": "A.java",
+            "code": "public interface A {\n    void sample() {\n        System.out.println(\"sample\");\n    }\n}"
+          },
+          {
+            "title": "B.java",
+            "code": "public class B implements A { }"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A a = new B();\n        a.sample();\n    }\n}"
           }
         ],
         "tags": [
@@ -15812,8 +15828,16 @@ window.JAVA_STUDY_DATA = {
         "source": "5章 問題PDF p.300 / 5章 解説PDF p.300",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "public interface A {\n    @Override\n    default String toString() {\n        return \"A\";\n    }\n}\npublic class B implements A {\n    @Override\n    public String toString() {\n        return \"B\";\n    }\n}\npublic class Main {\n    public static void main(String[] args) {\n        A a = new B();\n        System.out.println(a);\n    }\n}"
+            "title": "A.java",
+            "code": "public interface A {\n    @Override\n    default String toString() {\n        return \"A\";\n    }\n}"
+          },
+          {
+            "title": "B.java",
+            "code": "public class B implements A {\n    @Override\n    public String toString() {\n        return \"B\";\n    }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A a = new B();\n        System.out.println(a);\n    }\n}"
           }
         ],
         "tags": [
@@ -16035,8 +16059,16 @@ window.JAVA_STUDY_DATA = {
         "source": "5章 問題PDF p.302 / 5章 解説PDF p.302",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "public interface A {\n    default void test() { System.out.println(\"A\"); }\n}\npublic interface B {\n    default void test() { System.out.println(\"B\"); }\n}\npublic class Main implements A, B {\n    public static void main(String[] args) {\n        new Main().test();\n    }\n}"
+            "title": "A.java",
+            "code": "public interface A {\n    default void test() { System.out.println(\"A\"); }\n}"
+          },
+          {
+            "title": "B.java",
+            "code": "public interface B {\n    default void test() { System.out.println(\"B\"); }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main implements A, B {\n    public static void main(String[] args) {\n        new Main().test();\n    }\n}"
           }
         ],
         "tags": [
@@ -16268,8 +16300,16 @@ window.JAVA_STUDY_DATA = {
         "source": "5章 問題PDF p.303 / 5章 解説PDF p.303",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "abstract class AbstractSample {\n    public void sample() {\n        System.out.println(\"A\");\n        test();\n        System.out.println(\"C\");\n    }\n    protected abstract void test();\n}\nclass ConcreteSample extends AbstractSample {\n    protected void test() { System.out.println(\"B\"); }\n}\npublic class Main {\n    public static void main(String[] args) {\n        AbstractSample s = new ConcreteSample();\n        s.sample();\n    }\n}"
+            "title": "AbstractSample クラス",
+            "code": "abstract class AbstractSample {\n    public void sample() {\n        System.out.println(\"A\");\n        test();\n        System.out.println(\"C\");\n    }\n    protected abstract void test();\n}"
+          },
+          {
+            "title": "ConcreteSample クラス",
+            "code": "class ConcreteSample extends AbstractSample {\n    protected void test() { System.out.println(\"B\"); }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        AbstractSample s = new ConcreteSample();\n        s.sample();\n    }\n}"
           }
         ],
         "tags": [
@@ -16570,8 +16610,16 @@ window.JAVA_STUDY_DATA = {
         "source": "5章 問題PDF p.304 / 5章 解説PDF p.304",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "class A {\n    String val = \"A\";\n    void print() { System.out.print(val); }\n}\nclass B extends A {\n    String val = \"B\";\n}\npublic class Main {\n    public static void main(String[] args) {\n        A a = new A();\n        A b = new B();\n        System.out.print(a.val);\n        System.out.print(b.val);\n        a.print();\n        b.print();\n    }\n}"
+            "title": "A クラス",
+            "code": "class A {\n    String val = \"A\";\n    void print() { System.out.print(val); }\n}"
+          },
+          {
+            "title": "B クラス",
+            "code": "class B extends A {\n    String val = \"B\";\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A a = new A();\n        A b = new B();\n        System.out.print(a.val);\n        System.out.print(b.val);\n        a.print();\n        b.print();\n    }\n}"
           }
         ],
         "tags": [
@@ -16677,8 +16725,20 @@ window.JAVA_STUDY_DATA = {
         "source": "5章 問題PDF p.305 / 5章 解説PDF p.305",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "interface Worker { void work(); }\nclass Employee {\n    public void work() { System.out.println(\"work\"); }\n}\nclass Engineer extends Employee implements Worker { }\npublic class Main {\n    public static void main(String[] args) {\n        Worker worker = new Engineer();\n        worker.work();\n    }\n}"
+            "title": "Worker インタフェース",
+            "code": "interface Worker { void work(); }"
+          },
+          {
+            "title": "Employee クラス",
+            "code": "class Employee {\n    public void work() { System.out.println(\"work\"); }\n}"
+          },
+          {
+            "title": "Engineer クラス",
+            "code": "class Engineer extends Employee implements Worker { }"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Worker worker = new Engineer();\n        worker.work();\n    }\n}"
           }
         ],
         "tags": [
@@ -16794,8 +16854,20 @@ window.JAVA_STUDY_DATA = {
         "source": "5章 問題PDF p.306 / 5章 解説PDF p.306",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "public interface Worker { void work(); }\nclass Employee implements Worker {\n    public void work() { System.out.println(\"work\"); }\n    public void report() { System.out.println(\"report\"); }\n}\nclass Engineer extends Employee {\n    public void create() { System.out.println(\"create future\"); }\n}\npublic class Main {\n    public static void main(String[] args) {\n        Worker a = new Engineer();\n        Employee b = new Engineer();\n        Engineer c = new Engineer();\n        a.create();\n        b.work();\n        c.report();\n    }\n}"
+            "title": "Worker.java",
+            "code": "public interface Worker { void work(); }"
+          },
+          {
+            "title": "Employee クラス",
+            "code": "class Employee implements Worker {\n    public void work() { System.out.println(\"work\"); }\n    public void report() { System.out.println(\"report\"); }\n}"
+          },
+          {
+            "title": "Engineer クラス",
+            "code": "class Engineer extends Employee {\n    public void create() { System.out.println(\"create future\"); }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Worker a = new Engineer();\n        Employee b = new Engineer();\n        Engineer c = new Engineer();\n        a.create();\n        b.work();\n        c.report();\n    }\n}"
           }
         ],
         "tags": [
@@ -16938,8 +17010,24 @@ window.JAVA_STUDY_DATA = {
         "source": "5章 問題PDF p.307 / 5章 解説PDF p.307",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "public interface A { }\npublic class B implements A { }\npublic class C extends B { }\npublic class D { }\npublic class Main {\n    public static void main(String[] args) {\n        A[] array = {\n            new B(),\n            new C(),\n            new A(),\n            new D()\n        };\n    }\n}"
+            "title": "A.java",
+            "code": "public interface A { }"
+          },
+          {
+            "title": "B.java",
+            "code": "public class B implements A { }"
+          },
+          {
+            "title": "C.java",
+            "code": "public class C extends B { }"
+          },
+          {
+            "title": "D.java",
+            "code": "public class D { }"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A[] array = {\n            new B(),\n            new C(),\n            new A(),\n            new D()\n        };\n    }\n}"
           }
         ],
         "tags": [
@@ -17063,8 +17151,16 @@ window.JAVA_STUDY_DATA = {
         "source": "5章 問題PDF p.308 / 5章 解説PDF p.308",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "class A { }\nclass B extends A {\n    void hello() { System.out.println(\"hello\"); }\n}\npublic class Main {\n    public static void main(String[] args) {\n        A a = new B();\n        // insert code here\n        b.hello();\n    }\n}"
+            "title": "A クラス",
+            "code": "class A { }"
+          },
+          {
+            "title": "B クラス",
+            "code": "class B extends A {\n    void hello() { System.out.println(\"hello\"); }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A a = new B();\n        // insert code here\n        b.hello();\n    }\n}"
           }
         ],
         "tags": [
@@ -17170,8 +17266,16 @@ window.JAVA_STUDY_DATA = {
         "source": "5章 問題PDF p.309 / 5章 解説PDF p.309",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "class A { void hello() { System.out.println(\"A\"); } }\nclass B extends A { void hello() { System.out.println(\"B\"); } }\npublic class Main {\n    public static void main(String[] args) {\n        A a = new A();\n        B b = (B) a;\n        b.hello();\n    }\n}"
+            "title": "A クラス",
+            "code": "class A { void hello() { System.out.println(\"A\"); } }"
+          },
+          {
+            "title": "B クラス",
+            "code": "class B extends A { void hello() { System.out.println(\"B\"); } }"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A a = new A();\n        B b = (B) a;\n        b.hello();\n    }\n}"
           }
         ],
         "tags": [
@@ -17289,8 +17393,12 @@ window.JAVA_STUDY_DATA = {
         "source": "5章 問題PDF p.310 / 5章 解説PDF p.310",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "class Sample {\n    private int num;\n    public Sample(int num) {\n        // insert code here\n    }\n    public int getNum() { return num; }\n    public void setNum(int num) { this.num = num; }\n}\npublic class Main {\n    public static void main(String[] args) {\n        Sample s = new Sample(10);\n        System.out.println(s.getNum());\n    }\n}"
+            "title": "Sample クラス",
+            "code": "class Sample {\n    private int num;\n    public Sample(int num) {\n        // insert code here\n    }\n    public int getNum() { return num; }\n    public void setNum(int num) { this.num = num; }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Sample s = new Sample(10);\n        System.out.println(s.getNum());\n    }\n}"
           }
         ],
         "tags": [
@@ -17405,8 +17513,16 @@ window.JAVA_STUDY_DATA = {
         "source": "5章 問題PDF p.311 / 5章 解説PDF p.311",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "class Parent {\n    String name;\n    String getName() { return this.name; }\n}\npublic class Child extends Parent {\n    String name;\n}\npublic class Main {\n    public static void main(String[] args) {\n        Child child = new Child();\n        child.name = \"sample\";\n        System.out.println(child.getName());\n    }\n}"
+            "title": "Parent クラス",
+            "code": "class Parent {\n    String name;\n    String getName() { return this.name; }\n}"
+          },
+          {
+            "title": "Child.java",
+            "code": "public class Child extends Parent {\n    String name;\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Child child = new Child();\n        child.name = \"sample\";\n        System.out.println(child.getName());\n    }\n}"
           }
         ],
         "tags": [
@@ -17530,8 +17646,16 @@ window.JAVA_STUDY_DATA = {
         "source": "5章 問題PDF p.312 / 5章 解説PDF p.312",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "class A {\n    public A() { System.out.println(\"A\"); }\n}\nclass B extends A {\n    public B() { System.out.println(\"B\"); }\n}\npublic class Main {\n    public static void main(String[] args) {\n        A a = new B();\n    }\n}"
+            "title": "A クラス",
+            "code": "class A {\n    public A() { System.out.println(\"A\"); }\n}"
+          },
+          {
+            "title": "B クラス",
+            "code": "class B extends A {\n    public B() { System.out.println(\"B\"); }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A a = new B();\n    }\n}"
           }
         ],
         "tags": [
@@ -17655,8 +17779,16 @@ window.JAVA_STUDY_DATA = {
         "source": "5章 問題PDF p.313 / 5章 解説PDF p.313",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "class Parent {\n    public Parent() { System.out.println(\"A\"); }\n    public Parent(String val) {\n        this();\n        System.out.println(val);\n    }\n}\nclass Child extends Parent {\n    public Child() {\n        super(\"B\");\n        System.out.println(\"C\");\n    }\n    public Child(String val) {\n        this();\n        System.out.println(val);\n    }\n}\npublic class Main {\n    public static void main(String[] args) {\n        new Child(\"D\");\n    }\n}"
+            "title": "Parent クラス",
+            "code": "class Parent {\n    public Parent() { System.out.println(\"A\"); }\n    public Parent(String val) {\n        this();\n        System.out.println(val);\n    }\n}"
+          },
+          {
+            "title": "Child クラス",
+            "code": "class Child extends Parent {\n    public Child() {\n        super(\"B\");\n        System.out.println(\"C\");\n    }\n    public Child(String val) {\n        this();\n        System.out.println(val);\n    }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        new Child(\"D\");\n    }\n}"
           }
         ],
         "tags": [
@@ -18159,8 +18291,20 @@ window.JAVA_STUDY_DATA = {
         "source": "5章 問題PDF p.316 / 5章 解説PDF p.316",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "public sealed interface Test permits A {\n    void sample();\n}\npublic abstract class A implements Test {\n    abstract void hello();\n}\npublic final class B extends A {\n    @Override void hello() { System.out.println(\"hello\"); }\n    @Override public void sample() { System.out.println(\"sample\"); }\n}\npublic class Sample {\n    public static void main(String[] args) {\n        Test t = new B();\n        t.sample();\n        A a = (A) t;\n        a.hello();\n    }\n}"
+            "title": "Test.java",
+            "code": "public sealed interface Test permits A {\n    void sample();\n}"
+          },
+          {
+            "title": "A.java",
+            "code": "public abstract class A implements Test {\n    abstract void hello();\n}"
+          },
+          {
+            "title": "B.java",
+            "code": "public final class B extends A {\n    @Override void hello() { System.out.println(\"hello\"); }\n    @Override public void sample() { System.out.println(\"sample\"); }\n}"
+          },
+          {
+            "title": "Sample.java",
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        Test t = new B();\n        t.sample();\n        A a = (A) t;\n        a.hello();\n    }\n}"
           }
         ],
         "tags": [
@@ -18539,8 +18683,16 @@ window.JAVA_STUDY_DATA = {
         "source": "6章 問題PDF p.375 / 6章 解説PDF p.375",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "public class SampleException extends Exception {}\npublic class SubSampleException extends SampleException {}\n\npublic class Main {\n    public static void main(String[] args) {\n        try {\n            sample();\n            sub();\n        } catch (SampleException e) {\n            System.out.println(\"A\");\n        } catch (SubSampleException e) {\n            System.out.println(\"B\");\n        }\n    }\n    private static void sample() throws SampleException {\n        throw new SampleException();\n    }\n    private static void sub() throws SubSampleException {\n        throw new SubSampleException();\n    }\n}"
+            "title": "SampleException.java",
+            "code": "public class SampleException extends Exception {}"
+          },
+          {
+            "title": "SubSampleException.java",
+            "code": "public class SubSampleException extends SampleException {}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        try {\n            sample();\n            sub();\n        } catch (SampleException e) {\n            System.out.println(\"A\");\n        } catch (SubSampleException e) {\n            System.out.println(\"B\");\n        }\n    }\n    private static void sample() throws SampleException {\n        throw new SampleException();\n    }\n    private static void sub() throws SubSampleException {\n        throw new SubSampleException();\n    }\n}"
           }
         ],
         "tags": [
@@ -19455,8 +19607,16 @@ window.JAVA_STUDY_DATA = {
         "source": "6章 問題PDF p.383 / 6章 解説PDF p.383",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "public class SampleException extends Exception {}\npublic class TestException extends RuntimeException {}\n\npublic class Sample {\n    public void hello(String name) /* ここに入る */ {\n        if (name == null) {\n            throw new SampleException();\n        }\n        if (\"\".equals(name)) {\n            throw new TestException();\n        }\n    }\n}"
+            "title": "SampleException.java",
+            "code": "public class SampleException extends Exception {}"
+          },
+          {
+            "title": "TestException.java",
+            "code": "public class TestException extends RuntimeException {}"
+          },
+          {
+            "title": "Sample.java",
+            "code": "public class Sample {\n    public void hello(String name) /* ここに入る */ {\n        if (name == null) {\n            throw new SampleException();\n        }\n        if (\"\".equals(name)) {\n            throw new TestException();\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -19875,8 +20035,16 @@ window.JAVA_STUDY_DATA = {
         "source": "6章 問題PDF p.386 / 6章 解説PDF p.385",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "public class A {\n    private int num;\n    public A(int num) { this.num = num; }\n    public boolean equals(Object obj) {\n        A a = (A) obj;\n        return this.num == a.num;\n    }\n}\npublic class B {\n    private int num;\n    public B(int num) { this.num = num; }\n    public boolean equals(Object obj) {\n        B b = (B) obj;\n        return this.num == b.num;\n    }\n}\npublic class Main {\n    public static void main(String[] args) {\n        A a = new A(10);\n        B b = new B(10);\n        System.out.println(a.equals(b));\n    }\n}"
+            "title": "A.java",
+            "code": "public class A {\n    private int num;\n    public A(int num) { this.num = num; }\n    public boolean equals(Object obj) {\n        A a = (A) obj;\n        return this.num == a.num;\n    }\n}"
+          },
+          {
+            "title": "B.java",
+            "code": "public class B {\n    private int num;\n    public B(int num) { this.num = num; }\n    public boolean equals(Object obj) {\n        B b = (B) obj;\n        return this.num == b.num;\n    }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A a = new A(10);\n        B b = new B(10);\n        System.out.println(a.equals(b));\n    }\n}"
           }
         ],
         "tags": [
@@ -20886,8 +21054,12 @@ window.JAVA_STUDY_DATA = {
         "source": "6章 問題PDF p.393 / 6章 解説PDF p.397",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "public class TroubleResource implements AutoCloseable {\n    @Override\n    public void close() throws Exception {\n        throw new RuntimeException(\"trouble\");\n    }\n}\npublic class TroubleMaker {\n    public static void main(String[] args) {\n        try (TroubleResource a = new TroubleResource()) {\n            throw new Exception();\n        } catch (RuntimeException e) {\n            System.out.println(\"A\");\n        } catch (Exception e) {\n            System.out.println(\"B\");\n        }\n    }\n}"
+            "title": "TroubleResource.java",
+            "code": "public class TroubleResource implements AutoCloseable {\n    @Override\n    public void close() throws Exception {\n        throw new RuntimeException(\"trouble\");\n    }\n}"
+          },
+          {
+            "title": "TroubleMaker.java",
+            "code": "public class TroubleMaker {\n    public static void main(String[] args) {\n        try (TroubleResource a = new TroubleResource()) {\n            throw new Exception();\n        } catch (RuntimeException e) {\n            System.out.println(\"A\");\n        } catch (Exception e) {\n            System.out.println(\"B\");\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -21063,15 +21235,24 @@ window.JAVA_STUDY_DATA = {
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF画像照合済み）",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "// ex/p1/A.java\npackage ex.p1;\n\npublic class A {\n}\n\n// ex/p2/B.java\npackage ex.p2;\n\npublic class B {\n}\n\n// C.java\npublic class C extends A {\n    public void sample() {\n        B b = new B();\n    }\n}"
+            "title": "A.java",
+            "code": "// ex/p1/A.java\npackage ex.p1;\n\npublic class A {\n}"
+          },
+          {
+            "title": "B.java",
+            "code": "// ex/p2/B.java\npackage ex.p2;\n\npublic class B {\n}"
+          },
+          {
+            "title": "C.java",
+            "code": "// C.java\npublic class C extends A {\n    public void sample() {\n        B b = new B();\n    }\n}"
           }
         ],
         "tags": [
           "package/import",
           "inheritance/polymorphism",
           "field/static/scope"
-        ]
+        ],
+        "status": "reviewed"
       },
       {
         "id": "ch07-q03",
@@ -21162,8 +21343,12 @@ window.JAVA_STUDY_DATA = {
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF画像照合済み）",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "public class A implements AutoCloseable {\n    private String name;\n\n    public A(String name) {\n        this.name = name;\n    }\n\n    public void close() throws Exception {\n        System.out.println(name);\n    }\n}\n\npublic class Sample {\n    public static void main(String[] args) throws Exception {\n        try (A a = new A(\"A\");\n             A b = new A(\"B\")) {\n        } finally {\n            System.out.println(\"C\");\n        }\n    }\n}"
+            "title": "A.java",
+            "code": "public class A implements AutoCloseable {\n    private String name;\n\n    public A(String name) {\n        this.name = name;\n    }\n\n    public void close() throws Exception {\n        System.out.println(name);\n    }\n}"
+          },
+          {
+            "title": "Sample.java",
+            "code": "public class Sample {\n    public static void main(String[] args) throws Exception {\n        try (A a = new A(\"A\");\n             A b = new A(\"B\")) {\n        } finally {\n            System.out.println(\"C\");\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -21171,7 +21356,8 @@ window.JAVA_STUDY_DATA = {
           "try-with-resources",
           "main/args",
           "interface/default"
-        ]
+        ],
+        "status": "reviewed"
       },
       {
         "id": "ch07-q04",
@@ -21453,8 +21639,12 @@ window.JAVA_STUDY_DATA = {
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF画像照合済み）",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "public class A {\n    private var num = 10;        // (1)\n\n    public A(String num) {\n        var var = Integer.parseInt(num); // (2)\n        this.num = var;                 // (3)\n    }\n\n    public void print() {\n        int var = num;                  // (4)\n        System.out.println(var);        // (5)\n    }\n}\n\npublic class Sample {\n    public static void main(String[] args) {\n        new A(\"20\").print();\n    }\n}"
+            "title": "A.java",
+            "code": "public class A {\n    private var num = 10;        // (1)\n\n    public A(String num) {\n        var var = Integer.parseInt(num); // (2)\n        this.num = var;                 // (3)\n    }\n\n    public void print() {\n        int var = num;                  // (4)\n        System.out.println(var);        // (5)\n    }\n}"
+          },
+          {
+            "title": "Sample.java",
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        new A(\"20\").print();\n    }\n}"
           }
         ],
         "tags": [
@@ -21462,7 +21652,8 @@ window.JAVA_STUDY_DATA = {
           "main/args",
           "string/reference",
           "array"
-        ]
+        ],
+        "status": "reviewed"
       },
       {
         "id": "ch07-q07",
@@ -21774,8 +21965,16 @@ window.JAVA_STUDY_DATA = {
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF画像照合済み）",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "public class A {\n    public int num;\n\n    public A(int num) {\n        this.num = num;\n    }\n}\n\npublic class B extends A {\n    public B(int num) {\n        super(num);\n    }\n}\n\npublic interface Sample {\n    A execute(int num);\n}"
+            "title": "A.java",
+            "code": "public class A {\n    public int num;\n\n    public A(int num) {\n        this.num = num;\n    }\n}"
+          },
+          {
+            "title": "B.java",
+            "code": "public class B extends A {\n    public B(int num) {\n        super(num);\n    }\n}"
+          },
+          {
+            "title": "Sample.java",
+            "code": "public interface Sample {\n    A execute(int num);\n}"
           }
         ],
         "tags": [
@@ -21783,7 +21982,8 @@ window.JAVA_STUDY_DATA = {
           "interface/default",
           "array",
           "inheritance/polymorphism"
-        ]
+        ],
+        "status": "reviewed"
       },
       {
         "id": "ch07-q10",
@@ -21883,8 +22083,16 @@ window.JAVA_STUDY_DATA = {
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF画像照合済み）",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "public class A {\n    public void execute() {\n        System.out.println(\"A\");\n    }\n}\n\npublic class B extends A {\n    private void test() {\n        System.out.println(\"B\");\n    }\n\n    public void execute() {\n        test();\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Object[] objects = {\n            new A(), new B(), \"C\"\n        };\n        for (Object obj : objects) {\n            test(obj);\n        }\n    }\n\n    private static void test(Object obj) {\n        if (obj instanceof A b) {\n            b.execute();\n        }\n    }\n}"
+            "title": "A.java",
+            "code": "public class A {\n    public void execute() {\n        System.out.println(\"A\");\n    }\n}"
+          },
+          {
+            "title": "B.java",
+            "code": "public class B extends A {\n    private void test() {\n        System.out.println(\"B\");\n    }\n\n    public void execute() {\n        test();\n    }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Object[] objects = {\n            new A(), new B(), \"C\"\n        };\n        for (Object obj : objects) {\n            test(obj);\n        }\n    }\n\n    private static void test(Object obj) {\n        if (obj instanceof A b) {\n            b.execute();\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -21892,7 +22100,8 @@ window.JAVA_STUDY_DATA = {
           "main/args",
           "exception",
           "string/reference"
-        ]
+        ],
+        "status": "reviewed"
       },
       {
         "id": "ch07-q11",
@@ -22593,7 +22802,19 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n    public static void main(String[] args) {\n        ((A) new C()).sample();\n        ((B) new C()).sample();\n        ((C) new C()).sample();\n    }\n}\n\ninterface A {\n    default void sample() {\n        System.out.println(\"A\");\n    }\n}\n\nabstract sealed class B implements A {\n    private void sample() {\n        System.out.println(\"B\");\n    }\n}\n\nfinal class C extends B {\n    public void sample() {\n        System.out.println(\"C\");\n    }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        ((A) new C()).sample();\n        ((B) new C()).sample();\n        ((C) new C()).sample();\n    }\n}"
+          },
+          {
+            "title": "A インタフェース",
+            "code": "interface A {\n    default void sample() {\n        System.out.println(\"A\");\n    }\n}"
+          },
+          {
+            "title": "B クラス",
+            "code": "abstract sealed class B implements A {\n    private void sample() {\n        System.out.println(\"B\");\n    }\n}"
+          },
+          {
+            "title": "C クラス",
+            "code": "final class C extends B {\n    public void sample() {\n        System.out.println(\"C\");\n    }\n}"
           }
         ],
         "tags": [
@@ -22601,7 +22822,8 @@ window.JAVA_STUDY_DATA = {
           "override/overload",
           "main/args",
           "string/reference"
-        ]
+        ],
+        "status": "reviewed"
       },
       {
         "id": "ch07-q18",
@@ -23352,15 +23574,20 @@ window.JAVA_STUDY_DATA = {
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
           {
-            "title": "A.java / B.java",
-            "code": "public interface A {\n    int a = 1;\n    static int b = 2;\n    static final int c = 3;\n}\n\nclass B implements A {\n    public static void main(String[] args) {\n        A t = new B();\n        // insert code here\n    }\n}"
+            "title": "A.java",
+            "code": "public interface A {\n    int a = 1;\n    static int b = 2;\n    static final int c = 3;\n}"
+          },
+          {
+            "title": "B クラス",
+            "code": "class B implements A {\n    public static void main(String[] args) {\n        A t = new B();\n        // insert code here\n    }\n}"
           }
         ],
         "tags": [
           "interface",
           "final",
           "field/static/scope"
-        ]
+        ],
+        "status": "reviewed"
       },
       {
         "id": "ch07-q25",
@@ -23461,13 +23688,18 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n    public static void main(String[] args) {\n        int result = new Test().execute(\"A\");\n        System.out.println(result);\n    }\n}\n\nclass Test {\n    int execute(String str) {\n        int total = 0;\n        switch (str) {\n            case \"A\" -> total++;\n            case \"B\", \"C\" -> total++;\n            case \"D\", \"E\" -> total++;\n            default -> total++;\n        };\n        return total;\n    }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        int result = new Test().execute(\"A\");\n        System.out.println(result);\n    }\n}"
+          },
+          {
+            "title": "Test クラス",
+            "code": "class Test {\n    int execute(String str) {\n        int total = 0;\n        switch (str) {\n            case \"A\" -> total++;\n            case \"B\", \"C\" -> total++;\n            case \"D\", \"E\" -> total++;\n            default -> total++;\n        };\n        return total;\n    }\n}"
           }
         ],
         "tags": [
           "switch",
           "operator"
-        ]
+        ],
+        "status": "reviewed"
       },
       {
         "id": "ch07-q26",
@@ -23772,14 +24004,19 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n    public static void main(String[] args) {\n        Item a = new Item(\"A\");\n        System.out.print(a.name + a.id + \",\");\n        Item b = new Item(\"B\");\n        System.out.print(b.name + b.id + \",\");\n        b.id = \"2\";\n        a.name = \"C\";\n        System.out.print(a.name + a.id + \",\");\n        System.out.print(b.name + b.id + \",\");\n    }\n}\n\nclass Item {\n    public static String id;\n    public String name;\n    public Item(String name) {\n        this.name = name;\n        id = \"1\";\n    }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        Item a = new Item(\"A\");\n        System.out.print(a.name + a.id + \",\");\n        Item b = new Item(\"B\");\n        System.out.print(b.name + b.id + \",\");\n        b.id = \"2\";\n        a.name = \"C\";\n        System.out.print(a.name + a.id + \",\");\n        System.out.print(b.name + b.id + \",\");\n    }\n}"
+          },
+          {
+            "title": "Item クラス",
+            "code": "class Item {\n    public static String id;\n    public String name;\n    public Item(String name) {\n        this.name = name;\n        id = \"1\";\n    }\n}"
           }
         ],
         "tags": [
           "static",
           "field/static/scope",
           "object"
-        ]
+        ],
+        "status": "reviewed"
       },
       {
         "id": "ch07-q29",
@@ -23870,7 +24107,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n    public static void main(String[] args) {\n        B b = new B();\n        b.setValues(args);\n        System.out.println(b);\n    }\n}\n\nclass A {\n    private String value;\n\n    public String getValue() {\n        return value;\n    }\n\n    public void setValue(String name) {\n        this.value = name;\n    }\n\n    public String toString() {\n        return getValue();\n    }\n}\n\nclass B extends A {\n    public void setValue(String value) {\n        super.setValue(\"\"\" + value + \"\"\");\n    }\n    public void setValues(String[] parts) {\n        var sb = new StringBuilder();\n        for (String part : parts) {\n            sb.append(part).append(' ');\n        }\n        this.setValue(sb.toString());\n    }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        B b = new B();\n        b.setValues(args);\n        System.out.println(b);\n    }\n}"
+          },
+          {
+            "title": "A クラス",
+            "code": "class A {\n    private String value;\n\n    public String getValue() {\n        return value;\n    }\n\n    public void setValue(String name) {\n        this.value = name;\n    }\n\n    public String toString() {\n        return getValue();\n    }\n}"
+          },
+          {
+            "title": "B クラス",
+            "code": "class B extends A {\n    public void setValue(String value) {\n        super.setValue(\"\"\" + value + \"\"\");\n    }\n    public void setValues(String[] parts) {\n        var sb = new StringBuilder();\n        for (String part : parts) {\n            sb.append(part).append(' ');\n        }\n        this.setValue(sb.toString());\n    }\n}"
           }
         ],
         "tags": [
@@ -23878,7 +24123,8 @@ window.JAVA_STUDY_DATA = {
           "StringBuilder",
           "inheritance/polymorphism",
           "override/overload"
-        ]
+        ],
+        "status": "reviewed"
       },
       {
         "id": "ch07-q30",
@@ -24047,14 +24293,23 @@ window.JAVA_STUDY_DATA = {
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "// Sample.java\npackage com.sample;\npublic class Sample {\n    public void sample() {\n        // any code\n    }\n}\n\n// Test.java\npackage com.sample.test;\npublic class Test {\n    public void test(int num) {\n        // any code\n    }\n}\n\n// Main.java\npackage com;\n// 空欄\npublic class Main {\n    public static void main(String[] args) {\n        new Sample().sample();\n        int num = Integer.parseInt(args[0]);\n        new Test().test(num);\n    }\n}"
+            "title": "Sample.java",
+            "code": "// Sample.java\npackage com.sample;\npublic class Sample {\n    public void sample() {\n        // any code\n    }\n}"
+          },
+          {
+            "title": "Test.java",
+            "code": "// Test.java\npackage com.sample.test;\npublic class Test {\n    public void test(int num) {\n        // any code\n    }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "// Main.java\npackage com;\n// 空欄\npublic class Main {\n    public static void main(String[] args) {\n        new Sample().sample();\n        int num = Integer.parseInt(args[0]);\n        new Test().test(num);\n    }\n}"
           }
         ],
         "tags": [
           "package/import",
           "main/args"
-        ]
+        ],
+        "status": "reviewed"
       },
       {
         "id": "ch07-q32",
@@ -24208,15 +24463,24 @@ window.JAVA_STUDY_DATA = {
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "public interface A {\n    abstract void x();\n}\n\npublic abstract class B /* position 1 */ {\n    /* position 2 */\n    public void x() {}\n    public abstract void z();\n}\n\npublic class C extends B implements A {\n    /* position 3 */\n}"
+            "title": "A.java",
+            "code": "public interface A {\n    abstract void x();\n}"
+          },
+          {
+            "title": "B.java",
+            "code": "public abstract class B /* position 1 */ {\n    /* position 2 */\n    public void x() {}\n    public abstract void z();\n}"
+          },
+          {
+            "title": "C.java",
+            "code": "public class C extends B implements A {\n    /* position 3 */\n}"
           }
         ],
         "tags": [
           "abstract",
           "interface",
           "override"
-        ]
+        ],
+        "status": "reviewed"
       },
       {
         "id": "ch07-q34",
@@ -24538,15 +24802,20 @@ window.JAVA_STUDY_DATA = {
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "// ex15/Sample.java\npackage ex15;\n\npublic class Sample {\n    private final String name;\n    public Sample(String name) {\n        this.name = name;\n    }\n    public String getName() {\n        return name;\n    }\n    public String toString() {\n        return name;\n    }\n}\n\n// ex15/Main.java\npackage ex15;\n\nimport java.util.logging.Logger;\n\npublic class Main {\n    static final Logger logger = Logger.getAnonymousLogger();\n    public static void main(String[] args) {\n        var d = new Sample(\"sample\");\n        logger.info(d.toString());\n    }\n}"
+            "title": "Sample.java",
+            "code": "// ex15/Sample.java\npackage ex15;\n\npublic class Sample {\n    private final String name;\n    public Sample(String name) {\n        this.name = name;\n    }\n    public String getName() {\n        return name;\n    }\n    public String toString() {\n        return name;\n    }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "// ex15/Main.java\npackage ex15;\n\nimport java.util.logging.Logger;\n\npublic class Main {\n    static final Logger logger = Logger.getAnonymousLogger();\n    public static void main(String[] args) {\n        var d = new Sample(\"sample\");\n        logger.info(d.toString());\n    }\n}"
           }
         ],
         "tags": [
           "javac",
           "classpath",
           "package"
-        ]
+        ],
+        "status": "reviewed"
       },
       {
         "id": "ch07-q38",
@@ -24627,15 +24896,24 @@ window.JAVA_STUDY_DATA = {
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "public class A {\n    public void hello() {\n        System.out.println(\"hello\");\n    }\n}\n\npublic class B extends A {\n    public void bye() {\n        System.out.println(\"bye\");\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        A a = new B();\n        a.bye();\n    }\n}"
+            "title": "A.java",
+            "code": "public class A {\n    public void hello() {\n        System.out.println(\"hello\");\n    }\n}"
+          },
+          {
+            "title": "B.java",
+            "code": "public class B extends A {\n    public void bye() {\n        System.out.println(\"bye\");\n    }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A a = new B();\n        a.bye();\n    }\n}"
           }
         ],
         "tags": [
           "inheritance",
           "polymorphism",
           "reference-type"
-        ]
+        ],
+        "status": "reviewed"
       },
       {
         "id": "ch07-q39",
@@ -24876,8 +25154,16 @@ window.JAVA_STUDY_DATA = {
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "public class A {\n    int num = 10;\n    public double getValue() {\n        return 0.0;\n    }\n}\n\npublic class B extends A {\n    @Override\n    public double getValue() {\n        // ...\n        return 1.0;\n    }\n}\n\npublic class C extends B {\n    @Override\n    public double getValue() {\n        System.out.println(super.num);\n        return super.getValue();\n    }\n}"
+            "title": "A.java",
+            "code": "public class A {\n    int num = 10;\n    public double getValue() {\n        return 0.0;\n    }\n}"
+          },
+          {
+            "title": "B.java",
+            "code": "public class B extends A {\n    @Override\n    public double getValue() {\n        // ...\n        return 1.0;\n    }\n}"
+          },
+          {
+            "title": "C.java",
+            "code": "public class C extends B {\n    @Override\n    public double getValue() {\n        System.out.println(super.num);\n        return super.getValue();\n    }\n}"
           }
         ],
         "tags": [
@@ -24972,8 +25258,16 @@ window.JAVA_STUDY_DATA = {
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "import java.util.Collection;\n\npublic class A {\n    public void sample(Collection arg) {\n        System.out.println(\"A\");\n    }\n}\n\nimport java.util.Collection;\nimport java.util.List;\n\npublic class B extends A {\n    public void sample(Collection arg) {\n        System.out.println(\"B\");\n    }\n    public void sample(List arg) {\n        System.out.println(\"C\");\n    }\n}\n\nimport java.util.ArrayList;\nimport java.util.List;\n\npublic class Main {\n    public static void main(String[] args) {\n        A a1 = new A();\n        A a2 = new B();\n        B b1 = new B();\n\n        List<String> list = new ArrayList<>();\n\n        // do something\n    }\n}"
+            "title": "A.java",
+            "code": "import java.util.Collection;\n\npublic class A {\n    public void sample(Collection arg) {\n        System.out.println(\"A\");\n    }\n}"
+          },
+          {
+            "title": "B.java",
+            "code": "import java.util.Collection;\nimport java.util.List;\n\npublic class B extends A {\n    public void sample(Collection arg) {\n        System.out.println(\"B\");\n    }\n    public void sample(List arg) {\n        System.out.println(\"C\");\n    }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Main {\n    public static void main(String[] args) {\n        A a1 = new A();\n        A a2 = new B();\n        B b1 = new B();\n\n        List<String> list = new ArrayList<>();\n\n        // do something\n    }\n}"
           }
         ],
         "tags": [
@@ -25057,8 +25351,20 @@ window.JAVA_STUDY_DATA = {
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "public interface A {\n    void sample();\n}\n\npublic interface B extends A {\n    default void sample() {\n        System.out.println(\"B\");\n    }\n}\n\npublic interface C extends A {\n    @Override\n    default void sample() {\n        System.out.println(\"C\");\n    }\n}\n\npublic class D implements B, C {\n    @Override\n    public void sample() {\n        super.sample();\n    }\n}"
+            "title": "A.java",
+            "code": "public interface A {\n    void sample();\n}"
+          },
+          {
+            "title": "B.java",
+            "code": "public interface B extends A {\n    default void sample() {\n        System.out.println(\"B\");\n    }\n}"
+          },
+          {
+            "title": "C.java",
+            "code": "public interface C extends A {\n    @Override\n    default void sample() {\n        System.out.println(\"C\");\n    }\n}"
+          },
+          {
+            "title": "D.java",
+            "code": "public class D implements B, C {\n    @Override\n    public void sample() {\n        super.sample();\n    }\n}"
           }
         ],
         "tags": [
@@ -25150,8 +25456,20 @@ window.JAVA_STUDY_DATA = {
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "public abstract class A {}\n\npublic interface B {}\n\npublic class C extends A implements B {}\n\npublic class D extends C {}"
+            "title": "A.java",
+            "code": "public abstract class A {}"
+          },
+          {
+            "title": "B.java",
+            "code": "public interface B {}"
+          },
+          {
+            "title": "C.java",
+            "code": "public class C extends A implements B {}"
+          },
+          {
+            "title": "D.java",
+            "code": "public class D extends C {}"
           }
         ],
         "tags": [
@@ -25255,8 +25573,12 @@ window.JAVA_STUDY_DATA = {
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "public interface A {\n    public A build(String str);\n}\n\npublic class B implements A {\n    public B(String str) {\n        // ...\n    }\n\n    @Override\n    public B build(String str) {\n        return new B(str);\n    }\n}"
+            "title": "A.java",
+            "code": "public interface A {\n    public A build(String str);\n}"
+          },
+          {
+            "title": "B.java",
+            "code": "public class B implements A {\n    public B(String str) {\n        // ...\n    }\n\n    @Override\n    public B build(String str) {\n        return new B(str);\n    }\n}"
           }
         ],
         "tags": [
@@ -25340,8 +25662,20 @@ window.JAVA_STUDY_DATA = {
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "class A {\n    public A() {\n        System.out.print(\"A\");\n    }\n}\n\nclass B extends A {\n    public B() {\n        System.out.print(\"B\");\n    }\n}\n\nclass C extends B {\n    public C() {\n        System.out.print(\"C\");\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        new C();\n    }\n}"
+            "title": "A クラス",
+            "code": "class A {\n    public A() {\n        System.out.print(\"A\");\n    }\n}"
+          },
+          {
+            "title": "B クラス",
+            "code": "class B extends A {\n    public B() {\n        System.out.print(\"B\");\n    }\n}"
+          },
+          {
+            "title": "C クラス",
+            "code": "class C extends B {\n    public C() {\n        System.out.print(\"C\");\n    }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        new C();\n    }\n}"
           }
         ],
         "tags": [
@@ -25423,8 +25757,12 @@ window.JAVA_STUDY_DATA = {
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "public class A {\n    private void print() {\n        System.out.println(\"A\");\n    }\n    public void a() {\n        print();\n    }\n}\n\npublic class B extends A {\n    private void print() {\n        System.out.println(\"B\");\n    }\n    public void b() {\n        print();\n    }\n    public static void main(String... args) {\n        B b = new B();\n        b.a();\n        b.b();\n    }\n}"
+            "title": "A.java",
+            "code": "public class A {\n    private void print() {\n        System.out.println(\"A\");\n    }\n    public void a() {\n        print();\n    }\n}"
+          },
+          {
+            "title": "B.java",
+            "code": "public class B extends A {\n    private void print() {\n        System.out.println(\"B\");\n    }\n    public void b() {\n        print();\n    }\n    public static void main(String... args) {\n        B b = new B();\n        b.a();\n        b.b();\n    }\n}"
           }
         ],
         "tags": [
@@ -25681,8 +26019,20 @@ window.JAVA_STUDY_DATA = {
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "public interface A {\n    public Iterable a();\n}\n\nimport java.util.Collection;\n\npublic interface B extends A {\n    public Collection a();\n}\n\nimport java.nio.file.Path;\n\npublic interface C extends A {\n    public Path a();\n}\n\npublic interface D extends B, C {\n}"
+            "title": "A.java",
+            "code": "public interface A {\n    public Iterable a();\n}"
+          },
+          {
+            "title": "B.java",
+            "code": "import java.util.Collection;\n\npublic interface B extends A {\n    public Collection a();\n}"
+          },
+          {
+            "title": "C.java",
+            "code": "import java.nio.file.Path;\n\npublic interface C extends A {\n    public Path a();\n}"
+          },
+          {
+            "title": "D.java",
+            "code": "public interface D extends B, C {\n}"
           }
         ],
         "tags": [
@@ -25765,8 +26115,16 @@ window.JAVA_STUDY_DATA = {
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "package ex42.a;\n\npublic class A {\n    public String x = \"A\";\n    protected A() {}\n}\n\npackage ex42.b;\n\nimport ex42.a.A;\n\npublic class B extends A {\n    String x = \"B\";\n    public B() {\n        super();\n    }\n}\n\npackage ex42;\n\nimport ex42.a.A;\nimport ex42.b.B;\n\npublic class Main {\n    public static void main(String[] args) {\n        A a = new B();\n        System.out.println(a.x);\n    }\n}"
+            "title": "A.java",
+            "code": "package ex42.a;\n\npublic class A {\n    public String x = \"A\";\n    protected A() {}\n}"
+          },
+          {
+            "title": "B.java",
+            "code": "package ex42.b;\n\nimport ex42.a.A;\n\npublic class B extends A {\n    String x = \"B\";\n    public B() {\n        super();\n    }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "package ex42;\n\nimport ex42.a.A;\nimport ex42.b.B;\n\npublic class Main {\n    public static void main(String[] args) {\n        A a = new B();\n        System.out.println(a.x);\n    }\n}"
           }
         ],
         "tags": [
@@ -25858,8 +26216,16 @@ window.JAVA_STUDY_DATA = {
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "public class Sample {\n    String name;\n    int num;\n    public Sample(String name, int num) {\n        this.name = name;\n        this.num = num;\n    }\n}\n\npublic class SubSample extends Sample {\n    int price;\n    public SubSample(int price) {\n        this.price = price;\n    }\n    public SubSample(String name, int num, int price) {\n        super(name, num);\n        this(price);\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        // ...\n    }\n}"
+            "title": "Sample.java",
+            "code": "public class Sample {\n    String name;\n    int num;\n    public Sample(String name, int num) {\n        this.name = name;\n        this.num = num;\n    }\n}"
+          },
+          {
+            "title": "SubSample.java",
+            "code": "public class SubSample extends Sample {\n    int price;\n    public SubSample(int price) {\n        this.price = price;\n    }\n    public SubSample(String name, int num, int price) {\n        super(name, num);\n        this(price);\n    }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        // ...\n    }\n}"
           }
         ],
         "tags": [
@@ -25952,8 +26318,24 @@ window.JAVA_STUDY_DATA = {
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "interface A {\n    public void sample();\n}\n\ninterface B extends A {\n    public void test();\n}\n\nabstract class C implements B {\n    public void test() {\n        System.out.println(\"A\");\n    }\n}\n\nclass D extends C {\n    public void test() {\n        System.out.println(\"B\");\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        C c = new D();\n        c.test();\n    }\n}"
+            "title": "A インタフェース",
+            "code": "interface A {\n    public void sample();\n}"
+          },
+          {
+            "title": "B インタフェース",
+            "code": "interface B extends A {\n    public void test();\n}"
+          },
+          {
+            "title": "C クラス",
+            "code": "abstract class C implements B {\n    public void test() {\n        System.out.println(\"A\");\n    }\n}"
+          },
+          {
+            "title": "D クラス",
+            "code": "class D extends C {\n    public void test() {\n        System.out.println(\"B\");\n    }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        C c = new D();\n        c.test();\n    }\n}"
           }
         ],
         "tags": [
@@ -26385,8 +26767,16 @@ window.JAVA_STUDY_DATA = {
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
           {
-            "title": "コード",
-            "code": "public class A {\n    protected A() {\n        this(2);\n        System.out.print(\"1\");\n    }\n    protected A(int a) {\n        System.out.print(a);\n    }\n}\n\npublic class B extends A {\n    B() {\n        this(4);\n        System.out.print(\"3\");\n    }\n    B(int b) {\n        System.out.print(b);\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        B b = new B();\n    }\n}"
+            "title": "A.java",
+            "code": "public class A {\n    protected A() {\n        this(2);\n        System.out.print(\"1\");\n    }\n    protected A(int a) {\n        System.out.print(a);\n    }\n}"
+          },
+          {
+            "title": "B.java",
+            "code": "public class B extends A {\n    B() {\n        this(4);\n        System.out.print(\"3\");\n    }\n    B(int b) {\n        System.out.print(b);\n    }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        B b = new B();\n    }\n}"
           }
         ],
         "tags": [
@@ -26703,7 +27093,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public class A {\n    public static void main(String[] args) {\n        System.out.println(\"A\");\n    }\n}\n\nclass B {\n    public static void main(String[] args) {\n        System.out.println(\"B\");\n    }\n}"
+            "code": "public class A {\n    public static void main(String[] args) {\n        System.out.println(\"A\");\n    }\n}"
+          },
+          {
+            "title": "B クラス",
+            "code": "class B {\n    public static void main(String[] args) {\n        System.out.println(\"B\");\n    }\n}"
           }
         ],
         "options": [
@@ -26839,8 +27233,12 @@ window.JAVA_STUDY_DATA = {
         "prompt": "次のプログラムをコンパイル、実行したときの結果として、正しいものを選びなさい。",
         "codeBlocks": [
           {
-            "title": "Value / Main",
-            "code": "public class Value {\n    private String contents;\n    public Value(String contents) {\n        super();\n        this.contents = contents;\n    }\n    public Value() {\n        this.contents = \"\";\n    }\n    public static void print() {\n        System.out.println(contents);\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Value.print();\n    }\n}"
+            "title": "Value.java",
+            "code": "public class Value {\n    private String contents;\n    public Value(String contents) {\n        super();\n        this.contents = contents;\n    }\n    public Value() {\n        this.contents = \"\";\n    }\n    public static void print() {\n        System.out.println(contents);\n    }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Value.print();\n    }\n}"
           }
         ],
         "options": [
@@ -27206,8 +27604,20 @@ window.JAVA_STUDY_DATA = {
         "prompt": "次のプログラムで、コンパイルエラーになる箇所は(1)から(9)のどれか。",
         "codeBlocks": [
           {
-            "title": "Main / A / B / C",
-            "code": "public class Main {\n    public static void main(String[] args) {\n        B b = new C();\n        A t = new C();\n\n        b.test(1);        // (1)\n        (A)b.test(2);     // (2)\n        ((A)b).test(3);   // (3)\n        t.test(4);        // (4)\n        (A)t.test(5);     // (5)\n        ((A)t).test(6);   // (6)\n    }\n}\n\nsealed interface A permits C { // (7)\n    void test(int i);\n}\n\nclass B { // (8)\n    public static final int NUM = 2;\n}\n\nfinal class C extends B implements A { // (9)\n    @Override\n    public void test(int i) {\n        System.out.println(i * B.NUM);\n    }\n}"
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        B b = new C();\n        A t = new C();\n\n        b.test(1);        // (1)\n        (A)b.test(2);     // (2)\n        ((A)b).test(3);   // (3)\n        t.test(4);        // (4)\n        (A)t.test(5);     // (5)\n        ((A)t).test(6);   // (6)\n    }\n}"
+          },
+          {
+            "title": "A インタフェース",
+            "code": "sealed interface A permits C { // (7)\n    void test(int i);\n}"
+          },
+          {
+            "title": "B クラス",
+            "code": "class B { // (8)\n    public static final int NUM = 2;\n}"
+          },
+          {
+            "title": "C クラス",
+            "code": "final class C extends B implements A { // (9)\n    @Override\n    public void test(int i) {\n        System.out.println(i * B.NUM);\n    }\n}"
           }
         ],
         "options": [
@@ -27360,8 +27770,16 @@ window.JAVA_STUDY_DATA = {
         "prompt": "次のプログラムをコンパイル、実行したときの結果として、正しいものを選びなさい。",
         "codeBlocks": [
           {
-            "title": "Main / A / B",
-            "code": "public class Main {\n    public static void main(String[] args) {\n        A b = new B();\n        System.out.print(b.data + \",\" + b.getData() + \"|\");\n        b.data = 20;\n        System.out.print(b.data + \",\" + b.getData() + \"|\");\n        B s = (B)b;\n        System.out.print(s.data + \",\" + s.getData() + \"|\");\n        s.data = 21;\n        System.out.print(s.data + \",\" + s.getData() + \"|\");\n    }\n}\n\nclass A {\n    public int data = 10;\n    public int getData() {\n        return data;\n    }\n}\n\nclass B extends A {\n    int data = 11;\n    public int getData() {\n        return data;\n    }\n}"
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A b = new B();\n        System.out.print(b.data + \",\" + b.getData() + \"|\");\n        b.data = 20;\n        System.out.print(b.data + \",\" + b.getData() + \"|\");\n        B s = (B)b;\n        System.out.print(s.data + \",\" + s.getData() + \"|\");\n        s.data = 21;\n        System.out.print(s.data + \",\" + s.getData() + \"|\");\n    }\n}"
+          },
+          {
+            "title": "A クラス",
+            "code": "class A {\n    public int data = 10;\n    public int getData() {\n        return data;\n    }\n}"
+          },
+          {
+            "title": "B クラス",
+            "code": "class B extends A {\n    int data = 11;\n    public int getData() {\n        return data;\n    }\n}"
           }
         ],
         "options": [
@@ -27486,8 +27904,20 @@ window.JAVA_STUDY_DATA = {
         "prompt": "次のプログラムを確認し、コンパイル、実行したときの結果として正しいものを選びなさい。",
         "codeBlocks": [
           {
-            "title": "SampleException / Sample",
-            "code": "public class SampleException extends RuntimeException {}\npublic class ExceptionA extends SampleException {}\npublic class ExceptionB extends SampleException {}\n\npublic class Sample {\n    public static void main(String[] args) {\n        try {\n            test();\n        } catch (ExceptionA e) {\n            System.out.println(\"A\");\n        } catch (SampleException e) {\n            System.out.println(\"B\");\n        } catch (RuntimeException e) {\n            System.out.println(\"C\");\n        } catch (Exception e) {\n            System.out.println(\"D\");\n        } finally {\n            System.out.println(\"E\");\n        }\n    }\n\n    private static void test() throws ExceptionA {\n        throw new ExceptionA();\n    }\n}"
+            "title": "SampleException.java",
+            "code": "public class SampleException extends RuntimeException {}"
+          },
+          {
+            "title": "ExceptionA.java",
+            "code": "public class ExceptionA extends SampleException {}"
+          },
+          {
+            "title": "ExceptionB.java",
+            "code": "public class ExceptionB extends SampleException {}"
+          },
+          {
+            "title": "Sample.java",
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        try {\n            test();\n        } catch (ExceptionA e) {\n            System.out.println(\"A\");\n        } catch (SampleException e) {\n            System.out.println(\"B\");\n        } catch (RuntimeException e) {\n            System.out.println(\"C\");\n        } catch (Exception e) {\n            System.out.println(\"D\");\n        } finally {\n            System.out.println(\"E\");\n        }\n    }\n\n    private static void test() throws ExceptionA {\n        throw new ExceptionA();\n    }\n}"
           }
         ],
         "options": [
@@ -27745,8 +28175,12 @@ window.JAVA_STUDY_DATA = {
         "prompt": "「// insert code here」に記述すると、コンパイルエラーまたは実行時例外が発生するものを選びなさい。",
         "codeBlocks": [
           {
-            "title": "Item / Sample",
-            "code": "public record Item(String name) {\n}\n\npublic class Sample {\n    public static void main(String[] args) {\n        List<Item> list = new ArrayList<Item>();\n        // insert code here\n    }\n}"
+            "title": "Item.java",
+            "code": "public record Item(String name) {\n}"
+          },
+          {
+            "title": "Sample.java",
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        List<Item> list = new ArrayList<Item>();\n        // insert code here\n    }\n}"
           }
         ],
         "options": [
@@ -27988,8 +28422,16 @@ window.JAVA_STUDY_DATA = {
         "prompt": "次のプログラムをコンパイル、実行したときの結果として、正しいものを選びなさい。",
         "codeBlocks": [
           {
-            "title": "Test / SampleException / Sample",
-            "code": "public class Test implements AutoCloseable {\n    public void close() throws Exception {\n        System.out.println(\"C\");\n    }\n}\n\npublic class SampleException extends Exception {}\n\npublic class Sample {\n    public static void main(String[] args) {\n        try (Test t = new Test()) {\n            throw new SampleException();\n        } catch (Exception e) {\n            System.out.println(\"A\");\n        } finally {\n            System.out.println(\"B\");\n        }\n    }\n}"
+            "title": "Test.java",
+            "code": "public class Test implements AutoCloseable {\n    public void close() throws Exception {\n        System.out.println(\"C\");\n    }\n}"
+          },
+          {
+            "title": "SampleException.java",
+            "code": "public class SampleException extends Exception {}"
+          },
+          {
+            "title": "Sample.java",
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        try (Test t = new Test()) {\n            throw new SampleException();\n        } catch (Exception e) {\n            System.out.println(\"A\");\n        } finally {\n            System.out.println(\"B\");\n        }\n    }\n}"
           }
         ],
         "options": [
@@ -28245,8 +28687,12 @@ window.JAVA_STUDY_DATA = {
         "prompt": "次のプログラムをコンパイル、実行したときの結果として、正しいものを選びなさい。",
         "codeBlocks": [
           {
-            "title": "Sample",
-            "code": "public class Sample {\n    public static void main(String[] args) {\n        int[] numbers = {1,2,3,4,5,6,7,8,9,10};\n        for (int i : numbers) {\n            try {\n                if (test(i)) {\n                    System.out.println(i);\n                }\n            } catch (SampleException e) {\n                continue;\n            }\n        }\n    }\n\n    private static boolean test(int num) throws Exception {\n        for (int i = 2; i < num; i++) {\n            if (num % i == 0) {\n                throw new SampleException();\n            }\n            return true;\n        }\n    }\n}\nclass SampleException extends Exception {}"
+            "title": "Sample.java",
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        int[] numbers = {1,2,3,4,5,6,7,8,9,10};\n        for (int i : numbers) {\n            try {\n                if (test(i)) {\n                    System.out.println(i);\n                }\n            } catch (SampleException e) {\n                continue;\n            }\n        }\n    }\n\n    private static boolean test(int num) throws Exception {\n        for (int i = 2; i < num; i++) {\n            if (num % i == 0) {\n                throw new SampleException();\n            }\n            return true;\n        }\n    }\n}"
+          },
+          {
+            "title": "SampleException クラス",
+            "code": "class SampleException extends Exception {}"
           }
         ],
         "options": [
@@ -28361,8 +28807,16 @@ window.JAVA_STUDY_DATA = {
         "prompt": "次のクラスの説明として、正しいものを選びなさい。",
         "codeBlocks": [
           {
-            "title": "A / B / Sample",
-            "code": "public interface A {\n    default void hello() {\n        System.out.println(\"A\");\n    }\n}\n\npublic interface B {\n    default void hello() {\n        System.out.println(\"B\");\n    }\n}\n\npublic class Sample implements A, B {\n    // some code\n}"
+            "title": "A.java",
+            "code": "public interface A {\n    default void hello() {\n        System.out.println(\"A\");\n    }\n}"
+          },
+          {
+            "title": "B.java",
+            "code": "public interface B {\n    default void hello() {\n        System.out.println(\"B\");\n    }\n}"
+          },
+          {
+            "title": "Sample.java",
+            "code": "public class Sample implements A, B {\n    // some code\n}"
           }
         ],
         "options": [
@@ -28586,8 +29040,16 @@ window.JAVA_STUDY_DATA = {
         "prompt": "次のプログラムをコンパイル、実行したときの結果として、正しいものを選びなさい。",
         "codeBlocks": [
           {
-            "title": "Sample / A / B",
-            "code": "public class Sample {\n    public static void main(String[] args) {\n        A b = new B();\n        b.test();\n    }\n}\n\nsealed class A {\n    public void test() {\n        System.out.println(\"A\");\n    }\n}\n\nfinal class B extends A {\n    private void hello() {\n        System.out.println(\"B\");\n    }\n    public void test() {\n        hello();\n    }\n}"
+            "title": "Sample.java",
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        A b = new B();\n        b.test();\n    }\n}"
+          },
+          {
+            "title": "A クラス",
+            "code": "sealed class A {\n    public void test() {\n        System.out.println(\"A\");\n    }\n}"
+          },
+          {
+            "title": "B クラス",
+            "code": "final class B extends A {\n    private void hello() {\n        System.out.println(\"B\");\n    }\n    public void test() {\n        hello();\n    }\n}"
           }
         ],
         "options": [
@@ -29823,8 +30285,16 @@ window.JAVA_STUDY_DATA = {
         "prompt": "次のプログラムをコンパイル、実行したときの結果として、正しいものを選びなさい。",
         "codeBlocks": [
           {
-            "title": "Sample / A / B",
-            "code": "public class Sample {\n    public static void main(String[] args) {\n        B b1 = new B();\n        A a1 = new B();\n        B b2 = new B(20);\n        A a2 = new B(10);\n\n        b1.print();\n        b2.print();\n        a1.print();\n        a2.print();\n    }\n}\n\nabstract class A {\n    int value;\n    public A() { this.value = 100; }\n    public A(int value) { this.value = value; }\n    public void print() { System.out.print(\"result=\" + value); }\n    abstract void print(int value);\n}\n\nclass B extends A {\n    int value;\n    public B() { this.value = 200; }\n    public B(int value) { this.value = value; }\n    @Override\n    public void print(int value) { System.out.print(\"result=\" + value); }\n}"
+            "title": "Sample.java",
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        B b1 = new B();\n        A a1 = new B();\n        B b2 = new B(20);\n        A a2 = new B(10);\n\n        b1.print();\n        b2.print();\n        a1.print();\n        a2.print();\n    }\n}"
+          },
+          {
+            "title": "A クラス",
+            "code": "abstract class A {\n    int value;\n    public A() { this.value = 100; }\n    public A(int value) { this.value = value; }\n    public void print() { System.out.print(\"result=\" + value); }\n    abstract void print(int value);\n}"
+          },
+          {
+            "title": "B クラス",
+            "code": "class B extends A {\n    int value;\n    public B() { this.value = 200; }\n    public B(int value) { this.value = value; }\n    @Override\n    public void print(int value) { System.out.print(\"result=\" + value); }\n}"
           }
         ],
         "options": [
@@ -30072,8 +30542,12 @@ window.JAVA_STUDY_DATA = {
         "prompt": "次のプログラムの説明として、正しいものを選びなさい。",
         "codeBlocks": [
           {
-            "title": "Trash / CacheTrash",
-            "code": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Trash {\n    List<String> list = new ArrayList<>();\n    protected Trash(String val) {\n        add(val);\n    }\n    public boolean test(String val) {\n        return true;\n    }\n    public void delete(String val) {\n        list.remove(val);\n    }\n    public final void add(String val) {\n        list.add(val);\n    }\n}\n\npublic class CacheTrash extends Trash {\n    private String tmp = null;\n    public CacheTrash() {\n        super(null);\n    }\n    public boolean test(String val) {\n        return list.contains(val);\n    }\n    public void delete(String val) {\n        this.tmp = val;\n    }\n    public void flush() {\n        super.delete(tmp);\n    }\n}"
+            "title": "Trash.java",
+            "code": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Trash {\n    List<String> list = new ArrayList<>();\n    protected Trash(String val) {\n        add(val);\n    }\n    public boolean test(String val) {\n        return true;\n    }\n    public void delete(String val) {\n        list.remove(val);\n    }\n    public final void add(String val) {\n        list.add(val);\n    }\n}"
+          },
+          {
+            "title": "CacheTrash.java",
+            "code": "public class CacheTrash extends Trash {\n    private String tmp = null;\n    public CacheTrash() {\n        super(null);\n    }\n    public boolean test(String val) {\n        return list.contains(val);\n    }\n    public void delete(String val) {\n        this.tmp = val;\n    }\n    public void flush() {\n        super.delete(tmp);\n    }\n}"
           }
         ],
         "options": [
@@ -30200,8 +30674,12 @@ window.JAVA_STUDY_DATA = {
         "prompt": "次のプログラムをコンパイル、実行したときの結果として、正しいものを選びなさい。",
         "codeBlocks": [
           {
-            "title": "Sample / Main",
-            "code": "public class Sample {\n    private String value;\n    public void setValue(String value) {\n        value = \"Hello, \" + value;\n    }\n    public String toString() {\n        return value;\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Sample s = new Sample();\n        s.setValue(\"Java\");\n        System.out.println(s.toString());\n    }\n}"
+            "title": "Sample.java",
+            "code": "public class Sample {\n    private String value;\n    public void setValue(String value) {\n        value = \"Hello, \" + value;\n    }\n    public String toString() {\n        return value;\n    }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Sample s = new Sample();\n        s.setValue(\"Java\");\n        System.out.println(s.toString());\n    }\n}"
           }
         ],
         "options": [
@@ -30539,8 +31017,12 @@ window.JAVA_STUDY_DATA = {
         "prompt": "Bクラスの空欄への記述に関する説明として、正しいものを選びなさい。",
         "codeBlocks": [
           {
-            "title": "A / B",
-            "code": "package ex06.a;\npublic class A {\n    String a = \"A\";\n    protected String b = \"B\";\n    public String c = \"C\";\n}\n\npackage ex06.b;\nimport ex06.a.A;\npublic class B extends A {\n    public void test() {\n        System.out.println(/* blank */);\n    }\n}"
+            "title": "A.java",
+            "code": "package ex06.a;\npublic class A {\n    String a = \"A\";\n    protected String b = \"B\";\n    public String c = \"C\";\n}"
+          },
+          {
+            "title": "B.java",
+            "code": "package ex06.b;\nimport ex06.a.A;\npublic class B extends A {\n    public void test() {\n        System.out.println(/* blank */);\n    }\n}"
           }
         ],
         "options": [
@@ -30744,8 +31226,16 @@ window.JAVA_STUDY_DATA = {
         "prompt": "次のプログラムのコンパイルエラーを修正する方法として、正しいものを選びなさい。",
         "codeBlocks": [
           {
-            "title": "A / B / Main",
-            "code": "public class A {\n    private String value;\n    public String getValue() { return value; }\n    public void setValue(String value) { this.value = value; }\n    public String toString() { return getValue(); }\n}\n\npublic class B extends A {\n    public void setValue(String value) {\n        super.setValue(\"[\" + value + \"]\");\n    }\n    public void setValue(String... values) {\n        setValue(test(values));\n    }\n    private String test(String... values) {\n        var sb = new StringBuilder();\n        for (String value : values) {\n            sb.append(value + \",\");\n        }\n        return sb.toString();\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        A a = new B();\n        a.setValue(args);\n    }\n}"
+            "title": "A.java",
+            "code": "public class A {\n    private String value;\n    public String getValue() { return value; }\n    public void setValue(String value) { this.value = value; }\n    public String toString() { return getValue(); }\n}"
+          },
+          {
+            "title": "B.java",
+            "code": "public class B extends A {\n    public void setValue(String value) {\n        super.setValue(\"[\" + value + \"]\");\n    }\n    public void setValue(String... values) {\n        setValue(test(values));\n    }\n    private String test(String... values) {\n        var sb = new StringBuilder();\n        for (String value : values) {\n            sb.append(value + \",\");\n        }\n        return sb.toString();\n    }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A a = new B();\n        a.setValue(args);\n    }\n}"
           }
         ],
         "options": [
@@ -30860,8 +31350,16 @@ window.JAVA_STUDY_DATA = {
         "prompt": "次のプログラムをコンパイル、実行したときの結果として、正しいものを選びなさい。",
         "codeBlocks": [
           {
-            "title": "A / B / Main",
-            "code": "package ex23.a;\npublic class A {\n    public int num = 10;\n}\n\npackage ex23.b;\nimport ex23.a.A;\npublic class B extends A {\n    int num = 20;\n}\n\npackage ex23;\nimport ex23.a.A;\nimport ex23.b.B;\npublic class Main {\n    public static void main(String[] args) {\n        A a = new B();\n        System.out.println(a.num);\n    }\n}"
+            "title": "A.java",
+            "code": "package ex23.a;\npublic class A {\n    public int num = 10;\n}"
+          },
+          {
+            "title": "B.java",
+            "code": "package ex23.b;\nimport ex23.a.A;\npublic class B extends A {\n    int num = 20;\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "package ex23;\nimport ex23.a.A;\nimport ex23.b.B;\npublic class Main {\n    public static void main(String[] args) {\n        A a = new B();\n        System.out.println(a.num);\n    }\n}"
           }
         ],
         "options": [
@@ -30967,8 +31465,12 @@ window.JAVA_STUDY_DATA = {
         "prompt": "次のプログラムを確認し、Testクラスの何行目でコンパイルエラーが発生するかを選びなさい。",
         "codeBlocks": [
           {
-            "title": "Sample / Test",
-            "code": "public class Sample {\n    String name;\n}\n\nimport java.util.ArrayList;\n\npublic class Test {\n    var sample = new ArrayList<Sample>();        // 4\n    public var test() {                          // 5\n        var sample = new Sample();               // 6\n        var samples = new ArrayList<>();         // 7\n        samples.add(\"Java\");                    // 8\n        samples.add(\"Lambda\");                  // 9\n        for (var s : samples) {                  // 10\n            System.out.println(s);               // 11\n        }\n    }\n}"
+            "title": "Sample.java",
+            "code": "public class Sample {\n    String name;\n}"
+          },
+          {
+            "title": "Test.java",
+            "code": "import java.util.ArrayList;\n\npublic class Test {\n    var sample = new ArrayList<Sample>();        // 4\n    public var test() {                          // 5\n        var sample = new Sample();               // 6\n        var samples = new ArrayList<>();         // 7\n        samples.add(\"Java\");                    // 8\n        samples.add(\"Lambda\");                  // 9\n        for (var s : samples) {                  // 10\n            System.out.println(s);               // 11\n        }\n    }\n}"
           }
         ],
         "options": [
@@ -31085,8 +31587,12 @@ window.JAVA_STUDY_DATA = {
         "prompt": "Bクラスのコンストラクタの空欄に入るコードとして、正しいものを選びなさい。",
         "codeBlocks": [
           {
-            "title": "A / B",
-            "code": "public class A {\n    private int num;\n    public A(int num) {\n        this.num = num;\n    }\n}\n\npublic class B extends A {\n    private String val;\n    public B(String val, int num) {\n        // blank\n    }\n}"
+            "title": "A.java",
+            "code": "public class A {\n    private int num;\n    public A(int num) {\n        this.num = num;\n    }\n}"
+          },
+          {
+            "title": "B.java",
+            "code": "public class B extends A {\n    private String val;\n    public B(String val, int num) {\n        // blank\n    }\n}"
           }
         ],
         "options": [
@@ -31412,8 +31918,12 @@ window.JAVA_STUDY_DATA = {
         "prompt": "次のプログラムを実行し、「A:B」と表示したい。Mainクラスの空欄に入るコードとして正しいものを選びなさい。",
         "codeBlocks": [
           {
-            "title": "Sample / Main",
-            "code": "public class Sample {\n    static String header = \"A:\";\n    private String value = \"B\";\n    public static String getValue() {\n        return new Sample().value;\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Sample s = new Sample();\n        // blank\n    }\n}"
+            "title": "Sample.java",
+            "code": "public class Sample {\n    static String header = \"A:\";\n    private String value = \"B\";\n    public static String getValue() {\n        return new Sample().value;\n    }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Sample s = new Sample();\n        // blank\n    }\n}"
           }
         ],
         "options": [
@@ -31537,8 +32047,12 @@ window.JAVA_STUDY_DATA = {
         "prompt": "次のプログラムをコンパイル、実行したときの結果として、正しいものを選びなさい。",
         "codeBlocks": [
           {
-            "title": "Sample / Main",
-            "code": "public class Sample {\n    public void test(Object[] val) { System.out.println(\"A\"); }\n    public void test(long[] val) { System.out.println(\"B\"); }\n    public void test(Object val) { System.out.println(\"C\"); }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        new Sample().test(new int[3]);\n    }\n}"
+            "title": "Sample.java",
+            "code": "public class Sample {\n    public void test(Object[] val) { System.out.println(\"A\"); }\n    public void test(long[] val) { System.out.println(\"B\"); }\n    public void test(Object val) { System.out.println(\"C\"); }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        new Sample().test(new int[3]);\n    }\n}"
           }
         ],
         "options": [
@@ -32324,8 +32838,12 @@ window.JAVA_STUDY_DATA = {
         "prompt": "次のプログラムをコンパイル、実行したときの結果として、正しいものを選びなさい。",
         "codeBlocks": [
           {
-            "title": "Sample / Main",
-            "code": "public class Sample implements AutoCloseable {\n    @Override\n    public void close() throws Exception {\n        System.out.println(\"C\");\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        try (Sample s = new Sample()) {\n            throw new Exception();\n        } catch (Exception e) {\n            System.out.println(\"A\");\n        } finally {\n            System.out.println(\"B\");\n        }\n    }\n}"
+            "title": "Sample.java",
+            "code": "public class Sample implements AutoCloseable {\n    @Override\n    public void close() throws Exception {\n        System.out.println(\"C\");\n    }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        try (Sample s = new Sample()) {\n            throw new Exception();\n        } catch (Exception e) {\n            System.out.println(\"A\");\n        } finally {\n            System.out.println(\"B\");\n        }\n    }\n}"
           }
         ],
         "options": [
@@ -32874,8 +33392,20 @@ window.JAVA_STUDY_DATA = {
         "prompt": "次のプログラムをコンパイル、実行したときの結果として、正しいものを選びなさい。",
         "codeBlocks": [
           {
-            "title": "A / B / C / Sample",
-            "code": "class A {\n    public A() { System.out.print(\"A\"); }\n}\nclass B extends A {\n    public B() { System.out.print(\"B\"); }\n}\nclass C extends B {\n    public C() { System.out.print(\"C\"); }\n}\npublic class Sample {\n    public static void main(String[] args) {\n        new C();\n    }\n}"
+            "title": "A クラス",
+            "code": "class A {\n    public A() { System.out.print(\"A\"); }\n}"
+          },
+          {
+            "title": "B クラス",
+            "code": "class B extends A {\n    public B() { System.out.print(\"B\"); }\n}"
+          },
+          {
+            "title": "C クラス",
+            "code": "class C extends B {\n    public C() { System.out.print(\"C\"); }\n}"
+          },
+          {
+            "title": "Sample.java",
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        new C();\n    }\n}"
           }
         ],
         "options": [
@@ -33187,8 +33717,12 @@ window.JAVA_STUDY_DATA = {
         "prompt": "次のプログラムを実行して「0」と表示したい。Mainクラスの空欄に入るコードとして、正しいものを選びなさい。",
         "codeBlocks": [
           {
-            "title": "Test / Main",
-            "code": "class Test {\n    public int num;\n    public Test(int num) { this.num = num; }\n    public int getNum() { return num; }\n    public void modify(int x) { num += x; }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Test t = new Test(100);\n        // blank\n        System.out.println(t.getNum());\n    }\n}"
+            "title": "Test クラス",
+            "code": "class Test {\n    public int num;\n    public Test(int num) { this.num = num; }\n    public int getNum() { return num; }\n    public void modify(int x) { num += x; }\n}"
+          },
+          {
+            "title": "Main.java",
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Test t = new Test(100);\n        // blank\n        System.out.println(t.getNum());\n    }\n}"
           }
         ],
         "options": [
@@ -33437,8 +33971,12 @@ window.JAVA_STUDY_DATA = {
         "prompt": "次のプログラムのコンパイルエラーを修正する方法として、正しいものを選びなさい。",
         "codeBlocks": [
           {
-            "title": "Sample / Test",
-            "code": "abstract class Sample {\n    protected void doProcess() {}\n    abstract void doTest();\n}\n\npublic class Test extends Sample {\n    void doProcess() {}\n    protected void doTest() {}\n}"
+            "title": "Sample クラス",
+            "code": "abstract class Sample {\n    protected void doProcess() {}\n    abstract void doTest();\n}"
+          },
+          {
+            "title": "Test.java",
+            "code": "public class Test extends Sample {\n    void doProcess() {}\n    protected void doTest() {}\n}"
           }
         ],
         "options": [
