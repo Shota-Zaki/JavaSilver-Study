@@ -599,13 +599,8 @@ service cloud.firestore {
 
   function numberedCodeHtml(code, className = "") {
     const source = String(code ?? "");
-    const normalized = source.replace(/
-/g, "
-").replace(/
-/g, "
-");
-    const lines = normalized.length ? normalized.split("
-") : [""];
+    const normalized = source.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+    const lines = normalized.length ? normalized.split("\n") : [""];
     const classAttr = className ? ` ${className}` : "";
     const rows = lines.map((line, i) => `
       <div class="code-line">
