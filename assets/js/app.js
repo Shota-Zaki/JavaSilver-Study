@@ -846,7 +846,7 @@ service cloud.firestore {
       : [];
     if (analyses.length) {
       return `<div class="option-analysis-list">${analyses.map(item => `<div class="option-analysis ${item.isCorrect ? "is-correct" : "is-wrong"}">
-        <div class="option-analysis-head"><span class="option-key">${escapeHtml(item.key)}.</span><span>${item.isCorrect ? "正しい選択肢" : "誤りの選択肢"}</span></div>
+        <div class="option-analysis-head"><span class="option-key">${escapeHtml(item.key)}.</span></div>
         ${readableTextHtml(item.detail || "")}
       </div>`).join("")}</div>`;
     }
@@ -863,9 +863,14 @@ service cloud.firestore {
     const answerText = (q.answer || []).join("・");
     const selectedText = selected.length ? selected.join("・") : "未選択";
     const summary = exp.summary || exp.correctReason || "解説未入力。";
-    const pdfAligned = exp.pdfExplanation || exp.sourceExplanation || summary;
-    const correctReason = exp.additionalExplanation || exp.correctReason || summary;
-    const additionalReason = correctReason && correctReason !== pdfAligned ? readableTextHtml(correctReason) : "";
+    const mainParts = [];
+    [exp.pdfExplanation, exp.correctReason, exp.additionalExplanation].forEach(text => {
+      if (!text) return;
+      const cleaned = String(text).replace(/【追加解説】/g, "").replace(/【間違えやすい点】/g, "").trim();
+      if (cleaned && !mainParts.includes(cleaned)) mainParts.push(cleaned);
+    });
+    if (!mainParts.length) mainParts.push(summary);
+    const mainExplanation = readableTextHtml(mainParts.join("\n\n"));
     const related = listHtml(exp.relatedKnowledge);
     const tips = listHtml(exp.examTips);
     const steps = listHtml(exp.judgeSteps);
@@ -883,9 +888,8 @@ service cloud.firestore {
         <p><strong>あなたの解答:</strong> ${escapeHtml(selectedText)}</p>
         <p><strong>正解:</strong> ${escapeHtml(answerText)}</p>
       </div>
-      ${detail("PDF準拠の要点", readableTextHtml(pdfAligned), true, "source-aligned")}
-      ${detail("追加のわかりやすい解説", additionalReason)}
-      ${detail("選択肢ごとの判定", optionAnalysisHtml(q))}
+      ${detail("解説", mainExplanation, true, "main-explanation")}
+      ${detail("選択肢別解説", optionAnalysisHtml(q), true)}
       ${detail("関連知識", related)}
       ${detail("試験での注意点", tips)}
       ${detail("解き方の手順", steps)}`;

@@ -1994,3 +1994,23 @@ pre {
 .explanation-body ul, .explanation-body ol {
   margin-top: .4rem;
 }
+
+/* Explanation option color coding */
+.option-analysis.is-correct {
+  border-color: rgba(16, 185, 129, .55);
+  background: #ecfdf5;
+}
+.option-analysis.is-wrong {
+  border-color: rgba(239, 68, 68, .38);
+  background: #fff7f7;
+}
+.option-analysis.is-correct .option-analysis-head .option-key {
+  color: var(--ok);
+}
+.option-analysis.is-wrong .option-analysis-head .option-key {
+  color: var(--bad);
+}
+.explanation-detail.main-explanation {
+  border-color: rgba(37, 99, 235, .25);
+  background: #f8fbff;
+}
