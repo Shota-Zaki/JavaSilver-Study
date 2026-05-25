@@ -863,12 +863,14 @@ service cloud.firestore {
     const answerText = (q.answer || []).join("・");
     const selectedText = selected.length ? selected.join("・") : "未選択";
     const summary = exp.summary || exp.correctReason || "解説未入力。";
-    const correctReason = exp.correctReason || summary;
+    const pdfAligned = exp.pdfExplanation || exp.sourceExplanation || summary;
+    const correctReason = exp.additionalExplanation || exp.correctReason || summary;
+    const additionalReason = correctReason && correctReason !== pdfAligned ? readableTextHtml(correctReason) : "";
     const related = listHtml(exp.relatedKnowledge);
     const tips = listHtml(exp.examTips);
     const steps = listHtml(exp.judgeSteps);
 
-    const detail = (title, body, open = false) => body ? `<details class="explanation-detail" ${open ? "open" : ""}>
+    const detail = (title, body, open = false, className = "") => body ? `<details class="explanation-detail ${className}" ${open ? "open" : ""}>
         <summary>${escapeHtml(title)}</summary>
         <div class="explanation-body">${body}</div>
       </details>` : "";
@@ -881,7 +883,8 @@ service cloud.firestore {
         <p><strong>あなたの解答:</strong> ${escapeHtml(selectedText)}</p>
         <p><strong>正解:</strong> ${escapeHtml(answerText)}</p>
       </div>
-      ${detail("正解になる理由", readableTextHtml(correctReason), true)}
+      ${detail("PDF準拠の要点", readableTextHtml(pdfAligned), true, "source-aligned")}
+      ${detail("追加のわかりやすい解説", additionalReason)}
       ${detail("選択肢ごとの判定", optionAnalysisHtml(q))}
       ${detail("関連知識", related)}
       ${detail("試験での注意点", tips)}

@@ -1,6 +1,6 @@
 window.JAVA_STUDY_DATA = {
   "title": "Java Silver 勉強用ページ",
-  "version": "ch05-ch06-final-check-2026-05-25",
+  "version": "targeted-additional-explanations-2026-05-25",
   "chapters": [
     {
       "id": "ch01",
@@ -145,7 +145,9 @@ window.JAVA_STUDY_DATA = {
             "最後に出力・戻り値・正しい選択肢を確定する。途中で例外が処理されずに送出される場合、通常の出力はそこで止まる。",
             "ソース先頭から package → import → class の順に並んでいるか確認し、使っている型が同じパッケージ・java.lang・import済み・完全修飾名のどれで解決されるかを見る。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "パッケージの主目的は、名前空間の提供、アクセス制御、クラス分類の3つ。\nドメイン名を逆にした命名は慣習であって義務ではない。\npackage宣言を省略したクラスも無名パッケージに属するため、『パッケージに属さないクラス』は存在しない。\n・A: 正しい。\n完全修飾名によりクラス名の衝突を避ける。\n・B: 誤り。\n逆ドメイン名は推奨・慣習であり、言語仕様上の必須条件ではない。\n・C: 正しい。\nパッケージアクセスなど、アクセス制御と関係する。\n・D: 正しい。\n関連クラスをパッケージ単位で分類できる。\n・E: 誤り。\npackage宣言がない場合も無名パッケージに属する。\n・判定軸: package/importは「宣言順序」と「完全修飾名」を分けて見る。\npackage宣言はコメントを除いて先頭、importはその後、class宣言はさらに後。\nimportのワイルドカードは直下の型だけが対象で、サブパッケージまでは含まない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "1章 問題PDF p.12 / 1章 解説PDF p.17",
         "tags": [
@@ -231,7 +233,10 @@ window.JAVA_STUDY_DATA = {
             "最後に出力・戻り値・正しい選択肢を確定する。途中で例外が処理されずに送出される場合、通常の出力はそこで止まる。",
             "ソース先頭から package → import → class の順に並んでいるか確認し、使っている型が同じパッケージ・java.lang・import済み・完全修飾名のどれで解決されるかを見る。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "package宣言はソースコードの先頭に置く。\npackage宣言より前に書けるのはコメントだけ。\nimport宣言はpackage宣言の後に書く。\n・A: 誤り。\nimportがpackageより前にある。\n・B: 正しい。\npackage → import → class の順。\n・C/D: 誤り。\nJavaではpackageをブロックとして定義しない。\n・判定軸: package/importは「宣言順序」と「完全修飾名」を分けて見る。\npackage宣言はコメントを除いて先頭、importはその後、class宣言はさらに後。\nimportのワイルドカードは直下の型だけが対象で、サブパッケージまでは含まない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "パッケージ宣言は、ソース内で最初に意味を持つ宣言です。importより前に置く必要があり、前に書けるのはコメントだけです。試験では「importが先にある」「packageをブロックのように書く」形が混ぜられます。"
         },
         "source": "1章 問題PDF p.12 / 1章 解説PDF p.19",
         "tags": [
@@ -329,7 +334,9 @@ window.JAVA_STUDY_DATA = {
             "ソース先頭から package → import → class の順に並んでいるか確認し、使っている型が同じパッケージ・java.lang・import済み・完全修飾名のどれで解決されるかを見る。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "java.lang配下のクラスと、同一パッケージ内のクラスはimportなしで利用できる。\nサブパッケージは別パッケージなので自動インポートされない。\n・A: 正しい。\nString、System、Integerなどを含むjava.langは暗黙的に利用できる。\n・B: 誤り。\nStringとSystemだけではない。\n・C: 正しい。\n同一パッケージ内のクラスはimport不要。\n・D: 誤り。\n親子のような名前でもサブパッケージは別物。\n・判定軸: package/importは「宣言順序」と「完全修飾名」を分けて見る。\npackage宣言はコメントを除いて先頭、importはその後、class宣言はさらに後。\nimportのワイルドカードは直下の型だけが対象で、サブパッケージまでは含まない。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "1章 問題PDF p.13 / 1章 解説PDF p.20",
         "tags": [
@@ -436,7 +443,9 @@ window.JAVA_STUDY_DATA = {
             "ソース先頭から package → import → class の順に並んでいるか確認し、使っている型が同じパッケージ・java.lang・import済み・完全修飾名のどれで解決されるかを見る。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "Sampleはpackage宣言がないため無名パッケージに属する。\n一方、SampleImplはex4パッケージに属する。\n明示的なパッケージに属するクラスから無名パッケージのクラスは利用できないため、コンパイルエラーになる。\n・protectedかどうか以前に、パッケージの所属が問題。\n・無名パッケージは学習用の小さなコードでは出るが、実務では基本的に避ける。\n・判定軸: package/importは「宣言順序」と「完全修飾名」を分けて見る。\npackage宣言はコメントを除いて先頭、importはその後、class宣言はさらに後。\nimportのワイルドカードは直下の型だけが対象で、サブパッケージまでは含まない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "1章 問題PDF p.13 / 1章 解説PDF p.21",
         "tags": [
@@ -556,7 +565,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "ソース先頭から package → import → class の順に並んでいるか確認し、使っている型が同じパッケージ・java.lang・import済み・完全修飾名のどれで解決されるかを見る。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "エントリーポイントは public static void main(String[] args) または public static void main(String... args)。\n戻り値はvoidであり、intではない。\n・A/B: 正しい。\nJVMがインスタンス生成なしで呼び出せる公開メソッドである必要がある。\n・E: 正しい。\nString[]とString...はmainの引数として使える。\n・D/F: 誤り。\nJavaのmainは戻り値を返さない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。\n・判定軸: package/importは「宣言順序」と「完全修飾名」を分けて見る。\npackage宣言はコメントを除いて先頭、importはその後、class宣言はさらに後。\nimportのワイルドカードは直下の型だけが対象で、サブパッケージまでは含まない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "mainメソッドはJVMが探して呼び出す入口です。戻り値はvoid、staticであること、引数がString配列または可変長Stringであることを別々に確認します。publicの有無や引数名に惑わされず、シグネチャの条件で判定します。"
         },
         "source": "1章 問題PDF p.14 / 1章 解説PDF p.22",
         "tags": [
@@ -672,7 +684,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "ソース先頭から package → import → class の順に並んでいるか確認し、使っている型が同じパッケージ・java.lang・import済み・完全修飾名のどれで解決されるかを見る。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "javaコマンドでは、クラス名の後ろに続く値が起動パラメータとしてargsに入る。\nMainは実行対象のクラス名であり、argsには入らない。\n・args[0] は java。\n・args[1] は one。\n・したがって表示は java one。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。\n・判定軸: package/importは「宣言順序」と「完全修飾名」を分けて見る。\npackage宣言はコメントを除いて先頭、importはその後、class宣言はさらに後。\nimportのワイルドカードは直下の型だけが対象で、サブパッケージまでは含まない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "コマンドライン引数は空白で分割されてString[] argsに入ります。配列の添字は0始まりなので、1つ目はargs[0]です。引数を渡していないのにargs[0]を読むと、コンパイルではなく実行時例外になります。"
         },
         "source": "1章 問題PDF p.14 / 1章 解説PDF p.23",
         "tags": [
@@ -782,7 +797,9 @@ window.JAVA_STUDY_DATA = {
             "最後に出力・戻り値・正しい選択肢を確定する。途中で例外が処理されずに送出される場合、通常の出力はそこで止まる。",
             "ソース先頭から package → import → class の順に並んでいるか確認し、使っている型が同じパッケージ・java.lang・import済み・完全修飾名のどれで解決されるかを見る。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "クラスファイルを実行する基本形は java Test。\nJava SE 11以降では、java Test.java のソースファイルモードでも実行できる。\njavacはコンパイル用で、javapやjmodは実行用ではない。\n・B: 正しい。\nコンパイル済みクラスを実行する。\n・C: 正しい。\nソースファイルモードで実行する。\n・A/D: javacはコンパイルコマンド。\n・E: javapはクラスファイル解析用。\n・F: jmodはモジュール関連のコマンド。\n・判定軸: package/importは「宣言順序」と「完全修飾名」を分けて見る。\npackage宣言はコメントを除いて先頭、importはその後、class宣言はさらに後。\nimportのワイルドカードは直下の型だけが対象で、サブパッケージまでは含まない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "1章 問題PDF p.15 / 1章 解説PDF p.24",
         "tags": [
@@ -885,7 +902,9 @@ window.JAVA_STUDY_DATA = {
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。",
             "メンバがクラス側かインスタンス側かを分け、呼び出し元がstatic文脈かインスタンス文脈かを確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "起動パラメータはスペースで区切られる。\nただし、ダブルクォーテーションで囲んだ範囲は1つの引数として扱われる。\nエスケープされたダブルクォーテーションは文字として扱われる。\n設問では引数数が5つになる。\n・スペースは基本的に区切り。\n・\"...\"で囲むとスペースを含んでも1引数。\n・\\\" のようにエスケープされた引用符は区切り記号ではなく文字。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "1章 問題PDF p.15 / 1章 解説PDF p.27",
         "tags": [
@@ -1001,7 +1020,10 @@ window.JAVA_STUDY_DATA = {
             "ソース先頭から package → import → class の順に並んでいるか確認し、使っている型が同じパッケージ・java.lang・import済み・完全修飾名のどれで解決されるかを見る。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "通常実行では、javac Sample.javaでコンパイルした後、java Sampleのようにクラス名を指定して実行する。\njava Sample.classのように.class付きで指定しない。\nJava SE 11以降なら、java Sample.javaのソースファイルモードでも実行できる。\n・D: 正しい。\n通常のコンパイル → 実行の流れ。\n・E: 正しい。\nソースファイルモード。\n・A/B: 誤り。\njavaコマンドにはSample.classではなくSampleを渡す。\n・C: 単独では、事前にコンパイル済みであることが示されていないため不適切。\n・判定軸: package/importは「宣言順序」と「完全修飾名」を分けて見る。\npackage宣言はコメントを除いて先頭、importはその後、class宣言はさらに後。\nimportのワイルドカードは直下の型だけが対象で、サブパッケージまでは含まない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "javaコマンドでは、ソースファイル名ではなく完全修飾クラス名を指定します。packageがある場合は、実行位置とクラスパス、パッケージ名をまとめて確認します。"
         },
         "source": "1章 問題PDF p.16 / 1章 解説PDF p.29",
         "tags": [
@@ -1102,7 +1124,9 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "Javaの真偽値型は boolean であり、bool という型は存在しない。\nそのため4行目でコンパイルエラーになる。\ndo-whileの挙動以前の問題。\n・C: 正しい。\nbool flg = true; はJavaでは不正。\n・A/B: do-whileの実行回数を考える前にコンパイルできない。\n・D: 実行前に失敗するため実行時例外ではない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "2章 問題PDF p.32 / 2章 解説PDF p.57",
         "codeBlocks": [
@@ -1220,7 +1244,10 @@ window.JAVA_STUDY_DATA = {
             "条件式が評価される順、ループに入る回数、break/continueの移動先、switchのcase一致後の流れを図にする。",
             "出力を追う前に、各行を「文法」「型」「宣言済みか」「アクセス可能か」「例外処理が足りるか」で検査する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "先頭が0の整数リテラルは8進数として解釈される。\n8進数に8は使えないため、0827はコンパイルエラーになる。\n・B: 0413は8進数として有効。\n・C: 0xは16進数。\n・D: 0bは2進数。\n・E: 8進数で8を含むため不正。\n・判定軸: 整数リテラルは基本int、浮動小数点リテラルは基本double。\n0bは2進数、0xは16進数、先頭0は8進数。\nアンダースコアは数字の間にだけ置ける。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "整数リテラルは先頭の表記で基数が変わります。0で始まれば8進数、0xなら16進数、0bなら2進数です。8進数では8と9を使えないため、見た目が普通の数字でもコンパイルエラーになります。"
         },
         "source": "2章 問題PDF p.32 / 2章 解説PDF p.58",
         "tags": [
@@ -1370,7 +1397,10 @@ window.JAVA_STUDY_DATA = {
             "条件式が評価される順、ループに入る回数、break/continueの移動先、switchのcase一致後の流れを図にする。",
             "出力を追う前に、各行を「文法」「型」「宣言済みか」「アクセス可能か」「例外処理が足りるか」で検査する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "数値リテラル内のアンダースコアは桁区切りとして使えるが、リテラルの先頭・末尾、小数点の前後、接尾辞の直前、進数接頭辞の直後には置けない。\n・C: 先頭がアンダースコアなので数値リテラルではない。\n・D/F: 末尾または接尾辞直前のアンダースコアは不可。\n・E: 小数点直前のアンダースコアは不可。\n・I: 0x直後のアンダースコアは不可。\n・A/B/G/H: いずれも桁の間のアンダースコアなので有効。\n・判定軸: 整数リテラルは基本int、浮動小数点リテラルは基本double。\n0bは2進数、0xは16進数、先頭0は8進数。\nアンダースコアは数字の間にだけ置ける。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "アンダースコアは数字の区切りにだけ使えます。先頭、末尾、小数点の隣、接頭辞0x/0bの直後、接尾辞L/F/Dの直前には置けません。複数個連続は数字と数字の間なら許されます。"
         },
         "source": "2章 問題PDF p.33 / 2章 解説PDF p.59",
         "tags": [
@@ -1472,7 +1502,9 @@ window.JAVA_STUDY_DATA = {
             "まず表記として合法かを確認し、その次に代入先の型へ収まるか、接尾辞L/F/Dの有無を確認する。",
             "出力を追う前に、各行を「文法」「型」「宣言済みか」「アクセス可能か」「例外処理が足りるか」で検査する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "識別子には英数字、_、$などを使えるが、波括弧やドットは変数名として使えない。\n・A: $は識別子に使用可能。\n・B/C: _を含む識別子として有効。\nただし単独の _ は不可。\n・D: { } は識別子に使えない。\n・E: . はメンバアクセスなどに使う記号であり識別子には使えない。\n・判定軸: 整数リテラルは基本int、浮動小数点リテラルは基本double。\n0bは2進数、0xは16進数、先頭0は8進数。\nアンダースコアは数字の間にだけ置ける。\n・判定軸: コンパイルエラーは実行前に検出される。\n構文、型、アクセス、未初期化、到達不能、チェック例外の未処理が代表。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "2章 問題PDF p.33 / 2章 解説PDF p.60",
         "tags": [
@@ -1603,7 +1635,10 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "配列初期化、charからshortへの明示的キャスト、boolean式、数値リテラルの桁区切りは有効。\nbyte変数からcharへの暗黙変換、doubleリテラルからfloatへの代入、charからStringへの代入はできない。\n・A: 2次元配列の初期化として正しい。\n・B: charをshortへ明示的にキャストしている。\n・C: byte変数は負数を取り得るためcharへ暗黙変換できない。\n・D: 比較結果はboolean。\n・E: 1.99はdoubleリテラル。\nfloatにするなら1.99Fなどが必要。\n・F: 数値リテラル内部の_は有効。\n・G: シングルクォートはcharリテラル。\nStringではない。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "byte・short・charは、演算に入ると基本的にintへ昇格します。代入だけを見ず、右辺がリテラル単体なのか、演算式なのかを分けて判断します。Stringに文字を入れる場合はシングルクォートではなくダブルクォートです。"
         },
         "source": "2章 問題PDF p.33 / 2章 解説PDF p.61",
         "tags": [
@@ -1715,7 +1750,10 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "varは初期化式から型を推論する。\n初期化なし、nullだけ、ラムダ式単独、配列初期化子単独では型を推論できない。\nnew ArrayList<>() は型推論可能。\n・A: 初期化式がない。\n・B: nullだけでは型が決まらない。\n・C: ラムダ式はターゲット型が必要。\n・D: 配列初期化子だけでは不可。\n・E: 右辺からArrayList型を推論できる。\n・判定軸: 整数リテラルは基本int、浮動小数点リテラルは基本double。\n0bは2進数、0xは16進数、先頭0は8進数。\nアンダースコアは数字の間にだけ置ける。\n・判定軸: varはローカル変数の型推論だけに使える。\nフィールド、メソッド引数、コンストラクタ引数、戻り値型には使えない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "varは「初期値からローカル変数の型を推論する」だけです。初期値なし、nullのみ、配列初期化子だけ、ラムダ式だけでは推論できません。フィールドや引数にも使えません。"
         },
         "source": "2章 問題PDF p.34 / 2章 解説PDF p.62",
         "tags": [
@@ -1816,7 +1854,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "varはローカル変数の型推論専用であり、フィールドやコンストラクタ引数には使えない。\nSampleクラスでコンパイルエラーになる。\n・2行目 private var value; が不正。\n・3行目 public Sample(var value) も不正。\n・varはメソッド内のローカル変数で使う。\n・判定軸: 整数リテラルは基本int、浮動小数点リテラルは基本double。\n0bは2進数、0xは16進数、先頭0は8進数。\nアンダースコアは数字の間にだけ置ける。\n・判定軸: varはローカル変数の型推論だけに使える。\nフィールド、メソッド引数、コンストラクタ引数、戻り値型には使えない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "varは予約語ではありませんが、どこでも型名の代わりになるわけではありません。フィールド、メソッド引数、コンストラクタ引数、戻り値型には使えないため、宣言場所を最初に見ます。"
         },
         "source": "2章 問題PDF p.34 / 2章 解説PDF p.63",
         "codeBlocks": [
@@ -1935,7 +1976,10 @@ window.JAVA_STUDY_DATA = {
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "var a = new B(); により変数aの型はBに固定される。\nCはAのサブクラスだがBのサブクラスではないため、a = new C(); はコンパイルエラーになる。\n・varは動的型ではない。\nコンパイル時に型が決まる。\n・BとCは兄弟クラスであり、B型変数にCインスタンスは代入できない。\n・判定軸: 整数リテラルは基本int、浮動小数点リテラルは基本double。\n0bは2進数、0xは16進数、先頭0は8進数。\nアンダースコアは数字の間にだけ置ける。\n・判定軸: varはローカル変数の型推論だけに使える。\nフィールド、メソッド引数、コンストラクタ引数、戻り値型には使えない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "varで推論された型はコンパイル時に固定されます。右辺がnew B()なら変数の型はBであり、あとから同じ親クラスを持つ別の型を代入できるとは限りません。ポリモーフィズムを使いたいなら、明示的に親型で宣言します。"
         },
         "source": "2章 問題PDF p.35 / 2章 解説PDF p.64",
         "codeBlocks": [
@@ -2055,7 +2099,9 @@ window.JAVA_STUDY_DATA = {
             "まず表記として合法かを確認し、その次に代入先の型へ収まるか、接尾辞L/F/Dの有無を確認する。",
             "変数表を作り、式の中で値を使ったタイミングと更新されたタイミングを分けて記録する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "Stringはnew String(\"...\")でも文字列リテラルでも作成できる。\nString.newInstanceというメソッドはなく、単一引用符で複数文字のリテラルは書けない。\n・A/B: 正しい。\n・C: String.newInstanceは存在しない。\n・D: 'sample' はcharリテラルとしても不正。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "2章 問題PDF p.36 / 2章 解説PDF p.65",
         "tags": [
@@ -2172,7 +2218,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "Stringは不変オブジェクト。\nreplaceAllは変更後の新しいStringを返すが、戻り値を変数に代入していないためstrは変わらない。\n・helloメソッドのmsgはstrと同じ文字列を参照するが、文字列そのものは変更されない。\n・msg.replaceAll(...) の戻り値を使っていない点がひっかけ。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "Stringのメソッドは元の文字列を変更しません。replaceやsubstringの戻り値を変数に代入していない場合、元の参照先は変わらないままです。StringBuilderと混同しないことが重要です。"
         },
         "source": "2章 問題PDF p.36 / 2章 解説PDF p.66",
         "codeBlocks": [
@@ -2297,7 +2346,10 @@ window.JAVA_STUDY_DATA = {
             "変数表を作り、式の中で値を使ったタイミングと更新されたタイミングを分けて記録する。",
             "条件式が評価される順、ループに入る回数、break/continueの移動先、switchのcase一致後の流れを図にする。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "charAtの添字は0始まり。\n\"abcde\"の有効な添字は0から4までであり、charAt(5)は範囲外なので実行時例外になる。\n・lengthは5だが、最後の文字の添字は4。\n・添字範囲外はStringIndexOutOfBoundsException。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "charAtの有効範囲は0以上length()未満です。length()と同じ値の添字は範囲外です。この種の問題はコンパイルエラーではなく、実行時にStringIndexOutOfBoundsExceptionになります。"
         },
         "source": "2章 問題PDF p.37 / 2章 解説PDF p.67",
         "codeBlocks": [
@@ -2431,7 +2483,9 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "indexOfは指定した文字列が見つからない場合に-1を返す。\n\"abcde\"の中に\"abcdef\"は存在しない。\n・存在する部分文字列なら開始位置を返す。\n・見つからない場合は例外ではなく-1。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "2章 問題PDF p.37 / 2章 解説PDF p.68",
         "codeBlocks": [
@@ -2538,7 +2592,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "配列生成時の要素数、各添字の範囲、参照の共有、拡張for文で取り出される型を順に確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "substring(2, 4) は開始添字2を含み、終了添字4を含まない。\n\"abcde\"では添字2がc、添字3がdなので、結果は\"cd\"。\n・終了位置は含まない。\n・範囲は 2 <= index < 4。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "substring(begin, end)のendは含まれません。beginとendが等しい場合は空文字、endがlength()を超えると実行時例外です。添字の境界を「最後の文字の位置」と「長さ」で混同しないようにします。"
         },
         "source": "2章 問題PDF p.38 / 2章 解説PDF p.69",
         "codeBlocks": [
@@ -2645,7 +2702,9 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "配列生成時の要素数、各添字の範囲、参照の共有、拡張for文で取り出される型を順に確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "replaceは対象文字列を左から順に、重ならない範囲で置換する。\n\"aaaa\"内の\"aa\"は2回置換され、\"bb\"になる。\n・先頭のaaがb、残りのaaもbに置換される。\n・重複する位置を再利用して置換するわけではない。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "2章 問題PDF p.38 / 2章 解説PDF p.70",
         "codeBlocks": [
@@ -2770,7 +2829,10 @@ window.JAVA_STUDY_DATA = {
             "条件式が評価される順、ループに入る回数、break/continueの移動先、switchのcase一致後の流れを図にする。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "length()は文字数5を返すが、charAtに指定できる最大添字は4。\ncharAt(str.length())は範囲外アクセスになる。\n・Stringの添字は0始まり。\n・最後の文字を取り出すなら charAt(str.length() - 1)。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "length()は文字数を返しますが、最後の添字はlength() - 1です。for文などで<= length()としていると、最後にcharAt(length())を実行して例外になります。"
         },
         "source": "2章 問題PDF p.39 / 2章 解説PDF p.71",
         "codeBlocks": [
@@ -2895,7 +2957,9 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "substring(1, 3) の結果は \"bc\"。\nその文字列は \"b\" で始まるため startsWith(\"b\") はtrueを返す。\n・substringの終了位置3は含まない。\n・Stringメソッドの戻り値に対してさらにメソッドを呼ぶ形はメソッドチェーン。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "2章 問題PDF p.39 / 2章 解説PDF p.72",
         "codeBlocks": [
@@ -3003,7 +3067,9 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "配列生成時の要素数、各添字の範囲、参照の共有、拡張for文で取り出される型を順に確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "Stringで文字列を連結するメソッドはconcat。\nappendはStringBuilderなどのメソッドで、Stringにはaddやplusはない。\n・A: 正しい。\nconcatは新しいStringを返す。\n・B: appendはStringBuilder系。\n・C/D: Stringにそのようなメソッドはない。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "2章 問題PDF p.40 / 2章 解説PDF p.74",
         "codeBlocks": [
@@ -3110,7 +3176,10 @@ window.JAVA_STUDY_DATA = {
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "StringBuilder(String) コンストラクタで作成した場合、初期capacityは「文字数 + 16」。\n\"abcde\"は5文字なのでcapacityは21。\n・lengthは5だがcapacityは内部バッファ容量。\n・空のStringBuilderなら初期capacityは16。\n・判定軸: StringBuilderは可変。\nappend/delete/insert/reverseなどは同じインスタンス自身を変更する。\ntoStringでStringに変換できる。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "StringBuilderのcapacityは文字数ではなく内部バッファの容量です。初期容量は通常16で、文字列を指定して生成した場合は文字数+16になります。length()とcapacity()を分けて見ます。"
         },
         "source": "2章 問題PDF p.40 / 2章 解説PDF p.75",
         "codeBlocks": [
@@ -3217,7 +3286,9 @@ window.JAVA_STUDY_DATA = {
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "append後はabcde、reverse後はedcba。\nreplace(1, 3, \"a\") は添字1から3未満、つまりdcをaに置き換えるため eaba になる。\n・StringBuilderの操作は自身を変更する。\n・replaceの第2引数は含まない。\n・判定軸: StringBuilderは可変。\nappend/delete/insert/reverseなどは同じインスタンス自身を変更する。\ntoStringでStringに変換できる。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "2章 問題PDF p.41 / 2章 解説PDF p.76",
         "codeBlocks": [
@@ -3322,7 +3393,9 @@ window.JAVA_STUDY_DATA = {
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "\"abcde\"の中で\"bcd\"は添字1から始まる。\nStringBuilderのindexOfもStringと同様、見つかった開始位置を返す。\n・判定軸: StringBuilderは可変。\nappend/delete/insert/reverseなどは同じインスタンス自身を変更する。\ntoStringでStringに変換できる。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "2章 問題PDF p.41 / 2章 解説PDF p.77",
         "codeBlocks": [
@@ -3429,7 +3502,10 @@ window.JAVA_STUDY_DATA = {
             "条件式が評価される順、ループに入る回数、break/continueの移動先、switchのcase一致後の流れを図にする。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "テキストブロックは複数行文字列をそのまま書けるため、通常の改行に を書く必要はない。\n・A/B/C: テキストブロックの説明として正しい。\n・D: 誤り。\n行を分けて書けば改行を含められる。\n・判定軸: 整数リテラルは基本int、浮動小数点リテラルは基本double。\n0bは2進数、0xは16進数、先頭0は8進数。\nアンダースコアは数字の間にだけ置ける。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "テキストブロックは開始の三重引用符の直後に改行が必要です。見た目の文字列内容だけでなく、開始・終了の位置、インデント除去、末尾改行の有無が問われます。"
         },
         "source": "2章 問題PDF p.42 / 2章 解説PDF p.78",
         "tags": [
@@ -3535,7 +3611,9 @@ window.JAVA_STUDY_DATA = {
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。",
             "メンバがクラス側かインスタンス側かを分け、呼び出し元がstatic文脈かインスタンス文脈かを確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "テキストブロックは開始の \"\"\" の直後に改行が必要。\nAだけが開始デリミタ後に改行し、終了デリミタも正しく書かれている。\n・B: トリプルクォーテーションではない。\n・C/E: 開始の \"\"\" の直後に文字列を書いているため不正。\n・D: 開始デリミタが不正。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "2章 問題PDF p.42 / 2章 解説PDF p.81",
         "tags": [
@@ -3634,7 +3712,9 @@ window.JAVA_STUDY_DATA = {
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。",
             "配列生成時の要素数、各添字の範囲、参照の共有、拡張for文で取り出される型を順に確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "テキストブロックのインデントは自動調整されるが、終了デリミタより右にある空白は残る。\n設問ではA/B/Cの相対的なインデントが残るため、Aの形で出力される。\n・終了デリミタの位置が、削除される共通インデント量の基準になる。\n・空白の有無が出力に影響する問題なので、文字だけでなく開始位置を見る。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "2章 問題PDF p.43 / 2章 解説PDF p.82",
         "codeBlocks": [
@@ -3739,7 +3819,10 @@ window.JAVA_STUDY_DATA = {
             "まず表記として合法かを確認し、その次に代入先の型へ収まるか、接尾辞L/F/Dの有無を確認する。",
             "変数表を作り、式の中で値を使ったタイミングと更新されたタイミングを分けて記録する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "同じ文字列リテラルは文字列プール上の同じインスタンスを参照するため a == b はtrue。\n内容も同じなので equals もtrue。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "==は参照の同一性、equalsは文字列内容の同値性を見ます。文字列リテラル同士は同じプール上のインスタンスを参照しやすいですが、new Stringは別インスタンスを作ります。"
         },
         "source": "2章 問題PDF p.44 / 2章 解説PDF p.85",
         "codeBlocks": [
@@ -3844,7 +3927,10 @@ window.JAVA_STUDY_DATA = {
             "まず表記として合法かを確認し、その次に代入先の型へ収まるか、接尾辞L/F/Dの有無を確認する。",
             "変数表を作り、式の中で値を使ったタイミングと更新されたタイミングを分けて記録する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "new String(\"sample\")は新しいインスタンスを作るため、リテラルとは参照が異なる。\n==はfalseだが、内容比較のequalsはtrue。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "new String(\"...\")は、同じ文字列内容でも新しいStringオブジェクトを作ります。equalsはtrueでも、==はfalseになる典型パターンです。"
         },
         "source": "2章 問題PDF p.44 / 2章 解説PDF p.85",
         "codeBlocks": [
@@ -3949,7 +4035,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "配列生成時の要素数、各添字の範囲、参照の共有、拡張for文で取り出される型を順に確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "intern()は文字列プール上のインスタンスへの参照を返す。\naもbもintern()後は同じ\"abc\"リテラルの参照になるため、3つのif文すべてでcountが増える。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "intern()は文字列プール上の参照を返します。new Stringで作ったヒープ上の参照と、intern後の参照は分けて追います。比較式が==かequalsかで結論が変わります。"
         },
         "source": "2章 問題PDF p.45 / 2章 解説PDF p.87",
         "codeBlocks": [
@@ -4083,7 +4172,9 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "配列参照をそのままprintlnに渡すと、要素数や中身ではなく、配列オブジェクトの文字列表現が出力される。\n形式は型情報とハッシュコードを含む。\n・new int[0] は要素数0の配列インスタンスであり、nullではない。\n・中身を表示したいならArrays.toStringなどを使う。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "2章 問題PDF p.45-46 / 2章 解説PDF p.89",
         "codeBlocks": [
@@ -4214,7 +4305,9 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "配列を表す[]は、型の後ろにも変数名の後ろにも書ける。\n多次元配列でも int[][] c、int d[][]、int[] e[]、int[][] f[] はすべて有効。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "2章 問題PDF p.46 / 2章 解説PDF p.90",
         "codeBlocks": [
@@ -4325,7 +4418,10 @@ window.JAVA_STUDY_DATA = {
             "最後に出力・戻り値・正しい選択肢を確定する。途中で例外が処理されずに送出される場合、通常の出力はそこで止まる。",
             "配列生成時の要素数、各添字の範囲、参照の共有、拡張for文で取り出される型を順に確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "配列変数の宣言時に[]の中へ要素数を書くことはできない。\n要素数はnewで配列インスタンスを生成するときに指定する。\n・int[] a; は正しいが、int[3] a; は不正。\n・int b[]; は正しいが、int b[2]; は不正。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "配列の型宣言では、要素数を型側にも変数名側にも書けません。int[] aやint a[]は宣言として有効ですが、int[3] aやint a[3]は不可です。要素数はnew int[3]のように生成時に指定します。"
         },
         "source": "2章 問題PDF p.46 / 2章 解説PDF p.92",
         "tags": [
@@ -4443,7 +4539,10 @@ window.JAVA_STUDY_DATA = {
             "変数表を作り、式の中で値を使ったタイミングと更新されたタイミングを分けて記録する。",
             "条件式が評価される順、ループに入る回数、break/continueの移動先、switchのcase一致後の流れを図にする。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "Aは1次元配列変数に2次元配列を代入している。\nBは配列サイズにdoubleリテラルを使っている。\nFは多次元配列生成で先頭次元を省略している。\n・C/D: 配列サイズはint式なので有効。\n・E: 先頭次元だけ指定した2次元配列生成は有効。\n・F: 後ろの次元だけ指定することはできない。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。\n・判定軸: 整数リテラルは基本int、浮動小数点リテラルは基本double。\n0bは2進数、0xは16進数、先頭0は8進数。\nアンダースコアは数字の間にだけ置ける。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "配列生成では、次元ごとにサイズ指定できる位置が決まっています。new int[3]は有効ですが、初期化子とサイズ指定を同時に書く形や、途中次元を飛ばす形はコンパイルエラーになります。"
         },
         "source": "2章 問題PDF p.47 / 2章 解説PDF p.93",
         "tags": [
@@ -4549,7 +4648,10 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "new Item[3] はItemインスタンスを3個作るのではなく、Item参照を3個入れられる配列を作るだけ。\n各要素の初期値はnullなので、items[i].priceでNullPointerExceptionが発生する。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "参照型配列の各要素の初期値はnullです。配列そのものは生成されていても、要素が参照しているオブジェクトはまだ存在しません。要素に対してメソッドを呼ぶとNullPointerExceptionになります。"
         },
         "source": "2章 問題PDF p.47 / 2章 解説PDF p.95",
         "codeBlocks": [
@@ -4676,7 +4778,9 @@ window.JAVA_STUDY_DATA = {
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "String配列の要素にはnullを代入できる。\nSystem.out.printにnull参照を渡すと文字列\"null\"が出力され、その後B、C、Dが続く。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "2章 問題PDF p.48 / 2章 解説PDF p.97",
         "codeBlocks": [
@@ -4787,7 +4891,9 @@ window.JAVA_STUDY_DATA = {
             "配列生成時の要素数、各添字の範囲、参照の共有、拡張for文で取り出される型を順に確認する。",
             "出力を追う前に、各行を「文法」「型」「宣言済みか」「アクセス可能か」「例外処理が足りるか」で検査する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "配列初期化子を使う場合、new int[2]{...} のようにサイズ指定と初期化子を同時に使えない。\nまた、{2,3}だけの代入は宣言時以外では不可。\n・B: 空の2次元配列初期化として有効。\n・C: new int[][]{} は有効。\n・D: 宣言後でも new int[]{...} なら代入できる。\n・A/E: 不正。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。\n・判定軸: コンパイルエラーは実行前に検出される。\n構文、型、アクセス、未初期化、到達不能、チェック例外の未処理が代表。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "2章 問題PDF p.48 / 2章 解説PDF p.98",
         "tags": [
@@ -4891,7 +4997,10 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "2次元配列の要素は1次元配列への参照。\n途中の要素にnullが入っているため、tmp.lengthを参照した時点でNullPointerExceptionが発生する。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "多次元配列は「配列の配列」です。外側の配列が存在しても、内側の配列要素がnullのままなら、その先の要素アクセスでNullPointerExceptionになります。"
         },
         "source": "2章 問題PDF p.49 / 2章 解説PDF p.100",
         "codeBlocks": [
@@ -4998,7 +5107,10 @@ window.JAVA_STUDY_DATA = {
             "interface側の暗黙修飾を補ってから、実装クラスが必要なメソッドを正しいアクセス修飾子で実装しているかを見る。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "CとDはAを実装した型として扱える。\nA[]は参照型配列でありObject[]へ代入できるため、4行目もコンパイルできる。\n・配列はObjectのサブタイプ。\n・参照型配列には共変性がある。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "配列は共変なので、親型配列変数に子型配列を代入できます。ただし実体の配列型は実行時にも保持されるため、不正な型の要素を入れるとArrayStoreExceptionになります。"
         },
         "source": "2章 問題PDF p.50 / 2章 解説PDF p.102",
         "codeBlocks": [
@@ -5118,7 +5230,10 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "arrayA.clone()で外側の配列は複製される。\narrayBを拡張for文でたどると、各int[]の要素1+2、1+2、1+2+3を合計するため12になる。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "2次元配列のcloneは外側の配列だけを複製する浅いコピーです。内側の配列は共有されるため、内側要素を書き換えると元配列側にも影響します。"
         },
         "source": "2章 問題PDF p.50-51 / 2章 解説PDF p.104",
         "codeBlocks": [
@@ -5234,7 +5349,9 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "ArrayListはサイズを動的に変更できる配列のようなコレクション。\nnullや重複値を扱える。\n標準ではスレッドセーフではなく、add(index, value)で追加位置を指定できる。\n・判定軸: ArrayListは可変長。\naddは追加、setは置換、removeは削除。\n添字指定では現在のsize範囲に注意する。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "2章 問題PDF p.51 / 2章 解説PDF p.106",
         "tags": [
@@ -5361,7 +5478,10 @@ window.JAVA_STUDY_DATA = {
             "各操作後のsizeと要素順を表にして、例外が出る操作がないかを先に確認する。",
             "配列生成時の要素数、各添字の範囲、参照の共有、拡張for文で取り出される型を順に確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "左辺がraw型のArrayListなので、String、Integer、Characterを混在して追加できる。\n拡張for文ではObjectとして取り出すため、順にA、10、Bが出力される。\n・raw型は型安全ではないが、このコード自体はコンパイル・実行できる。\n・charリテラル'B'はCharacterとして扱われる。\n・判定軸: ArrayListは可変長。\naddは追加、setは置換、removeは削除。\n添字指定では現在のsize範囲に注意する。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "raw型ArrayListを使うと、ジェネリクスによる型チェックが弱くなります。取り出し時のキャストや代入先の型で実行時例外につながるため、コンパイル時警告と実行時の型を分けて判断します。"
         },
         "source": "2章 問題PDF p.51 / 2章 解説PDF p.107",
         "codeBlocks": [
@@ -5476,7 +5596,10 @@ window.JAVA_STUDY_DATA = {
             "各操作後のsizeと要素順を表にして、例外が出る操作がないかを先に確認する。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "list.add(2, \"B\") を呼ぶ時点でリストのサイズは1。\naddで指定できるindexは0以上size以下なので、index 2は範囲外となり実行時例外が発生する。\n・判定軸: ArrayListは可変長。\naddは追加、setは置換、removeは削除。\n添字指定では現在のsize範囲に注意する。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "add(index, value)は指定位置に挿入します。indexは0以上size()以下なら有効ですが、size()を超える位置はIndexOutOfBoundsExceptionです。set(index, value)とは条件が違います。"
         },
         "source": "2章 問題PDF p.52 / 2章 解説PDF p.108",
         "codeBlocks": [
@@ -5610,7 +5733,10 @@ window.JAVA_STUDY_DATA = {
             "各操作後のsizeと要素順を表にして、例外が出る操作がないかを先に確認する。",
             "配列生成時の要素数、各添字の範囲、参照の共有、拡張for文で取り出される型を順に確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "setは既存要素の置換。\nAを追加後に0番目をBに置換し、Cを追加後に1番目をDに置換するため、最終的なリストは[B, D]。\n・addは要素を増やす。\nsetは要素数を増やさず置き換える。\n・判定軸: ArrayListは可変長。\naddは追加、setは置換、removeは削除。\n添字指定では現在のsize範囲に注意する。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "set(index, value)は既存要素の置き換えです。addと違ってindex == size()は不可です。要素数が増えるのか、既存要素が置き換わるだけなのかを分けます。"
         },
         "source": "2章 問題PDF p.53 / 2章 解説PDF p.110",
         "codeBlocks": [
@@ -5727,7 +5853,10 @@ window.JAVA_STUDY_DATA = {
             "各操作後のsizeと要素順を表にして、例外が出る操作がないかを先に確認する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "remove(Object)はequalsで等しい最初の要素を削除する。\nItem.equalsはnameだけを比較しているため、new Item(\"A\", 500) は先頭のItem(\"A\", 100)と等しいと判定され、最初のAが削除される。\n・priceはequals判定に使われていない。\n・削除されるのは一致した最初の1件だけ。\n・判定軸: ArrayListは可変長。\naddは追加、setは置換、removeは削除。\n添字指定では現在のsize範囲に注意する。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "ArrayList.remove(Object)はequalsで一致する要素を削除します。Stringなどの同値比較が定義された型では、同じ参照かどうかではなく内容一致で削除される点が狙われます。"
         },
         "source": "2章 問題PDF p.54-55 / 2章 解説PDF p.111",
         "codeBlocks": [
@@ -5848,7 +5977,10 @@ window.JAVA_STUDY_DATA = {
             "各操作後のsizeと要素順を表にして、例外が出る操作がないかを先に確認する。",
             "配列生成時の要素数、各添字の範囲、参照の共有、拡張for文で取り出される型を順に確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "Aは出力される。\nBのときにlist.remove(str)でBが削除されると、内部イテレータのカーソル位置とリストサイズの関係により次の要素確認でループが終了し、Cは出力されない。\n・拡張for文中のリスト変更は基本的に危険。\n・ただしこのケースではConcurrentModificationExceptionが発生する前にループ終了条件に達する。\n・判定軸: ArrayListは可変長。\naddは追加、setは置換、removeは削除。\n添字指定では現在のsize範囲に注意する。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "拡張for文で取り出した変数は、要素のコピーまたは参照のコピーです。ループ変数を書き換えても、リストや配列のスロット自体が差し替わるわけではありません。"
         },
         "source": "2章 問題PDF p.55 / 2章 解説PDF p.113",
         "codeBlocks": [
@@ -5965,7 +6097,10 @@ window.JAVA_STUDY_DATA = {
             "各操作後のsizeと要素順を表にして、例外が出る操作がないかを先に確認する。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "拡張for文の内部ではIteratorが使われる。\nループ中にlist.remove(str)で構造変更すると、次の取り出し時にConcurrentModificationExceptionが発生する。\n・Q42と違い、削除後もhasNextがtrueになる位置関係のため、次のnextで変更検出される。\n・拡張for文中にコレクションを直接変更するのは避ける。\n・判定軸: ArrayListは可変長。\naddは追加、setは置換、removeは削除。\n添字指定では現在のsize範囲に注意する。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "拡張for文で走査中のArrayListを直接removeすると、反復処理の整合性が崩れてConcurrentModificationExceptionになる可能性があります。コンパイルエラーではなく実行時の問題です。"
         },
         "source": "2章 問題PDF p.56 / 2章 解説PDF p.114",
         "codeBlocks": [
@@ -6074,7 +6209,10 @@ window.JAVA_STUDY_DATA = {
             "まず表記として合法かを確認し、その次に代入先の型へ収まるか、接尾辞L/F/Dの有無を確認する。",
             "varが出たら「ローカル変数か」「右辺だけで型が一意に決まるか」「ラムダや配列初期化子単独ではないか」を確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "List.ofは変更不可リストを作る。\nArrays.asListは配列を backed する固定長リストを返すため、要素の追加・削除はできない。\nnew ArrayListは可変長。\n・A: 変更不可。\nsetもadd/removeも不可。\n・C: 固定長。\nsetは可能だがadd/removeは不可。\n・B/D: 通常のArrayListなので要素の追加・削除が可能。\n・判定軸: ArrayListは可変長。\naddは追加、setは置換、removeは削除。\n添字指定では現在のsize範囲に注意する。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "Arrays.asListは固定長リスト、List.ofは変更不可リストです。setできるか、add/removeできるか、nullを許すかが異なります。ArrayListとは別物として扱います。"
         },
         "source": "2章 問題PDF p.56 / 2章 解説PDF p.115",
         "tags": [
@@ -6186,7 +6324,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "a += 5 は a = a + 5 と同じで、a は 3 から 8 になる。\nその値が b に代入されるので a + b は 16。\n・複合代入は右辺評価後に代入される。\n・b = a += 5 は、a を更新してから b に代入する。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "複合代入は、右辺の計算結果を左辺型へ暗黙にキャストして代入する性質があります。ただし式全体の評価順も重要です。a += 5が先に完了し、その結果が別の代入式で使われます。"
         },
         "source": "3章 問題PDF p.118 / 3章 解説PDF p.144",
         "codeBlocks": [
@@ -6293,7 +6434,10 @@ window.JAVA_STUDY_DATA = {
             "条件式が評価される順、ループに入る回数、break/continueの移動先、switchのcase一致後の流れを図にする。",
             "出力を追う前に、各行を「文法」「型」「宣言済みか」「アクセス可能か」「例外処理が足りるか」で検査する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "byte に代入できる範囲は -128〜127。\n0b10000000 は int として 128 なので byte へ代入不可。\n2 * 3L は long、10.0 は double なので、それぞれ int / float へ代入不可。\n・Bは定数式 256 で short の範囲内なのでコンパイル可能。\n・浮動小数点リテラルは何も付けなければ double。\nfloat には 10.0F のようにする。\n・判定軸: 整数リテラルは基本int、浮動小数点リテラルは基本double。\n0bは2進数、0xは16進数、先頭0は8進数。\nアンダースコアは数字の間にだけ置ける。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "数値演算では、intより小さい型はintへ昇格し、longやdoubleが混ざると広い型に寄せられます。代入先が狭い場合は、リテラル単体なのか演算結果なのかを分けます。"
         },
         "source": "3章 問題PDF p.118 / 3章 解説PDF p.145",
         "tags": [
@@ -6408,7 +6552,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "式は a++ + a + a-- - a-- + ++a。\na=10 から順に評価すると 10 + 11 + 11 - 10 + 10 = 32。\n・後置は現在値を式に使ってから増減する。\n・前置は増減後の値を式に使う。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "後置++は「式では元の値を使い、その後で増やす」、前置++は「増やしてから式で使う」です。同じ変数が1つの式に何度も出る場合、左から値と副作用を順番に追う必要があります。"
         },
         "source": "3章 問題PDF p.118-119 / 3章 解説PDF p.147",
         "codeBlocks": [
@@ -6512,7 +6659,9 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "<= は大小比較用の関係演算子で、boolean 同士には使えない。\n・boolean は == / != では比較できるが、< <= > >= では比較できない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "3章 問題PDF p.119 / 3章 解説PDF p.149",
         "codeBlocks": [
@@ -6625,7 +6774,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "10 < a は false。\n&& は左辺が false の時点で右辺を評価しないため ++b は実行されない。\na=10、b=10 のままなので 20。\n・& なら右辺も評価されるが、&& はショートサーキットする。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "&&は短絡評価するため、左辺がfalseなら右辺を評価しません。&はboolean同士でも使えますが、右辺まで必ず評価します。++が右辺にある場合、値が変わるかどうかが分かれます。"
         },
         "source": "3章 問題PDF p.119-120 / 3章 解説PDF p.151",
         "codeBlocks": [
@@ -6739,7 +6891,9 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "%、*、/ は + より優先され、同じ優先順位なら左から評価する。\n100 % 20 は 0、0 * 30 は 0、100 / 20 は 5。\n合計は 5。\n・剰余 % と乗除算は同順位。\n・整数除算では小数は出ない。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "3章 問題PDF p.120 / 3章 解説PDF p.152",
         "codeBlocks": [
@@ -6853,7 +7007,9 @@ window.JAVA_STUDY_DATA = {
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。",
             "配列生成時の要素数、各添字の範囲、参照の共有、拡張for文で取り出される型を順に確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "括弧内は 2 * 5 = 10。\n12 / 10 は整数除算で 1。\nしたがって 30 - 1 + 1 = 30。\n・整数同士の除算は整数結果になる。\n・加算・減算は同じ優先順位なので左から評価する。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "3章 問題PDF p.120 / 3章 解説PDF p.153",
         "codeBlocks": [
@@ -6957,7 +7113,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "s2 = s1 の時点では同じインスタンスを参照するが、その後 s1 に new Sample(10) を代入しているため、s1 と s2 は別インスタンスを参照する。\n== は参照の同一性を比較するので false。\n・フィールド値が同じでも、new で別に作ったインスタンスは同一ではない。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "==で比較しているのはオブジェクトの中身ではなく参照値です。newで作った同じ内容のインスタンスは別参照です。文字列プールや代入による参照コピーが絡むと結果が変わります。"
         },
         "source": "3章 問題PDF p.121 / 3章 解説PDF p.154",
         "codeBlocks": [
@@ -7075,7 +7234,10 @@ window.JAVA_STUDY_DATA = {
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "equals(Object obj) をオーバーライドしており、obj が Sample なら num の値だけを比較する。\na と b は name は異なるが num はどちらも10なので true。\n・equalsのシグネチャは equals(Object obj)。\n・この実装では name は比較対象ではない。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "equalsをオーバーライドしているかどうかで同値比較の意味が変わります。Objectのequalsのままなら実質==と同じです。問題ではメソッドの引数型も確認します。"
         },
         "source": "3章 問題PDF p.122 / 3章 解説PDF p.155",
         "codeBlocks": [
@@ -7193,7 +7355,10 @@ window.JAVA_STUDY_DATA = {
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "Sample には equals(Sample obj) があるが、これは equals(Object) のオーバーライドではなくオーバーロード。\n変数 a は Object 型なので Object.equals(Object) が呼ばれ、参照が異なるため false。\n・オーバーライドはメソッド名だけでなく引数型も一致する必要がある。\n・Object型変数から見えるのはObjectのメソッド。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "equalsに見えても、引数がObjectでなければオーバーライドではなくオーバーロードです。呼び出し時の引数型により、どのequalsが選ばれるかが変わります。"
         },
         "source": "3章 問題PDF p.123 / 3章 解説PDF p.157",
         "codeBlocks": [
@@ -7301,7 +7466,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "a は null ではない Object インスタンス。\nObject.equals は参照の同一性を比較するので、null を渡すと false になる。\n・null.equals(...) なら NullPointerException だが、今回は a.equals(null)。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "nullに対してメソッドを呼ぶとNullPointerExceptionです。一方、非null側からequals(null)を呼ぶこと自体は可能で、通常はfalseになります。どちら側がレシーバかを確認します。"
         },
         "source": "3章 問題PDF p.124 / 3章 解説PDF p.158",
         "codeBlocks": [
@@ -7406,7 +7574,9 @@ window.JAVA_STUDY_DATA = {
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。",
             "配列生成時の要素数、各添字の範囲、参照の共有、拡張for文で取り出される型を順に確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "status は 0b1011 で FLAG_C は 0b0100。\nstatus & FLAG_C は 0 になるため、(status & FLAG_C) != 0 は false。\n・ビットフラグの有無確認には & を使う。\n・&& は boolean 専用、| はビットORなので今回の判定目的と違う。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "3章 問題PDF p.124 / 3章 解説PDF p.160",
         "codeBlocks": [
@@ -7510,7 +7680,9 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "Javaのif文は if (条件式) { ... } の形で書く。\n条件式の括弧は省略できず、then も使わない。\n・JavaはPythonやVB風のif構文ではない。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "3章 問題PDF p.125 / 3章 解説PDF p.164",
         "codeBlocks": [
@@ -7632,7 +7804,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "if に中カッコがない場合、条件の対象になるのは直後の1文だけ。\nfalse なので A は表示されず、次の println(\"B\") は通常実行される。\n・試験では中カッコ省略時にどこまでがif対象かを必ず確認する。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "if文で中カッコを省略した場合、制御対象は直後の1文だけです。見た目のインデントではなく、Java構文としてどの文がifに属するかで出力が決まります。"
         },
         "source": "3章 問題PDF p.125 / 3章 解説PDF p.165",
         "codeBlocks": [
@@ -7755,7 +7930,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "num < 10 は false なので else 側の B が表示される。\nその後の if (num == 10) は別のif文なので C も表示される。\n・else は直前の対応する if に結び付く。\n・2つ目の if は独立して評価される。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "elseは最も近い未対応のifに結びつきます。インデントではなく構文上の対応関係で見ます。中カッコがない問題では、この対応が主要な罠になります。"
         },
         "source": "3章 問題PDF p.126 / 3章 解説PDF p.166",
         "codeBlocks": [
@@ -7877,7 +8055,9 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "num == 100 は false、10 < num も false。\n次の else に属する if (num == 10) が true なので C が表示される。\nここでelse-ifチェーンの処理は終わるため D は表示されない。\n・else if の連鎖では、最初に一致した箇所だけが実行される。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "3章 問題PDF p.126-127 / 3章 解説PDF p.166",
         "codeBlocks": [
@@ -8022,7 +8202,10 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "switch文で使える代表的な型は char、byte、short、int、そのラッパークラス、String、enum。\nlong と boolean は使えない。\n・Java Silverでは long と boolean を選ばないことが重要。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "switch文の対象に使える型は限定されています。byte/short/char/int、それらのラッパー、String、enumなどです。boolean、long、float、doubleは使えません。"
         },
         "source": "3章 問題PDF p.127 / 3章 解説PDF p.168",
         "tags": [
@@ -8120,7 +8303,10 @@ window.JAVA_STUDY_DATA = {
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。",
             "配列生成時の要素数、各添字の範囲、参照の共有、拡張for文で取り出される型を順に確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "switch条件式は int だが、6行目の case \"10\" は String なので型不一致。\n8行目の case num は変数であり定数ではないため不可。\n10行目の 2 * 5 は定数式、12行目の NUM は final 定数なので可。\n・case値には条件式と互換性のある定数を指定する。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "caseラベルにはコンパイル時定数が必要です。finalでも、初期値がコンパイル時に確定しない変数はcaseに使えません。型の代入可能性も同時に確認します。"
         },
         "source": "3章 問題PDF p.127-128 / 3章 解説PDF p.170",
         "codeBlocks": [
@@ -8242,7 +8428,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "interface側の暗黙修飾を補ってから、実装クラスが必要なメソッドを正しいアクセス修飾子で実装しているかを見る。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "num は 1 なので case 1 から入る。\ncase 1 と case 2 には処理がなく、case 3 で A、break がないので case 4 で B、default で C が表示される。\n・switch文は break がないと下へフォールスルーする。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "従来のswitch文はbreakがないと次のcaseへフォールスルーします。条件に一致したcaseだけで終わるとは限らないため、breakの位置で出力を追います。"
         },
         "source": "3章 問題PDF p.128 / 3章 解説PDF p.171",
         "codeBlocks": [
@@ -8356,7 +8545,10 @@ window.JAVA_STUDY_DATA = {
             "条件式が評価される順、ループに入る回数、break/continueの移動先、switchのcase一致後の流れを図にする。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "data は 1 で case 0 / case 10 に一致しないため default に入る。\ndefault の後に break がないので case 0 にフォールスルーし、C と A が表示されて break する。\n・default は最後に書かなくてもよい。\n・defaultからもbreakがなければ下へ進む。\n・判定軸: インタフェースの抽象メソッドは暗黙にpublic abstract、フィールドはpublic static final。\ndefault/static/privateメソッドの扱いを区別する。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "defaultは最後に書かなくても構文上は有効です。実行位置は一致caseがないときにdefaultへ移りますが、その後はbreakがなければ下方向へ進みます。"
         },
         "source": "3章 問題PDF p.129 / 3章 解説PDF p.171",
         "codeBlocks": [
@@ -8469,7 +8661,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "interface側の暗黙修飾を補ってから、実装クラスが必要なメソッドを正しいアクセス修飾子で実装しているかを見る。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "switch式の -> はフォールスルーしない。\na は 2 なので case 2 の B だけが表示される。\n・switch文の : と switch式の -> を混同しない。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "switch式のアロー形式は、該当caseの右側の式またはブロックだけを評価して値を返します。従来switch文のようなフォールスルーは起きません。"
         },
         "source": "3章 問題PDF p.129-130 / 3章 解説PDF p.172",
         "codeBlocks": [
@@ -8582,7 +8777,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "interface側の暗黙修飾を補ってから、実装クラスが必要なメソッドを正しいアクセス修飾子で実装しているかを見る。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "switch式は値を返す式なので、すべての可能性を網羅する必要がある。\nこのコードは score / 10 が 0〜5 などになる場合を処理しておらず default もないためコンパイルエラー。\n・switch文ではdefault省略可能だが、値を返すswitch式では網羅性が必要。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "switch式は値を返す式なので、すべての入力に対して値が決まる必要があります。enum以外の一般的な値ではdefaultがないと網羅性不足になりやすいです。"
         },
         "source": "3章 問題PDF p.130 / 3章 解説PDF p.174",
         "codeBlocks": [
@@ -8689,7 +8887,10 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "配列生成時の要素数、各添字の範囲、参照の共有、拡張for文で取り出される型を順に確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "正解はC。\n設問のコードは9行目の閉じ波カッコ「}」の後にセミコロンがないため、switch式を使った変数宣言文が終了しておらず、コンパイルエラーになります。\n・switch式は値を返せるため、case 3 -> \"C\" のように右辺へ式を書けます。\nここにreturnは不要です。\n・ただし、String result = switch (a) { ... }; という変数宣言文として使う場合、switch式全体の後にセミコロンが必要です。\n・設問では9行目が「}」で終わっており、「};」ではありません。\nしたがって実行前にコンパイルエラーになります。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "switch式を変数へ代入する場合、switch式全体は代入文の右辺です。そのためswitchブロックを閉じた後に代入文を終えるセミコロンが必要です。caseブロック内のセミコロンとは別に確認します。"
         },
         "source": "3章 問題PDF p.131 / 3章 解説PDF p.175",
         "codeBlocks": [
@@ -8794,7 +8995,10 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "switch式のブロック内で値を返すには yield を使う。\ncase 2 では b を3倍にした後、yield b; として result に値を返す必要がある。\n・break はswitch式の値を返せない。\n・return はメソッドから戻る。\nthrow は例外送出。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。\n・判定軸: インタフェースの抽象メソッドは暗黙にpublic abstract、フィールドはpublic static final。\ndefault/static/privateメソッドの扱いを区別する。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "yieldはswitch式のブロックから値を返すためのキーワードです。メソッドから戻るreturnとは違い、switch式だけを完了させます。yieldした値が代入先に入ります。"
         },
         "source": "3章 問題PDF p.131-132 / 3章 解説PDF p.176",
         "codeBlocks": [
@@ -8916,7 +9120,9 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "表示しているのは b で、b は 0 から増えていく。\n0〜4を表示したいので条件は b < 5。\n・a は 11 から減っていく補助変数で、出力値そのものではない。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "3章 問題PDF p.132 / 3章 解説PDF p.184",
         "codeBlocks": [
@@ -9021,7 +9227,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "do-while は do { 処理 } while (条件式); の形。\na++ を表示した後に a < 5 を判定することで 0〜4 が表示される。\n・do の後に条件式は書かない。\n・while の条件式の後にはセミコロンが必要。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "do-while文は最後にセミコロンが必要です。また条件判定は本体実行後なので、条件が最初からfalseでも本体は1回実行されます。while文と混同しないことが重要です。"
         },
         "source": "3章 問題PDF p.133 / 3章 解説PDF p.185",
         "codeBlocks": [
@@ -9143,7 +9352,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "while (a < 5) の対象は直後の do-while 文だけだが、その do では中カッコを省略して複数文を書いている形になっており、構文として成立しない。\n・do-whileで複数文を繰り返すなら do { ... } while (...); と中カッコが必要。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "whileとdo-whileが混ざる問題では、条件を判定するタイミングが違います。内側・外側それぞれで、更新処理が条件判定の前か後かを追う必要があります。"
         },
         "source": "3章 問題PDF p.133 / 3章 解説PDF p.186",
         "codeBlocks": [
@@ -9247,7 +9459,9 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "for文の初期化文で複数変数を宣言する場合、同じ型でなければならない。\nint i と long j を同時に宣言しているためコンパイルエラー。\n・初期化文では int i = 1, j = 2 のように同じ型なら複数宣言できる。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "3章 問題PDF p.134 / 3章 解説PDF p.187",
         "codeBlocks": [
@@ -9369,7 +9583,10 @@ window.JAVA_STUDY_DATA = {
             "条件式が評価される順、ループに入る回数、break/continueの移動先、switchのcase一致後の流れを図にする。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "total は for 文の初期化文で宣言されているため、for文の外では使えない。\n7行目の System.out.println(total) でコンパイルエラー。\n・for文内で宣言した変数のスコープはfor文の中だけ。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "for文の初期化部で宣言した変数のスコープはfor文の中だけです。ループを抜けた後にその変数を参照するとコンパイルエラーになります。"
         },
         "source": "3章 問題PDF p.134 / 3章 解説PDF p.187",
         "codeBlocks": [
@@ -9473,7 +9690,9 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "i は 0 で初期化される。\n1回だけ 0 を表示するには、最初だけ true になり、更新後に false になる i == 0 が適切。\n・D は常に true なので無限ループになる。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "3章 問題PDF p.135 / 3章 解説PDF p.188",
         "codeBlocks": [
@@ -9586,7 +9805,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "for文の条件部は1つのboolean式でなければならない。\ni < 3, j < 5 のようにカンマで複数条件は書けない。\n・複数条件にしたい場合は i < 3 && j < 5 のように論理演算子を使う。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "for文の条件式はbooleanでなければいけません。数値を条件にできる言語もありますが、Javaではintなどをそのまま条件式にはできません。"
         },
         "source": "3章 問題PDF p.135 / 3章 解説PDF p.189",
         "codeBlocks": [
@@ -9708,7 +9930,9 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "forの更新文は各ループ本体の後に実行される。\nprint(i) の後に i++ と period() が実行されるため、0,1,2, のように最後にもカンマが付く。\n・更新文にはメソッド呼び出しも書ける。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "3章 問題PDF p.136 / 3章 解説PDF p.189",
         "codeBlocks": [
@@ -9813,7 +10037,9 @@ window.JAVA_STUDY_DATA = {
             "条件式が評価される順、ループに入る回数、break/continueの移動先、switchのcase一致後の流れを図にする。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "外側の i に対応する内側配列の要素をすべて合計するには、j を 0 から array[i].length 未満まで回す。\n・array[j].length を条件にすると、jの値に応じて参照先が変わり危険。\n・jをiから始めると一部要素を飛ばす。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "3章 問題PDF p.136-137 / 3章 解説PDF p.190",
         "codeBlocks": [
@@ -9926,7 +10152,9 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "内側の代入ループは b < array.length なので各行2要素だけ代入する。\n2行目は長さ5だが、後ろ3要素は null のまま。\n・array.length は一次元目の要素数。\narray[a].length ではない。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "3章 問題PDF p.137 / 3章 解説PDF p.193",
         "codeBlocks": [
@@ -10033,7 +10261,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "条件が true のA、条件式省略のCは無限ループ。\nDは更新文がないため i が0のままで i < 5 が常に true。\nBは最初から false。\n・for文の条件式・更新式は省略可能。\n・条件式を省略した場合は true 扱い。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "for文は初期化・条件・更新の各部を省略できます。条件式を省略した場合はtrue扱いです。breakや例外がなければ無限ループになります。"
         },
         "source": "3章 問題PDF p.138 / 3章 解説PDF p.194",
         "codeBlocks": [
@@ -10156,7 +10387,9 @@ window.JAVA_STUDY_DATA = {
             "条件式が評価される順、ループに入る回数、break/continueの移動先、switchのcase一致後の流れを図にする。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "拡張for文は 型 変数名 : 配列 の順。\nString[][] の1要素は String[] で、配列は Object と互換性があるため Object obj : array はコンパイル可能。\n・BはString[][]の要素型と合わない。\n・D〜Fは拡張for文の順序が逆。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "3章 問題PDF p.138 / 3章 解説PDF p.195",
         "codeBlocks": [
@@ -10260,7 +10493,10 @@ window.JAVA_STUDY_DATA = {
             "条件式が評価される順、ループに入る回数、break/continueの移動先、switchのcase一致後の流れを図にする。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "拡張for文の変数 str に \"D\" を代入しても、配列要素そのものは置き換わらない。\n2回目のループでは元の ABC が表示される。\n・拡張forの一時変数は要素の値・参照のコピー。\n配列の格納先を書き換えるわけではない。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "拡張for文のループ変数に代入しても、配列の要素そのものは置き換わりません。参照型の場合は参照先オブジェクトの状態変更と、参照変数の差し替えを分けます。"
         },
         "source": "3章 問題PDF p.139 / 3章 解説PDF p.196",
         "codeBlocks": [
@@ -10366,7 +10602,10 @@ window.JAVA_STUDY_DATA = {
             "変数表を作り、式の中で値を使ったタイミングと更新されたタイミングを分けて記録する。",
             "条件式が評価される順、ループに入る回数、break/continueの移動先、switchのcase一致後の流れを図にする。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "元コードは do 本体で num++ により11、while条件の ++num < 10 で12になって終了し、12を表示する。\nA〜Dはいずれも同じ最終値にならない。\n・do-whileは必ず1回本体を実行してから条件判定する。\n・前置・後置インクリメントも同時に追う必要がある。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "do-whileは本体を実行してから条件を見ます。条件式内に++がある場合、条件がfalseになってもその評価時の副作用は残ります。"
         },
         "source": "3章 問題PDF p.139-140 / 3章 解説PDF p.197",
         "codeBlocks": [
@@ -10478,7 +10717,9 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "x は array.length で 5。\n最初に x を 4 にしてから array[4] を表示すれば5から始まる。\nDとEはその条件を満たし、xが0になるまで表示できる。\n・配列添字は0始まり。\narray[5] は範囲外。\n・Bは最後に x が -1 になってから条件判定前に表示対象になりうるため不適切。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "3章 問題PDF p.140-141 / 3章 解説PDF p.199",
         "codeBlocks": [
@@ -10591,7 +10832,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "内側ループで b が \"A\" のときだけ出力し、b が \"B\" になると break で内側ループを抜ける。\n外側ループは2回あるので A が2回表示される。\n・breakが抜けるのは直近のループだけ。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "breakは最も内側のループまたは指定ラベルの文を終了します。break後は、そのループの残り処理や更新式は実行されません。二重ループではどのループを抜けたかが重要です。"
         },
         "source": "3章 問題PDF p.141 / 3章 解説PDF p.200",
         "codeBlocks": [
@@ -10704,7 +10948,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "偶数は continue で加算処理をスキップする。\n1、3、5 だけが total に加算されるので 9。\n・continueは以降の処理を飛ばして次の繰り返しへ進む。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "continueは現在の反復の残りを飛ばします。for文ではcontinue後に更新式へ進みますが、while文では条件式へ戻るため、更新漏れがあると無限ループになります。"
         },
         "source": "3章 問題PDF p.142 / 3章 解説PDF p.201",
         "codeBlocks": [
@@ -10824,7 +11071,9 @@ window.JAVA_STUDY_DATA = {
             "変数表を作り、式の中で値を使ったタイミングと更新されたタイミングを分けて記録する。",
             "条件式が評価される順、ループに入る回数、break/continueの移動先、switchのcase一致後の流れを図にする。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "Javaのラベルは、ループ文だけでなく、if文、switch文、ブロック、return文、tryブロックなど多くの文に付けられる。\n・ただし実用上よく使うのは、多重ループで break / continue の対象を明示する場合。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "3章 問題PDF p.142 / 3章 解説PDF p.201",
         "tags": [
@@ -10930,7 +11179,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "i が偶数のときは continue a で外側ループの次回へ進む。\ni が1と3のときだけ内側ループで j=0〜3 を加算し、4で break b。\n各回 0+1+2+3=6、2回で12。\n・continue a はラベルaのループを次の繰り返しへ進める。\n・break b は内側ループだけを抜ける。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "ラベル付きcontinueは、指定した外側ループの次の反復へ移ります。単なる内側ループのcontinueではありません。ラベルの対象がどの文かを確認します。"
         },
         "source": "3章 問題PDF p.143 / 3章 解説PDF p.203",
         "codeBlocks": [
@@ -11045,7 +11297,9 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "a と b は別インスタンス。\nb.setNum(20) は b の num だけを変更するため、a.getNum() は初期値10を返す。\n・インスタンスフィールドはインスタンスごとに別々に保持される。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "4章 問題PDF p.206 / 4章 解説PDF p.231",
         "codeBlocks": [
@@ -11167,7 +11421,9 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "a = b により、a は b と同じインスタンスを参照する。\nb の name は banana、price は100なので banana, 100 が出力される。\n・参照型変数に入るのはオブジェクトそのものではなく参照。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "4章 問題PDF / 4章 解説PDF",
         "codeBlocks": [
@@ -11268,7 +11524,10 @@ window.JAVA_STUDY_DATA = {
             "引数リストと戻り値型が代入先に合うか確認する。",
             "コンパイルできる場合だけ、実行結果を追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "「NULL」と表示する選択肢は存在しません。\nnullを出力すると小文字の「null」になり、NULLはJavaのリテラルではありません。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "nullをprintlnに渡すと表示は小文字のnullです。大文字のNULLというリテラルはJavaには存在しません。空文字は「何も表示されない」だけで、null表示とは違います。"
         },
         "source": "4章 問題PDF / 4章 解説PDF",
         "tags": [
@@ -11354,7 +11613,10 @@ window.JAVA_STUDY_DATA = {
           ],
           "correctReason": "7行目終了時点でガベージコレクションの対象になるのは、4行目で作成したインスタンスだけです。\n\n3行目で作成したインスタンスは、5行目で変数cにも参照がコピーされています。6行目でaにnullを代入しても、cがまだ同じインスタンスを参照しているため対象になりません。\n\n4行目で作成したインスタンスは、変数bだけが参照していました。7行目でbにnullを代入すると、どの変数からも参照されなくなるため、ガベージコレクションの対象になります。",
           "choiceAnalysis": [],
-          "relatedKnowledge": []
+          "relatedKnowledge": [],
+          "pdfExplanation": "7行目終了時点でガベージコレクションの対象になるのは、4行目で作成したインスタンスだけです。\n3行目で作成したインスタンスは、5行目で変数cにも参照がコピーされています。\n6行目でaにnullを代入しても、cがまだ同じインスタンスを参照しているため対象になりません。\n4行目で作成したインスタンスは、変数bだけが参照していました。\n7行目でbにnullを代入すると、どの変数からも参照されなくなるため、ガベージコレクションの対象になります。\n・Javaではインスタンスそのものではなく、参照型変数に入っている参照を通してオブジェクトを扱う。\n・どの変数からも参照されなくなったインスタンスが、ガベージコレクションの対象になる。\n・ガベージコレクションの対象になることと、即座に回収されることは同じではない。\n回収タイミングはJVMが決める。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "ガベージコレクション対象は、どの変数からも到達できなくなったインスタンスです。変数aをnullにしても、別の変数cが同じインスタンスを参照していれば対象になりません。"
         },
         "source": "4章 問題PDF / 4章 解説PDF",
         "codeBlocks": [
@@ -11446,7 +11708,10 @@ window.JAVA_STUDY_DATA = {
           ],
           "correctReason": "30が表示されます。\n\nnumはstaticフィールドなので、Sampleのインスタンスごとに別々に存在するのではなく、Sampleクラスに1つだけ存在します。\n\n3行目でSample.numに10を代入します。6行目のs.num += 10は、インスタンス参照経由で書いていますが、実質的にはSample.num += 10と同じです。ここで20になります。\n\n7行目のs2.num = 30も、同じstaticフィールドSample.numを書き換えるため、最後に30が表示されます。",
           "choiceAnalysis": [],
-          "relatedKnowledge": []
+          "relatedKnowledge": [],
+          "pdfExplanation": "30が表示されます。\nnumはstaticフィールドなので、Sampleのインスタンスごとに別々に存在するのではなく、Sampleクラスに1つだけ存在します。\n3行目でSample.numに10を代入します。\n6行目のs.num += 10は、インスタンス参照経由で書いていますが、実質的にはSample.num += 10と同じです。\nここで20になります。\n7行目のs2.num = 30も、同じstaticフィールドSample.numを書き換えるため、最後に30が表示されます。\n・staticフィールドはクラスに属する。\nインスタンスごとに複製されない。\n・staticフィールドはクラス名でアクセスするのが基本。\nただし、参照変数経由でもアクセス自体は可能。\n・参照変数経由でstaticフィールドにアクセスしても、その参照先インスタンス固有のフィールドになるわけではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "staticフィールドはインスタンスごとではなくクラスに1つだけ存在します。インスタンス変数経由でアクセスしているように見えても、同じクラス変数を読んでいます。"
         },
         "source": "4章 問題PDF / 4章 解説PDF",
         "tags": [
@@ -11551,7 +11816,9 @@ window.JAVA_STUDY_DATA = {
             "引数リストと戻り値型が代入先に合うか確認する。",
             "コンパイルできる場合だけ、実行結果を追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "staticメソッドからはstaticメンバへアクセスできます。\nインスタンスメソッドからもstaticメンバへアクセスできます。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "4章 問題PDF / 4章 解説PDF",
         "tags": [
@@ -11643,7 +11910,9 @@ window.JAVA_STUDY_DATA = {
             "引数リストと戻り値型が代入先に合うか確認する。",
             "コンパイルできる場合だけ、実行結果を追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "helloはstaticではないインスタンスメソッドなので、生成済みの変数sampleを使ってsample.hello();と呼び出します。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "4章 問題PDF / 4章 解説PDF",
         "tags": [
@@ -11736,7 +12005,9 @@ window.JAVA_STUDY_DATA = {
             "引数リストと戻り値型が代入先に合うか確認する。",
             "コンパイルできる場合だけ、実行結果を追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "addメソッドはInteger型の引数を2つ受け取りますが、呼び出し側は1つしか渡していません。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "4章 問題PDF / 4章 解説PDF",
         "tags": [
@@ -11823,7 +12094,10 @@ window.JAVA_STUDY_DATA = {
             "引数リストと戻り値型が代入先に合うか確認する。",
             "コンパイルできる場合だけ、実行結果を追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "5行目時点で宣言済みなのはaとbです。\ncは6行目で宣言されるため、5行目からはまだ使えません。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "ローカル変数のスコープは宣言されたブロック内だけです。同じ名前の変数が使えるかどうかは、値ではなく宣言位置とブロック構造で決まります。"
         },
         "source": "4章 問題PDF / 4章 解説PDF",
         "tags": [
@@ -11912,7 +12186,9 @@ window.JAVA_STUDY_DATA = {
             "引数リストと戻り値型が代入先に合うか確認する。",
             "コンパイルできる場合だけ、実行結果を追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "メソッド宣言には戻り値型、メソッド名、引数リスト、本文が必要です。\nvoidは小文字で、voidメソッドから値をreturnできません。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "4章 問題PDF / 4章 解説PDF",
         "tags": [
@@ -12004,7 +12280,10 @@ window.JAVA_STUDY_DATA = {
             "引数リストと戻り値型が代入先に合うか確認する。",
             "コンパイルできる場合だけ、実行結果を追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "setValueはvoidメソッドなので戻り値がありません。\nその呼び出し結果をString変数へ代入することはできません。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "voidメソッドは値を返しません。呼び出し自体をStringなどの変数に代入することはできないため、実行時ではなくコンパイル時にエラーになります。"
         },
         "source": "4章 問題PDF / 4章 解説PDF",
         "tags": [
@@ -12110,7 +12389,9 @@ window.JAVA_STUDY_DATA = {
             "引数リストと戻り値型が代入先に合うか確認する。",
             "コンパイルできる場合だけ、実行結果を追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "divideメソッドの戻り値はfloatです。\nfloat型の値はfloat変数に代入でき、より広いdoubleにも代入できます。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "4章 問題PDF / 4章 解説PDF",
         "tags": [
@@ -12173,7 +12454,10 @@ window.JAVA_STUDY_DATA = {
             "3. 候補が一意に決まるか確認する",
             "4. 一意に決まらない場合はコンパイルエラーと判定する"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "正解はCです。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "メソッド呼び出しでは、名前だけでなく引数の個数・型・順序が一致する必要があります。該当するシグネチャがなければ、処理内容に関係なくコンパイルエラーです。"
         },
         "source": "4章 問題PDF / 4章 解説PDF",
         "tags": [
@@ -12250,7 +12534,10 @@ window.JAVA_STUDY_DATA = {
             "3. 候補が一意に決まるか確認する",
             "4. 一意に決まらない場合はコンパイルエラーと判定する"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "正解はGです。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "可変長引数は型の後に...を付け、引数リストの最後に1つだけ書けます。String... argsは有効ですが、...の位置や複数指定はコンパイルエラーです。"
         },
         "source": "4章 問題PDF / 4章 解説PDF",
         "tags": [
@@ -12309,7 +12596,10 @@ window.JAVA_STUDY_DATA = {
             "3. 候補が一意に決まるか確認する",
             "4. 一意に決まらない場合はコンパイルエラーと判定する"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "正解はCです。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "returnでメソッドを抜けた後に通常文を書くと到達不能コードになります。ifなどで到達可能性が分かれる場合と違い、無条件return直後はコンパイルエラーです。"
         },
         "source": "4章 問題PDF / 4章 解説PDF",
         "tags": [
@@ -12379,7 +12669,10 @@ window.JAVA_STUDY_DATA = {
             "3. 候補が一意に決まるか確認する",
             "4. 一意に決まらない場合はコンパイルエラーと判定する"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "正解はBとDです。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "オーバーロードはメソッド名が同じで、引数リストが異なることが条件です。戻り値型やアクセス修飾子だけを変えてもオーバーロードにはなりません。"
         },
         "source": "4章 問題PDF / 4章 解説PDF",
         "tags": [
@@ -12443,7 +12736,10 @@ window.JAVA_STUDY_DATA = {
             "3. 候補が一意に決まるか確認する",
             "4. 一意に決まらない場合はコンパイルエラーと判定する"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "正解はAです。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "オーバーロード解決では、完全一致、拡大変換、ボクシング、可変長引数などの優先順位を見ます。候補が複数あり、どちらがより具体的か決められない場合は曖昧でコンパイルエラーです。"
         },
         "source": "4章 問題PDF / 4章 解説PDF",
         "tags": [
@@ -12508,7 +12804,10 @@ window.JAVA_STUDY_DATA = {
             "3. 候補が一意に決まるか確認する",
             "4. 一意に決まらない場合はコンパイルエラーと判定する"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "正解はEです。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "アクセス修飾子だけを変えた同名同引数メソッドは、別メソッドとして共存できません。シグネチャには戻り値型やアクセス修飾子は含まれない点が狙いです。"
         },
         "source": "4章 問題PDF / 4章 解説PDF",
         "tags": [
@@ -12573,7 +12872,9 @@ window.JAVA_STUDY_DATA = {
             "3. 候補が一意に決まるか確認する",
             "4. 一意に決まらない場合はコンパイルエラーと判定する"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "正解はDです。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "4章 問題PDF / 4章 解説PDF",
         "tags": [
@@ -12631,7 +12932,10 @@ window.JAVA_STUDY_DATA = {
             "3. 候補が一意に決まるか確認する",
             "4. 一意に決まらない場合はコンパイルエラーと判定する"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "正解はAです。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "戻り値型が付いているvoid Sample()はコンストラクタではなく通常メソッドです。コンストラクタはクラス名と同じ名前で、戻り値型を書きません。"
         },
         "source": "4章 問題PDF p.219 / 4章 解説PDF p.254",
         "codeBlocks": [
@@ -12765,7 +13069,9 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "インスタンス初期化子はコンストラクタ本体より先に実行されるため、「B」「A」の順に表示される。\n・インスタンス初期化子は、コンストラクタ本体より前に実行される。\n・判定軸: コンストラクタは戻り値型を書かず、クラス名と同名。\nthis(...)やsuper(...)はコンストラクタの先頭にしか書けない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "4章 問題PDF p.221 / 4章 解説PDF p.257",
         "codeBlocks": [
@@ -12873,7 +13179,9 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "インスタンスを生成していないため、インスタンス初期化子もコンストラクタも実行されず、static int の初期値0が表示される。\n・Sample.numにアクセスしても、Sampleインスタンスは生成されない。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "4章 問題PDF p.222 / 4章 解説PDF p.258",
         "codeBlocks": [
@@ -12990,7 +13298,9 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "String引数コンストラクタを宣言しているため、引数なしデフォルトコンストラクタは追加されない。\nnew Sample() でコンパイルエラー。\n・void Sample() はメソッドであり、コンストラクタではない。\nString引数のコンストラクタがあるため、引数なしコンストラクタは自動生成されない。\n・判定軸: コンストラクタは戻り値型を書かず、クラス名と同名。\nthis(...)やsuper(...)はコンストラクタの先頭にしか書けない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "4章 問題PDF p.223 / 4章 解説PDF p.259",
         "codeBlocks": [
@@ -13066,7 +13376,10 @@ window.JAVA_STUDY_DATA = {
           "choiceAnalysis": [],
           "relatedKnowledge": [],
           "examTips": [],
-          "judgeSteps": []
+          "judgeSteps": [],
+          "pdfExplanation": "正解はBです。\nコンストラクタから同じクラスの別コンストラクタを呼び出すには this(...) を使います。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "thisは現在のインスタンスを指します。フィールドとローカル変数や引数が同名の場合、thisを付けることでインスタンスフィールドを明示できます。"
         },
         "source": "4章 問題PDF p.223-224 / 4章 解説PDF p.260",
         "codeBlocks": [
@@ -13202,7 +13515,9 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "this(\"B\") による別コンストラクタ呼び出しは、コンストラクタ本体の先頭に書く必要がある。\nprintlnの後に書いているためコンパイルエラー。\n・コンストラクタ内の this(...) / super(...) は最初の文でなければならない。\n・判定軸: コンストラクタは戻り値型を書かず、クラス名と同名。\nthis(...)やsuper(...)はコンストラクタの先頭にしか書けない。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "4章 問題PDF p.221 / 4章 解説PDF p.261",
         "tags": [
@@ -13320,7 +13635,9 @@ window.JAVA_STUDY_DATA = {
             "ソース先頭から package → import → class の順に並んでいるか確認し、使っている型が同じパッケージ・java.lang・import済み・完全修飾名のどれで解決されるかを見る。",
             "メンバがクラス側かインスタンス側かを分け、呼び出し元がstatic文脈かインスタンス文脈かを確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "numはインスタンスフィールドであり、staticメソッドmain内から単独では参照できない。\nそのためChildクラス6行目でコンパイルエラー。\n・別パッケージかどうか以前に、static文脈からインスタンスメンバを直接参照している点が問題。\n・判定軸: package/importは「宣言順序」と「完全修飾名」を分けて見る。\npackage宣言はコメントを除いて先頭、importはその後、class宣言はさらに後。\nimportのワイルドカードは直下の型だけが対象で、サブパッケージまでは含まない。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "4章 問題PDF p.222 / 4章 解説PDF p.262",
         "tags": [
@@ -13433,7 +13750,9 @@ window.JAVA_STUDY_DATA = {
             "ソース先頭から package → import → class の順に並んでいるか確認し、使っている型が同じパッケージ・java.lang・import済み・完全修飾名のどれで解決されるかを見る。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "protectedメソッドは、別パッケージから無条件に呼び出せるわけではない。\nMainはBookのサブクラスではないため、story.printInfo()でコンパイルエラー。\n・protectedは「同一パッケージ」または「継承関係を通じたアクセス」で使える。\n・判定軸: package/importは「宣言順序」と「完全修飾名」を分けて見る。\npackage宣言はコメントを除いて先頭、importはその後、class宣言はさらに後。\nimportのワイルドカードは直下の型だけが対象で、サブパッケージまでは含まない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "4章 問題PDF p.223 / 4章 解説PDF p.263",
         "tags": [
@@ -13541,7 +13860,9 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "modifyにはs.numの値だけが渡される。\n引数numを変更しても、元のフィールドs.numは変わらない。\n・Javaの引数渡しは値渡し。\nプリミティブ値を渡した場合、呼び出し元の変数やフィールド自体は変更されない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "4章 問題PDF p.225 / 4章 解説PDF p.265",
         "tags": [
@@ -13649,7 +13970,9 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "参照型変数の参照値が渡されるため、modify内のsは呼び出し元と同じインスタンスを参照する。\ns.num *= 2 によりフィールドが20になる。\n・参照そのものも値渡しだが、渡された参照を使って同じオブジェクトの中身を変更することはできる。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "4章 問題PDF p.226 / 4章 解説PDF p.266",
         "tags": [
@@ -13779,7 +14102,9 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "パターン変数bは、a instanceof B b がtrueになるifブロック側でだけ安全に使える。\nelseブロックではbを参照できないためコンパイルエラー。\n・instanceofのパターン変数はスコープを正確に見る。\nelse側では「Bではない」ことが確定しているため、bは使えない。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "4章 問題PDF p.226-227 / 4章 解説PDF p.267",
         "tags": [
@@ -13886,7 +14211,10 @@ window.JAVA_STUDY_DATA = {
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。",
             "インスタンス生成時にどのコンストラクタが呼ばれ、先頭でthis/superのどちらに流れるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "recordは暗黙的にfinalであり、サブクラスを作ることはできない。\nしたがってBが誤り。\n・recordはデータキャリア用の簡潔なクラス定義で、java.lang.Recordを継承し、コンポーネントに対応したアクセサなどが生成される。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "recordはコンポーネントからフィールド、アクセサ、コンストラクタ、equalsなどが自動生成されます。通常クラスと同じ感覚でsetterがあるとは考えません。"
         },
         "source": "4章 問題PDF p.227 / 4章 解説PDF p.273",
         "tags": [
@@ -13992,7 +14320,9 @@ window.JAVA_STUDY_DATA = {
             "最後に出力・戻り値・正しい選択肢を確定する。途中で例外が処理されずに送出される場合、通常の出力はそこで止まる。",
             "親のpermits一覧、子の宣言修飾子、さらに孫クラスへ継承できるかを順に確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "トップレベルrecordはpublicまたは修飾子なしで宣言できる。\nprotected/privateはトップレベルでは不可。\nrecordは暗黙的にfinalなのでabstractやsealedも不可。\n・record自体に暗黙的なfinal性があるため、継承前提の修飾子とは相性がない。\n・判定軸: sealedは継承・実装を許可する相手をpermitsで限定する。\n許可されたサブクラスはfinal/sealed/non-sealedのいずれかが必要。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "4章 問題PDF p.227 / 4章 解説PDF p.273",
         "tags": [
@@ -14093,7 +14423,10 @@ window.JAVA_STUDY_DATA = {
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。",
             "インスタンス生成時にどのコンストラクタが呼ばれ、先頭でthis/superのどちらに流れるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "record Data(String value) は、valueを受け取る正規コンストラクタを持つ。\n生成は new Data(\"sample\") とする。\nrecordのコンポーネントは直接代入できない。\n・recordのフィールドはprivate final相当で直接代入できない。\nof/valueのようなファクトリメソッドは自動生成されない。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "recordの生成では、宣言したコンポーネントに対応する引数を標準コンストラクタへ渡します。フィールドへ直接代入するような生成方法ではありません。"
         },
         "source": "4章 問題PDF p.228 / 4章 解説PDF p.279",
         "tags": [
@@ -14207,7 +14540,9 @@ window.JAVA_STUDY_DATA = {
             "インスタンス生成時にどのコンストラクタが呼ばれ、先頭でthis/superのどちらに流れるかを追う。",
             "メンバがクラス側かインスタンス側かを分け、呼び出し元がstatic文脈かインスタンス文脈かを確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "recordには追加の非staticフィールドを宣言できない。\nrecordコンポーネントから生成されるフィールドだけを持つ。\n・コンストラクタ、メソッド、staticフィールド、static初期化子、内部型は宣言可能。\n・判定軸: インタフェースの抽象メソッドは暗黙にpublic abstract、フィールドはpublic static final。\ndefault/static/privateメソッドの扱いを区別する。\n・判定軸: コンストラクタは戻り値型を書かず、クラス名と同名。\nthis(...)やsuper(...)はコンストラクタの先頭にしか書けない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "4章 問題PDF p.228 / 4章 解説PDF p.280",
         "tags": [
@@ -14307,7 +14642,10 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "recordのコンポーネントvalueは、value()というアクセサメソッドで取得する。\ngetter名はgetValue()ではなくvalue()。\nフィールドへ直接アクセスしたり、setterで変更したりはできない。\n・getter名はgetValue()ではなく、コンポーネント名と同じ value()。\nフィールドへの直接アクセスやsetterは不可。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "recordのアクセサ名はgetXではなく、コンポーネント名そのものです。nameならname()、priceならprice()のように呼び出します。"
         },
         "source": "4章 問題PDF p.228-229 / 4章 解説PDF p.282",
         "tags": [
@@ -14420,7 +14758,9 @@ window.JAVA_STUDY_DATA = {
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。",
             "メンバがクラス側かインスタンス側かを分け、呼び出し元がstatic文脈かインスタンス文脈かを確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "recordの代替コンストラクタは、標準コンストラクタと同じ引数を受け取り、コンポーネントに対応するフィールドを初期化する必要がある。\nしたがってAとC。\n・スーパークラスコンストラクタ呼び出しやgetter追加では、recordコンポーネントの初期化不足は解消しない。\n・判定軸: コンストラクタは戻り値型を書かず、クラス名と同名。\nthis(...)やsuper(...)はコンストラクタの先頭にしか書けない。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "4章 問題PDF p.229 / 4章 解説PDF p.283",
         "tags": [
@@ -14524,7 +14864,9 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "recordのコンストラクタはrecord自体より狭いアクセス修飾子にできない。\nこのrecordは修飾子なしなので、publicまたは修飾子なしが利用できる。\n・privateはrecord本体より狭いため不可。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。\n・判定軸: コンストラクタは戻り値型を書かず、クラス名と同名。\nthis(...)やsuper(...)はコンストラクタの先頭にしか書けない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "4章 問題PDF p.229-230 / 4章 解説PDF p.285",
         "tags": [
@@ -14637,7 +14979,10 @@ window.JAVA_STUDY_DATA = {
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。",
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "recordの追加コンストラクタは、最終的に正規コンストラクタへ委譲してコンポーネントを初期化する必要がある。\n引数なしコンストラクタでは this(\"sample\"); のように呼び出す。\n・super()ではrecordコンポーネントvalueを初期化できない。\nthis(); は自分自身の再帰呼び出しになり不正。\n・判定軸: コンストラクタは戻り値型を書かず、クラス名と同名。\nthis(...)やsuper(...)はコンストラクタの先頭にしか書けない。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "recordに追加コンストラクタを書く場合でも、最終的には標準コンストラクタへ委譲する必要があります。コンポーネントは実質finalなので、後から自由に再代入する設計ではありません。"
         },
         "source": "4章 問題PDF p.230 / 4章 解説PDF p.286",
         "tags": [
@@ -14745,7 +15090,9 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "コンパクトコンストラクタ内で this.value を参照しているが、recordのフィールド代入はコンパクトコンストラクタ本体の後に行われるため、初期化前フィールド参照となりコンパイルエラー。\n・null判定をしたい場合は、コンポーネント引数 value を使って if (value == null) と判定する。\n・判定軸: コンストラクタは戻り値型を書かず、クラス名と同名。\nthis(...)やsuper(...)はコンストラクタの先頭にしか書けない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "4章 問題PDF p.230 / 4章 解説PDF p.289",
         "tags": [
@@ -14857,7 +15204,9 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "record Data(String value) では String value() アクセサが自動生成される。\n一方、Testには default void value() があるため、同名メソッドの戻り値型が一致せずコンパイルエラー。\n・recordがinterfaceを実装する場合、自動生成アクセサもメソッド衝突の対象になる。\n・判定軸: インタフェースの抽象メソッドは暗黙にpublic abstract、フィールドはpublic static final。\ndefault/static/privateメソッドの扱いを区別する。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "4章 問題PDF p.230 / 4章 解説PDF p.294",
         "tags": [
@@ -14958,7 +15307,9 @@ window.JAVA_STUDY_DATA = {
             "メンバがクラス側かインスタンス側かを分け、呼び出し元がstatic文脈かインスタンス文脈かを確認する。",
             "出力を追う前に、各行を「文法」「型」「宣言済みか」「アクセス可能か」「例外処理が足りるか」で検査する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "Child内で name を使用しているが、Childには name が宣言されていない。\n継承元の Parent に name フィールドがなければコンパイルエラーになる。\n・helloメソッドはChild側で定義されているためParentに必須ではない。\n・コンストラクタは継承されない。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。\n・判定軸: コンストラクタは戻り値型を書かず、クラス名と同名。\nthis(...)やsuper(...)はコンストラクタの先頭にしか書けない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "5章 問題PDF p.298 / 5章 解説PDF p.317",
         "codeBlocks": [
@@ -15063,7 +15414,10 @@ window.JAVA_STUDY_DATA = {
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。",
             "ソース先頭から package → import → class の順に並んでいるか確認し、使っている型が同じパッケージ・java.lang・import済み・完全修飾名のどれで解決されるかを見る。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "継承してもコンストラクタは引き継がれない。\nprivateメンバもサブクラスから直接アクセスできない。\n・デフォルトアクセスは同一パッケージ内だけ。\n別パッケージのサブクラスからはアクセスできない。\n・protectedは同一パッケージだけでなく、別パッケージでも継承関係があればアクセス可能。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。\n・判定軸: package/importは「宣言順序」と「完全修飾名」を分けて見る。\npackage宣言はコメントを除いて先頭、importはその後、class宣言はさらに後。\nimportのワイルドカードは直下の型だけが対象で、サブパッケージまでは含まない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "継承してもコンストラクタは引き継がれません。またprivateメンバはサブクラスから直接アクセスできません。継承関係にあっても「使える」と「存在する」は分けます。"
         },
         "source": "5章 問題PDF p.298 / 5章 解説PDF p.318",
         "tags": [
@@ -15172,7 +15526,10 @@ window.JAVA_STUDY_DATA = {
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。",
             "メンバがクラス側かインスタンス側かを分け、呼び出し元がstatic文脈かインスタンス文脈かを確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "インタフェースの抽象メソッドは暗黙的に public。\n抽象クラスは未実装メソッドを残せるため、インタフェースのメソッドを必ず実装する必要はない。\n・インタフェースのフィールドは public static final の定数として定義できる。\n・クラスは複数のインタフェースをimplementsできる。\n・インタフェース同士はextendsで継承できる。\n・判定軸: インタフェースの抽象メソッドは暗黙にpublic abstract、フィールドはpublic static final。\ndefault/static/privateメソッドの扱いを区別する。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "インタフェースの抽象メソッドは暗黙にpublic abstractです。フィールドは暗黙にpublic static finalです。省略されていても、コンパイラが補う修飾子を前提に判断します。"
         },
         "source": "5章 問題PDF p.299 / 5章 解説PDF p.319",
         "tags": [
@@ -15271,7 +15628,9 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "インタフェース内でメソッド本体を持たせるには default などが必要。\n単なる抽象メソッドに本体を書くとコンパイルエラーになる。\n・インタフェースの抽象メソッドは本体を持てない。\n・defaultメソッドなら実装を持てる。\n・判定軸: インタフェースの抽象メソッドは暗黙にpublic abstract、フィールドはpublic static final。\ndefault/static/privateメソッドの扱いを区別する。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "5章 問題PDF p.299 / 5章 解説PDF p.320",
         "codeBlocks": [
@@ -15384,7 +15743,10 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "インタフェースのdefaultメソッドで、Objectクラス由来のtoStringを再定義することはできないため、Aインタフェースでコンパイルエラーになる。\n・クラスB側でtoStringをpublicにオーバーライドすること自体は可能。\n・判定軸: インタフェースの抽象メソッドは暗黙にpublic abstract、フィールドはpublic static final。\ndefault/static/privateメソッドの扱いを区別する。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "インタフェースのdefaultメソッドでも、Object由来のtoStringやequalsをdefault実装として置くことはできません。Objectメソッドとの関係は頻出の罠です。"
         },
         "source": "5章 問題PDF p.300 / 5章 解説PDF p.300",
         "codeBlocks": [
@@ -15493,7 +15855,9 @@ window.JAVA_STUDY_DATA = {
             "interface側の暗黙修飾を補ってから、実装クラスが必要なメソッドを正しいアクセス修飾子で実装しているかを見る。",
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "Cは直接Aをimplementsしておらず、Bをimplementsしている。\n設問の選択肢には正しく呼び出せる形がないため、すべて誤り。\n・インタフェースのdefaultメソッド呼び出しは、直接のスーパーインタフェース名.super.メソッド名() の形が基本。\n・判定軸: インタフェースの抽象メソッドは暗黙にpublic abstract、フィールドはpublic static final。\ndefault/static/privateメソッドの扱いを区別する。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "5章 問題PDF p.301 / 5章 解説PDF p.301",
         "codeBlocks": [
@@ -15596,7 +15960,10 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "MainはAとBの両方を実装しており、同じシグネチャのdefaultメソッドtestが衝突する。\nどちらを使うかを明示的にオーバーライドしないためコンパイルエラー。\n・複数インタフェースのdefaultメソッド衝突は、実装クラス側で解決する必要がある。\n・判定軸: インタフェースの抽象メソッドは暗黙にpublic abstract、フィールドはpublic static final。\ndefault/static/privateメソッドの扱いを区別する。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "複数のインタフェースから同じdefaultメソッドを継承すると、実装クラス側で衝突を解決する必要があります。どちらを使うか自動では決まりません。"
         },
         "source": "5章 問題PDF p.302 / 5章 解説PDF p.302",
         "codeBlocks": [
@@ -15708,7 +16075,9 @@ window.JAVA_STUDY_DATA = {
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。",
             "メンバがクラス側かインスタンス側かを分け、呼び出し元がstatic文脈かインスタンス文脈かを確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "抽象クラスはインスタンス化できず、抽象クラスを継承した抽象クラスも定義できる。\n公開フィールドはサブクラスからアクセス可能。\n・抽象クラスの具象メソッドはオーバーライドできる。\n・抽象メソッドは最初の具象サブクラスが実装すればよい。\n抽象サブクラスでは未実装のまま残せる。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "5章 問題PDF p.302 / 5章 解説PDF p.302",
         "tags": [
@@ -15823,7 +16192,9 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "AbstractSample型の参照でも実体はConcreteSampleなので、sample内のtest呼び出しはConcreteSample.testに動的に解決される。\n結果はA、B、C。\n・抽象メソッドはサブクラスの実装が実行される。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "5章 問題PDF p.303 / 5章 解説PDF p.303",
         "codeBlocks": [
@@ -15915,7 +16286,10 @@ window.JAVA_STUDY_DATA = {
             "最後に出力・戻り値・正しい選択肢を確定する。途中で例外が処理されずに送出される場合、通常の出力はそこで止まる。",
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "オーバーライドではメソッドシグネチャが同じである必要がある。\n引数の型・数・順番が一致しなければならない。\n・戻り値型は同じ、または共変戻り値としてサブクラス型にできる。\n・抽象メソッドも実装時にオーバーライドする。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "オーバーライドでは、シグネチャ一致、戻り値型の互換性、アクセス修飾子を狭くしないこと、例外の範囲を広げないことを確認します。"
         },
         "source": "5章 問題PDF p.304 / 5章 解説PDF p.304",
         "tags": [
@@ -15997,7 +16371,9 @@ window.JAVA_STUDY_DATA = {
             "最後に出力・戻り値・正しい選択肢を確定する。途中で例外が処理されずに送出される場合、通常の出力はそこで止まる。",
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "オーバーライドではアクセス権を狭くできない。\nprotectedより広いpublicは指定できる。\n・privateやデフォルトアクセスはprotectedより狭いため不可。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "5章 問題PDF p.304 / 5章 解説PDF p.304",
         "codeBlocks": [
@@ -16116,7 +16492,10 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "フィールドはオーバーライドされず、参照変数の型で決まる。\nbはA型なのでb.valはAのval。\nprintもAで定義されており、Aのvalを出力する。\n・メソッドは実体の型で動的に選択されるが、フィールドは参照型で静的に決まる。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "ポリモーフィズムでは、呼び出せるメソッドは参照変数の型で決まり、実行される実装は実体の型で決まります。コンパイル時と実行時の判定を分けます。"
         },
         "source": "5章 問題PDF p.304 / 5章 解説PDF p.304",
         "codeBlocks": [
@@ -16220,7 +16599,9 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "EngineerはEmployeeを継承し、Employeeのpublic workメソッドを持っている。\nこれによりWorkerのworkを満たすため、Worker型で扱えてworkを実行できる。\n・インタフェースの実装メソッドは、継承したpublicメソッドでも満たせる。\n・判定軸: インタフェースの抽象メソッドは暗黙にpublic abstract、フィールドはpublic static final。\ndefault/static/privateメソッドの扱いを区別する。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "5章 問題PDF p.305 / 5章 解説PDF p.305",
         "codeBlocks": [
@@ -16334,7 +16715,9 @@ window.JAVA_STUDY_DATA = {
             "interface側の暗黙修飾を補ってから、実装クラスが必要なメソッドを正しいアクセス修飾子で実装しているかを見る。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "aの型はWorkerであり、Workerに定義されているのはworkだけ。\n実体がEngineerでも、Worker型の変数からcreateは呼び出せない。\n・呼び出せるメソッドは参照変数の型で決まる。\n・b.work() と c.report() は型上利用できる。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "5章 問題PDF p.306 / 5章 解説PDF p.306",
         "codeBlocks": [
@@ -16475,7 +16858,9 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "BとCはA型として扱える。\nAはインタフェースなのでnew A()は不可。\nDはAを実装していないためA[]に入れられない。\n・インタフェースはインスタンス化できない。\n・配列の要素型と互換性がないインスタンスは初期化子に入れられない。\n・判定軸: インタフェースの抽象メソッドは暗黙にpublic abstract、フィールドはpublic static final。\ndefault/static/privateメソッドの扱いを区別する。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "5章 問題PDF p.307 / 5章 解説PDF p.307",
         "codeBlocks": [
@@ -16597,7 +16982,9 @@ window.JAVA_STUDY_DATA = {
             "条件式が評価される順、ループに入る回数、break/continueの移動先、switchのcase一致後の流れを図にする。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "aの実体はBだが、変数の型はA。\nB型の変数に代入してhelloを呼ぶには、Bへ明示的にダウンキャストする必要がある。\n・A型のままではB独自のhelloは呼び出せない。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "5章 問題PDF p.308 / 5章 解説PDF p.308",
         "codeBlocks": [
@@ -16701,7 +17088,9 @@ window.JAVA_STUDY_DATA = {
             "条件式が評価される順、ループに入る回数、break/continueの移動先、switchのcase一致後の流れを図にする。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "aの実体はAであり、Bではない。\nB b = (B) a; はコンパイルは通るが、実行時にClassCastExceptionが発生する。\n・キャスト式はコンパイル時の型チェックを通しても、実体が互換性を持たなければ実行時例外になる。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "5章 問題PDF p.309 / 5章 解説PDF p.309",
         "codeBlocks": [
@@ -16817,7 +17206,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "フィールドnumに引数numを代入するにはthis.num = numが正しい。\nsetNum(num)を呼び出しても同じ結果になる。\n・num = num は引数自身への代入であり、フィールドは変更されない。\n・Javaにthis->という構文はない。\n・super.setNumは親クラスがないため使えない。\n・判定軸: コンストラクタは戻り値型を書かず、クラス名と同名。\nthis(...)やsuper(...)はコンストラクタの先頭にしか書けない。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "抽象クラスはインスタンス化できませんが、コンストラクタを持てます。サブクラス生成時にsuper()経由で抽象クラス側の初期化も実行されます。"
         },
         "source": "5章 問題PDF p.310 / 5章 解説PDF p.310",
         "codeBlocks": [
@@ -16930,7 +17322,9 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "ChildのnameとParentのnameは別フィールド。\nchild.nameへの代入はChild側のnameを変更するが、Parent.getNameはParent側のnameを返すためnull。\n・フィールドはオーバーライドされず、同名フィールドは隠蔽になる。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "5章 問題PDF p.311 / 5章 解説PDF p.311",
         "codeBlocks": [
@@ -17052,7 +17446,9 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "Bのコンストラクタ実行前に、暗黙的にsuper()でAのコンストラクタが呼ばれる。\nよってA、Bの順に表示される。\n・サブクラスのインスタンス生成では、まずスーパークラスの初期化が行われる。\n・判定軸: コンストラクタは戻り値型を書かず、クラス名と同名。\nthis(...)やsuper(...)はコンストラクタの先頭にしか書けない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "5章 問題PDF p.312 / 5章 解説PDF p.312",
         "codeBlocks": [
@@ -17174,7 +17570,9 @@ window.JAVA_STUDY_DATA = {
             "メンバがクラス側かインスタンス側かを分け、呼び出し元がstatic文脈かインスタンス文脈かを確認する。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "new Child(\"D\") → Child(String) → this() → Child() → super(\"B\") → Parent(String) → this() → Parent() の順に進む。\n表示順はA、B、C、D。\n・this()またはsuper()はコンストラクタの先頭で一度だけ呼び出せる。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。\n・判定軸: コンストラクタは戻り値型を書かず、クラス名と同名。\nthis(...)やsuper(...)はコンストラクタの先頭にしか書けない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "5章 問題PDF p.313 / 5章 解説PDF p.313",
         "codeBlocks": [
@@ -17271,7 +17669,9 @@ window.JAVA_STUDY_DATA = {
             "interface側の暗黙修飾を補ってから、実装クラスが必要なメソッドを正しいアクセス修飾子で実装しているかを見る。",
             "出力を追う前に、各行を「文法」「型」「宣言済みか」「アクセス可能か」「例外処理が足りるか」で検査する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "インタフェースのprivateメソッドは実装本体を持つ必要がある。\nprivate void b() { ... } は正しい。\n・private抽象メソッドは不可。\n・private defaultという組み合わせも不可。\n・判定軸: インタフェースの抽象メソッドは暗黙にpublic abstract、フィールドはpublic static final。\ndefault/static/privateメソッドの扱いを区別する。\n・判定軸: コンパイルエラーは実行前に検出される。\n構文、型、アクセス、未初期化、到達不能、チェック例外の未処理が代表。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "5章 問題PDF p.314 / 5章 解説PDF p.314",
         "codeBlocks": [
@@ -17379,7 +17779,9 @@ window.JAVA_STUDY_DATA = {
             "interface側の暗黙修飾を補ってから、実装クラスが必要なメソッドを正しいアクセス修飾子で実装しているかを見る。",
             "メンバがクラス側かインスタンス側かを分け、呼び出し元がstatic文脈かインスタンス文脈かを確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "finalはクラス、メソッド、フィールドに付けられる。\nabstractクラスやインタフェースには付けられない。\n・final classは継承不可。\n・final methodはオーバーライド不可。\n・final fieldは再代入不可。\n・判定軸: インタフェースの抽象メソッドは暗黙にpublic abstract、フィールドはpublic static final。\ndefault/static/privateメソッドの扱いを区別する。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "5章 問題PDF p.314 / 5章 解説PDF p.314",
         "tags": [
@@ -17469,7 +17871,10 @@ window.JAVA_STUDY_DATA = {
             "親のpermits一覧、子の宣言修飾子、さらに孫クラスへ継承できるかを順に確認する。",
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "継承可能なクラスを制限するにはsealedとpermitsを使う。\npermitsだけでは使えない。\nJavaのクラスは複数クラスをextendsできない。\n・sealed class Sample permits A, B が正しい形。\n・判定軸: sealedは継承・実装を許可する相手をpermitsで限定する。\n許可されたサブクラスはfinal/sealed/non-sealedのいずれかが必要。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "sealedクラスでは、継承を許可するサブクラスをpermitsで制限します。許可された側もfinal、sealed、non-sealedのいずれかを明示する必要があります。"
         },
         "source": "5章 問題PDF p.315 / 5章 解説PDF p.315",
         "tags": [
@@ -17561,7 +17966,9 @@ window.JAVA_STUDY_DATA = {
             "親のpermits一覧、子の宣言修飾子、さらに孫クラスへ継承できるかを順に確認する。",
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "sealedクラスの直接サブクラスはfinal、sealed、non-sealedのいずれかで修飾する必要がある。\nただしsealedにする場合はさらに継承先を指定する必要があり、この選択肢だけでは不十分。\n・finalは継承打ち切り。\n・non-sealedは以降の継承制限を解除する。\n・判定軸: sealedは継承・実装を許可する相手をpermitsで限定する。\n許可されたサブクラスはfinal/sealed/non-sealedのいずれかが必要。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "5章 問題PDF p.315 / 5章 解説PDF p.315",
         "codeBlocks": [
@@ -17663,7 +18070,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "sealedインタフェースTestがpermits Aとしているため、直接実装するAはfinal、sealed、non-sealedのいずれかで修飾する必要がある。\nAはabstractのみなのでコンパイルエラー。\n・sealedインタフェースを直接実装するクラスにも継承制限の指定が必要。\n・判定軸: インタフェースの抽象メソッドは暗黙にpublic abstract、フィールドはpublic static final。\ndefault/static/privateメソッドの扱いを区別する。\n・判定軸: sealedは継承・実装を許可する相手をpermitsで限定する。\n許可されたサブクラスはfinal/sealed/non-sealedのいずれかが必要。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "インタフェースのprivateメソッドは、defaultメソッドなど内部実装の共通化に使うものです。実装クラスから直接呼び出すためのメソッドではありません。"
         },
         "source": "5章 問題PDF p.316 / 5章 解説PDF p.316",
         "codeBlocks": [
@@ -17788,7 +18198,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "要素数0の配列に array[0] = 10 を実行するため ArrayIndexOutOfBoundsException が発生し、対応するcatchで処理されて「error」が表示される。\n・例外発生後、tryブロック内の残りの処理は実行されない。\n・catchで処理されるため、プログラムは異常終了しない。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "tryブロックで例外が発生すると、その行より後のtry内処理は実行されません。対応するcatchへ移るため、例外発生前後の出力順を分けて追います。"
         },
         "source": "6章 問題PDF p.374 / 6章 解説PDF p.373",
         "codeBlocks": [
@@ -17911,7 +18324,10 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "起動パラメータなしでも args は null ではなく要素数0のString配列。\nargs.length == 0 がtrueなのでAを表示し、例外は発生しない。\n最後にfinallyでCを表示する。\n・mainのargsは、引数なし実行時も空配列になる。\n・finallyは例外の有無にかかわらず実行される。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "finallyは例外の有無に関係なく実行されます。catchに入るかどうかとは別に、最後にfinallyの出力が追加されるかを確認します。"
         },
         "source": "6章 問題PDF p.374 / 6章 解説PDF p.374",
         "codeBlocks": [
@@ -18034,7 +18450,10 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "SampleExceptionをcatchした後に、そのサブクラスであるSubSampleExceptionをcatchしているため、後続のcatchが到達不能になりコンパイルエラーになる。\n・複数catchは、サブクラス側から先に並べる。\n・スーパークラスを先にcatchすると、サブクラスのcatchには到達できない。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "catchは上から順に判定されます。先に親クラス型でcatchすると、後ろの子クラス型catchに到達できなくなり、コンパイルエラーになります。"
         },
         "source": "6章 問題PDF p.375 / 6章 解説PDF p.375",
         "codeBlocks": [
@@ -18148,7 +18567,10 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "try-catch-finallyの構文順序は変更できない。\ntry-finally-catchの順に書くことはできないためコンパイルエラーになる。\n・catchはtryの直後、またはfinallyの前に置く。\n・finallyの後にcatchを書くことはできない。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "try-finally-catchの順序は書けません。catchを書くならtryの直後、finallyはcatch群の後です。構文エラーは実行時ではなくコンパイル時に止まります。"
         },
         "source": "6章 問題PDF p.376 / 6章 解説PDF p.376",
         "codeBlocks": [
@@ -18271,7 +18693,10 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "test(null)でNullPointerExceptionが発生し、catchで戻り値Aが決まる。\nしかしreturnで呼び出し元に戻る前にfinallyが実行されBを表示し、その後main側のprintlnでAが表示される。\n・finallyはcatch内returnより前に実行される。\n・finally内にreturnがない場合、catchで決まった戻り値は維持される。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "catchでreturnしてもfinallyは実行されます。戻り値が決まるタイミングとfinally内の処理実行を分けて追う必要があります。"
         },
         "source": "6章 問題PDF p.377 / 6章 解説PDF p.377",
         "codeBlocks": [
@@ -18385,7 +18810,10 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "catchでreturn 10が実行されようとするが、finallyのreturn 20が後から実行され、戻り値を上書きする。\n・finallyでreturnを書くと、それ以前のreturnを上書きする。\n・試験ではfinallyのreturnは強いひっかけポイント。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "catchとfinallyの両方でreturnする場合、最終的にはfinallyのreturnが優先されます。これは読みづらく危険なコードですが、試験では実行順の確認として狙われます。"
         },
         "source": "6章 問題PDF p.378 / 6章 解説PDF p.378",
         "codeBlocks": [
@@ -18499,7 +18927,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "return val の時点で戻り値用の値は20として確定する。\nfinallyでvalに10加算しても、プリミティブ型の戻り値には反映されない。\n・return式の評価後にfinallyが実行される。\n・finallyでローカル変数を書き換えても、確定済みの戻り値は変わらない。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "finallyでローカル変数を変更しても、すでにreturn式で評価された値は変わらない場合があります。変数そのものを返すのか、評価済みの値を返すのかを分けます。"
         },
         "source": "6章 問題PDF p.379 / 6章 解説PDF p.378",
         "codeBlocks": [
@@ -18600,7 +19031,9 @@ window.JAVA_STUDY_DATA = {
             "最後に出力・戻り値・正しい選択肢を確定する。途中で例外が処理されずに送出される場合、通常の出力はそこで止まる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "try-catch-finallyでは、tryとfinallyは1つだけ。\ncatchは複数記述でき、省略も可能。\nただしcatchを省略するならfinallyが必要。\n・tryのみは不可。\n・catchを省略したtry-finallyは可能。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "6章 問題PDF p.380 / 6章 解説PDF p.379",
         "tags": [
@@ -18723,7 +19156,10 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "例外は最も近い対応catchである内側catchに捕捉されDが表示される。\nその後、内側finallyでE、外側finallyでGが表示される。\n・ネストしたtryでは、まず内側の対応catchを確認する。\n・finallyは内側から外側へ実行される。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "ネストしたtryでは、内側で処理された例外は外側に伝播しません。処理されなかった例外だけが外側catchの対象になります。finallyは各tryに対応して実行されます。"
         },
         "source": "6章 問題PDF p.381 / 6章 解説PDF p.380",
         "codeBlocks": [
@@ -18820,7 +19256,9 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "コンパイル可と確定してから、実行経路上で例外発生行に到達するか、対応するcatchがあるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "独自の例外クラスは、基本的にExceptionクラスのサブクラスとして作成するのが適切。\nRuntimeExceptionに限定する必要はない。\n・Throwableのサブクラスであることは必要だが、例外として作るならExceptionを継承する。\n・Errorはプログラムで対処しない重大なトラブルを表す。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。\n・判定軸: 実行時例外はコンパイル後、実際にその行が実行されたときに発生する。\nnull、配列範囲外、不正キャスト、ゼロ除算、数値変換失敗が頻出。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "6章 問題PDF p.382 / 6章 解説PDF p.383",
         "tags": [
@@ -18926,7 +19364,9 @@ window.JAVA_STUDY_DATA = {
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。",
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "SampleExceptionはExceptionを継承するチェック例外なのでthrows宣言が必要。\nTestExceptionはRuntimeExceptionを継承する非チェック例外なので、宣言してもしなくてもよい。\n・複数の例外をthrowsに書く場合はカンマ区切り。\n・非チェック例外はthrows宣言を強制されない。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "6章 問題PDF p.383 / 6章 解説PDF p.383",
         "codeBlocks": [
@@ -19026,7 +19466,10 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "Errorは原則としてプログラムで回復を期待しない重大なトラブルだが、catchで捕捉するコード自体は書ける。\nしたがって「例外処理を記述できない」は誤り。\n・Errorはthrows宣言を強制されない。\n・OutOfMemoryErrorやStackOverflowErrorなどが代表例。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "チェック例外は、catchするかthrowsで宣言する必要があります。RuntimeException系はこの強制チェックの対象外です。例外クラスの継承関係を見ます。"
         },
         "source": "6章 問題PDF p.384 / 6章 解説PDF p.384",
         "tags": [
@@ -19123,7 +19566,9 @@ window.JAVA_STUDY_DATA = {
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。",
             "配列生成時の要素数、各添字の範囲、参照の共有、拡張for文で取り出される型を順に確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "起動パラメータなしの場合、argsは要素数0の配列。\nargs[0]へアクセスすると配列範囲外アクセスになり、ArrayIndexOutOfBoundsExceptionが発生する。\n・args自体はnullではない。\n・存在しない要素にアクセスするため、NullPointerExceptionではなく配列範囲外例外。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "6章 問題PDF p.384 / 6章 解説PDF p.384",
         "codeBlocks": [
@@ -19230,7 +19675,9 @@ window.JAVA_STUDY_DATA = {
             "配列生成時の要素数、各添字の範囲、参照の共有、拡張for文で取り出される型を順に確認する。",
             "ソース先頭から package → import → class の順に並んでいるか確認し、使っている型が同じパッケージ・java.lang・import済み・完全修飾名のどれで解決されるかを見る。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "空のArrayListに対してlist.get(0)を呼び出すため、IndexOutOfBoundsExceptionが発生する。\n・ArrayIndexOutOfBoundsExceptionは配列用。\n・StringIndexOutOfBoundsExceptionは文字列用。\n・ListIndexOutOfBoundsExceptionという標準例外はない。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。\n・判定軸: package/importは「宣言順序」と「完全修飾名」を分けて見る。\npackage宣言はコメントを除いて先頭、importはその後、class宣言はさらに後。\nimportのワイルドカードは直下の型だけが対象で、サブパッケージまでは含まない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "6章 問題PDF p.385 / 6章 解説PDF p.385",
         "codeBlocks": [
@@ -19334,7 +19781,9 @@ window.JAVA_STUDY_DATA = {
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。",
             "変数表を作り、式の中で値を使ったタイミングと更新されたタイミングを分けて記録する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "A.equalsの中で引数objをAへキャストしている。\n実際に渡されるのはBのインスタンスであり、AとBに継承関係がないためClassCastExceptionが発生する。\n・equalsをオーバーライドするときは、通常instanceofで型確認してからキャストする。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "6章 問題PDF p.386 / 6章 解説PDF p.385",
         "codeBlocks": [
@@ -19439,7 +19888,9 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "配列生成時の要素数、各添字の範囲、参照の共有、拡張for文で取り出される型を順に確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "strはnullなので、str.equals(\"\")の呼び出し時にNullPointerExceptionが発生する。\n・nullに対してインスタンスメソッドは呼び出せない。\n・安全に比較するなら \"\".equals(str) の形にする。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "6章 問題PDF p.387 / 6章 解説PDF p.386",
         "codeBlocks": [
@@ -19544,7 +19995,9 @@ window.JAVA_STUDY_DATA = {
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。",
             "配列生成時の要素数、各添字の範囲、参照の共有、拡張for文で取り出される型を順に確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "mainメソッドが自分自身を呼び続ける再帰になっている。\nスタック領域を使い切るとStackOverflowErrorが発生する。\n・StackOverflowErrorはErrorの一種。\n・無限再帰はコンパイルエラーではなく実行時のスタック枯渇につながる。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "6章 問題PDF p.387 / 6章 解説PDF p.386",
         "codeBlocks": [
@@ -19647,7 +20100,10 @@ window.JAVA_STUDY_DATA = {
             "変数表を作り、式の中で値を使ったタイミングと更新されたタイミングを分けて記録する。",
             "条件式が評価される順、ループに入る回数、break/continueの移動先、switchのcase一致後の流れを図にする。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "マルチキャッチでは、例外型を縦棒1本「|」で区切って列挙する。\n・論理演算子の||や&&ではない。\n・変数名は最後に1つだけ書く。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "try-with-resourcesでは、tryを抜けるときにcloseが自動で呼ばれます。複数リソースは宣言と逆順にcloseされるため、出力順が通常の上から順とは逆になります。"
         },
         "source": "6章 問題PDF p.388 / 6章 解説PDF p.388",
         "tags": [
@@ -19742,7 +20198,9 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "コンパイル可と確定してから、実行経路上で例外発生行に到達するか、対応するcatchがあるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "RuntimeExceptionはExceptionのサブクラス。\nマルチキャッチでは継承関係にある例外型を同時に指定できない。\n・継承関係がある場合はスーパークラス側だけで捕捉できる。\n・別々のcatchにする場合も、サブクラスを先に書く必要がある。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "6章 問題PDF p.388 / 6章 解説PDF p.389",
         "tags": [
@@ -19838,7 +20296,9 @@ window.JAVA_STUDY_DATA = {
             "最後に出力・戻り値・正しい選択肢を確定する。途中で例外が処理されずに送出される場合、通常の出力はそこで止まる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "try-with-resourcesの主目的は、例外処理そのものではなく、リソースの閉じ忘れを防ぐこと。\ncatchやfinallyは省略可能。\n・通常のtry文ではcatchまたはfinallyが必要。\n・try-with-resourcesではリソース管理が構文に組み込まれている。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "6章 問題PDF p.389 / 6章 解説PDF p.390",
         "tags": [
@@ -19931,7 +20391,9 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "interface側の暗黙修飾を補ってから、実装クラスが必要なメソッドを正しいアクセス修飾子で実装しているかを見る。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "try-with-resourcesで扱えるのはAutoCloseableまたはCloseableを実装したクラス。\nCloseableはAutoCloseableのサブインタフェース。\n・独自リソースを作る場合はAutoCloseableを実装すればよい。\n・closeメソッドが自動呼び出しされる。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。\n・判定軸: インタフェースの抽象メソッドは暗黙にpublic abstract、フィールドはpublic static final。\ndefault/static/privateメソッドの扱いを区別する。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "6章 問題PDF p.390 / 6章 解説PDF p.391",
         "tags": [
@@ -20038,7 +20500,9 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "tryのカッコ内で直接生成・宣言する形は正しい。\nまた、tryの前で宣言済みの実質的finalなリソース変数も指定できる。\n・リソース変数はfinalまたは実質的finalである必要がある。\n・tryブロック内外でリソース変数を再代入すると実質的finalではなくなる。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "6章 問題PDF p.391 / 6章 解説PDF p.392",
         "tags": [
@@ -20126,7 +20590,9 @@ window.JAVA_STUDY_DATA = {
             "最後に出力・戻り値・正しい選択肢を確定する。途中で例外が処理されずに送出される場合、通常の出力はそこで止まる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "try-with-resourcesのリソースは、宣言した順番とは逆順にcloseされる。\nA、B、Cの順に指定すれば、C、B、Aの順にcloseされる。\n・複数リソースはセミコロンで区切る。\n・リソースのクローズ順は試験で頻出。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "6章 問題PDF p.392 / 6章 解説PDF p.393",
         "codeBlocks": [
@@ -20218,7 +20684,9 @@ window.JAVA_STUDY_DATA = {
             "最後に出力・戻り値・正しい選択肢を確定する。途中で例外が処理されずに送出される場合、通常の出力はそこで止まる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "tryブロックを抜けるタイミングでまずリソースがcloseされ、その後catch、最後にfinallyが実行される。\n・例外が起きない場合も、tryブロック終了時にcloseされる。\n・try-with-resourcesにfinallyを付けても、closeはfinallyより先。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "6章 問題PDF p.393 / 6章 解説PDF p.396",
         "tags": [
@@ -20315,7 +20783,9 @@ window.JAVA_STUDY_DATA = {
             "interface側の暗黙修飾を補ってから、実装クラスが必要なメソッドを正しいアクセス修飾子で実装しているかを見る。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "tryブロック内でExceptionが発生し、その後closeでもRuntimeExceptionが発生する。\nclose側の例外は抑制された例外となり、catchされる主例外はtryブロック内のExceptionなので、ExceptionのcatchでBが表示される。\n・try-with-resourcesでは、try内の例外が主例外になる。\n・close時の例外はsuppressedとして主例外に保持される。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "6章 問題PDF p.393 / 6章 解説PDF p.397",
         "codeBlocks": [
@@ -20397,7 +20867,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を混同しない。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "コマンド引数は args[0] = \"5\", args[1] = \"2\" です。\nコードで使っているのは args[0] だけなので target は 5 になります。\n配列 {1, 2, 3, 7, 9} に 5 は含まれないため search は false を返し、else側の「B」が表示されます。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF画像照合済み）",
         "codeBlocks": [
@@ -20486,7 +20958,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を混同しない。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "Cクラスでは ex.p1.A と ex.p2.B を通常のクラスとして参照します。\nAは単一型インポート `import ex.p1.A;` で読み込み、Bは `import ex.p2.*;` で ex.p2 パッケージ直下のクラスを読み込めます。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF画像照合済み）",
         "codeBlocks": [
@@ -20582,7 +21056,10 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を混同しない。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "try-with-resourcesで宣言したリソースは、宣言と逆順にcloseされます。\naが先、bが後に宣言されているため、closeはb→aの順です。\nその後finallyが実行されるので、出力は B, A, C の順です。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "try-with-resourcesのcloseは、リソース宣言の逆順です。その後にfinallyがあればfinallyが実行されます。try本体の処理が空でも、closeの出力は発生します。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF画像照合済み）",
         "codeBlocks": [
@@ -20661,7 +21138,10 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を混同しない。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "`==` はStringの内容ではなく参照の同一性を比較します。\naはnewで作ったヒープ上のString、bはaと同じ参照です。\ncはinternにより文字列プール上の\"sample\"を参照し、dも同じ文字列プールの\"sample\"を参照します。\nよって a==b と c==d だけがtrueです。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "internを含むString比較では、ヒープ上のnew Stringと文字列プール上の参照を分けて図にすると判断しやすくなります。==は内容ではなく参照です。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF画像照合済み）",
         "codeBlocks": [
@@ -20768,7 +21248,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を混同しない。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "通常のトップレベルクラスに使えるアクセス修飾子は public かデフォルトだけです。\nまた final クラスは通常のクラスとして宣言できます。\nstatic/protected/private はトップレベルクラスには使えません。\nsealedはpermits等の条件が必要で、non-sealedはsealed階層のサブクラスで使います。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF画像照合済み）",
         "codeBlocks": [
@@ -20864,7 +21346,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を混同しない。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "`var` はローカル変数の型推論にだけ使えます。\nフィールド宣言 `private var num = 10;` は不正です。\n選択肢に(1)行のエラーがないため、結果としてフィールドnumが有効に宣言されていない扱いになり、(4)行の `int var = num;` でも参照できずコンパイルエラーになります。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF画像照合済み）",
         "codeBlocks": [
@@ -20971,7 +21455,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を混同しない。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "sealedクラスAは permits B, C により B と C だけに継承を許可しています。\nさらに、sealedクラスを直接継承するクラスは final / sealed / non-sealed のいずれかで修飾する必要があります。\nCをnon-sealedにしたE、BをfinalにしたFが正しいです。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF画像照合済み）",
         "codeBlocks": [
@@ -21078,7 +21564,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を混同しない。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "コンパイラによって処理を要求されるのはチェック例外です。\nRuntimeExceptionとそのサブクラスは非チェック例外です。\nExceptionはRuntimeExceptionを除けばチェック例外の親であり、IOExceptionもチェック例外です。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF画像照合済み）",
         "codeBlocks": [
@@ -21176,7 +21664,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を混同しない。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "インタフェースの `A execute(int num);` を実装するには、メソッド名と引数型が同じである必要があります。\n戻り値型はAまたはAのサブクラス型にできます。\nBはAのサブクラスなので共変戻り値として認められます。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF画像照合済み）",
         "codeBlocks": [
@@ -21282,7 +21772,10 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を混同しない。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "配列の1つ目 new A() は A型なので `instanceof A b` がtrueとなり、A.execute()でAを表示します。\n2つ目 new B() もAのサブクラスなのでtrueとなり、変数bのコンパイル時型はAでも実体はBなので、オーバーライドされたB.execute()が呼ばれてBを表示します。\n3つ目の\"C\"はAではないので何も表示しません。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "instanceofのパターン変数は、条件がtrueの範囲でだけ使えます。さらにメソッド呼び出しは実体型のオーバーライドが効くため、型判定と動的ディスパッチを分けます。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF画像照合済み）",
         "codeBlocks": [
@@ -21388,7 +21881,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の参照先・出力順・例外発生箇所を追う。",
             "最後に選択肢と照合する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "setAllメソッドはsetD(x)の戻り値を、a、b、this.c、dに連鎖代入しているため、インスタンス変数を変更します。\nsetAとsetDは同名のローカル変数に代入しているだけでフィールドは変わりません。\n・A: 誤り。\n引数aがフィールドaを隠しており、a = a は引数自身への代入です。\n・B: 誤り。\nthis.b = b はフィールドbにフィールドb自身の値を再代入しているだけです。\n・C: 誤り。\nreturn c は値を返すだけで、フィールドを書き換えません。\n・D: 誤り。\n引数dがフィールドdを隠しており、d = d は引数自身への代入です。\n・E: 正しい。\nsetD(x)の戻り値を右から左へ連鎖代入し、フィールドa、b、c、dが変更されます。\n・F: 誤り。\nsetAllがフィールドを変更します。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -21472,7 +21967,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の参照先・出力順・例外発生箇所を追う。",
             "最後に選択肢と照合する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "Bにコンストラクタを明示しない場合、コンパイラはB() { super(); } 相当を追加します。\nしかしAには引数なしコンストラクタがないため、super()を呼び出せずコンパイルエラーになります。\n・A: 誤り。\n継承元がabstractであること自体は問題ありません。\n・B: 誤り。\nオーバーライドではアクセス修飾子を緩めることができ、defaultからpublicへの変更は可能です。\n・C: 正しい。\nA(int id)を呼び出すBのコンストラクタ、例: B(int id) { super(id); } が必要です。\n・D: 誤り。\nAはsealedではないため、Bをfinalにする必要はありません。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -21562,7 +22059,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の参照先・出力順・例外発生箇所を追う。",
             "最後に選択肢と照合する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "配列の型はA[]ですが、要素にはA、B、Cのインスタンスを入れられます。\nsampleメソッドはオーバーライドされているため、実行時のインスタンス型に応じてA、B、Cの順に呼ばれます。\n・A: 正しい。\n動的ディスパッチによりA、B、Cの各sampleが順に実行されます。\n・B: 誤り。\nキャストや範囲外アクセスはなく、例外は発生しません。\n・C: 誤り。\n表示後に例外が発生する処理はありません。\n・D: 誤り。\nBとCはAのサブクラスなのでA[]に格納できます。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -21660,7 +22159,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の参照先・出力順・例外発生箇所を追う。",
             "最後に選択肢と照合する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "拡張for文は配列の0番目から最後の要素まで順に取り出します。\n通常for文では i = 0 から開始し、条件は i < array.length にする必要があります。\n・A: 正しい。\n添字0からlength-1までを順に出力します。\n・B: 誤り。\ni <= array.length だと i == array.length のとき範囲外アクセスになります。\n・C: 誤り。\n前置インクリメントでも範囲外アクセスの問題は同じです。\n・D: 誤り。\n条件式で++iしているため、最初にiが1になり0番目の要素を出力できません。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -21764,7 +22265,10 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の参照先・出力順・例外発生箇所を追う。",
             "最後に選択肢と照合する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "sは文字列プールのString、tはnewで作られた別インスタンスなので s == t はfalseです。\n一方、s.equals(t)は内容比較なのでtrueです。\nTestはequalsをオーバーライドしていないため、a.equals(b)はObjectの同一性比較になりfalseです。\n・A: 誤り。\na == b は別インスタンスなのでEではなくFです。\n・B: 誤り。\ns == t はfalseなのでAではなくBです。\nまたa.equals(b)もfalseです。\n・C: 誤り。\ns.equals(t)はtrueなのでDではなくCです。\n・D: 正しい。\nB、C、F、Hの順に表示されます。\n・E: 誤り。\nTestはequalsをオーバーライドしていないためGではなくHです。\n・F: 誤り。\ns == tはfalse、a == bもfalseです。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "同一性比較と同値比較が混ざる問題では、まず==かequalsかを確認します。次に、new、代入、リテラル、internのどれで参照が作られたかを追います。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -21874,7 +22378,10 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の参照先・出力順・例外発生箇所を追う。",
             "最後に選択肢と照合する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "switch式でアロー形式を使う場合は、-> の右側に結果となる式を書きます。\nbreakは不要で、defaultも網羅性のため必要です。\nBだけが構文として正しく、元コードと同じくdataが0xFF0000なら\"C\"を返します。\n・A: 誤り。\nswitch式のアロー形式で値の後にbreakは書けません。\n・B: 正しい。\n各caseが値を返し、defaultもあるためswitch式として成立します。\n・C: 誤り。\n1つのswitch内でアロー形式とコロン形式を混在できません。\n・D: 誤り。\nswitch式は値を返す必要があります。\n別変数への代入文だけでは式の結果になりません。\n・E: 誤り。\n:= というcase構文はありません。\n・F: 誤り。\ndefaultがなく、すべての値を網羅していないためswitch式として不十分です。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "switch文とswitch式は別物です。switch式は値を返し、網羅性やyieldが問題になります。switch文は主に実行の流れとbreakの有無を見ます。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -21970,7 +22477,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の参照先・出力順・例外発生箇所を追う。",
             "最後に選択肢と照合する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "interface Aのdefault sampleは暗黙的にpublicです。\nBはAを実装しているにもかかわらず、private void sample()でより狭いアクセスにしているため、Aのsampleを正しく実装・オーバーライドできずコンパイルエラーになります。\n・A: 誤り。\nprivateメソッドはサブクラスでオーバーライドされる対象ではありません。\n・B: 正しい。\npublic相当のインタフェースメソッドをprivateで実装することはできません。\n・C: 誤り。\n同一ソース内のサブクラスCを許可する場合、permitsを省略できます。\n・D: 誤り。\nabstractクラスはインタフェースの抽象メソッドを必ず実装しなくてもよいです。\n・E: 誤り。\nインタフェースのメソッドはpublicなので、Cのpublic sample自体はアクセスを狭めていません。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -22067,7 +22576,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の参照先・出力順・例外発生箇所を追う。",
             "最後に選択肢と照合する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "オーバーロードは同じクラス内でメソッド名が同じでも、引数の数・型・順序が異なれば成立します。\n戻り値型、引数名、アクセス修飾子だけの違いではオーバーロードになりません。\n・A: 正しい。\n引数の数も型も既存のtest(int,int)と異なるためオーバーロードです。\n・B: 誤り。\n引数名が違うだけで、シグネチャはtest(int,int)のままなので重複定義です。\n・C: 正しい。\n引数型がInteger,Integerなのでtest(int,int)とは異なります。\n・D: 誤り。\n戻り値型だけをvoidに変えてもオーバーロードにはならず、さらにreturn a + bもvoidと矛盾します。\n・E: 誤り。\nアクセス修飾子が違ってもシグネチャはtest(int,int)で重複です。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -22194,7 +22705,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の参照先・出力順・例外発生箇所を追う。",
             "最後に選択肢と照合する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "sealedクラスの直接サブクラスは、final・sealed・non-sealedのいずれかで宣言します。\nそのためfinalクラスをsealedクラスのサブクラスにできます。\nまたfinalクラスは継承できないため、サブクラスで実装が必要なabstractメソッドを持てません。\n・A: 正しい。\nsealedクラスの許可されたサブクラスはfinalにできます。\n・B: 誤り。\nfinalクラスはsealedクラスのサブクラスでなくても宣言できます。\n・C: 誤り。\nfinalクラスがabstractクラスのサブクラスである必要はありません。\n・D: 正しい。\nfinalクラスは継承できないため、abstractメソッドを残せません。\n・E: 誤り。\nabstractクラスはfinalメソッドを持てます。\n・F: 誤り。\nfinalクラスは継承できないため、そのサブクラスは作れません。\n・G: 誤り。\nsealedクラスはfinalメソッドを持てます。\n・H: 誤り。\nsealedとfinalは継承許可と継承禁止で矛盾するため同時に指定できません。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [],
@@ -22305,7 +22818,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の参照先・出力順・例外発生箇所を追う。",
             "最後に選択肢と照合する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "recordのコンポーネントはprivate finalフィールドとして保持され、アクセサはコンポーネント名と同じname()です。\n引数なしコンストラクタやgetName()は自動生成されません。\n・A: 正しい。\nrecordのフィールドはfinalであり、外部からa.nameへ直接代入できません。\n・B: 正しい。\nBook(String name)の正準コンストラクタがあり、引数なしコンストラクタは自動生成されません。\n・C: 誤り。\n参照型同士なので==による参照比較はコンパイルできます。\n・D: 正しい。\nrecordのアクセサはgetName()ではなくname()です。\n・E: 誤り。\n変数aにnullを再代入すること自体は可能です。\n・F: 誤り。\n正しいコンストラクタ呼び出しです。\n・G: 誤り。\nname()は自動生成されるアクセサなので呼び出せます。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -22415,7 +22930,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の参照先・出力順・例外発生箇所を追う。",
             "最後に選択肢と照合する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "配列の添字は0始まりです。\n1、3、5、7、9は、それぞれ添字0、2、4、6、8の要素です。\nしたがって、iを0から始めて偶数の添字だけを出力するCが正しいです。\n・A: 誤り。\niを1から始めるため、偶数添字2、4、6、8の要素である3、5、7、9だけが出力され、1が出ません。\n・B: 誤り。\n条件式で++iしてから判定するため、最初にiが1になります。\nさらに偶数添字だけ出しても1は出ません。\n・C: 正しい。\niは0、1、2…と進み、i % 2 == 0 のときだけarray[i]を出すため、array[0], [2], [4], [6], [8]、つまり1、3、5、7、9が表示されます。\n・D: 誤り。\n条件式でi++を使い、更新式でもi++を使うため添字の進み方が崩れます。\n範囲外アクセスの危険もあります。\n・E: 誤り。\n奇数添字を出力するため、2、4、6、8、10が表示されます。\n・F: 誤り。\niが1始まりでi <= array.lengthなので、最後にarray[10]へアクセスする可能性があります。\n配列の最後の添字は9です。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -22520,7 +23037,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の参照先・出力順・例外発生箇所を追う。",
             "最後に選択肢と照合する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "values[1]はnew Value(\"B\")です。\nprintlnにオブジェクト参照を渡すとtoStringが呼ばれるためBが表示されます。\nvalues[2].dataはC、values[3]はnull参照なのでprintlnは文字列nullを表示します。\n・A: 誤り。\nvalues[0]は出力していません。\n最初に出力するのはvalues[1]です。\n・B: 正しい。\nvalues[1]のtoStringでB、values[2].dataでC、values[3]のnull参照でnullが表示されます。\n・C: 誤り。\nValueはtoStringをオーバーライドしているため、Value@...形式ではなくdataの値が表示されます。\n・D: 誤り。\ntoStringがあるためValue@...にはなりません。\nまたvalues[3]はCではなくnullです。\n・E: 誤り。\nコードは構文上問題ありません。\n・F: 誤り。\nvalues[3].dataのようにnullからメンバ参照していないため、NullPointerExceptionは発生しません。\nprintln(null)はnullと表示します。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -22630,7 +23149,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の参照先・出力順・例外発生箇所を追う。",
             "最後に選択肢と照合する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "Javaの識別子には英字、数字、_、$などを使えますが、@は使えません。\nまた数字から始めることはできません。\nしたがってCとFが正しくない定義です。\n・A: 誤りではありません。\nsample3は英字で始まり、数字を含むだけなので有効です。\n・B: 誤りではありません。\n$は識別子に使えます。\n試験では有効と判定します。\n・C: 正しくない定義です。\n@はJavaの識別子に使えません。\n・D: 誤りではありません。\n_nullはキーワードnullそのものではないため有効です。\n・E: 誤りではありません。\n通常のメソッド定義です。\n・F: 正しくない定義です。\n識別子は数字から始めることができません。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [],
@@ -22709,7 +23230,10 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の参照先・出力順・例外発生箇所を追う。",
             "最後に選択肢と照合する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "インタフェースに宣言したフィールドは、明示していなくてもpublic static finalです。\na、b、cはいずれも定数なので++で変更できません。\nb + 1のように値を読むだけなら可能です。\n・A: 誤り。\ncは暗黙的にfinalなので、c++で変更できません。\n・B: 誤り。\naも暗黙的にfinalなので、a++で変更できません。\n・C: 誤り。\n++aもaを書き換える操作です。\nfinalフィールドにはできません。\n・D: 正しい。\nbは暗黙的にfinalですが、値を読むだけのb + 1は可能です。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "インタフェースのフィールドは暗黙にpublic static finalです。値を変更する++や代入はできません。変数に見えても定数として扱います。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -22814,7 +23338,10 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の参照先・出力順・例外発生箇所を追う。",
             "最後に選択肢と照合する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "switch文のアロー形式では、該当caseだけが実行され、従来のコロン形式のようなフォールスルーは起きません。\nstrは\"A\"なのでcase \"A\"だけでtotalが1増え、1が表示されます。\n・A: 正しい。\ncase \"A\"だけが実行され、totalは1になります。\n・B: 誤り。\ncase \"B\", \"C\"には進みません。\n・C: 誤り。\nアロー形式では複数caseへ落ちません。\n・D: 誤り。\nすべてのcaseが実行されるわけではありません。\n・E: 誤り。\nswitch文の後ろのセミコロンは空文として扱われ、コンパイルエラーにはなりません。\n・F: 誤り。\n例外が発生する処理はありません。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "switchのアロー形式では、該当caseの右側だけを実行し、フォールスルーしません。従来のcase:形式と混ぜて考えると誤答になります。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -22919,7 +23446,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の参照先・出力順・例外発生箇所を追う。",
             "最後に選択肢と照合する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "throwsを省略するとコンパイルエラーになるということは、SampleExceptionはチェック例外です。\nthrows SampleExceptionと宣言しているメソッドでは、SampleException自身だけでなく、そのサブクラスもスローできます。\n・A: 正しい。\nthrowsを省略するとコンパイルエラーになる例外はチェック例外です。\n・B: 誤り。\nError系なら通常チェック例外としてthrows必須にはなりません。\n・C: 誤り。\n非チェック例外ならthrowsを省略してもコンパイルエラーになりません。\n・D: 正しい。\nSampleExceptionのサブクラスはSampleException型として扱えるためスローできます。\n・E: 誤り。\nサブクラスもスローできます。\n・F: 誤り。\nExceptionはSampleExceptionのスーパークラスであり、throws SampleExceptionではException全般をスローできません。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -23013,7 +23542,10 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の参照先・出力順・例外発生箇所を追う。",
             "最後に選択肢と照合する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "p1.Aのhelloメソッドはprotectedです。\n異なるパッケージにあるBから利用するには、BがAのサブクラスとしてアクセスする必要があります。\n選択肢の中ではCが該当します。\n・A: 誤り。\nAはpublicクラスなので暗黙のpublicな引数なしコンストラクタを持ちます。\n問題の本質はコンストラクタではなくprotectedメソッドです。\n・B: 誤り。\ngetInstanceはB内部でnew B()しており、Bのコンストラクタの公開性は外部呼び出しに関係しません。\n・C: 正しい。\n異なるパッケージからprotectedメンバを利用するには、継承関係が必要です。\n・D: 誤り。\nAがBのサブクラスになる必要はありません。\n・E: 誤り。\nBのhelloメソッドのアクセス修飾子ではなく、Aのprotectedメンバへのアクセス可否が問題です。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "protectedは「同じパッケージ」または「異なるパッケージのサブクラスからの継承経由アクセス」で使えます。単にサブクラスなら何でもアクセスできる、ではありません。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -23116,7 +23648,10 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の参照先・出力順・例外発生箇所を追う。",
             "最後に選択肢と照合する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "nameはインスタンスごとのフィールドですが、idはstaticフィールドなのでItemクラスで共有されます。\n最初はA1、次にB1、b.id=\"2\"で共有idが2になり、a.nameをCに変えた後はC2、最後はB2になります。\n・A: 誤り。\nb.id=\"2\"でstaticフィールドidは共有して2になります。\na.idも2として見えます。\n・B: 正しい。\n順にA1、B1、C2、B2です。\n・C: 誤り。\n2回目の出力はb.id=\"2\"より前なのでB1です。\n・D: 誤り。\n1回目と2回目の出力時点ではa.nameはA、b.nameはBです。\n・E: 誤り。\na.nameがCになるのは9行目以降です。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "staticフィールドはインスタンスではなくクラスに属します。複数のインスタンスから同じフィールドを変更しているため、最後にクラス全体で1つの値になります。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -23211,7 +23746,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の参照先・出力順・例外発生箇所を追う。",
             "最後に選択肢と照合する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "argsにはA、B、Cが順に入ります。\nsetValuesで各文字列の後ろに空白を付けてStringBuilderへ追加し、最後にBのsetValueが呼ばれます。\nBのsetValueは前後にダブルクォーテーションを付けてAのvalueへ保存するため、\"A B C \"が表示されます。\n・A: 正しい。\n末尾の空白を含むA B C がダブルクォーテーションで囲まれて表示されます。\n・B: 誤り。\nBのsetValueにより前後にダブルクォーテーションが付きます。\nまた末尾空白もあります。\n・C: 誤り。\nargsの内容をStringBuilderに追加しているため空文字ではありません。\n・D: 誤り。\n構文・型ともに問題ありません。\n・E: 誤り。\n配列範囲外アクセスやnull参照はありません。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -23297,7 +23834,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の参照先・出力順・例外発生箇所を追う。",
             "最後に選択肢と照合する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "クラスファイルを生成するのはjavaコマンドではなくjavacコマンドです。\nA.javaはb.Bをimportして参照しているため、通常はjavac a/A.javaで依存するB.javaも見つかれば一緒にコンパイルされます。\nその後、実行は拡張子なしの完全修飾クラス名でjava a/Aです。\n・A: 誤り。\njavaは実行コマンドであり、クラスファイル生成には使いません。\n・B: 誤り。\njavaは実行コマンドです。\nまたBにはmainメソッドもありません。\n・C: 誤り。\njavac b/B.javaだけではA.classを生成しません。\nさらにjava a/A.javaは実行コマンドの指定として不適切です。\n・D: 正しい。\njavac a/A.javaでAをコンパイルし、必要に応じて参照先Bもコンパイルされます。\n実行はjava a/Aです。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -23383,7 +23922,10 @@ window.JAVA_STUDY_DATA = {
             "Mainで使っている型名を確認する。",
             "同じパッケージ・java.lang・import済みのどれで解決されるかを見る。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "正解は C。\n中心論点は「import宣言とサブパッケージ」。\n・Mainはcomパッケージにあり、Sampleはcom.sample、Testはcom.sample.testにある。\ncom.sample.* はcom.sample直下の型だけを取り込むため、com.sample.test.Testまでは取り込まない。\nCはSampleを明示importし、Testをcom.sample.test.*で取り込むため両方解決できる。\njava.lang.Integerは自動import対象なので明示importは不要。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "importのワイルドカードは、そのパッケージ直下の型だけを対象にします。サブパッケージまでは含まれません。ex.*でex.p1.Aまで読めるわけではありません。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -23461,7 +24003,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルエラーか実行時例外かを先に分ける。未初期化ローカル変数はコンパイルエラー。"
           ],
           "judgeSteps": [],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "正解は C。\n中心論点は「ローカル変数と同名フィールド」。\n・ローカル変数宣言 int num = num; の右辺numは、宣言中のローカル変数numとして扱われる。\nローカル変数は初期化前に参照できないためコンパイルエラーになる。\nクラス変数を参照したいなら Sample.num のように修飾する必要がある。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -23538,7 +24082,9 @@ window.JAVA_STUDY_DATA = {
           ],
           "examTips": [],
           "judgeSteps": [],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "正解は B。\n中心論点は「抽象メソッドの実装」。\n・Cは具象クラスなので、継承元Bに残っている抽象メソッドz()を実装しなければならない。\nAのx()はBがpublic void x()として実装済みであり、Cで再度実装する必要はない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -23615,7 +24161,9 @@ window.JAVA_STUDY_DATA = {
           ],
           "examTips": [],
           "judgeSteps": [],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "正解は A。\n中心論点は「拡張for文のvar型推論」。\n・mainの仮引数argsはString...と書かれているが、扱いはString[]である。\n拡張for文でString[]から1要素ずつ取り出すため、valueの推論型はStringになる。\nvarという型が存在するわけではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -23701,7 +24249,9 @@ window.JAVA_STUDY_DATA = {
           ],
           "examTips": [],
           "judgeSteps": [],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "正解は D。\n中心論点は「Stringのsubstringと不変性」。\n・indexOf(\"ef\")は、文字列\"abcd ef gh\"の中でeが始まる添字5を返す。\nsubstring(x + 3)は新しいStringを返すが、戻り値を変数に代入していないためstrは変化しない。\n再度indexOf(\"ef\")しても5なので、出力は「abcd ef gh 5」。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -23777,7 +24327,10 @@ window.JAVA_STUDY_DATA = {
           ],
           "examTips": [],
           "judgeSteps": [],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "正解は D。\n中心論点は「switch文とnull」。\n・staticフィールドstrは参照型なので初期値はnull。\nStringをswitch式に使うこと自体は可能だが、評価対象がnullの場合はcase比較に入る前にNullPointerExceptionが発生する。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "switch文の対象がnullの場合、case比較へ進む前にNullPointerExceptionになります。defaultがあっても、nullをdefaultで受けるわけではありません。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -23856,7 +24409,9 @@ window.JAVA_STUDY_DATA = {
             "-dの出力先と-cpの指定はセットで見る。javaコマンドではファイル名ではなく完全修飾クラス名を指定する。"
           ],
           "judgeSteps": [],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "正解は B。\n中心論点は「javac -d とクラスパス」。\n・-d build を付けてコンパイルすると、package ex15に対応したclassファイルがbuild/ex15配下に出力される。\n実行時はクラスパスにbuildを指定し、完全修飾クラス名ex15.Mainで起動する。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -23942,7 +24497,10 @@ window.JAVA_STUDY_DATA = {
           ],
           "examTips": [],
           "judgeSteps": [],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "正解は D。\n中心論点は「参照型と呼び出せるメソッド」。\n・変数aの実体はBだが、変数の宣言型はA。\nコンパイル時に呼び出せるメソッドは宣言型Aに定義されているものだけである。\nAにはbye()がないため、a.bye()はコンパイルエラーになる。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "参照型に宣言されていないメソッドは呼び出せません。実体がサブクラスでも、変数の型にそのメソッドがなければコンパイルエラーです。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -24019,7 +24577,9 @@ window.JAVA_STUDY_DATA = {
           ],
           "examTips": [],
           "judgeSteps": [],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "正解は D。\n中心論点は「メソッド呼び出しと引数リスト」。\n・定義されているtestメソッドは test(char a, int b) で、引数が2つ必要。\n呼び出し側は app.test('A') と1つしか渡していないため、該当するメソッドが見つからずコンパイルエラーになる。\nフィールドbの値1が自動的に第2引数として使われることはない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -24107,7 +24667,9 @@ window.JAVA_STUDY_DATA = {
             "配列の次元問題は、左から1つ添字を付けるたびに次元が1つ減ると考える。"
           ],
           "judgeSteps": [],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "正解は A・E。\n中心論点は「多次元配列の初期化」。\n・Aは2次元配列int[][]に対して、各要素としてint[]を並べているので正しい。\nEはarray2[0][0]などがint[]型なので、int[] arrayを代入できる。\nBは3次元配列の要素構造になっておらず、Cはint[][]にint要素を直接入れている。\nDはnew int[][2]のように先頭次元を省略して後ろだけ指定できない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [],
@@ -24182,7 +24744,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を分けて判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "C は B のサブクラスなので、Bから継承した getValue() 内で super.getValue() を呼ぶとBの親であるA側の実装を参照できます。\nまたAのフィールド num はprivateではないため、同一パッケージまたは継承関係の文脈で参照可能です。\nsuperは「直近の親クラス側」を明示するためのキーワードで、new や public はメソッド呼び出しの修飾には使えません。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -24275,7 +24839,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を分けて判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "オーバーロードでは、まず変数の宣言型と引数のコンパイル時型から呼び出せるメソッドが決まります。\nその後、オーバーライドされているメソッドは実体クラス側の実装が実行されます。\nList引数はCollectionにも一致しますが、B型変数からはより具体的なList版が選ばれるため出力が変わります。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -24357,7 +24923,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を分けて判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "BとCの両方が同じシグネチャのdefaultメソッドを持つため、Dが両方を実装するとどちらを継承すべきか曖昧になります。\nD側で明示的にsample()をオーバーライドして衝突を解消しなければコンパイルエラーです。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -24447,7 +25015,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を分けて判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "配列やコレクションに代入できるかは、宣言型と実体型の代入互換性で決まります。\n抽象クラスA、インタフェースB、実装クラスC、CのサブクラスDの関係を上から順に追うと、選択肢Dだけが型互換性を満たしません。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -24549,7 +25119,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を分けて判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "interfaceはfinalにできません。\n実装クラスBはabstractにもできます。\nB implements A なので、BはAのサブタイプです。\n逆にAがBのサブタイプになるわけではありません。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -24631,7 +25203,10 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を分けて判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "new C()を実行すると、まず親クラス部分から初期化されます。\nCのコンストラクタ実行前にB、Bの実行前にAのコンストラクタが呼ばれるため、出力順はA→B→Cです。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "サブクラスのインスタンス生成時は、まずスーパークラス側のコンストラクタが実行され、その後サブクラス側が実行されます。出力順はnewしたクラスからではなく、親から子へ追います。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -24711,7 +25286,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を分けて判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "privateメソッドはオーバーライドされません。\nAのa()内で呼ばれるprint()はAのprivate print()、Bのb()内で呼ばれるprint()はBのprivate print()です。\nしたがってA、Bの順に表示されます。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -24803,7 +25380,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を分けて判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "メソッド定義では、戻り値型、メソッド名、引数リスト、throws句、修飾子の組み合わせが文法的に正しい必要があります。\n選択肢CとEだけがJavaのメソッド宣言として成立します。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [],
@@ -24879,7 +25458,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を分けて判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "コマンドライン引数で二重引用符に囲まれた\"AB\"は1つの引数ABとして渡されます。\n次のABも別の1引数なので、argsは2要素です。\n順に連結出力されるためABABになります。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -24960,7 +25541,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を分けて判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "Bから継承されるa()の戻り値はCollection、Cから継承されるa()の戻り値はPathです。\nどちらもAのIterableとは関係を持てますが、BとC同士の戻り値型に互換性がないため、Dで1つのメソッドとして統合できずコンパイルエラーになります。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -25041,7 +25624,10 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を分けて判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "フィールドは実行時の実体型ではなく、参照変数の宣言型で選ばれます。\nA型の変数からxを直接参照するとAのpublicフィールドxが選ばれるため、Aが表示されます。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "フィールドアクセスはメソッド呼び出しと違い、参照変数の型で決まります。オーバーライドのような動的ディスパッチはフィールドにはありません。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -25131,7 +25717,10 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を分けて判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "SubSampleのコンストラクタでは、明示的にsuper(...)またはthis(...)を書かない場合、先頭にsuper()が暗黙挿入されます。\nしかし親Sampleには引数なしコンストラクタがないため、該当箇所でコンパイルエラーになります。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "this()やsuper()によるコンストラクタ呼び出しは、コンストラクタ本体の先頭に1つだけ書けます。通常文の後には置けません。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -25222,7 +25811,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を分けて判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "BはAのsample()と自身のtest()を要求します。\nCはtest()だけ実装したabstractクラスなので問題ありませんが、具象クラスDは未実装のsample()を実装していないためコンパイルエラーです。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -25313,7 +25904,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を分けて判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "finallyはtryまたはcatchの直後に置きます。\nまたtryは複数のcatchを持てます。\ntry-with-resourcesではリソースのclose()が実行された後にfinallyが実行されます。\ncatchは特定型から一般型の順に並べます。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [],
@@ -25388,7 +25981,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を分けて判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "catch(Exception e) が先にあるため、その後の catch(RuntimeException e) は到達不能です。\nRuntimeExceptionはExceptionのサブクラスなので、先のcatchで捕捉されてしまいます。\n到達不能なcatchはコンパイルエラーです。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -25478,7 +26073,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を分けて判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "new String(\"Java\")で作ったs1はヒープ上の別インスタンスです。\ns2は文字列プールの\"Java\"を参照します。\ns2.intern()は同じプール上の参照を返すためs2==s3はtrue、s1との==比較はfalseです。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -25559,7 +26156,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を分けて判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "2次元配列は行ごとにchar[]として取り出されます。\n外側の拡張for文で各行を取り出し、内側の拡張for文でその行の文字を左から出力します。\n各行の後に空白を出すため、ad be cf になります。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -25640,7 +26239,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を分けて判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "new B()では、まず暗黙または明示のsuper呼び出しでA側のコンストラクタが動きます。\nA()はthis(2)でA(int)を呼び2を出力し、その後1を出力します。\nB()はthis(4)でB(int)を呼び4を出力し、その後3を出力します。\n結果は2143です。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -25721,7 +26322,9 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を分けて判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "2次元配列を行優先で走査し、array[0][0]→array[0][1]→array[1][0]→array[1][1]の順で出力するコードが必要です。\n正しい入れ子ループを選ぶとabcdになります。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -25802,7 +26405,10 @@ window.JAVA_STUDY_DATA = {
             "コンパイルできる場合だけ、実行時の処理順・参照先・出力を追う。",
             "選択肢の「コンパイルエラー」「実行時例外」「出力結果」を分けて判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "new String[2]で作られた配列の各要素は初期値nullです。\n拡張for文で取り出したsもnullなので、str[i].concat(...)を呼ぶ時点でNullPointerExceptionが発生します。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "配列要素がnullのままStringメソッドを呼ぶとNullPointerExceptionです。配列が生成済みであることと、各要素がStringを参照していることは別です。"
         },
         "source": "7章-1 模擬試験.pdf / 7章-2 解説.pdf（PDF原文照合強化版）",
         "codeBlocks": [
@@ -25933,7 +26539,9 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "ローカル変数cが初期化されないまま参照されるためコンパイルエラー。\nlongリテラルのLは表示結果には出ない。\n・ローカル変数は使用前に明示的な初期化が必要。\n・nullは参照型用の値であり、longには入らない。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -26067,7 +26675,9 @@ window.JAVA_STUDY_DATA = {
             "ソース先頭から package → import → class の順に並んでいるか確認し、使っている型が同じパッケージ・java.lang・import済み・完全修飾名のどれで解決されるかを見る。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "publicクラス名がAなのでファイル名A.javaは正しい。\nAとBの両方にmainがあるため、A.class/B.class生成後はjava Aもjava Bも実行できる。\n・1つのソースファイルにpublicでないクラスを複数書ける。\n・実行時はクラス名を指定する。\n・判定軸: package/importは「宣言順序」と「完全修飾名」を分けて見る。\npackage宣言はコメントを除いて先頭、importはその後、class宣言はさらに後。\nimportのワイルドカードは直下の型だけが対象で、サブパッケージまでは含まない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -26171,7 +26781,9 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "staticメソッドprintから非staticフィールドcontentsを直接参照しているためコンパイルエラー。\n・staticメソッドから直接扱えるのはstaticメンバーだけ。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -26303,7 +26915,10 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "まず表記として合法かを確認し、その次に代入先の型へ収まるか、接尾辞L/F/Dの有無を確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "0b0110はintリテラルの6。\nNumber型引数に渡すとIntegerへオートボクシングされるため、Integerの分岐に入る。\n・intはIntegerにボクシングされる。\n・ByteやShortにはならない。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "プリミティブ値をNumber型引数に渡すと、まず対応するラッパークラスへオートボクシングされます。その後、Numberへの上位型参照として扱われます。instanceofで実体のラッパー型を確認します。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -26425,7 +27040,10 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "test(null)によりstr.equalsIgnoreCase(\"\")でNullPointerExceptionが発生する。\nこれはRuntimeExceptionのサブクラスなのでBが出力される。\n・catchは上から評価され、最初に互換性のある型で処理される。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "catchは上から順です。NullPointerExceptionなどの実行時例外もRuntimeExceptionやExceptionで受けられますが、より前のcatchに該当するとそこで処理されます。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -26576,7 +27194,9 @@ window.JAVA_STUDY_DATA = {
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。",
             "変数表を作り、式の中で値を使ったタイミングと更新されたタイミングを分けて記録する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "B型にはtestメソッドが存在しないため、b.test(1)と(A)b.test(2)がコンパイルエラー。\nキャストよりメソッド呼び出しが先に解釈される点が罠。\n・((A)b).test(3)のように括弧でキャストを先に評価させればよい。\n・sealed interface A permits Cとfinal class C implements Aは成立する。\n・判定軸: インタフェースの抽象メソッドは暗黙にpublic abstract、フィールドはpublic static final。\ndefault/static/privateメソッドの扱いを区別する。\n・判定軸: sealedは継承・実装を許可する相手をpermitsで限定する。\n許可されたサブクラスはfinal/sealed/non-sealedのいずれかが必要。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -26699,7 +27319,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "フィールドアクセスは参照変数の型で決まり、メソッド呼び出しは実体の型で決まる。\nA型のb.dataはA.data、b.getData()はB側メソッドになる。\n・B#getData内のdataはB.dataを指す。\n・キャスト後のB型変数ではB.dataに直接アクセスする。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "フィールドは隠蔽、メソッドはオーバーライドです。参照型で決まるものと実体型で決まるものが同じコード内に混ざるため、式ごとに分けて判断します。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -26839,7 +27462,9 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "ExceptionAがスローされ、最初のcatch(ExceptionA)でAが出力される。\nその後finallyでEが出力される。\n・catch後でもfinallyは実行される。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -26952,7 +27577,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "interface側の暗黙修飾を補ってから、実装クラスが必要なメソッドを正しいアクセス修飾子で実装しているかを見る。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "switch式のアロー形式はフォールスルーしない。\n70→B、80→A、90→A、95→E、40→C、20→D、10→D、60→B。\n・switch式では全分岐が値を返す必要がある。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "switch式では、caseブロックから値を返すときにyieldを使います。yieldはswitch式の値を決めるだけで、メソッド全体から戻るreturnではありません。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -27067,7 +27695,10 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "各操作後のsizeと要素順を表にして、例外が出る操作がないかを先に確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "record Item(String name)には引数なしコンストラクタがない。\nObjectをItemへダウンキャストすると実行時にClassCastException。\n・recordの標準コンストラクタはnullや空文字列自体は拒否しない。\n・ArrayListはnull要素を許容する。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "recordのListコンポーネント自体はfinalですが、参照先のListが変更可能なら中身を変更できる場合があります。参照の再代入とオブジェクトの状態変更を分けます。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -27189,7 +27820,9 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "配列生成時の要素数、各添字の範囲、参照の共有、拡張for文で取り出される型を順に確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "文字列リテラル\"sample\"はコンスタントプールで1つ共有される。\nnew String(\"sample\")が2回あるため、合計3つ。\n・参照のコピーでは新しいインスタンスは作られない。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -27329,7 +27962,10 @@ window.JAVA_STUDY_DATA = {
             "interface側の暗黙修飾を補ってから、実装クラスが必要なメソッドを正しいアクセス修飾子で実装しているかを見る。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "tryブロックで例外が発生すると、先にリソースのcloseが呼ばれC、次にcatchでA、最後にfinallyでB。\n・try-with-resourcesはcatchより前にcloseを実行する。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "try-with-resources中に例外が発生しても、closeは実行されます。try本体の例外、closeの例外、catch/finallyの順序を分けて追う必要があります。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -27442,7 +28078,9 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "interfaceの抽象メソッドは暗黙的にpublic。\nCは正しく実装し、Eはabstractクラスなので未実装でもよい。\n・privateにするとアクセスを狭めるため不可。\n・引数や戻り値が違うとオーバーライドにならない。\n・判定軸: インタフェースの抽象メソッドは暗黙にpublic abstract、フィールドはpublic static final。\ndefault/static/privateメソッドの扱いを区別する。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -27553,7 +28191,9 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "testメソッドはbooleanを返す必要があるが、for文の外にreturnがなく、戻り値が保証されないためコンパイルエラー。\n・コンパイラは全経路でreturnがあるかを見る。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -27659,7 +28299,10 @@ window.JAVA_STUDY_DATA = {
             "interface側の暗黙修飾を補ってから、実装クラスが必要なメソッドを正しいアクセス修飾子で実装しているかを見る。",
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "複数インタフェースの同名defaultメソッドが競合するため、Sampleはhelloを実装して明示的に解決する必要がある。\ndefault実装の呼び出しはInterfaceName.super.method()。\n・判定軸: インタフェースの抽象メソッドは暗黙にpublic abstract、フィールドはpublic static final。\ndefault/static/privateメソッドの扱いを区別する。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "複数インタフェースのdefaultメソッド衝突は、実装クラスで明示的に解決しないとコンパイルエラーです。継承元のどちらかを自動選択する仕組みではありません。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -27774,7 +28417,9 @@ window.JAVA_STUDY_DATA = {
             "interface側の暗黙修飾を補ってから、実装クラスが必要なメソッドを正しいアクセス修飾子で実装しているかを見る。",
             "親のpermits一覧、子の宣言修飾子、さらに孫クラスへ継承できるかを順に確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "sealed interfaceを実装するクラスは、許可されたクラスであり、かつsealed/non-sealed/finalのいずれかで修飾される必要がある。\nBとCが条件を満たす。\n・sealed classにするならpermits句または許可サブクラスが必要。\n・判定軸: インタフェースの抽象メソッドは暗黙にpublic abstract、フィールドはpublic static final。\ndefault/static/privateメソッドの扱いを区別する。\n・判定軸: sealedは継承・実装を許可する相手をpermitsで限定する。\n許可されたサブクラスはfinal/sealed/non-sealedのいずれかが必要。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -27894,7 +28539,9 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "A型変数でBインスタンスを参照しても、オーバーライドされたB#testが実行される。\nその中でhelloが呼ばれBが表示される。\n・同一ファイル内のfinal class B extends Aによりsealed Aのpermits省略が成立する。\n・判定軸: sealedは継承・実装を許可する相手をpermitsで限定する。\n許可されたサブクラスはfinal/sealed/non-sealedのいずれかが必要。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -28016,7 +28663,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "a()でresultは1、b()で3。\nどちらもtrueなのでa()!=b()はfalseとなりelseで+4、合計7。\n・|と&は右辺も評価する。\n||は左辺trueなら右辺を評価しない。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "&&と||は短絡評価します。右辺にインクリメントやメソッド呼び出しがある場合、評価されるかどうかで最終値が変わります。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -28123,7 +28773,9 @@ window.JAVA_STUDY_DATA = {
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。",
             "メンバがクラス側かインスタンス側かを分け、呼び出し元がstatic文脈かインスタンス文脈かを確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "クラス名.メソッド名で呼べるのはstaticメソッド。\nさらにprivateは他クラスから呼べないため、aとpublic staticのcが正しい。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -28223,7 +28875,9 @@ window.JAVA_STUDY_DATA = {
             "親のpermits一覧、子の宣言修飾子、さらに孫クラスへ継承できるかを順に確認する。",
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "abstract classに具象finalメソッドを定義することは可能。\nfinalとabstractの同時指定、sealedのサブクラス修飾不足、抽象メソッドの誤記述は不可。\n・判定軸: sealedは継承・実装を許可する相手をpermitsで限定する。\n許可されたサブクラスはfinal/sealed/non-sealedのいずれかが必要。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -28355,7 +29009,10 @@ window.JAVA_STUDY_DATA = {
             "変数表を作り、式の中で値を使ったタイミングと更新されたタイミングを分けて記録する。",
             "条件式が評価される順、ループに入る回数、break/continueの移動先、switchのcase一致後の流れを図にする。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "Bではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。\n結果はA:C::E:。\n・switch内のbreakはswitchだけを抜ける。\n・continueは外側のforの次反復へ進む。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "switch内のcontinueは、switchではなく外側のループの次反復へ進みます。breakはswitchを抜けるだけなのか、ループを抜けるのかを文の対象で確認します。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -28486,7 +29143,9 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "numは2→3→4→5と増え、num<5がfalseになってwhileを抜けるため5が表示される。\n・switch内breakはwhileを抜けるものではない。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -28616,7 +29275,9 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "Fは2つ目の配列の3番目の要素。\n配列添字は0始まりなのでi=1、j=2。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -28730,7 +29391,10 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "PDF解説上は、パターン変数strのスコープ外参照としてコンパイルエラー。\n実際のJavaバージョン差が出やすい論点なので、必要ならコンパイラで確認すること。\n・PDFの正答はD。\n・instanceofパターン変数のフロースコープは試験バージョン依存で要注意。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "instanceofのパターン変数は、条件がtrueと確定する範囲でのみ使えます。ifの外や、false側では使えません。スコープの問題として見ます。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -28857,7 +29521,9 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "varはローカル変数に使える。\nAは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。\n・フィールド、recordコンポーネント、引数にはvarを使えない。\n・varでnull単独初期化は型推論できない。\n・判定軸: 整数リテラルは基本int、浮動小数点リテラルは基本double。\n0bは2進数、0xは16進数、先頭0は8進数。\nアンダースコアは数字の間にだけ置ける。\n・判定軸: varはローカル変数の型推論だけに使える。\nフィールド、メソッド引数、コンストラクタ引数、戻り値型には使えない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -28979,7 +29645,10 @@ window.JAVA_STUDY_DATA = {
             "条件式が評価される順、ループに入る回数、break/continueの移動先、switchのcase一致後の流れを図にする。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "コンストラクタのi=++iは引数ローカル変数への代入で、フィールドiは0のまま。\ni++の値で3の倍数判定を行い、j=0,3,6,9を加算して18。\n・this.iに代入していない点が罠。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "後置インクリメントは現在値を式に使った後で値を増やします。さらに同名フィールドとローカル変数がある場合、どちらを更新しているかをthisの有無で確認します。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -29110,7 +29779,9 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "呼び出しているのは常に引数なしprint()で、A側のメソッド。\nA#printはA.valueを表示するため、B側valueの設定に関係なく100が4回出る。\n・Bのprint(int)はオーバーロードであり、A#print()のオーバーライドではない。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -29222,7 +29893,10 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "interface側の暗黙修飾を補ってから、実装クラスが必要なメソッドを正しいアクセス修飾子で実装しているかを見る。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "case 1とcase 5はbreakがないためフォールスルーする。\n順に処理するとnumは6になる。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。\n・判定軸: if/while/for/switchは、条件式の型と到達経路を確認する。\nswitch文はbreakがないとフォールスルーし、switch式は値を返す。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "switch文はbreakがなければフォールスルーします。defaultの位置に関係なく、実行開始位置から下方向へ流れる点を追います。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -29347,7 +30021,9 @@ window.JAVA_STUDY_DATA = {
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。",
             "ソース先頭から package → import → class の順に並んでいるか確認し、使っている型が同じパッケージ・java.lang・import済み・完全修飾名のどれで解決されるかを見る。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "addはfinalなのでTrashの実装を継承し、listに追加する。\nflushはsuper.delete(tmp)を呼ぶ。\nコンストラクタsuper(null)によりnullがaddされる。\n・パッケージアクセスのlistは、異なるパッケージのサブクラスからは参照できない。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。\n・判定軸: package/importは「宣言順序」と「完全修飾名」を分けて見る。\npackage宣言はコメントを除いて先頭、importはその後、class宣言はさらに後。\nimportのワイルドカードは直下の型だけが対象で、サブパッケージまでは含まない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -29450,7 +30126,9 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "setValue内のvalueは引数ローカル変数であり、フィールドvalueは変更されない。\ntoStringはフィールドを返すのでnull。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -29574,7 +30252,9 @@ window.JAVA_STUDY_DATA = {
             "ソース先頭から package → import → class の順に並んでいるか確認し、使っている型が同じパッケージ・java.lang・import済み・完全修飾名のどれで解決されるかを見る。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "classファイルがない状態でも、単一ファイルのソースファイルモードとしてjava Sample.javaで実行できる。\n・javacには拡張子付きファイル名が必要。\n・javaの通常実行はクラス名を指定する。\n・判定軸: package/importは「宣言順序」と「完全修飾名」を分けて見る。\npackage宣言はコメントを除いて先頭、importはその後、class宣言はさらに後。\nimportのワイルドカードは直下の型だけが対象で、サブパッケージまでは含まない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -29677,7 +30357,9 @@ window.JAVA_STUDY_DATA = {
             "条件式が評価される順、ループに入る回数、break/continueの移動先、switchのcase一致後の流れを図にする。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "97と98をcharへキャストすると、それぞれaとbになる。\n文字列連結によりabと表示される。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -29781,7 +30463,9 @@ window.JAVA_STUDY_DATA = {
             "ソース先頭から package → import → class の順に並んでいるか確認し、使っている型が同じパッケージ・java.lang・import済み・完全修飾名のどれで解決されるかを見る。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "A#aはパッケージアクセスなので別パッケージのBからアクセス不可。\nprotectedのbとpublicのcはアクセス可能。\n・判定軸: package/importは「宣言順序」と「完全修飾名」を分けて見る。\npackage宣言はコメントを除いて先頭、importはその後、class宣言はさらに後。\nimportのワイルドカードは直下の型だけが対象で、サブパッケージまでは含まない。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -29878,7 +30562,10 @@ window.JAVA_STUDY_DATA = {
             "まず表記として合法かを確認し、その次に代入先の型へ収まるか、接尾辞L/F/Dの有無を確認する。",
             "varが出たら「ローカル変数か」「右辺だけで型が一意に決まるか」「ラムダや配列初期化子単独ではないか」を確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "varでは右辺から型推論できる必要がある。\n配列生成式new Float[]やnew double[]なら推論できる。\n・配列初期化子だけではvarの型推論はできない。\n・new Double{...}は[]がないため不正。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。\n・判定軸: 整数リテラルは基本int、浮動小数点リテラルは基本double。\n0bは2進数、0xは16進数、先頭0は8進数。\nアンダースコアは数字の間にだけ置ける。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "varと配列初期化子の組み合わせでは、var a = {1,2}; は不可です。配列初期化子だけでは型推論できないため、new int[]{...} のように明示します。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -29989,7 +30676,9 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "変数aの型はAなので、呼び出せるのはAに定義されたメソッドだけ。\nAにはString[]を受け取るsetValue(String...)がない。\n・実体がBでも、コンパイル時のメソッド解決は参照変数の型で行う。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -30093,7 +30782,9 @@ window.JAVA_STUDY_DATA = {
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。",
             "メンバがクラス側かインスタンス側かを分け、呼び出し元がstatic文脈かインスタンス文脈かを確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "aの型はAなのでa.numはAのpublicフィールドを参照する。\nBにもnumはあるが、フィールドはポリモーフィックに解決されない。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -30208,7 +30899,9 @@ window.JAVA_STUDY_DATA = {
             "まず表記として合法かを確認し、その次に代入先の型へ収まるか、接尾辞L/F/Dの有無を確認する。",
             "varが出たら「ローカル変数か」「右辺だけで型が一意に決まるか」「ラムダや配列初期化子単独ではないか」を確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "varはローカル変数宣言専用。\n4行目のフィールド宣言、5行目の戻り値型には使えない。\n・for (var s : samples) はローカル変数なので使用可能。\n・判定軸: 整数リテラルは基本int、浮動小数点リテラルは基本double。\n0bは2進数、0xは16進数、先頭0は8進数。\nアンダースコアは数字の間にだけ置ける。\n・判定軸: varはローカル変数の型推論だけに使える。\nフィールド、メソッド引数、コンストラクタ引数、戻り値型には使えない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -30320,7 +31013,9 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "BはAを継承しており、Aにはint引数のコンストラクタしかない。\nサブクラスのコンストラクタ先頭でsuper(num)を呼ぶ必要がある。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。\n・判定軸: コンストラクタは戻り値型を書かず、クラス名と同名。\nthis(...)やsuper(...)はコンストラクタの先頭にしか書けない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -30423,7 +31118,10 @@ window.JAVA_STUDY_DATA = {
             "条件式が評価される順、ループに入る回数、break/continueの移動先、switchのcase一致後の流れを図にする。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "floatからintへの代入はデータ欠損の可能性があるため暗黙変換できない。\n明示的キャストが必要。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "明示的キャストはコンパイルを通すための型変換であり、実体がその型になっている保証ではありません。実行時に互換性がなければClassCastExceptionになります。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -30526,7 +31224,9 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "String配列の未代入要素はnull。\n要素数5の0番目と4番目はnullのまま表示される。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -30648,7 +31348,9 @@ window.JAVA_STUDY_DATA = {
             "メンバがクラス側かインスタンス側かを分け、呼び出し元がstatic文脈かインスタンス文脈かを確認する。",
             "ソース先頭から package → import → class の順に並んでいるか確認し、使っている型が同じパッケージ・java.lang・import済み・完全修飾名のどれで解決されるかを見る。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "headerはstaticでパッケージアクセス、getValue()はpublic static。\nprivateなvalueへは外部から直接アクセスできない。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。\n・判定軸: package/importは「宣言順序」と「完全修飾名」を分けて見る。\npackage宣言はコメントを除いて先頭、importはその後、class宣言はさらに後。\nimportのワイルドカードは直下の型だけが対象で、サブパッケージまでは含まない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -30760,7 +31462,9 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "int[]はObjectとして扱えるが、Object[]やlong[]とは互換性がない。\n最も適用可能なのはtest(Object)。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -30872,7 +31576,9 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "staticメソッドtestから非staticフィールドnumを直接参照しているためコンパイルエラー。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -30975,7 +31681,9 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "配列生成時の要素数、各添字の範囲、参照の共有、拡張for文で取り出される型を順に確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "Stringのreplaceやsubstringは新しい文字列を返すだけで、元のStringは変更しない。\n戻り値を代入していないためabcdeのまま。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -31078,7 +31786,10 @@ window.JAVA_STUDY_DATA = {
             "変数表を作り、式の中で値を使ったタイミングと更新されたタイミングを分けて記録する。",
             "条件式が評価される順、ループに入る回数、break/continueの移動先、switchのcase一致後の流れを図にする。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "num++ + numは0+1で1。\nその後文字列連結になり、++numで2、最後のnumも2なので「1,22」。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "文字列連結では、左から順に評価され、Stringが混ざった後は文字列連結になります。++の前置・後置による値の使われ方も同時に追います。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -31190,7 +31901,10 @@ window.JAVA_STUDY_DATA = {
             "条件式が評価される順、ループに入る回数、break/continueの移動先、switchのcase一致後の流れを図にする。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "Bはcontinueで表示されず、Cを表示した後にbreakでループ終了。\n表示されるのはAとC。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "拡張for文でcontinueやbreakがある場合、現在取り出している要素に対する残り処理を行うか、ループ自体を終了するかが分かれます。通常forの更新式とは構造が違います。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -31302,7 +32016,9 @@ window.JAVA_STUDY_DATA = {
             "先にcatch順序とthrows不足でコンパイル可否を確認し、次にtry内のどの行で例外が発生して以降がスキップされるかを追う。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "int[2][4]で作った2次元目の配列を、それぞれ長さ4と長さ2の配列に差し替えている。\n拡張for文は実際の配列長だけ回る。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -31414,7 +32130,9 @@ window.JAVA_STUDY_DATA = {
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
             "配列生成時の要素数、各添字の範囲、参照の共有、拡張for文で取り出される型を順に確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "concatの戻り値は代入しているが、replaceの戻り値は捨てているためABCのまま。\n最後にCを連結してABCC。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -31517,7 +32235,10 @@ window.JAVA_STUDY_DATA = {
             "interface側の暗黙修飾を補ってから、実装クラスが必要なメソッドを正しいアクセス修飾子で実装しているかを見る。",
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "try内で例外が発生した場合、リソースのcloseでC、catchでA、finallyでBの順に出力される。\n・判定軸: 例外問題は「コンパイル時に処理必須か」と「実行時にどのcatchへ入るか」を分ける。\nチェック例外はcatchまたはthrowsが必要。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "try-with-resourcesのリソースは宣言の逆順でcloseされます。try本体、close、catch、finallyのどこで出力されるかを時系列で並べると解けます。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -31620,7 +32341,9 @@ window.JAVA_STUDY_DATA = {
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。",
             "配列生成時の要素数、各添字の範囲、参照の共有、拡張for文で取り出される型を順に確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "continueの直後にあるcnt++は到達不能コードになるためコンパイルエラー。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -31744,7 +32467,9 @@ window.JAVA_STUDY_DATA = {
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。",
             "ソース先頭から package → import → class の順に並んでいるか確認し、使っている型が同じパッケージ・java.lang・import済み・完全修飾名のどれで解決されるかを見る。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "Fは引数が同じで戻り値がList<Number>のサブタイプなのでオーバーライド可能。\nBは引数がTreeSetで別シグネチャのオーバーロードになるため定義可能。\n・ジェネリクスの型引数が違うだけのSet<String>は型消去後の衝突に注意。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。\n・判定軸: package/importは「宣言順序」と「完全修飾名」を分けて見る。\npackage宣言はコメントを除いて先頭、importはその後、class宣言はさらに後。\nimportのワイルドカードは直下の型だけが対象で、サブパッケージまでは含まない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -31847,7 +32572,9 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "配列変数は[]で宣言し、new 型[要素数]でインスタンスを生成する。\n要素数は変数宣言側には書かない。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -31950,7 +32677,10 @@ window.JAVA_STUDY_DATA = {
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。",
             "変数表を作り、式の中で値を使ったタイミングと更新されたタイミングを分けて記録する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "二次元配列array1.clone()は1次元目だけ新しい配列を作り、内側のchar[]参照は共有する。\nしたがってarray1[1]とarray2[1]は同じ。\n・判定軸: 配列は固定長の参照型。\n添字は0始まり、lengthは要素数。\n多次元配列は「配列の配列」として考える。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "配列のcloneは浅いコピーです。外側の配列は別でも、要素が参照型なら同じオブジェクトを共有します。要素内部の変更は両方から見えます。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -32052,7 +32782,10 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "C生成時にスーパークラスのコンストラクタが先に実行される。\nA→B→Cの順に表示。\n・判定軸: コンストラクタは戻り値型を書かず、クラス名と同名。\nthis(...)やsuper(...)はコンストラクタの先頭にしか書けない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "コンストラクタチェーンでは、this()またはsuper()が先頭で呼ばれます。明示しなければsuper()が暗黙に挿入されるため、親子の初期化順を追います。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -32153,7 +32886,9 @@ window.JAVA_STUDY_DATA = {
             "最後に出力・戻り値・正しい選択肢を確定する。途中で例外が処理されずに送出される場合、通常の出力はそこで止まる。",
             "メンバがクラス側かインスタンス側かを分け、呼び出し元がstatic文脈かインスタンス文脈かを確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "抽象クラスには具象メソッドも抽象メソッドも定義できる。\n実装なしならabstractが必要で、abstractメソッドに本体は書けない。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -32253,7 +32988,9 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "コンストラクタでフィールドa,bは二乗されるが、mainで表示しているのはローカル変数a,b。\nしたがって2,3が表示される。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -32396,7 +33133,9 @@ window.JAVA_STUDY_DATA = {
             "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。",
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "t.numに直接0を代入すればよい。\nmodifyは加算なので、現在値100の符号反転値-100を渡せば0になる。\n・static main内でthisは使えない。\n・戻り値に代入することはできない。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。\n・判定軸: mainメソッドは public static void main(String[] args) または String... args が基本。\n起動パラメータは String 配列として渡され、args[0] が1個目。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -32498,7 +33237,9 @@ window.JAVA_STUDY_DATA = {
             "newが何回実行されたか、各変数がどのインスタンスを指しているか、途中の代入で参照がどう変わったかを追う。",
             "メンバがクラス側かインスタンス側かを分け、呼び出し元がstatic文脈かインスタンス文脈かを確認する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "引数名とフィールド名が同じなので、this.valueでフィールドを明示して代入する必要がある。\n・判定軸: Stringは不変。\nconcatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。\n==は参照比較、equalsは内容比較。\n・判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。\n代入は参照のコピーであり、インスタンスの複製ではない。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -32604,7 +33345,9 @@ window.JAVA_STUDY_DATA = {
             "変数の宣言型で呼べるメンバを確認し、メソッド実行時は実体クラスのオーバーライドを確認する。",
             "出力を追う前に、各行を「文法」「型」「宣言済みか」「アクセス可能か」「例外処理が足りるか」で検査する。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "protectedメソッドをオーバーライドするとき、アクセスをより狭いデフォルトにできない。\nTest#doProcessをprotectedまたはpublicにすればよい。\n・判定軸: 継承ではサブクラスのインスタンスがスーパークラス部分を含む。\nオーバーライドされたメソッドは実体の型で動的に選ばれる。\n・判定軸: コンパイルエラーは実行前に検出される。\n構文、型、アクセス、未初期化、到達不能、チェック例外の未処理が代表。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",
@@ -32714,7 +33457,10 @@ window.JAVA_STUDY_DATA = {
             "条件式が評価される順、ループに入る回数、break/continueの移動先、switchのcase一致後の流れを図にする。",
             "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。"
           ],
-          "choiceAnalysis": []
+          "choiceAnalysis": [],
+          "pdfExplanation": "setAllで右からsetD(x)が10を返し、this.c、b、aに順に10が代入される。\ntoStringの表示は全フィールド10。\n・判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。\nstaticメソッドからはthisやインスタンスメンバへ直接アクセスできない。\n・判定軸: 演算子問題は優先順位よりも「評価順」と「型変換」を丁寧に追う。\n前置++は変更後の値を使い、後置++は現在値を使ってから変更する。",
+          "pdfAlignmentNote": "PDF解説の論旨に沿った要点整理。原文完全転記ではなく、学習ページ向けに短く整形。",
+          "additionalExplanation": "thisを付けるとインスタンスフィールド、付けない名前はまずローカル変数や引数として解決されます。代入式では左辺と右辺がどの変数を指すかを個別に確認します。"
         },
         "source": "8章-1 模擬問題2.pdf / 8章-2 解説.pdf",
         "status": "pdf_visual_checked",

@@ -1962,3 +1962,35 @@ pre {
 .option .numbered-code .code-line {
   grid-template-columns: 2.75em max-content;
 }
+
+/* PDF-aligned explanation layout */
+.explanation-detail.source-aligned {
+  border-color: rgba(37, 99, 235, .28);
+  background: rgba(239, 246, 255, .72);
+}
+.explanation-detail.source-aligned summary {
+  color: #1d4ed8;
+}
+.explanation-body p {
+  margin: .45rem 0;
+}
+.explanation-body .readable-list,
+.explanation-body ul {
+  margin-top: .45rem;
+  margin-bottom: .45rem;
+}
+
+/* PDF-aligned explanation readability */
+.explanation-detail.source-aligned {
+  border-color: rgba(37, 99, 235, .28);
+  background: rgba(239, 246, 255, .72);
+}
+.explanation-detail.source-aligned summary {
+  color: #1d4ed8;
+}
+.explanation-body p {
+  margin: .45rem 0 .8rem;
+}
+.explanation-body ul, .explanation-body ol {
+  margin-top: .4rem;
+}
