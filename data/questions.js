@@ -1,6 +1,6 @@
 window.JAVA_STUDY_DATA = {
  "title": "Java Silver 勉強用ページ",
- "version": "codeblocks-split-by-class-2026-05-25",
+ "version": "ch05-ch06-ready-status-fixed-2026-05-25",
  "chapters": [
  {
  "id": "ch01",
@@ -29,13 +29,13 @@ window.JAVA_STUDY_DATA = {
  {
  "id": "ch05",
  "title": "継承とインタフェースの使用",
- "status": "pdf_visual_checked",
+ "status": "ready",
  "page": "ch05.html"
  },
  {
  "id": "ch06",
  "title": "例外処理",
- "status": "pdf_visual_checked",
+ "status": "ready",
  "page": "ch06.html"
  },
  {
