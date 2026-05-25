@@ -15,29 +15,46 @@
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
     <main class="main reference-main">
-<section class="hero reference-hero">
-  <p class="eyebrow">Inheritance</p>
-  <h1>継承・インタフェース・sealed</h1>
-  <p>継承問題は「変数の型」「実体の型」「アクセス可能なメンバ」「override対象」を分けます。</p>
-</section><section class="article-card">
-<h2>継承で引き継がないもの</h2>
-<div class="table-scroll"><table class="ref-table"><thead><tr><th>対象</th><th>理由/注意</th></tr></thead><tbody><tr><td>コンストラクタ</td><td>サブクラス用ではないため継承されない。</td></tr><tr><td>privateメンバ</td><td>クラス外からアクセス不可。存在はしても直接使えない。</td></tr><tr><td>パッケージプライベート</td><td>別パッケージのサブクラスからは不可。</td></tr></tbody></table></div>
-</section><section class="article-card">
+      <section class="hero reference-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>継承・インタフェース・sealed</h1>
+        <p>多態性、オーバーライド、interface、sealedを判定できるようにします。</p>
+      </section>
+      <section class="article-card ">
+<h2>継承の基本</h2>
+<pre><code>class Parent {
+  void hello() { System.out.println(&quot;Parent&quot;); }
+}
+class Child extends Parent {
+  @Override
+  void hello() { System.out.println(&quot;Child&quot;); }
+}
+Parent p = new Child();
+p.hello(); // Child</code></pre><p>変数の型はParentでも、オーバーライドメソッドは実体Childのものが動きます。</p>
+</section><section class="article-card ">
+<h2>フィールドは多態的ではない</h2>
+<pre><code>class A { String name = &quot;A&quot;; }
+class B extends A { String name = &quot;B&quot;; }
+A obj = new B();
+System.out.println(obj.name); // A</code></pre><p>フィールドアクセスは宣言型で決まります。メソッド呼び出しと区別します。</p>
+</section><section class="article-card ">
 <h2>オーバーライド条件</h2>
-<div class="table-scroll"><table class="ref-table"><thead><tr><th>条件</th><th>説明</th></tr></thead><tbody><tr><td>シグネチャ同一</td><td>メソッド名・引数型・順序。</td></tr><tr><td>戻り値</td><td>同じかサブクラス型。</td></tr><tr><td>アクセス修飾子</td><td>同じか緩くする。狭くできない。</td></tr><tr><td>例外</td><td>チェック例外は広げられない。</td></tr><tr><td>static</td><td>staticメソッドはoverrideではなく隠蔽。</td></tr></tbody></table></div>
-</section><section class="article-card">
-<h2>ポリモーフィズム</h2>
-<pre><code>Parent p = new Child();
-p.method(); // Child側のoverrideメソッド
-// p.childOnly(); // 変数型Parentにないので不可</code></pre><div class="table-scroll"><table class="ref-table"><thead><tr><th>見る対象</th><th>決まり方</th></tr></thead><tbody><tr><td>呼び出せるメンバ</td><td>変数の型で決まる。</td></tr><tr><td>実行されるoverrideメソッド</td><td>実体の型で決まる。</td></tr><tr><td>フィールドアクセス</td><td>変数の型で決まる。</td></tr></tbody></table></div>
-</section><section class="article-card">
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>条件</th><th>説明</th></tr></thead><tbody><tr><td>シグネチャ</td><td>メソッド名と引数リストが同じ。</td></tr><tr><td>戻り値</td><td>同じ型または共変戻り値。</td></tr><tr><td>アクセス</td><td>親より狭くできない。</td></tr><tr><td>例外</td><td>チェック例外は親より広げられない。</td></tr></tbody></table></div>
+</section><section class="article-card ">
 <h2>インタフェース</h2>
-<div class="table-scroll"><table class="ref-table"><thead><tr><th>要素</th><th>暗黙の修飾</th></tr></thead><tbody><tr><td>抽象メソッド</td><td>public abstract</td></tr><tr><td>フィールド</td><td>public static final</td></tr><tr><td>defaultメソッド</td><td>public</td></tr><tr><td>staticメソッド</td><td>public</td></tr><tr><td>privateメソッド</td><td>インタフェース内部の補助用</td></tr></tbody></table></div>
-</section><section class="article-card">
+<pre><code>interface A {
+  void test(); // public abstract
+  default void log() { System.out.println(&quot;log&quot;); }
+}
+class B implements A {
+  public void test() {}
+}</code></pre><p>インタフェースの抽象メソッドはpublic扱いです。実装側でpublicを省くとアクセスを弱めることになりエラーです。</p>
+</section><section class="article-card ">
 <h2>sealed</h2>
-<pre><code>public sealed class A permits B, C {}
-public final class B extends A {}
-public non-sealed class C extends A {}</code></pre><ul><li>sealed親はpermitsで許可先を指定。</li><li>直接の子はfinal/sealed/non-sealedのいずれかを明示。</li><li>許可されていないクラスは継承不可。</li></ul>
+<pre><code>sealed class A permits B, C {}
+final class B extends A {}
+non-sealed class C extends A {}
+class D extends C {}</code></pre><p>sealedの直接の子は許可リストに必要で、さらにfinal/sealed/non-sealedのいずれかを宣言します。</p>
 </section>
     </main>
   </div>

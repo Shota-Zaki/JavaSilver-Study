@@ -15,27 +15,52 @@
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
     <main class="main reference-main">
-<section class="hero reference-hero">
-  <p class="eyebrow">Data Types</p>
-  <h1>データ型・リテラル・型変換</h1>
-  <p>Java Silverでは「代入できるか」「演算後の型は何か」「実行時に落ちるか」を分けて判定します。</p>
-</section><section class="article-card">
-<h2>プリミティブ型</h2>
-<div class="table-scroll"><table class="ref-table"><thead><tr><th>型</th><th>サイズ</th><th>範囲/性質</th><th>注意</th></tr></thead><tbody><tr><td>byte</td><td>8bit</td><td>-128〜127</td><td>整数演算ではintへ昇格しやすい</td></tr><tr><td>short</td><td>16bit</td><td>-32768〜32767</td><td>リテラル代入と演算結果代入を分ける</td></tr><tr><td>int</td><td>32bit</td><td>約±21億</td><td>整数リテラルの基本型</td></tr><tr><td>long</td><td>64bit</td><td>大きい整数</td><td>L/l接尾辞。小文字lは1と紛らわしい</td></tr><tr><td>float</td><td>32bit</td><td>単精度</td><td>F/f接尾辞が必要になりやすい</td></tr><tr><td>double</td><td>64bit</td><td>倍精度</td><td>浮動小数点リテラルの基本型</td></tr><tr><td>char</td><td>16bit</td><td>0〜65535</td><td>文字だが数値として演算される</td></tr><tr><td>boolean</td><td>true/false</td><td>2値</td><td>数値と互換性なし</td></tr></tbody></table></div>
-</section><section class="article-card">
-<h2>初期値の違い</h2>
-<div class="table-scroll"><table class="ref-table"><thead><tr><th>場所</th><th>初期化</th><th>例</th></tr></thead><tbody><tr><td>フィールド/配列要素</td><td>自動初期化される</td><td>intは0、booleanはfalse、参照型はnull</td></tr><tr><td>ローカル変数</td><td>自動初期化されない</td><td>使う前に必ず代入が必要</td></tr><tr><td>finalローカル変数</td><td>一度だけ代入可</td><td>代入前使用はコンパイルエラー</td></tr></tbody></table></div>
-</section><section class="article-card">
-<h2>リテラルと接尾辞</h2>
-<div class="table-scroll"><table class="ref-table"><thead><tr><th>書き方</th><th>意味</th><th>注意</th></tr></thead><tbody><tr><td>10</td><td>int</td><td>整数リテラルの基本。</td></tr><tr><td>10L</td><td>long</td><td>longを明示。</td></tr><tr><td>3.14</td><td>double</td><td>floatにはそのまま代入不可。</td></tr><tr><td>3.14F</td><td>float</td><td>floatリテラル。</td></tr><tr><td>0b1010</td><td>2進数</td><td>b/B可。</td></tr><tr><td>010</td><td>8進数</td><td>10進数の10ではなく8。</td></tr><tr><td>0x10</td><td>16進数</td><td>16。</td></tr><tr><td>'A'</td><td>char</td><td>文字1つ。Stringではない。</td></tr><tr><td>"A"</td><td>String</td><td>参照型。charではない。</td></tr></tbody></table></div>
-</section><section class="article-card">
-<h2>暗黙変換・明示キャスト</h2>
-<pre><code>byte b = 10;      // リテラルが範囲内なので可
-int i = b;        // 小さい型から大きい型へ
-byte x = (byte)i; // 大きい型から小さい型へはキャスト</code></pre><div class="table-scroll"><table class="ref-table"><thead><tr><th>ケース</th><th>結果</th></tr></thead><tbody><tr><td>byte + byte</td><td>結果はint。byteへ戻すならキャストが必要。</td></tr><tr><td>int + long</td><td>intがlongへ昇格し、結果はlong。</td></tr><tr><td>float + double</td><td>結果はdouble。</td></tr><tr><td>char + int</td><td>charが数値として扱われ、結果はint。</td></tr><tr><td>booleanと数値</td><td>相互変換不可。</td></tr></tbody></table></div>
-</section><section class="article-card">
-<h2>var の使用可否</h2>
-<div class="table-scroll"><table class="ref-table"><thead><tr><th>場所</th><th>可否</th><th>例</th></tr></thead><tbody><tr><td>ローカル変数</td><td>可</td><td>var s = "abc";</td></tr><tr><td>初期化なし</td><td>不可</td><td>var x;</td></tr><tr><td>null単独</td><td>不可</td><td>var x = null;</td></tr><tr><td>フィールド</td><td>不可</td><td>private var value;</td></tr><tr><td>メソッド引数</td><td>不可</td><td>void test(var x)</td></tr><tr><td>戻り値型</td><td>不可</td><td>var test()</td></tr><tr><td>ラムダ式だけ</td><td>不可</td><td>var f = () -> {}; は対象型がない</td></tr><tr><td>配列初期化子だけ</td><td>不可</td><td>var a = {1,2,3};</td></tr></tbody></table></div>
+      <section class="hero reference-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>データ型・リテラル・型変換</h1>
+        <p>型の範囲、リテラル表記、暗黙変換を出題目線で整理します。</p>
+      </section>
+      <section class="article-card ">
+<h2>primitive型の範囲と初期値</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>型</th><th>サイズ/値域の目安</th><th>デフォルト値</th><th>注意</th></tr></thead><tbody><tr><td>boolean</td><td>true/false</td><td>false</td><td>数値との互換性なし。0/1は代入不可。</td></tr><tr><td>byte</td><td>8bit -128〜127</td><td>0</td><td>リテラルが範囲内なら代入可能。演算するとint。</td></tr><tr><td>short</td><td>16bit</td><td>0</td><td>演算結果はintになりやすい。</td></tr><tr><td>char</td><td>16bit Unicode</td><td>\u0000</td><td>数値として演算に参加するとintへ昇格。</td></tr><tr><td>int</td><td>32bit</td><td>0</td><td>整数リテラルの基本型。</td></tr><tr><td>long</td><td>64bit</td><td>0L</td><td>リテラルにはL推奨。小文字lは読みにくい。</td></tr><tr><td>float</td><td>32bit</td><td>0.0f</td><td>小数リテラルにはFが必要。</td></tr><tr><td>double</td><td>64bit</td><td>0.0d</td><td>小数リテラルの基本型。</td></tr></tbody></table></div>
+</section><section class="article-card ">
+<h2>ローカル変数とフィールドの初期値</h2>
+<pre><code>class Sample {
+  int field; // 0で初期化される
+  void test() {
+    int local;
+    // System.out.println(local); // コンパイルエラー
+  }
+}</code></pre><p>フィールドはデフォルト初期化されます。ローカル変数は明示的に初期化するまで使えません。</p>
+</section><section class="article-card ">
+<h2>整数リテラル</h2>
+<pre><code>int a = 267;       // 10進数
+int b = 0413;      // 8進数
+int c = 0x10B;     // 16進数
+int d = 0b100001011; // 2進数
+// int e = 0827;   // 8進数として不正</code></pre><p>先頭0は8進数です。8や9を含むとコンパイルエラーになります。</p>
+</section><section class="article-card ">
+<h2>アンダースコア</h2>
+<pre><code>int a = 123_456;
+int b = 5_____2;
+// int c = _123;
+// int d = 123_;
+// float e = 3_.14F;</code></pre><p>アンダースコアは数字と数字の間だけに置けます。</p>
+</section><section class="article-card ">
+<h2>型変換と昇格</h2>
+<pre><code>byte a = 10;
+byte b = 20;
+// byte c = a + b; // intになるためコンパイルエラー
+byte c = (byte)(a + b);
+
+short s = 10;      // 範囲内のintリテラルなのでOK
+// short t = 40000; // 範囲外</code></pre><p>byte/short/charは演算時にintへ昇格します。複合代入は暗黙キャストを含む点も頻出です。</p>
+</section><section class="article-card ">
+<h2>varの使い方</h2>
+<pre><code>var x = 10;          // int
+var s = &quot;java&quot;;      // String
+// var n = null;      // 型推論不可
+// private var field; // フィールド不可</code></pre><p>varは型を省略する構文であり、動的型付けではありません。コンパイル時に型は確定します。</p>
 </section>
     </main>
   </div>

@@ -1750,3 +1750,17 @@ pre {
     width: 100%;
   }
 }
+
+
+/* Expanded reference readability */
+.glossary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+.term-card { padding: 16px; border: 1px solid rgba(148,163,184,.36); border-radius: 16px; background: #fff; box-shadow: var(--shadow-sm, 0 8px 20px rgba(31,41,55,.06)); }
+.term-card h2 { margin: 0 0 8px; font-size: 18px; }
+.term-card p { margin: 6px 0; color: var(--ink); }
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.article-card code, .term-card code { font-family: var(--mono); background: #eef2f7; padding: 1px 4px; border-radius: 5px; }
+.article-card pre code { background: transparent; padding: 0; }
+.flow-list li { margin: 7px 0; }
+.reference-main .article-card p { line-height: 1.85; }
+.reference-main .article-card ul, .reference-main .article-card ol { line-height: 1.8; }
+@media (max-width: 720px) { .glossary-grid { grid-template-columns: 1fr; } .term-card { padding: 14px; } }

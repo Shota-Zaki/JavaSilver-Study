@@ -15,22 +15,20 @@
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
     <main class="main reference-main">
-<section class="hero reference-hero">
-  <p class="eyebrow">Exam Traps</p>
-  <h1>試験ひっかけ集</h1>
-  <p>選択肢を切るための罠リストです。問題で見たら即確認してください。</p>
-</section><section class="article-card">
-<h2>記号・見た目の罠</h2>
-<div class="table-scroll"><table class="ref-table"><thead><tr><th>罠</th><th>見るポイント</th></tr></thead><tbody><tr><td>;の有無</td><td>do-while末尾、変数宣言、switch式代入、クラス/メソッドブロック後。</td></tr><tr><td>{}の対応</td><td>try/catch/finally、switch、ラムダ、匿名クラス。</td></tr><tr><td>== と =</td><td>if条件内、代入式、boolean代入。</td></tr><tr><td>0/O、1/l/I</td><td>識別子、数値リテラル、メソッド名。</td></tr><tr><td>String[] args / String... args</td><td>mainとして有効か。</td></tr><tr><td>System.out.println</td><td>Systemの大文字、out、printlnの綴り。</td></tr><tr><td>Stringの宣言差</td><td>リテラル、new、変数連結、final定数、internで<code>==</code>の結果が変わる。</td></tr><tr><td>equalsの実装差</td><td>Stringは内容比較、StringBuilder・配列・通常クラスは同じとは限らない。</td></tr></tbody></table></div>
-</section><section class="article-card">
-<h2>型の罠</h2>
-<div class="table-scroll"><table class="ref-table"><thead><tr><th>罠</th><th>結論</th></tr></thead><tbody><tr><td>byte b = 128</td><td>範囲外で不可。</td></tr><tr><td>short s = 10 + 20</td><td>定数式かつ範囲内なら可。</td></tr><tr><td>short s = a + b</td><td>変数演算結果はintで不可。</td></tr><tr><td>float f = 1.0</td><td>doubleなので不可。1.0F。</td></tr><tr><td>char c = 65</td><td>範囲内int定数なら可。</td></tr><tr><td>boolean b = 0</td><td>不可。</td></tr></tbody></table></div>
-</section><section class="article-card">
-<h2>実行時の罠</h2>
-<div class="table-scroll"><table class="ref-table"><thead><tr><th>罠</th><th>結果</th></tr></thead><tbody><tr><td>null.toString()</td><td>NullPointerException。</td></tr><tr><td>args[0]で引数なし</td><td>ArrayIndexOutOfBoundsException。</td></tr><tr><td>Integer.parseInt("1a")</td><td>NumberFormatException。</td></tr><tr><td>(Child)new Parent()</td><td>ClassCastException。</td></tr><tr><td>10 / 0</td><td>ArithmeticException。</td></tr><tr><td>10.0 / 0</td><td>Infinityなど。整数0除算と違う。</td></tr></tbody></table></div>
-</section><section class="article-card">
-<h2>OOPの罠</h2>
-<div class="table-scroll"><table class="ref-table"><thead><tr><th>罠</th><th>結論</th></tr></thead><tbody><tr><td>親型変数で子専用メソッド呼び出し</td><td>コンパイルエラー。キャストが必要。</td></tr><tr><td>privateメソッドのoverride</td><td>overrideではない。</td></tr><tr><td>staticメソッドのoverride</td><td>隠蔽。動的束縛ではない。</td></tr><tr><td>フィールド同名</td><td>変数型で決まる。</td></tr><tr><td>interfaceのフィールド</td><td>public static final。再代入不可。</td></tr><tr><td>sealedの子</td><td>final/sealed/non-sealed必須。</td></tr></tbody></table></div>
+      <section class="hero reference-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>試験ひっかけ集</h1>
+        <p>Java Silverで落とされやすい典型罠をまとめます。</p>
+      </section>
+      <section class="article-card ">
+<h2>出力問題の罠</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>罠</th><th>間違い方</th><th>正しい見方</th></tr></thead><tbody><tr><td>コンパイルエラーを見落とす</td><td>出力を追ってしまう</td><td>先に型・構文・例外処理を見る。</td></tr><tr><td>後置++</td><td>増えた値をその場で使うと思う</td><td>現在値を使ってから増える。</td></tr><tr><td>短絡評価</td><td>右辺も実行したと思う</td><td>&&/||は右辺が飛ぶ場合がある。</td></tr><tr><td>String比較</td><td>内容が同じなら== trueと思う</td><td>==は参照比較。</td></tr><tr><td>static</td><td>インスタンスごとに値があると思う</td><td>staticはクラス側に1つ。</td></tr><tr><td>フィールド多態性</td><td>子フィールドが出ると思う</td><td>フィールドは宣言型で決まる。</td></tr><tr><td>catch順序</td><td>どのcatchでもよいと思う</td><td>上から評価。親が先だと子が到達不能。</td></tr><tr><td>List.of</td><td>ArrayListと同じように変更する</td><td>変更不可。add/set/removeで例外。</td></tr></tbody></table></div>
+</section><section class="article-card ">
+<h2>選択肢の読み方</h2>
+<ul><li><strong>コンパイルエラー：</strong>型・構文・アクセス・チェック例外の根拠が必要。</li><li><strong>実行時例外：</strong>コンパイルでき、実行時に該当行へ到達する必要がある。</li><li><strong>何も表示されない：</strong>条件分岐やループによりprintlnへ到達しない根拠が必要。</li><li><strong>複数選択：</strong>正しいものを探すだけでなく、誤りの根拠も言える状態にする。</li></ul>
+</section><section class="article-card ">
+<h2>見直しチェックリスト</h2>
+<ol class="flow-list"><li>問題文の「何個選択」を確認したか。</li><li>コードの行末セミコロン・括弧を確認したか。</li><li>実行コマンドの引数を確認したか。</li><li>newの回数と参照代入を確認したか。</li><li>catch/finallyの順序を確認したか。</li></ol>
 </section>
     </main>
   </div>

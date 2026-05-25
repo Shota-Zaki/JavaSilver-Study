@@ -15,38 +15,40 @@
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
     <main class="main reference-main">
-<section class="hero reference-hero">
-  <p class="eyebrow">String</p>
-  <h1>String・StringBuilder</h1>
-  <p>文字列問題は、参照の同一性、同値比較、不変性、メソッドの戻り値を落とさないことが中心です。</p>
-</section><section class="article-card">
-<h2>== と equals</h2>
-<div class="table-scroll"><table class="ref-table"><thead><tr><th>比較</th><th>対象</th><th>例</th></tr></thead><tbody><tr><td>==</td><td>参照が同じか</td><td>new String("a") == "a" は通常false</td></tr><tr><td>equals</td><td>内容が同じか</td><td>"a".equals(new String("a")) はtrue</td></tr><tr><td>equalsIgnoreCase</td><td>大文字小文字を無視</td><td>null側から呼ぶとNullPointerException</td></tr></tbody></table></div>
-<p><a class="btn primary" href="equality.html">宣言別の比較例を見る</a></p>
-</section><section class="article-card">
-<h2>宣言で結果が変わる例</h2>
-<pre><code>String a = "sample";
-String b = "sample";
-String c = new String("sample");
-String d = c;
-System.out.println(a == b);      // true
-System.out.println(a == c);      // false
-System.out.println(c == d);      // true
-System.out.println(a.equals(c)); // true</code></pre>
-<ul><li>リテラル同士は同じ文字列プールを参照する。</li><li><code>new String(...)</code> は別インスタンスを作る。</li><li>参照代入はオブジェクトをコピーしない。</li></ul>
-</section><section class="article-card">
+      <section class="hero reference-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>String・StringBuilder</h1>
+        <p>文字列の不変性、可変文字列、頻出メソッドを例題で確認します。</p>
+      </section>
+      <section class="article-card ">
 <h2>Stringは不変</h2>
-<pre><code>String s = &quot;abc&quot;;
-s.concat(&quot;d&quot;);
-System.out.println(s); // abc
-s = s.concat(&quot;d&quot;);
-System.out.println(s); // abcd</code></pre><ul><li>replace、substring、trim、toUpperCaseなどは元のStringを変えず、新しいStringを返す。</li><li>戻り値を受け取っていない処理は、結果が捨てられる。</li></ul>
-</section><section class="article-card">
-<h2>頻出Stringメソッド</h2>
-<div class="table-scroll"><table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>注意</th></tr></thead><tbody><tr><td>length()</td><td>int</td><td>配列はlengthフィールド。</td></tr><tr><td>charAt(index)</td><td>char</td><td>0始まり。範囲外はStringIndexOutOfBoundsException。</td></tr><tr><td>substring(begin,end)</td><td>String</td><td>begin含む、end含まない。</td></tr><tr><td>indexOf(str)</td><td>int</td><td>見つからない場合-1。</td></tr><tr><td>replace(old,new)</td><td>String</td><td>全置換。元は変わらない。</td></tr><tr><td>trim()</td><td>String</td><td>前後の空白除去。元は変わらない。</td></tr><tr><td>startsWith/endsWith</td><td>boolean</td><td>大文字小文字は区別。</td></tr><tr><td>contains</td><td>boolean</td><td>部分文字列を含むか。</td></tr></tbody></table></div>
-</section><section class="article-card">
-<h2>StringBuilder</h2>
-<div class="table-scroll"><table class="ref-table"><thead><tr><th>メソッド</th><th>動作</th><th>注意</th></tr></thead><tbody><tr><td>append</td><td>末尾追加</td><td>自身を変更して自身を返す。</td></tr><tr><td>insert</td><td>指定位置に挿入</td><td>index境界に注意。</td></tr><tr><td>delete</td><td>範囲削除</td><td>endは含まない。</td></tr><tr><td>deleteCharAt</td><td>1文字削除</td><td>範囲外例外。</td></tr><tr><td>reverse</td><td>反転</td><td>自身が変わる。</td></tr><tr><td>toString</td><td>String化</td><td>StringBuilderとStringはequalsで同値にならない。</td></tr><tr><td>capacity</td><td>容量</td><td>lengthとは別。</td></tr></tbody></table></div>
+<pre><code>String s = &quot;java&quot;;
+s.concat(&quot;silver&quot;);
+System.out.println(s); // java
+
+s = s.concat(&quot;silver&quot;);
+System.out.println(s); // javasilver</code></pre><p>Stringの操作メソッドは新しいStringを返します。戻り値を代入しなければ変数は変わりません。</p>
+</section><section class="article-card ">
+<h2>頻出メソッド</h2>
+<div class="table-scroll"><table class="ref-table"><thead><tr><th>メソッド</th><th>例</th><th>注意</th></tr></thead><tbody><tr><td><code>length()</code></td><td><code>"abc".length()</code> → 3</td><td>添字ではなく文字数。</td></tr><tr><td><code>charAt(int)</code></td><td><code>"abc".charAt(0)</code> → a</td><td>範囲外はStringIndexOutOfBoundsException。</td></tr><tr><td><code>substring</code></td><td><code>"abcd".substring(1,3)</code> → bc</td><td>開始含む、終了含まない。</td></tr><tr><td><code>indexOf</code></td><td>見つからないと -1</td><td>0始まり。</td></tr><tr><td><code>equals</code></td><td>内容比較</td><td>null側から呼ぶと例外。</td></tr><tr><td><code>replace</code></td><td>置換後の新しいString</td><td>元のStringは変わらない。</td></tr></tbody></table></div>
+</section><section class="article-card ">
+<h2>StringBuilderは可変</h2>
+<pre><code>StringBuilder sb = new StringBuilder(&quot;Java&quot;);
+sb.append(&quot; Silver&quot;);
+sb.insert(0, &quot;Oracle &quot;);
+sb.delete(0, 7);
+System.out.println(sb); // Java Silver</code></pre><p>StringBuilderは同じインスタンスの中身を変更します。文字列を何度も加工する問題で出ます。</p>
+</section><section class="article-card ">
+<h2>StringBuilderのcapacity</h2>
+<pre><code>StringBuilder sb = new StringBuilder();
+System.out.println(sb.length());   // 0
+System.out.println(sb.capacity()); // 16
+
+StringBuilder sb2 = new StringBuilder(&quot;abc&quot;);
+System.out.println(sb2.capacity()); // 19</code></pre><p>capacityは現在の文字数ではなく内部バッファ容量です。lengthと混同しないこと。</p>
+</section><section class="article-card ">
+<h2>比較は専用ページで確認</h2>
+<p><code>==</code>、<code>equals</code>、<code>intern()</code>、<code>new String</code>、<code>final</code> の比較は <a href="equality.html">同一性・同値性比較</a> にまとめています。</p>
 </section>
     </main>
   </div>
