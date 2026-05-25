@@ -1,0 +1,37 @@
+
+/* PDF-aligned explanation layout */
+.explanation-detail.source-aligned {
+  border-color: rgba(37, 99, 235, .28);
+  background: rgba(239, 246, 255, .72);
+}
+.explanation-detail.source-aligned summary {
+  color: #1d4ed8;
+}
+.explanation-body p {
+  margin: .45rem 0;
+}
+.explanation-body .readable-list,
+.explanation-body ul {
+  margin-top: .45rem;
+  margin-bottom: .45rem;
+}
+
+/* Explanation option color coding */
+.option-analysis.is-correct {
+  border-color: rgba(16, 185, 129, .55);
+  background: #ecfdf5;
+}
+.option-analysis.is-wrong {
+  border-color: rgba(239, 68, 68, .38);
+  background: #fff7f7;
+}
+.option-analysis.is-correct .option-analysis-head .option-key {
+  color: var(--ok);
+}
+.option-analysis.is-wrong .option-analysis-head .option-key {
+  color: var(--bad);
+}
+.explanation-detail.main-explanation {
+  border-color: rgba(37, 99, 235, .25);
+  background: #f8fbff;
+}

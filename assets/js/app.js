@@ -791,7 +791,7 @@ service cloud.firestore {
     const tags = getQuestionTags(q).map(tag => `<span class="tag-chip">${escapeHtml(tag)}</span>`).join("");
     return `<article class="question-card" id="${escapeHtml(q.id)}" data-question-id="${escapeHtml(q.id)}">
       <div class="q-head">
-        <h2 class="q-title">問${q.number}. ${escapeHtml(q.title)}</h2>
+        <h2 class="q-title">問${q.number}</h2>
         <div class="q-meta"><span data-select-status>${escapeHtml(selectInstruction(q))}</span></div>
       </div>
       <p class="prompt">${escapeHtml(q.prompt)}</p>
@@ -846,7 +846,7 @@ service cloud.firestore {
       : [];
     if (analyses.length) {
       return `<div class="option-analysis-list">${analyses.map(item => `<div class="option-analysis ${item.isCorrect ? "is-correct" : "is-wrong"}">
-        <div class="option-analysis-head"><span class="option-key">${escapeHtml(item.key)}.</span><span>${item.isCorrect ? "正しい選択肢" : "誤りの選択肢"}</span></div>
+        <div class="option-analysis-head"><span class="option-key">${escapeHtml(item.key)}.</span></div>
         ${readableTextHtml(item.detail || "")}
       </div>`).join("")}</div>`;
     }
@@ -858,16 +858,24 @@ service cloud.firestore {
   }
 
   function explanationHtml(q, isCorrect, selected) {
-    const exp = q.explanation || {};
+    const rawExp = q.explanation || {};
+    const exp = typeof rawExp === "string" ? { summary: rawExp, correctReason: rawExp } : rawExp;
     const answerText = (q.answer || []).join("・");
     const selectedText = selected.length ? selected.join("・") : "未選択";
-    const summary = exp.summary || "解説未入力。";
-    const correctReason = exp.correctReason || summary;
+    const summary = exp.summary || exp.correctReason || "解説未入力。";
+    const mainParts = [];
+    [exp.pdfExplanation, exp.correctReason, exp.additionalExplanation].forEach(text => {
+      if (!text) return;
+      const cleaned = String(text).replace(/【追加解説】/g, "").replace(/【間違えやすい点】/g, "").trim();
+      if (cleaned && !mainParts.includes(cleaned)) mainParts.push(cleaned);
+    });
+    if (!mainParts.length) mainParts.push(summary);
+    const mainExplanation = readableTextHtml(mainParts.join("\n\n"));
     const related = listHtml(exp.relatedKnowledge);
     const tips = listHtml(exp.examTips);
     const steps = listHtml(exp.judgeSteps);
 
-    const detail = (title, body, open = false) => body ? `<details class="explanation-detail" ${open ? "open" : ""}>
+    const detail = (title, body, open = false, className = "") => body ? `<details class="explanation-detail ${className}" ${open ? "open" : ""}>
         <summary>${escapeHtml(title)}</summary>
         <div class="explanation-body">${body}</div>
       </details>` : "";
@@ -880,8 +888,8 @@ service cloud.firestore {
         <p><strong>あなたの解答:</strong> ${escapeHtml(selectedText)}</p>
         <p><strong>正解:</strong> ${escapeHtml(answerText)}</p>
       </div>
-      ${detail("正解になる理由", readableTextHtml(correctReason), true)}
-      ${detail("選択肢ごとの判定", optionAnalysisHtml(q))}
+      ${detail("解説", mainExplanation, true, "main-explanation")}
+      ${detail("選択肢別解説", optionAnalysisHtml(q), true)}
       ${detail("関連知識", related)}
       ${detail("試験での注意点", tips)}
       ${detail("解き方の手順", steps)}`;
@@ -1322,7 +1330,7 @@ service cloud.firestore {
   function renderJump(list) {
     const jump = document.getElementById("questionJump");
     if (!jump) return;
-    jump.innerHTML = list.map(q => `<option value="${escapeHtml(q.id)}">問${q.number}. ${escapeHtml(q.title)}</option>`).join("");
+    jump.innerHTML = list.map(q => `<option value="${escapeHtml(q.id)}">問${q.number}</option>`).join("");
     if (currentQuestionId) jump.value = currentQuestionId;
     jump.onchange = () => {
       currentQuestionId = jump.value;
