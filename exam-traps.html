@@ -30,6 +30,21 @@
 <h2>見直しチェックリスト</h2>
 <ol class="flow-list"><li>問題文の「何個選択」を確認したか。</li><li>コードの行末セミコロン・括弧を確認したか。</li><li>実行コマンドの引数を確認したか。</li><li>newの回数と参照代入を確認したか。</li><li>catch/finallyの順序を確認したか。</li></ol>
 </section>
+    <section class="article-card important"><h2>細かい境界ルール</h2><p>yield、戻り値、境界値、評価順などの1文字差は <a href="fine-points.html">細かい挙動・境界ルール集</a> にまとめています。</p></section>
+    
+<section class="article-card">
+<h2>ループ系のひっかけ</h2>
+<ul>
+<li><code>do-while</code> は条件がfalseでも1回実行する。</li>
+<li><code>do { ... } while (...);</code> の最後のセミコロンを落とすとコンパイルエラー。</li>
+<li><code>while (i++ &lt; n)</code> は、false判定の回でも <code>i++</code> は実行済み。</li>
+<li><code>break</code> は <code>for</code> の更新式を実行せずに抜ける。</li>
+<li><code>continue</code> は <code>for</code> の更新式を実行してから次の条件判定へ進む。</li>
+<li><code>while(...);</code> は空文ループ。次の行はループ本体ではない。</li>
+</ul>
+<p><a class="btn" href="loop-control.html">ループ詳細を見る</a></p>
+</section>
+
     </main>
   </div>
   <script src="data/questions.js"></script>

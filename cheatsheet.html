@@ -30,6 +30,20 @@
 <h2>比較早見表</h2>
 <div class="table-scroll"><table class="ref-table"><thead><tr><th>コード</th><th>==</th><th>equals</th></tr></thead><tbody><tr><td><code>"A" と "A"</code></td><td>true</td><td>true</td></tr><tr><td><code>"A" と new String("A")</code></td><td>false</td><td>true</td></tr><tr><td><code>new StringBuilder("A") 同士</code></td><td>false</td><td>false</td></tr><tr><td><code>int[] {1} 同士</code></td><td>false</td><td>false</td></tr><tr><td><code>ArrayList 同士で同じ要素</code></td><td>false</td><td>true</td></tr></tbody></table></div>
 </section>
+    <section class="article-card important"><h2>細かい境界ルール</h2><p>yield、戻り値、境界値、評価順などの1文字差は <a href="fine-points.html">細かい挙動・境界ルール集</a> にまとめています。</p></section>
+    
+<section class="article-card">
+<h2>ループ早見表</h2>
+<table class="ref-table"><thead><tr><th>構文</th><th>条件判定</th><th>最低実行回数</th><th>注意点</th></tr></thead><tbody>
+<tr><td><code>while</code></td><td>本体前</td><td>0回</td><td>最初からfalseなら本体は実行しない</td></tr>
+<tr><td><code>do-while</code></td><td>本体後</td><td>1回</td><td>最後の <code>;</code> が必須</td></tr>
+<tr><td><code>for</code></td><td>本体前</td><td>0回</td><td>continue後は更新式へ進む</td></tr>
+<tr><td><code>break</code></td><td>-</td><td>-</td><td>即座に抜ける。for更新式は実行しない</td></tr>
+<tr><td><code>continue</code></td><td>-</td><td>-</td><td>次の反復へ進む。for更新式は実行する</td></tr>
+</tbody></table>
+<p><a class="btn" href="loop-control.html">ループ詳細を見る</a></p>
+</section>
+
     </main>
   </div>
   <script src="data/questions.js"></script>

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - エラー・例外カタログ</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main">
+      <section class="hero reference-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>エラー・例外カタログ</h1>
+        <p>コンパイルエラーと実行時例外を、原因・例・試験で見る場所に分けて整理します。</p>
+      </section>
+
+<section class="article-card important">
+  <h2>コンパイルエラーと実行時例外の境界</h2>
+  <p>コンパイルエラーは「実行前に文法・型・宣言上の矛盾が見つかる」ものです。実行時例外は「文法上は正しいが、実行して初めて不正な状態になる」ものです。</p>
+</section>
+<section class="article-card">
+  <h2>コンパイルエラー</h2>
+  <div class="table-scroll"><table class="ref-table"><thead><tr><th>種類</th><th>例</th><th>見るポイント</th></tr></thead><tbody><tr><td>未初期化ローカル変数</td><td><code>int a; System.out.println(a);</code></td><td>ローカル変数にデフォルト値はない。</td></tr><tr><td>型不一致</td><td><code>byte b = 128;</code></td><td>範囲外、long/doubleを小さい型へ代入。</td></tr><tr><td>boolean以外を条件に使う</td><td><code>if (1) {}</code></td><td>Javaの条件式はbooleanのみ。</td></tr><tr><td>チェック例外未処理</td><td><code>throw new IOException();</code></td><td>catchまたはthrowsが必要。</td></tr><tr><td>catch順序不正</td><td>Exceptionを先にcatchし、その後にIOException</td><td>狭い例外から広い例外へ。</td></tr><tr><td>staticから非static参照</td><td><code>static void m(){ field; }</code></td><td>インスタンスなしでインスタンスメンバは使えない。</td></tr><tr><td>オーバーライド不正</td><td>アクセスを狭くする、戻り値が非互換</td><td>override条件を満たさない。</td></tr></tbody></table></div>
+</section>
+<section class="article-card">
+  <h2>実行時例外</h2>
+  <div class="table-scroll"><table class="ref-table"><thead><tr><th>例外</th><th>例</th><th>見るポイント</th></tr></thead><tbody><tr><td>NullPointerException</td><td><code>String s = null; s.length();</code></td><td>参照先がないのに操作する。</td></tr><tr><td>ArrayIndexOutOfBoundsException</td><td><code>new int[2][2]</code> に <code>[2]</code></td><td>添字は0からlength-1。</td></tr><tr><td>ClassCastException</td><td><code>Object o = "x"; Integer i = (Integer)o;</code></td><td>参照型の実体を見る。</td></tr><tr><td>NumberFormatException</td><td><code>Integer.parseInt("12A")</code></td><td>変換不能文字列。</td></tr><tr><td>ArithmeticException</td><td><code>10 / 0</code></td><td>整数除算のみ。doubleはInfinity等。</td></tr></tbody></table></div>
+</section>
+<section class="article-card">
+  <h2>例題比較</h2>
+  <div class="two-col">
+    <div><pre><code>int[] a = new int[0];
+System.out.println(a[0]);</code></pre><p><strong>実行時例外。</strong> 配列は作れる。実行時に範囲外アクセス。</p></div>
+    <div><pre><code>int a;
+System.out.println(a);</code></pre><p><strong>コンパイルエラー。</strong> ローカル変数が初期化されていない。</p></div>
+  </div>
+</section>
+
+    </main>
+  </div>
+  <script src="data/questions.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

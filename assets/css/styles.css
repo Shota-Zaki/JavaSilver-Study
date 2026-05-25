@@ -1764,3 +1764,185 @@ pre {
 .reference-main .article-card p { line-height: 1.85; }
 .reference-main .article-card ul, .reference-main .article-card ol { line-height: 1.8; }
 @media (max-width: 720px) { .glossary-grid { grid-template-columns: 1fr; } .term-card { padding: 14px; } }
+
+
+/* Reference second improvement */
+.reference-section-title {
+  margin: 18px 0 10px;
+}
+.reference-section-title h2 {
+  margin: 0 0 4px;
+  font-size: 22px;
+}
+.reference-section-title p {
+  margin: 0;
+  color: var(--muted);
+}
+.reference-card {
+  border-color: rgba(148, 163, 184, .38);
+}
+.reference-card span {
+  color: var(--accent);
+  font-weight: 900;
+}
+.big-flow {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+.two-col {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.drill-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+.drill-card {
+  padding: 16px;
+  border: 1px solid rgba(148, 163, 184, .38);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: var(--shadow-sm, 0 8px 20px rgba(31,41,55,.06));
+}
+.drill-card h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+.drill-card details {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+}
+.drill-card summary {
+  cursor: pointer;
+  font-weight: 900;
+  color: #1d4ed8;
+}
+.drill-card p {
+  margin: 8px 0 0;
+}
+.reference-main .article-card.important {
+  border-color: rgba(37, 99, 235, .24);
+  background: linear-gradient(180deg, #ffffff, #f8fbff);
+}
+.reference-main .article-card h2 {
+  line-height: 1.35;
+}
+.reference-main .article-card h2::before {
+  content: "";
+  display: inline-block;
+  width: .35em;
+  height: 1em;
+  margin-right: .45em;
+  border-radius: 999px;
+  background: var(--accent);
+  vertical-align: -.12em;
+}
+.reference-main .article-card pre {
+  max-height: none;
+}
+.reference-main .article-card pre code {
+  font-size: 13px;
+}
+.ref-table td code,
+.ref-table th code {
+  white-space: nowrap;
+}
+@media (max-width: 760px) {
+  .two-col { grid-template-columns: 1fr; }
+  .drill-grid { grid-template-columns: 1fr; }
+  .reference-main .article-card pre code { font-size: 12px; }
+}
+
+
+/* Final line-number alignment fix: render each logical code line as one row. */
+.numbered-code {
+  display: block;
+  overflow-x: auto;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: #f8fafc;
+  -webkit-overflow-scrolling: touch;
+}
+.numbered-code .code-line {
+  display: grid;
+  grid-template-columns: 3.25em max-content;
+  min-width: max-content;
+}
+.numbered-code .line-no {
+  display: block;
+  padding: 0 10px;
+  border-right: 1px solid #cbd5e1;
+  background: #eef2f7;
+  color: #64748b;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.7;
+  text-align: right;
+  user-select: none;
+}
+.numbered-code .code-line code {
+  display: block;
+  padding: 0 14px;
+  color: #0f172a;
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.7;
+  white-space: pre;
+}
+.numbered-code .code-line:first-child .line-no,
+.numbered-code .code-line:first-child code {
+  padding-top: 12px;
+}
+.numbered-code .code-line:last-child .line-no,
+.numbered-code .code-line:last-child code {
+  padding-bottom: 12px;
+}
+.option .numbered-code .code-line {
+  grid-template-columns: 2.75em max-content;
+}
+@media (max-width: 560px) {
+  .numbered-code .line-no {
+    font-size: 12px;
+    line-height: 1.65;
+  }
+  .numbered-code .code-line code {
+    font-size: 12px;
+    line-height: 1.65;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .numbered-code .code-line {
+    grid-template-columns: 2.8em max-content;
+  }
+}
+
+/* Explanation readability: break long generated explanations into short paragraphs */
+.readable-text {
+  display: grid;
+  gap: 8px;
+}
+.readable-text p {
+  margin: 0;
+}
+.option-analysis .readable-text {
+  gap: 6px;
+}
+.readable-list {
+  display: grid;
+  gap: 8px;
+}
+.readable-list li {
+  line-height: 1.75;
+}
+.explanation-body {
+  line-height: 1.8;
+}
+@media (max-width: 640px) {
+  .readable-text { gap: 7px; }
+  .readable-list { gap: 7px; }
+  .explanation-body { line-height: 1.85; }
+}
