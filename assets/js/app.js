@@ -810,9 +810,33 @@ service cloud.firestore {
     </article>`;
   }
 
+  function readableChunks(text) {
+    const value = String(text || "").trim();
+    if (!value) return [];
+
+    const explicitLines = value.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+    if (explicitLines.length > 1) return explicitLines;
+
+    const normalized = value.replace(/\s+/g, " ");
+    const chunks = normalized.match(/[^。！？!?]+[。！？!?]?/g) || [normalized];
+    return chunks.map(chunk => chunk.trim()).filter(Boolean);
+  }
+
+  function readableTextHtml(text) {
+    const chunks = readableChunks(text);
+    return chunks.length
+      ? `<div class="readable-text">${chunks.map(chunk => `<p>${escapeHtml(chunk)}</p>`).join("")}</div>`
+      : "";
+  }
+
+  function readableInlineHtml(text) {
+    const chunks = readableChunks(text);
+    return chunks.length ? chunks.map(chunk => escapeHtml(chunk)).join("<br>") : "";
+  }
+
   function listHtml(items) {
     return Array.isArray(items) && items.length
-      ? `<ul>${items.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`
+      ? `<ul class="readable-list">${items.map(item => `<li>${readableInlineHtml(item)}</li>`).join("")}</ul>`
       : "";
   }
 
@@ -823,7 +847,7 @@ service cloud.firestore {
     if (analyses.length) {
       return `<div class="option-analysis-list">${analyses.map(item => `<div class="option-analysis ${item.isCorrect ? "is-correct" : "is-wrong"}">
         <div class="option-analysis-head"><span class="option-key">${escapeHtml(item.key)}.</span><span>${item.isCorrect ? "正しい選択肢" : "誤りの選択肢"}</span></div>
-        <p>${escapeHtml(item.detail || "")}</p>
+        ${readableTextHtml(item.detail || "")}
       </div>`).join("")}</div>`;
     }
 
@@ -856,7 +880,7 @@ service cloud.firestore {
         <p><strong>あなたの解答:</strong> ${escapeHtml(selectedText)}</p>
         <p><strong>正解:</strong> ${escapeHtml(answerText)}</p>
       </div>
-      ${detail("正解になる理由", `<p>${escapeHtml(correctReason)}</p>`, true)}
+      ${detail("正解になる理由", readableTextHtml(correctReason), true)}
       ${detail("選択肢ごとの判定", optionAnalysisHtml(q))}
       ${detail("関連知識", related)}
       ${detail("試験での注意点", tips)}

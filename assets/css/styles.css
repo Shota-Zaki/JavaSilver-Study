@@ -1919,3 +1919,30 @@ pre {
     grid-template-columns: 2.8em max-content;
   }
 }
+
+/* Explanation readability: break long generated explanations into short paragraphs */
+.readable-text {
+  display: grid;
+  gap: 8px;
+}
+.readable-text p {
+  margin: 0;
+}
+.option-analysis .readable-text {
+  gap: 6px;
+}
+.readable-list {
+  display: grid;
+  gap: 8px;
+}
+.readable-list li {
+  line-height: 1.75;
+}
+.explanation-body {
+  line-height: 1.8;
+}
+@media (max-width: 640px) {
+  .readable-text { gap: 7px; }
+  .readable-list { gap: 7px; }
+  .explanation-body { line-height: 1.85; }
+}
