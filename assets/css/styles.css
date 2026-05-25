@@ -1946,3 +1946,19 @@ pre {
   .readable-list { gap: 7px; }
   .explanation-body { line-height: 1.85; }
 }
+
+
+/* Q17/PDF line-number fidelity: each logical source line remains one visual row. */
+.numbered-code .code-line {
+  grid-template-columns: 3.25em max-content;
+  min-width: max-content;
+  white-space: nowrap;
+}
+.numbered-code .code-line code {
+  white-space: pre;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+.option .numbered-code .code-line {
+  grid-template-columns: 2.75em max-content;
+}

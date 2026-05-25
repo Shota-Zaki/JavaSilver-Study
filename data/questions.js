@@ -1,6 +1,6 @@
 window.JAVA_STUDY_DATA = {
   "title": "Java Silver 勉強用ページ",
-  "version": "ch04-q21-q30-restored-2026-05-25",
+  "version": "ch04-q17-q31-q40-restored-2026-05-25",
   "chapters": [
     {
       "id": "ch01",
@@ -12251,11 +12251,11 @@ window.JAVA_STUDY_DATA = {
           "method",
           "compile-error"
         ],
-        "status": "verified",
+        "status": "pdf_visual_checked",
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n    public static void main(String[] args) {\n        Main m = new Main();\n        System.out.println(m.calc(2, 3));\n    }\n\n    private double calc(double a, int b) {\n        return (a + b) / 2;\n    }\n\n    private double calc(int a, double b) {\n        return (a + b) / 2;\n    }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Main m = new Main();\n        System.out.println(m.calc(2, 3));\n    }\n    private double calc(double a, int b) {\n        return (a + b) / 2;\n    }\n    private double calc(int a, double b) {\n        return (a + b) / 2;\n    }\n}"
           }
         ]
       },
@@ -13628,7 +13628,7 @@ window.JAVA_STUDY_DATA = {
           "inheritance/polymorphism",
           "constructor"
         ],
-        "status": "verified"
+        "status": "pdf_visual_checked"
       },
       {
         "id": "ch04-q32",
@@ -13731,70 +13731,70 @@ window.JAVA_STUDY_DATA = {
           "record",
           "sealed"
         ],
-        "status": "verified"
+        "status": "pdf_visual_checked"
       },
       {
         "id": "ch04-q33",
         "number": 33,
         "type": "single",
         "selectCount": 1,
-        "title": "recordの生成",
-        "prompt": "次のレコードのインスタンスを生成し、利用するコードとして正しいものを選びなさい。",
+        "title": "recordのインスタンス生成",
+        "prompt": "次のレコードのインスタンスを生成し、利用するコードとして正しいものを選びなさい。（1つ選択）",
         "codeBlocks": [
           {
-            "title": "レコード",
+            "title": "Data.java",
             "code": "public record Data(String value) {\n}"
           }
         ],
         "options": [
           {
             "key": "A",
-            "code": "Data data = new Data();\ndata.value = \"sample\";"
+            "text": "Data data = new Data();\ndata.value = \"sample\";"
           },
           {
             "key": "B",
-            "code": "Data data = Data.of(\"sample\");"
+            "text": "Data data = Data.of(\"sample\");"
           },
           {
             "key": "C",
-            "code": "Data data = Data.value(\"sample\");"
+            "text": "Data data = Data.value(\"sample\");"
           },
           {
             "key": "D",
-            "code": "Data data = new Data(\"sample\");"
+            "text": "Data data = new Data(\"sample\");"
           }
         ],
         "answer": [
           "D"
         ],
         "explanation": {
-          "summary": "record Data(String value) は、コンポーネントvalueを受け取るコンストラクタで生成する。正しい生成方法は new Data(\"sample\")。",
+          "summary": "record Data(String value) は、valueを受け取る正規コンストラクタを持つ。生成は new Data(\"sample\") とする。recordのコンポーネントは直接代入できない。",
           "points": [
             "recordのフィールドはprivate final相当で直接代入できない。of/valueのようなファクトリメソッドは自動生成されない。",
             "判定軸: Stringは不変。concatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。==は参照比較、equalsは内容比較。",
             "判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。代入は参照のコピーであり、インスタンスの複製ではない。"
           ],
-          "correctReason": "正解は D です。この問題は、選択肢の文言がJavaの仕様に合っているかを1つずつ判定する問題です。 record Data(String value) は、コンポーネントvalueを受け取るコンストラクタで生成する。正しい生成方法は new Data(\"sample\")。 判定の軸は「recordの生成」で、recordはデータキャリア用の特殊なクラスで、コンポーネントに対応するprivate finalフィールド、アクセサ、equals/hashCode/toStringなどが生成される。\n\n【追加解説】\n・Stringは不変。concatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。==は参照比較、equalsは内容比較。\n・参照型変数にはオブジェクト本体ではなく参照が入る。代入は参照のコピーであり、インスタンスの複製ではない。\n・コンストラクタは戻り値型を書かず、クラス名と同名。this(...)やsuper(...)はコンストラクタの先頭にしか書けない。\n【間違えやすい点】\n・new String(\"x\") はリテラル\"x\"と内容は同じでも参照は別。リテラル同士の結合はコンパイル時定数になり得るが、通常変数を含む結合は実行時に別オブジェクトを作る。\n・同じ値を持つ別インスタンスと、同じインスタンスを指す別変数は違う。nullに対してメソッド呼び出しをするとNullPointerException。",
+          "correctReason": "正解はDです。record Data(String value) には、String型のvalueを受け取るコンストラクタが自動的に用意されます。\n\nそのため、new Data(\"sample\") でインスタンスを生成できます。\n\nrecordのコンポーネントはprivate final相当で扱われるため、生成後に data.value = \"sample\" のように直接代入することはできません。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "この選択肢は誤りです。recordのコンポーネントは基本的に再代入できない。アクセサ名はgetXではなくコンポーネント名そのものになる点を間違えやすい。 選択肢「Data data = new Data(); data.value = \"sample\";」は、問題の中心論点である「recordの生成」の条件を満たしません。\n"
+              "detail": "誤り。Data() という引数なしコンストラクタは宣言されていません。また、data.value へ直接代入もできません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "この選択肢は誤りです。recordのコンポーネントは基本的に再代入できない。アクセサ名はgetXではなくコンポーネント名そのものになる点を間違えやすい。 選択肢「Data data = Data.of(\"sample\");」は、問題の中心論点である「recordの生成」の条件を満たしません。\n"
+              "detail": "誤り。Data.of(String) というファクトリメソッドは自動生成されません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "この選択肢は誤りです。recordのコンポーネントは基本的に再代入できない。アクセサ名はgetXではなくコンポーネント名そのものになる点を間違えやすい。 選択肢「Data data = Data.value(\"sample\");」は、問題の中心論点である「recordの生成」の条件を満たしません。\n"
+              "detail": "誤り。Data.value(String) というメソッドは自動生成されません。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "この選択肢は正解です。recordはデータキャリア用の特殊なクラスで、コンポーネントに対応するprivate finalフィールド、アクセサ、equals/hashCode/toStringなどが生成される。 選択肢「Data data = new Data(\"sample\");」は、問題の条件とこのルールに矛盾しません。\n"
+              "detail": "正しい。recordのコンポーネントvalueに対応する引数を渡して、new Data(\"sample\") と生成します。"
             }
           ],
           "relatedKnowledge": [
@@ -13832,7 +13832,7 @@ window.JAVA_STUDY_DATA = {
           "string/reference",
           "constructor"
         ],
-        "status": "verified"
+        "status": "pdf_visual_checked"
       },
       {
         "id": "ch04-q34",
@@ -13946,70 +13946,70 @@ window.JAVA_STUDY_DATA = {
           "constructor",
           "field/static/scope"
         ],
-        "status": "verified"
+        "status": "pdf_visual_checked"
       },
       {
         "id": "ch04-q35",
         "number": 35,
         "type": "single",
         "selectCount": 1,
-        "title": "recordアクセサ",
-        "prompt": "次のレコードを利用するコードとして、正しいものを選びなさい。",
+        "title": "recordのアクセサメソッド",
+        "prompt": "次のレコードを利用するコードとして、正しいものを選びなさい。（1つ選択）",
         "codeBlocks": [
           {
-            "title": "レコード",
+            "title": "Data.java",
             "code": "public record Data(String value) {\n}"
           }
         ],
         "options": [
           {
             "key": "A",
-            "code": "Data data = new Data(\"sample\");\nSystem.out.println(data.value());"
+            "text": "Data data = new Data(\"sample\");\nSystem.out.println(data.value());"
           },
           {
             "key": "B",
-            "code": "Data data = new Data();\ndata.value = \"sample\";\nSystem.out.println(data.value());"
+            "text": "Data data = new Data();\ndata.value = \"sample\";\nSystem.out.println(data.value());"
           },
           {
             "key": "C",
-            "code": "Data data = new Data(\"sample\");\nSystem.out.println(data.value);"
+            "text": "Data data = new Data(\"sample\");\nSystem.out.println(data.value);"
           },
           {
             "key": "D",
-            "code": "Data data = new Data(\"sample\");\ndata.setValue(\"test\");\nSystem.out.println(data.value());"
+            "text": "Data data = new Data(\"sample\");\ndata.setValue(\"test\");\nSystem.out.println(data.value());"
           }
         ],
         "answer": [
           "A"
         ],
         "explanation": {
-          "summary": "record component value には value() アクセサが自動生成される。new Data(\"sample\") で生成し、data.value()で値を取得するAが正しい。",
+          "summary": "recordのコンポーネントvalueは、value()というアクセサメソッドで取得する。getter名はgetValue()ではなくvalue()。フィールドへ直接アクセスしたり、setterで変更したりはできない。",
           "points": [
             "getter名はgetValue()ではなく、コンポーネント名と同じ value()。フィールドへの直接アクセスやsetterは不可。",
             "判定軸: Stringは不変。concatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。==は参照比較、equalsは内容比較。",
             "判定軸: 参照型変数にはオブジェクト本体ではなく参照が入る。代入は参照のコピーであり、インスタンスの複製ではない。"
           ],
-          "correctReason": "正解は A です。この問題は、選択肢の文言がJavaの仕様に合っているかを1つずつ判定する問題です。 record component value には value() アクセサが自動生成される。new Data(\"sample\") で生成し、data.value()で値を取得するAが正しい。 判定の軸は「recordアクセサ」で、recordはデータキャリア用の特殊なクラスで、コンポーネントに対応するprivate finalフィールド、アクセサ、equals/hashCode/toStringなどが生成される。\n\n【追加解説】\n・Stringは不変。concatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。==は参照比較、equalsは内容比較。\n・参照型変数にはオブジェクト本体ではなく参照が入る。代入は参照のコピーであり、インスタンスの複製ではない。\n【間違えやすい点】\n・new String(\"x\") はリテラル\"x\"と内容は同じでも参照は別。リテラル同士の結合はコンパイル時定数になり得るが、通常変数を含む結合は実行時に別オブジェクトを作る。\n・同じ値を持つ別インスタンスと、同じインスタンスを指す別変数は違う。nullに対してメソッド呼び出しをするとNullPointerException。",
+          "correctReason": "正解はAです。record Data(String value) では、コンポーネントvalueに対応するアクセサメソッド value() が自動生成されます。\n\nしたがって data.value() で値を取得できます。\n\nrecordは不変データを表す用途なので、data.value に直接アクセスしたり、setValue のようなsetterで変更したりするコードは正しくありません。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "この選択肢は正解です。recordはデータキャリア用の特殊なクラスで、コンポーネントに対応するprivate finalフィールド、アクセサ、equals/hashCode/toStringなどが生成される。 選択肢「Data data = new Data(\"sample\"); System.out.println(data.value());」は、問題の条件とこのルールに矛盾しません。\n"
+              "detail": "正しい。new Data(\"sample\") で生成し、data.value() でコンポーネント値を取得します。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "この選択肢は誤りです。recordのコンポーネントは基本的に再代入できない。アクセサ名はgetXではなくコンポーネント名そのものになる点を間違えやすい。 選択肢「Data data = new Data(); data.value = \"sample\"; System.out.println(data.value());」は、問題の中心論点である「recordアクセサ」の条件を満たしません。\n"
+              "detail": "誤り。引数なしコンストラクタはありません。また、valueへ直接代入できません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "この選択肢は誤りです。recordのコンポーネントは基本的に再代入できない。アクセサ名はgetXではなくコンポーネント名そのものになる点を間違えやすい。 選択肢「Data data = new Data(\"sample\"); System.out.println(data.value);」は、問題の中心論点である「recordアクセサ」の条件を満たしません。\n"
+              "detail": "誤り。data.value はフィールドへの直接アクセスです。recordではアクセサメソッド data.value() を使います。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "この選択肢は誤りです。recordのコンポーネントは基本的に再代入できない。アクセサ名はgetXではなくコンポーネント名そのものになる点を間違えやすい。 選択肢「Data data = new Data(\"sample\"); data.setValue(\"test\"); System.out.println(data.value());」は、問題の中心論点である「recordアクセサ」の条件を満たしません。\n"
+              "detail": "誤り。setValue(String) は自動生成されません。"
             }
           ],
           "relatedKnowledge": [
@@ -14044,7 +14044,7 @@ window.JAVA_STUDY_DATA = {
           "string/reference",
           "collection"
         ],
-        "status": "verified"
+        "status": "pdf_visual_checked"
       },
       {
         "id": "ch04-q36",
@@ -14157,7 +14157,7 @@ window.JAVA_STUDY_DATA = {
           "string/reference",
           "field/static/scope"
         ],
-        "status": "verified"
+        "status": "pdf_visual_checked"
       },
       {
         "id": "ch04-q37",
@@ -14260,7 +14260,7 @@ window.JAVA_STUDY_DATA = {
           "record",
           "string/reference"
         ],
-        "status": "verified"
+        "status": "pdf_visual_checked"
       },
       {
         "id": "ch04-q38",
@@ -14268,71 +14268,71 @@ window.JAVA_STUDY_DATA = {
         "type": "single",
         "selectCount": 1,
         "title": "recordの追加コンストラクタ",
-        "prompt": "次のプログラムは、コンパイルエラーとなる。コンパイルエラーを解消するために「// insert code here」の箇所に入るコードとして正しいものを選びなさい。",
+        "prompt": "次のプログラムは、コンパイルエラーとなる。コンパイルエラーを解消するために「// insert code here」の箇所に入るコードとして正しいものを選びなさい。（1つ選択）",
         "codeBlocks": [
           {
-            "title": "コード",
+            "title": "Data.java",
             "code": "public record Data(String value) {\n    public Data() {\n        // insert code here\n    }\n}"
           }
         ],
         "options": [
           {
             "key": "A",
-            "code": "this();"
+            "text": "this();"
           },
           {
             "key": "B",
-            "code": "super();"
+            "text": "super();"
           },
           {
             "key": "C",
-            "code": "this.value = value;"
+            "text": "this.value = value;"
           },
           {
             "key": "D",
-            "code": "this(\"sample\");"
+            "text": "this(\"sample\");"
           },
           {
             "key": "E",
-            "code": "super(\"sample\");"
+            "text": "super(\"sample\");"
           }
         ],
         "answer": [
           "D"
         ],
         "explanation": {
-          "summary": "引数なしの追加コンストラクタでは、標準コンストラクタへ委譲して全コンポーネントを初期化する必要がある。this(\"sample\"); が正しい。",
+          "summary": "recordの追加コンストラクタは、最終的に正規コンストラクタへ委譲してコンポーネントを初期化する必要がある。引数なしコンストラクタでは this(\"sample\"); のように呼び出す。",
           "points": [
             "super()ではrecordコンポーネントvalueを初期化できない。this(); は自分自身の再帰呼び出しになり不正。",
             "判定軸: コンストラクタは戻り値型を書かず、クラス名と同名。this(...)やsuper(...)はコンストラクタの先頭にしか書けない。",
             "判定軸: Stringは不変。concatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。==は参照比較、equalsは内容比較。"
           ],
-          "correctReason": "正解は D です。この問題は、選択肢の文言がJavaの仕様に合っているかを1つずつ判定する問題です。 引数なしの追加コンストラクタでは、標準コンストラクタへ委譲して全コンポーネントを初期化する必要がある。this(\"sample\"); が正しい。 判定の軸は「recordの追加コンストラクタ」で、コンストラクタは継承されない。サブクラスのコンストラクタでは、最初にthis(...)またはsuper(...)のどちらか一方が呼ばれる。明示しなければsuper()が暗黙挿入される。\n\n【追加解説】\n・コンストラクタは戻り値型を書かず、クラス名と同名。this(...)やsuper(...)はコンストラクタの先頭にしか書けない。\n・Stringは不変。concatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。==は参照比較、equalsは内容比較。\n・参照型変数にはオブジェクト本体ではなく参照が入る。代入は参照のコピーであり、インスタンスの複製ではない。\n【間違えやすい点】\n・戻り値型を書いたものはコンストラクタではなくメソッドになる。親の引数なしコンストラクタがない場合、暗黙のsuper()でコンパイルエラーになる。\n・new String(\"x\") はリテラル\"x\"と内容は同じでも参照は別。リテラル同士の結合はコンパイル時定数になり得るが、通常変数を含む結合は実行時に別オブジェクトを作る。",
+          "correctReason": "正解はDです。recordのコンポーネントvalueは必ず初期化される必要があります。\n\n引数なしコンストラクタを追加する場合、そのコンストラクタから正規コンストラクタへ this(\"sample\"); のように委譲すれば、valueが初期化されます。\n\nthis() は同じ引数なしコンストラクタを呼ぶ形になり、正しい初期化になりません。super() やsuper(\"sample\") でrecordコンポーネントを初期化することもできません。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "この選択肢は誤りです。親クラスに引数なしコンストラクタが存在しないのに、子クラス側でsuper(引数)を明示しないとコンパイルエラーになる。this(...)とsuper(...)を同時に先頭で呼ぶこともできない。 選択肢「this();」は、問題の中心論点である「recordの追加コンストラクタ」の条件を満たしません。"
+              "detail": "誤り。this(); は同じ引数なしコンストラクタを呼ぶ形になり、コンストラクタ呼び出しが循環します。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "この選択肢は誤りです。親クラスに引数なしコンストラクタが存在しないのに、子クラス側でsuper(引数)を明示しないとコンパイルエラーになる。this(...)とsuper(...)を同時に先頭で呼ぶこともできない。 選択肢「super();」は、問題の中心論点である「recordの追加コンストラクタ」の条件を満たしません。"
+              "detail": "誤り。super(); ではrecordコンポーネントvalueを初期化できません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "この選択肢は誤りです。親クラスに引数なしコンストラクタが存在しないのに、子クラス側でsuper(引数)を明示しないとコンパイルエラーになる。this(...)とsuper(...)を同時に先頭で呼ぶこともできない。 選択肢「this.value = value;」は、問題の中心論点である「recordの追加コンストラクタ」の条件を満たしません。"
+              "detail": "誤り。recordコンポーネントは直接代入して初期化する対象ではありません。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "この選択肢は正解です。コンストラクタは継承されない。サブクラスのコンストラクタでは、最初にthis(...)またはsuper(...)のどちらか一方が呼ばれる。明示しなければsuper()が暗黙挿入される。 選択肢「this(\"sample\");」は、問題の条件とこのルールに矛盾しません。"
+              "detail": "正しい。正規コンストラクタ Data(String value) へ委譲し、valueを初期化できます。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "この選択肢は誤りです。親クラスに引数なしコンストラクタが存在しないのに、子クラス側でsuper(引数)を明示しないとコンパイルエラーになる。this(...)とsuper(...)を同時に先頭で呼ぶこともできない。 選択肢「super(\"sample\");」は、問題の中心論点である「recordの追加コンストラクタ」の条件を満たしません。"
+              "detail": "誤り。Recordのスーパークラスコンストラクタにそのような引数を渡す形ではありません。"
             }
           ],
           "relatedKnowledge": [
@@ -14372,7 +14372,7 @@ window.JAVA_STUDY_DATA = {
           "string/reference",
           "inheritance/polymorphism"
         ],
-        "status": "verified"
+        "status": "pdf_visual_checked"
       },
       {
         "id": "ch04-q39",
@@ -14479,7 +14479,7 @@ window.JAVA_STUDY_DATA = {
           "main/args",
           "exception"
         ],
-        "status": "verified"
+        "status": "pdf_visual_checked"
       },
       {
         "id": "ch04-q40",
@@ -14590,7 +14590,7 @@ window.JAVA_STUDY_DATA = {
           "main/args",
           "exception"
         ],
-        "status": "verified"
+        "status": "pdf_visual_checked"
       }
     ],
     "ch05": [
