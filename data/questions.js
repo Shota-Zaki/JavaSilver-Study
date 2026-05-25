@@ -1,6 +1,6 @@
 window.JAVA_STUDY_DATA = {
   "title": "Java Silver 勉強用ページ",
-  "version": "ch04-q13-q20-restored-2026-05-25",
+  "version": "ch04-q21-q30-restored-2026-05-25",
   "chapters": [
     {
       "id": "ch01",
@@ -12405,7 +12405,7 @@ window.JAVA_STUDY_DATA = {
         "type": "single",
         "selectCount": 1,
         "title": "インスタンス初期化子とコンストラクタ",
-        "prompt": "次のプログラムを確認してください。このクラスを利用する以下のプログラムを、コンパイル、実行したときの結果として、正しいものを選びなさい。",
+        "prompt": "次のプログラムを確認してください。このクラスを利用する以下のプログラムを、コンパイル、実行したときの結果として、正しいものを選びなさい。（1つ選択）",
         "options": [
           {
             "key": "A",
@@ -12425,15 +12425,15 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "key": "E",
-            "text": "Sampleクラスでコンパイルエラー"
+            "text": "Sampleクラスでコンパイルエラーが発生する"
           },
           {
             "key": "F",
-            "text": "Mainクラスでコンパイルエラー"
+            "text": "Mainクラスでコンパイルエラーが発生する"
           },
           {
             "key": "G",
-            "text": "実行時に例外"
+            "text": "実行時に例外がスローされる"
           }
         ],
         "answer": [
@@ -12517,11 +12517,11 @@ window.JAVA_STUDY_DATA = {
         "source": "4章 問題PDF p.221 / 4章 解説PDF p.257",
         "codeBlocks": [
           {
-            "title": "Sampleクラス",
+            "title": "Sample.java",
             "code": "public class Sample {\n    Sample() {\n        System.out.println(\"A\");\n    }\n    {\n        System.out.println(\"B\");\n    }\n}"
           },
           {
-            "title": "Mainクラス",
+            "title": "Main.java",
             "code": "public class Main {\n    public static void main(String[] args) {\n        Sample s = new Sample();\n    }\n}"
           }
         ],
@@ -12538,8 +12538,8 @@ window.JAVA_STUDY_DATA = {
         "number": 22,
         "type": "single",
         "selectCount": 1,
-        "title": "staticフィールドと初期化子",
-        "prompt": "次のプログラムをコンパイル、実行したときの結果として、正しいものを選びなさい。",
+        "title": "staticフィールドとインスタンス初期化子",
+        "prompt": "次のプログラムをコンパイル、実行したときの結果として、正しいものを選びなさい。（1つ選択）",
         "options": [
           {
             "key": "A",
@@ -12624,11 +12624,11 @@ window.JAVA_STUDY_DATA = {
         "source": "4章 問題PDF p.222 / 4章 解説PDF p.258",
         "codeBlocks": [
           {
-            "title": "Sampleクラス",
+            "title": "Sample.java",
             "code": "public class Sample {\n    static int num;\n    {\n        num = 10;\n    }\n    public Sample() {\n        num = 100;\n    }\n}"
           },
           {
-            "title": "Mainクラス",
+            "title": "Main.java",
             "code": "public class Main {\n    public static void main(String[] args) {\n        System.out.println(Sample.num);\n    }\n}"
           }
         ],
@@ -12646,7 +12646,7 @@ window.JAVA_STUDY_DATA = {
         "type": "single",
         "selectCount": 1,
         "title": "デフォルトコンストラクタの有無",
-        "prompt": "次のプログラムを確認してください。このクラスを利用する以下のプログラムを、コンパイル、実行したときの結果として、正しいものを選びなさい。",
+        "prompt": "次のプログラムを確認してください。このクラスを利用する以下のプログラムを、コンパイル、実行したときの結果として、正しいものを選びなさい。（1つ選択）",
         "options": [
           {
             "key": "A",
@@ -12654,7 +12654,7 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "key": "B",
-            "text": "nullと表示される"
+            "text": "「null」と表示される"
           },
           {
             "key": "C",
@@ -12666,7 +12666,7 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "key": "E",
-            "text": "実行時に例外"
+            "text": "実行時に例外がスローされる"
           }
         ],
         "answer": [
@@ -12740,11 +12740,11 @@ window.JAVA_STUDY_DATA = {
         "source": "4章 問題PDF p.223 / 4章 解説PDF p.259",
         "codeBlocks": [
           {
-            "title": "Sampleクラス",
+            "title": "Sample.java",
             "code": "public class Sample {\n    void Sample() {\n        System.out.println(\"A\");\n    }\n    Sample(String str) {\n        System.out.println(str);\n    }\n}"
           },
           {
-            "title": "Mainクラス",
+            "title": "Main.java",
             "code": "public class Main {\n    public static void main(String[] args) {\n        Sample s = new Sample();\n    }\n}"
           }
         ],
@@ -12762,96 +12762,60 @@ window.JAVA_STUDY_DATA = {
         "type": "single",
         "selectCount": 1,
         "title": "thisによるコンストラクタ呼び出し",
-        "prompt": "次のプログラムを実行し、コンソールに「ok.」と表示したい。3行目の空欄に入るコードとして、正しいものを選びなさい。",
+        "prompt": "次のプログラムを実行し、コンソールに「ok.」と表示したい。3行目の空欄に入るコードとして、正しいものを選びなさい。（1つ選択）",
         "options": [
           {
             "key": "A",
-            "code": "Sample(null, 0);"
+            "text": "Sample(null, 0);"
           },
           {
             "key": "B",
-            "code": "this(null, 0);"
+            "text": "this(null, 0);"
           },
           {
             "key": "C",
-            "code": "super(null, 0);"
+            "text": "super(null, 0);"
           },
           {
             "key": "D",
-            "code": "this.Sample(null, 0);"
+            "text": "this.Sample(null, 0);"
           }
         ],
         "answer": [
           "B"
         ],
         "explanation": {
-          "summary": "同一クラスの他コンストラクタ呼び出しは this(...) を使い、コンストラクタの先頭に記述する。",
-          "points": [
-            "同一クラスの別コンストラクタを呼び出すには this(...) を使う。",
-            "判定軸: コンストラクタは戻り値型を書かず、クラス名と同名。this(...)やsuper(...)はコンストラクタの先頭にしか書けない。",
-            "判定軸: staticメンバはクラスに属し、インスタンスごとには複製されない。staticメソッドからはthisやインスタンスメンバへ直接アクセスできない。"
-          ],
-          "correctReason": "正解は B です。この問題は、選択肢の文言がJavaの仕様に合っているかを1つずつ判定する問題です。 同一クラスの他コンストラクタ呼び出しは this(...) を使い、コンストラクタの先頭に記述する。 判定の軸は「thisによるコンストラクタ呼び出し」で、コンストラクタは継承されない。サブクラスのコンストラクタでは、最初にthis(...)またはsuper(...)のどちらか一方が呼ばれる。明示しなければsuper()が暗黙挿入される。\n\n【追加解説】\n・コンストラクタは戻り値型を書かず、クラス名と同名。this(...)やsuper(...)はコンストラクタの先頭にしか書けない。\n・staticメンバはクラスに属し、インスタンスごとには複製されない。staticメソッドからはthisやインスタンスメンバへ直接アクセスできない。\n・mainメソッドは public static void main(String[] args) または String... args が基本。起動パラメータは String 配列として渡され、args[0] が1個目。\n【間違えやすい点】\n・戻り値型を書いたものはコンストラクタではなくメソッドになる。親の引数なしコンストラクタがない場合、暗黙のsuper()でコンパイルエラーになる。\n・インスタンス経由でstaticにアクセスできることはあるが、実体はクラス側。static文脈で非staticフィールドを直接使うとコンパイルエラー。",
-          "optionAnalysis": [
+          "summary": "正解はBです。コンストラクタから同じクラスの別コンストラクタを呼び出すには this(...) を使います。",
+          "reason": "3行目は引数なしコンストラクタの先頭です。\nString型とint型を受け取る別コンストラクタを呼び出せば、そのコンストラクタ内の System.out.println(\"ok.\") が実行されます。\n同一クラス内の別コンストラクタ呼び出しは this(null, 0); の形で記述します。",
+          "choices": [
             {
               "key": "A",
-              "isCorrect": false,
-              "detail": "この選択肢は誤りです。親クラスに引数なしコンストラクタが存在しないのに、子クラス側でsuper(引数)を明示しないとコンパイルエラーになる。this(...)とsuper(...)を同時に先頭で呼ぶこともできない。 選択肢「Sample(null, 0);」は、問題の中心論点である「thisによるコンストラクタ呼び出し」の条件を満たしません。\n"
+              "text": "Sample(null, 0); はコンストラクタ呼び出しの構文ではありません。メソッド呼び出しのように見えるため不正です。"
             },
             {
               "key": "B",
-              "isCorrect": true,
-              "detail": "この選択肢は正解です。コンストラクタは継承されない。サブクラスのコンストラクタでは、最初にthis(...)またはsuper(...)のどちらか一方が呼ばれる。明示しなければsuper()が暗黙挿入される。 選択肢「this(null, 0);」は、問題の条件とこのルールに矛盾しません。\n"
+              "text": "this(null, 0); は同じクラスの Sample(String, int) コンストラクタを呼び出します。正しいコードです。"
             },
             {
               "key": "C",
-              "isCorrect": false,
-              "detail": "この選択肢は誤りです。親クラスに引数なしコンストラクタが存在しないのに、子クラス側でsuper(引数)を明示しないとコンパイルエラーになる。this(...)とsuper(...)を同時に先頭で呼ぶこともできない。 選択肢「super(null, 0);」は、問題の中心論点である「thisによるコンストラクタ呼び出し」の条件を満たしません。\n"
+              "text": "super(null, 0); はスーパークラスのコンストラクタ呼び出しです。今回呼びたいのは同じクラスの別コンストラクタなので不適切です。"
             },
             {
               "key": "D",
-              "isCorrect": false,
-              "detail": "この選択肢は誤りです。親クラスに引数なしコンストラクタが存在しないのに、子クラス側でsuper(引数)を明示しないとコンパイルエラーになる。this(...)とsuper(...)を同時に先頭で呼ぶこともできない。 選択肢「this.Sample(null, 0);」は、問題の中心論点である「thisによるコンストラクタ呼び出し」の条件を満たしません。\n"
+              "text": "this.Sample(null, 0); というコンストラクタ呼び出し構文はありません。"
             }
           ],
-          "relatedKnowledge": [
-            "初期化順は、親側の初期化→親コンストラクタ→子側の初期化→子コンストラクタの順に考えると追いやすい。",
-            "同名のローカル変数があると、単純名ではローカル変数が優先される。フィールドを明示したい場合はthis.fieldまたはClassName.staticFieldを使う。",
-            "String[] args と String... args はどちらもエントリポイントとして有効。配列の添字は0始まりなので、表示対象やparseIntの対象を1つずらして読まないこと。",
-            "コンストラクタは戻り値型を書かず、クラス名と同名。this(...)やsuper(...)はコンストラクタの先頭にしか書けない。",
-            "staticメンバはクラスに属し、インスタンスごとには複製されない。staticメソッドからはthisやインスタンスメンバへ直接アクセスできない。",
-            "mainメソッドは public static void main(String[] args) または String... args が基本。起動パラメータは String 配列として渡され、args[0] が1個目。",
-            "Stringは不変。concatやreplaceなどは新しいStringを返すだけで、戻り値を受け取らなければ元の変数は変わらない。==は参照比較、equalsは内容比較。",
-            "戻り値型を書いたものはコンストラクタではなくメソッドになる。親の引数なしコンストラクタがない場合、暗黙のsuper()でコンパイルエラーになる。"
-          ],
-          "examTips": [
-            "コンストラクタ問題は、各コンストラクタの1行目だけ先に見る。this/superの連鎖を書き出すと、表示順・エラー箇所を誤りにくい。",
-            "スコープ問題は、同じ名前の変数が何種類あるかを先に洗い出す。フィールド・ローカル・引数・staticを混ぜて読まない。",
-            "コマンド付き問題は、コードだけでなく `java クラス名 引数...` の引数列を必ず横に書き出す。最初の1個だけ使っているのか、複数使っているのかを確認する。",
-            "String問題は、変数ごとに「ヒープ上のnew」「文字列プール」「null」「同じ参照のコピー」のどれかをメモする。出力前に参照関係を図にするとミスが減る。",
-            "戻り値型を書いたものはコンストラクタではなくメソッドになる。親の引数なしコンストラクタがない場合、暗黙のsuper()でコンパイルエラーになる。",
-            "インスタンス経由でstaticにアクセスできることはあるが、実体はクラス側。static文脈で非staticフィールドを直接使うとコンパイルエラー。",
-            "コマンドに2個引数があっても、コードが args[0] しか使っていなければ1個目だけが対象。args[1] を使うなら2個目が必要。",
-            "new String(\"x\") はリテラル\"x\"と内容は同じでも参照は別。リテラル同士の結合はコンパイル時定数になり得るが、通常変数を含む結合は実行時に別オブジェクトを作る。"
-          ],
-          "judgeSteps": [
-            "コンパイル可否を先に確認する。構文、型、アクセス修飾子、未初期化ローカル変数、例外処理の不足を見る。",
-            "コンパイルできる場合だけ、実行時の参照先、配列添字、null、キャスト、catch順序を追う。",
-            "最後に出力・戻り値・正しい選択肢を確定する。途中で例外が処理されずに送出される場合、通常の出力はそこで止まる。",
-            "インスタンス生成時にどのコンストラクタが呼ばれ、先頭でthis/superのどちらに流れるかを追う。",
-            "メンバがクラス側かインスタンス側かを分け、呼び出し元がstatic文脈かインスタンス文脈かを確認する。",
-            "javaコマンドのクラス名より後ろだけを引数として書き出し、argsの添字と対応させる。添字が存在しない場合は実行時例外になる。",
-            "各変数が文字列プール、new、null、同じ参照のコピーのどれかを書き分けてから、== と equals の結果を判定する。"
-          ]
+          "related": "this(...) は同じクラスの別コンストラクタを呼び出します。super(...) はスーパークラスのコンストラクタを呼び出します。どちらもコンストラクタ本体の先頭にしか書けません。",
+          "exam": "this(...) と super(...) の違い、そして「先頭行でなければならない」という制約は頻出です。"
         },
         "source": "4章 問題PDF p.223-224 / 4章 解説PDF p.260",
         "codeBlocks": [
           {
-            "title": "Sampleクラス",
+            "title": "Sample.java",
             "code": "public class Sample {\n    public Sample() {\n        // ここにコードを入れる\n    }\n    public Sample(String str, int num) {\n        System.out.println(\"ok.\");\n    }\n}"
           },
           {
-            "title": "Mainクラス",
+            "title": "Main.java",
             "code": "public class Main {\n    public static void main(String[] args) {\n        Sample s = new Sample();\n    }\n}"
           }
         ],
@@ -12994,14 +12958,14 @@ window.JAVA_STUDY_DATA = {
         "type": "single",
         "selectCount": 1,
         "title": "パッケージアクセスとstatic文脈",
-        "prompt": "次のプログラムを確認してください。このクラスを利用する以下のプログラムを、コンパイル、実行したときの結果として、正しいものを選びなさい。",
+        "prompt": "次のプログラムを確認してください。このクラスを利用する以下のプログラムを、コンパイル、実行したときの結果として、正しいものを選びなさい。（1つ選択）",
         "codeBlocks": [
           {
-            "title": "Parentクラス",
+            "title": "Parent.java",
             "code": "package ex26;\n\npublic class Parent {\n    int num = 10;\n}"
           },
           {
-            "title": "Childクラス",
+            "title": "Child.java",
             "code": "package other;\nimport ex26.Parent;\n\npublic class Child extends Parent {\n    public static void main(String[] args) {\n        System.out.println(num);\n    }\n}"
           }
         ],
