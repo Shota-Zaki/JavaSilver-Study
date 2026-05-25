@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - ポリモーフィズム・キャスト・instanceof</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main">
+      <section class="hero reference-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>ポリモーフィズム・キャスト・instanceof</h1>
+        <p>参照型と実体の違い、キャスト、オーバーライド呼び出しを整理します。</p>
+      </section>
+
+<section class="article-card important">
+  <h2>参照型と実体を分ける</h2>
+  <pre><code>Parent p = new Child();</code></pre>
+  <p>左辺の <code>Parent</code> は「使えるメンバを決める型」です。右辺の <code>Child</code> は「実際に動くインスタンス」です。</p>
+</section>
+<section class="article-card">
+  <h2>メソッドとフィールドの違い</h2>
+  <pre><code>class A { String name = &quot;A&quot;; String getName(){ return &quot;A&quot;; } }
+class B extends A { String name = &quot;B&quot;; String getName(){ return &quot;B&quot;; } }
+
+A obj = new B();
+System.out.println(obj.name);      // A
+System.out.println(obj.getName()); // B</code></pre>
+  <p>メソッドは実体側のオーバーライドが効きます。フィールドは変数の型で決まります。</p>
+</section>
+<section class="article-card">
+  <h2>キャストの判定</h2>
+  <div class="table-scroll"><table class="ref-table"><thead><tr><th>段階</th><th>見るもの</th><th>例</th></tr></thead><tbody><tr><td>コンパイル時</td><td>型同士に継承・実装関係があり得るか</td><td>無関係なクラス同士はコンパイルエラーになりやすい。</td></tr><tr><td>実行時</td><td>実体がキャスト先として扱えるか</td><td>実体が違えばClassCastException。</td></tr></tbody></table></div>
+  <pre><code>Object o = &quot;java&quot;;
+String s = (String) o;   // OK
+// Integer i = (Integer) o; // 実行時ClassCastException</code></pre>
+</section>
+<section class="article-card">
+  <h2>instanceof パターンマッチング</h2>
+  <pre><code>Object obj = &quot;java&quot;;
+if (obj instanceof String s) {
+    System.out.println(s.length());
+}</code></pre>
+  <p>条件がtrueのブロック内で、パターン変数 <code>s</code> が使えます。nullに対する <code>instanceof</code> はfalseです。</p>
+</section>
+
+    </main>
+  </div>
+  <script src="data/questions.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

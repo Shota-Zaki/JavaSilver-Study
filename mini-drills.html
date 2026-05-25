@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - ミニ演習</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main">
+      <section class="hero reference-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>ミニ演習</h1>
+        <p>学習記事で読んだルールを短いコードで確認します。答えは開閉式です。</p>
+      </section>
+
+<section class="article-card important"><h2>使い方</h2><p>先にコードだけ読んで、コンパイル可否・実行時例外・出力を決めてから答えを開いてください。</p></section>
+<section class="drill-grid">
+  <article class="drill-card"><h2>1. Stringの比較</h2><pre><code>String a = &quot;ja&quot; + &quot;va&quot;;
+String b = &quot;java&quot;;
+System.out.println(a == b);</code></pre><details><summary>答え</summary><p><code>true</code>。定数式なのでコンパイル時に "java" になり、文字列プールの同じ参照。</p></details></article>
+  <article class="drill-card"><h2>2. 変数を含む連結</h2><pre><code>String x = &quot;ja&quot;;
+String a = x + &quot;va&quot;;
+String b = &quot;java&quot;;
+System.out.println(a == b);</code></pre><details><summary>答え</summary><p><code>false</code>。実行時連結で新しいStringが作られる。</p></details></article>
+  <article class="drill-card"><h2>3. byteの演算</h2><pre><code>byte a = 10;
+byte b = 20;
+byte c = a + b;</code></pre><details><summary>答え</summary><p>コンパイルエラー。<code>a + b</code> は <code>int</code>。</p></details></article>
+  <article class="drill-card"><h2>4. 複合代入</h2><pre><code>byte a = 10;
+a += 20;
+System.out.println(a);</code></pre><details><summary>答え</summary><p><code>30</code>。複合代入は暗黙キャストを含む。</p></details></article>
+  <article class="drill-card"><h2>5. static</h2><pre><code>class A {
+    int value = 10;
+    static void test(){ System.out.println(value); }
+}</code></pre><details><summary>答え</summary><p>コンパイルエラー。staticメソッドからインスタンスフィールドへ直接アクセスできない。</p></details></article>
+  <article class="drill-card"><h2>6. finally</h2><pre><code>try {
+    System.out.print(&quot;A&quot;);
+} finally {
+    System.out.print(&quot;B&quot;);
+}</code></pre><details><summary>答え</summary><p><code>AB</code>。例外がなくてもfinallyは実行される。</p></details></article>
+</section>
+
+    </main>
+  </div>
+  <script src="data/questions.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

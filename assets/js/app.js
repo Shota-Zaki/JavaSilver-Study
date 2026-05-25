@@ -599,11 +599,20 @@ service cloud.firestore {
 
   function numberedCodeHtml(code, className = "") {
     const source = String(code ?? "");
-    const normalized = source.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
-    const lineCount = normalized.length ? normalized.split("\n").length : 1;
-    const numbers = Array.from({ length: lineCount }, (_, i) => `<span>${i + 1}</span>`).join("");
+    const normalized = source.replace(/
+/g, "
+").replace(/
+/g, "
+");
+    const lines = normalized.length ? normalized.split("
+") : [""];
     const classAttr = className ? ` ${className}` : "";
-    return `<div class="numbered-code${classAttr}"><div class="line-numbers" aria-hidden="true">${numbers}</div><pre><code>${escapeHtml(normalized)}</code></pre></div>`;
+    const rows = lines.map((line, i) => `
+      <div class="code-line">
+        <span class="line-no" aria-hidden="true">${i + 1}</span>
+        <code>${line ? escapeHtml(line) : "&nbsp;"}</code>
+      </div>`).join("");
+    return `<div class="numbered-code${classAttr}">${rows}</div>`;
   }
 
   function cssEscape(value) {
@@ -1162,7 +1171,7 @@ service cloud.firestore {
       </a>`;
     }).join("");
     const path = (location.pathname || "").split("/").pop();
-    const knowledgeActive = ["reference.html", "glossary.html", "syntax-basics.html", "datatypes.html", "strings.html", "equality.html", "collections-arrays.html", "operators-control.html", "methods-constructors.html", "object-oriented.html", "inheritance-interface.html", "exceptions.html", "compile-runtime.html", "cheatsheet.html", "exam-traps.html"].includes(path);
+    const knowledgeActive = ["reference.html", "glossary.html", "syntax-basics.html", "decision-flow.html", "datatypes.html", "numeric-rules.html", "var-scope.html", "strings.html", "equality.html", "collections-arrays.html", "operators-control.html", "loop-control.html", "methods-constructors.html", "object-oriented.html", "modifiers-access.html", "inheritance-interface.html", "polymorphism-cast.html", "exceptions.html", "compile-runtime.html", "error-catalog.html", "method-list.html", "cheatsheet.html", "exam-traps.html", "fine-points.html", "mini-drills.html"].includes(path);
     const knowledgeLinks = `<div class="nav-divider"></div>
       <a class="nav-link${knowledgeActive && path === "reference.html" ? " active" : ""}" href="reference.html">学習記事トップ<span class="small">入口</span></a>
       <a class="nav-link${knowledgeActive && path === "glossary.html" ? " active" : ""}" href="glossary.html">単語集<span class="small">頻出用語</span></a>
@@ -1172,13 +1181,15 @@ service cloud.firestore {
       <a class="nav-link${knowledgeActive && path === "equality.html" ? " active" : ""}" href="equality.html">同一性・同値性比較<span class="small">==/equals</span></a>
       <a class="nav-link${knowledgeActive && path === "collections-arrays.html" ? " active" : ""}" href="collections-arrays.html">配列・ArrayList<span class="small">List</span></a>
       <a class="nav-link${knowledgeActive && path === "operators-control.html" ? " active" : ""}" href="operators-control.html">演算子・制御構造<span class="small">switch/loop</span></a>
+      <a class="nav-link${knowledgeActive && path === "loop-control.html" ? " active" : ""}" href="loop-control.html">ループ・do-while<span class="small">break/continue</span></a>
       <a class="nav-link${knowledgeActive && path === "methods-constructors.html" ? " active" : ""}" href="methods-constructors.html">メソッド・コンストラクタ<span class="small">overload</span></a>
       <a class="nav-link${knowledgeActive && path === "object-oriented.html" ? " active" : ""}" href="object-oriented.html">クラス・static・参照<span class="small">OOP</span></a>
       <a class="nav-link${knowledgeActive && path === "inheritance-interface.html" ? " active" : ""}" href="inheritance-interface.html">継承・interface<span class="small">override/sealed</span></a>
       <a class="nav-link${knowledgeActive && path === "exceptions.html" ? " active" : ""}" href="exceptions.html">例外処理<span class="small">try/catch</span></a>
       <a class="nav-link${knowledgeActive && path === "compile-runtime.html" ? " active" : ""}" href="compile-runtime.html">コンパイル/例外判定<span class="small">判定フロー</span></a>
       <a class="nav-link${knowledgeActive && path === "cheatsheet.html" ? " active" : ""}" href="cheatsheet.html">頻出ルール早見表<span class="small">直前確認</span></a>
-      <a class="nav-link${knowledgeActive && path === "exam-traps.html" ? " active" : ""}" href="exam-traps.html">試験ひっかけ集<span class="small">落とし穴</span></a>`;
+      <a class="nav-link${knowledgeActive && path === "exam-traps.html" ? " active" : ""}" href="exam-traps.html">試験ひっかけ集<span class="small">落とし穴</span></a>
+      <a class="nav-link${knowledgeActive && path === "fine-points.html" ? " active" : ""}" href="fine-points.html">細かい挙動集<span class="small">yield/境界</span></a>`;
     nav.innerHTML = chapterLinks + knowledgeLinks;
   }
 

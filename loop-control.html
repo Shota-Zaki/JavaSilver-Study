@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - ループ・do-while・break/continue</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main">
+      <section class="hero reference-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>ループ・do-while・break/continue</h1>
+        <p>ループは「どの時点で条件判定するか」「++がいつ反映されるか」「抜けたあとに何が実行されるか」で正誤が決まります。</p>
+      </section>
+
+<section class="article-card important">
+<h2>ループ問題の判定順</h2>
+<p>ループ問題は、雰囲気で追うとほぼ間違えます。次の順番で機械的に追ってください。</p>
+<ol class="flow-list">
+<li><strong>初期化</strong>：変数の初期値、配列・Listの中身、参照先を確定する。</li>
+<li><strong>条件判定の位置</strong>：<code>while</code> / <code>for</code> は本体前、<code>do-while</code> は本体後。</li>
+<li><strong>本体実行</strong>：出力、代入、<code>++</code> / <code>--</code>、<code>break</code> / <code>continue</code> を上から処理する。</li>
+<li><strong>更新処理</strong>：<code>for</code> の第3式は、本体が正常終了した後に実行される。<code>continue</code> でも実行される。</li>
+<li><strong>終了後</strong>：条件がfalse、<code>break</code>、<code>return</code>、例外のどれで抜けたかを分ける。</li>
+</ol>
+<div class="rule-box"><strong>結論</strong><br>「条件を見る前に本体を実行するのは <code>do-while</code> だけ」です。ここを固定すると、初回実行の有無を落としにくくなります。</div>
+</section>
+
+<section class="article-card">
+<h2>while文：条件がfalseなら本体は1回も実行しない</h2>
+<pre><code>int i = 0;
+while (i &gt; 0) {
+  System.out.println(i);
+  i--;
+}
+System.out.println("end");
+
+// 出力
+// end</code></pre>
+<p><code>while</code> は本体に入る前に条件を評価します。最初から条件がfalseなら、ループ内は1回も実行されません。</p>
+<pre><code>int i = 0;
+while (i++ &lt; 3) {
+  System.out.print(i + " ");
+}
+System.out.println("/ after=" + i);
+
+// 出力
+// 1 2 3 / after=4</code></pre>
+<p><code>i++ &lt; 3</code> は、比較には増える前の値を使い、その後で <code>i</code> が増えます。最後に <code>3 &lt; 3</code> がfalseになった時点でも、後置インクリメント自体は実行済みなので <code>i</code> は4になります。</p>
+</section>
+
+<section class="article-card">
+<h2>do-while文：本体を実行してから条件を見る</h2>
+<pre><code>int i = 0;
+do {
+  System.out.println(i);
+  i++;
+} while (i &lt; 0);
+System.out.println("end");
+
+// 出力
+// 0
+// end</code></pre>
+<p><code>do-while</code> は条件判定が後ろにあるため、条件が最初からfalseでも本体は必ず1回実行されます。</p>
+<div class="rule-box"><strong>試験での注意</strong><br><code>do { ... } while (条件);</code> の最後の <code>;</code> は必須です。<code>while</code> 文や <code>for</code> 文のブロック終端とは違います。</div>
+<pre><code>int i = 3;
+do {
+  System.out.print(i + " ");
+} while (i++ &lt; 3);
+System.out.println("/ after=" + i);
+
+// 出力
+// 3 / after=4</code></pre>
+<p>条件式の <code>i++ &lt; 3</code> は、比較に3を使ってfalseになります。しかし <code>i++</code> は評価済みなので、抜けた後の <code>i</code> は4です。<strong>条件がfalseでも、条件式内の副作用は残る</strong>点が重要です。</p>
+</section>
+
+<section class="article-card">
+<h2>for文：初期化 → 条件 → 本体 → 更新 → 条件</h2>
+<pre><code>for (int i = 0; i &lt; 3; i++) {
+  System.out.print(i + " ");
+}
+
+// 出力
+// 0 1 2</code></pre>
+<p><code>for</code> は次の順序で動きます。</p>
+<ol class="flow-list">
+<li>初期化：<code>int i = 0</code></li>
+<li>条件：<code>i &lt; 3</code></li>
+<li>本体</li>
+<li>更新：<code>i++</code></li>
+<li>再び条件</li>
+</ol>
+<pre><code>for (int i = 0; i++ &lt; 3;) {
+  System.out.print(i + " ");
+}
+
+// 出力
+// 1 2 3</code></pre>
+<p>条件式に <code>i++</code> がある場合、条件判定のたびに <code>i</code> が増えます。本体で見える <code>i</code> は、条件式評価後の値です。</p>
+</section>
+
+<section class="article-card">
+<h2>for文の更新式とcontinue：continueしても更新式は実行される</h2>
+<pre><code>for (int i = 0; i &lt; 5; i++) {
+  if (i == 2) {
+    continue;
+  }
+  System.out.print(i + " ");
+}
+
+// 出力
+// 0 1 3 4</code></pre>
+<p><code>continue</code> は現在の反復の残りをスキップします。ただし <code>for</code> 文では、その後に第3式の更新処理が実行され、次の条件判定へ進みます。</p>
+<pre><code>int i = 0;
+while (i &lt; 5) {
+  if (i == 2) {
+    i++;
+    continue;
+  }
+  System.out.print(i + " ");
+  i++;
+}
+
+// 出力
+// 0 1 3 4</code></pre>
+<p><code>while</code> には自動の更新式がありません。<code>continue</code> 前に <code>i++</code> を忘れると、<code>i == 2</code> のまま無限ループになります。</p>
+</section>
+
+<section class="article-card">
+<h2>break：すぐにループを抜ける。更新式は実行されない</h2>
+<pre><code>for (int i = 0; i &lt; 5; i++) {
+  if (i == 2) {
+    break;
+  }
+  System.out.print(i + " ");
+}
+System.out.println("end");
+
+// 出力
+// 0 1 end</code></pre>
+<p><code>break</code> はループを即終了します。<code>break</code> が実行された反復では、<code>for</code> の更新式 <code>i++</code> は実行されません。</p>
+<pre><code>int i = 0;
+for (; i &lt; 5; i++) {
+  if (i == 2) break;
+}
+System.out.println(i);
+
+// 出力
+// 2</code></pre>
+<p><code>i == 2</code> で <code>break</code> したため、その回の更新式は動きません。抜けた後の <code>i</code> は2です。</p>
+</section>
+
+<section class="article-card">
+<h2>continue：ループを抜けない。次の反復へ進む</h2>
+<pre><code>for (int i = 0; i &lt; 4; i++) {
+  System.out.print("A");
+  if (i % 2 == 0) continue;
+  System.out.print("B");
+}
+
+// 出力
+// AAABA B ではない
+// 実際: AAAB</code></pre>
+<p>空白を入れずに追うと誤読しやすいので、反復ごとに分けます。</p>
+<table class="ref-table"><thead><tr><th>i</th><th>処理</th><th>出力</th></tr></thead><tbody>
+<tr><td>0</td><td>Aを出力。偶数なのでcontinue</td><td>A</td></tr>
+<tr><td>1</td><td>Aを出力。continueしないのでBも出力</td><td>AB</td></tr>
+<tr><td>2</td><td>Aを出力。偶数なのでcontinue</td><td>A</td></tr>
+<tr><td>3</td><td>Aを出力。Bも出力</td><td>AB</td></tr>
+</tbody></table>
+<p>合計は <code>AABAAB</code> です。途中でcontinueしてもループ自体は終わりません。</p>
+</section>
+
+<section class="article-card">
+<h2>ラベル付きbreak / continue：どのループに効くか</h2>
+<pre><code>outer:
+for (int i = 0; i &lt; 3; i++) {
+  for (int j = 0; j &lt; 3; j++) {
+    if (i == 1 &amp;&amp; j == 1) {
+      break outer;
+    }
+    System.out.print(i + ":" + j + " ");
+  }
+}
+
+// 出力
+// 0:0 0:1 0:2 1:0</code></pre>
+<p><code>break outer;</code> は外側のラベル付きループ全体を抜けます。内側ループだけを抜ける普通の <code>break</code> とは違います。</p>
+<pre><code>outer:
+for (int i = 0; i &lt; 3; i++) {
+  for (int j = 0; j &lt; 3; j++) {
+    if (j == 1) {
+      continue outer;
+    }
+    System.out.print(i + ":" + j + " ");
+  }
+}
+
+// 出力
+// 0:0 1:0 2:0</code></pre>
+<p><code>continue outer;</code> は外側ループの次の反復へ進みます。内側の残り処理は実行されません。</p>
+</section>
+
+<section class="article-card">
+<h2>ループを抜けた後、ループ内の残りは実行されるか</h2>
+<table class="ref-table"><thead><tr><th>原因</th><th>ループ内の残り</th><th>for更新式</th><th>ループ後の文</th></tr></thead><tbody>
+<tr><td>条件がfalse</td><td>実行しない</td><td>条件falseになった後は実行しない</td><td>実行する</td></tr>
+<tr><td><code>break</code></td><td>実行しない</td><td>実行しない</td><td>実行する</td></tr>
+<tr><td><code>continue</code></td><td>実行しない</td><td><code>for</code> では実行する</td><td>まだ抜けない</td></tr>
+<tr><td><code>return</code></td><td>実行しない</td><td>実行しない</td><td>同じメソッド内の後続文は実行しない</td></tr>
+<tr><td>例外</td><td>実行しない</td><td>実行しない</td><td>catchされなければ実行しない</td></tr>
+</tbody></table>
+<div class="rule-box"><strong>判断基準</strong><br>ループを抜ける原因が <code>break</code> なのか、条件falseなのか、<code>return</code> なのかを分けます。特に <code>break</code> と <code>continue</code> は「抜ける」と「次へ進む」で全く違います。</div>
+</section>
+
+<section class="article-card">
+<h2>do-while内の++：本体 → 条件式の順に副作用が起きる</h2>
+<pre><code>int i = 0;
+do {
+  System.out.print(i + " ");
+} while (++i &lt; 3);
+System.out.println("/ after=" + i);
+
+// 出力
+// 0 1 2 / after=3</code></pre>
+<p><code>++i</code> は先に増やしてから比較します。各反復は次のように進みます。</p>
+<table class="ref-table"><thead><tr><th>本体で出力</th><th>条件式</th><th>継続?</th></tr></thead><tbody>
+<tr><td>0</td><td><code>++i</code> で1、<code>1 &lt; 3</code></td><td>継続</td></tr>
+<tr><td>1</td><td><code>++i</code> で2、<code>2 &lt; 3</code></td><td>継続</td></tr>
+<tr><td>2</td><td><code>++i</code> で3、<code>3 &lt; 3</code></td><td>終了</td></tr>
+</tbody></table>
+<pre><code>int i = 0;
+do {
+  System.out.print(i + " ");
+} while (i++ &lt; 3);
+System.out.println("/ after=" + i);
+
+// 出力
+// 0 1 2 3 / after=4</code></pre>
+<p><code>i++</code> は比較に増える前の値を使うため、<code>3 &lt; 3</code> でfalseになる時点でも本体ではすでに3を出力済みです。そして条件式評価後に <code>i</code> は4になります。</p>
+</section>
+
+<section class="article-card">
+<h2>空文ループ：セミコロン1つで本体が空になる</h2>
+<pre><code>int i = 0;
+while (i++ &lt; 3);
+System.out.println(i);
+
+// 出力
+// 4</code></pre>
+<p><code>while (...);</code> の <code>;</code> は空文です。つまりループ本体は何もしません。条件式だけが繰り返し評価されます。</p>
+<pre><code>int i = 0;
+while (i++ &lt; 3)
+  System.out.println(i);
+
+// 出力
+// 1
+// 2
+// 3</code></pre>
+<p>見た目が似ていても、<code>while (条件);</code> と <code>while (条件) 文</code> は別物です。試験ではセミコロンの有無を必ず見ます。</p>
+</section>
+
+<section class="article-card">
+<h2>拡張for文：取り出し変数に代入しても配列要素は変わらない</h2>
+<pre><code>int[] nums = {1, 2, 3};
+for (int n : nums) {
+  n *= 10;
+}
+System.out.println(nums[0]);
+
+// 出力
+// 1</code></pre>
+<p>拡張for文の変数 <code>n</code> は、要素のコピーを受け取るローカル変数です。<code>n</code> に代入しても配列の中身は変わりません。</p>
+<pre><code>StringBuilder[] array = {
+  new StringBuilder("A"),
+  new StringBuilder("B")
+};
+for (StringBuilder sb : array) {
+  sb.append("X");
+}
+System.out.println(array[0]);
+
+// 出力
+// AX</code></pre>
+<p>参照型の場合、取り出し変数には参照のコピーが入ります。参照先のオブジェクトを変更する操作なら、元の配列から見える中身も変わります。ただし、<code>sb = new StringBuilder("Z")</code> のように変数自体を別参照へ向けても、配列要素は変わりません。</p>
+</section>
+
+<section class="article-card">
+<h2>ループ中にListを変更する問題</h2>
+<pre><code>ArrayList&lt;String&gt; list = new ArrayList&lt;&gt;();
+list.add("A");
+list.add("B");
+list.add("C");
+
+for (String s : list) {
+  if (s.equals("B")) {
+    list.remove(s);
+  }
+}
+
+// 状況によって ConcurrentModificationException</code></pre>
+<p>拡張for文は内部的にイテレータを使います。反復中にList本体を直接変更すると、実行時に <code>ConcurrentModificationException</code> が発生する可能性があります。</p>
+<p>Java Silverでは、問題の選択肢にこの例外名が出ないこともあります。その場合は「実行時に例外がスローされる」を選びます。コンパイルエラーではありません。</p>
+</section>
+
+<section class="article-card">
+<h2>ミニ演習：do-whileと++</h2>
+<pre><code>int i = 0;
+do {
+  System.out.print(i);
+} while (i++ &lt; 2);
+System.out.println("/" + i);</code></pre>
+<details class="explanation-detail"><summary>解答</summary><div class="explanation-body">
+<p>出力は <code>012/3</code> です。</p>
+<ol>
+<li>本体で0を出力。条件は <code>0 &lt; 2</code> でtrue。その後 <code>i</code> は1。</li>
+<li>本体で1を出力。条件は <code>1 &lt; 2</code> でtrue。その後 <code>i</code> は2。</li>
+<li>本体で2を出力。条件は <code>2 &lt; 2</code> でfalse。その後 <code>i</code> は3。</li>
+</ol>
+</div></details>
+</section>
+
+<section class="article-card">
+<h2>ミニ演習：break後に更新式は実行されるか</h2>
+<pre><code>int i = 0;
+for (; i &lt; 5; i++) {
+  if (i == 3) break;
+}
+System.out.println(i);</code></pre>
+<details class="explanation-detail"><summary>解答</summary><div class="explanation-body">
+<p>出力は <code>3</code> です。<code>i == 3</code> の反復で <code>break</code> したので、その回の更新式 <code>i++</code> は実行されません。</p>
+</div></details>
+</section>
+
+<section class="article-card">
+<h2>ミニ演習：continueとfor更新式</h2>
+<pre><code>for (int i = 0; i &lt; 4; i++) {
+  if (i == 1) continue;
+  System.out.print(i);
+}</code></pre>
+<details class="explanation-detail"><summary>解答</summary><div class="explanation-body">
+<p>出力は <code>023</code> です。<code>i == 1</code> では出力を飛ばしますが、<code>for</code> の更新式は実行されるため次は <code>i == 2</code> になります。</p>
+</div></details>
+</section>
+
+<section class="article-card important">
+<h2>ループ系の試験チェックリスト</h2>
+<ul>
+<li><code>while</code> は本体前に条件を見る。falseなら0回。</li>
+<li><code>do-while</code> は本体後に条件を見る。最低1回。</li>
+<li><code>do-while</code> の最後の <code>;</code> は必須。</li>
+<li><code>for</code> の更新式は、本体正常終了後と <code>continue</code> 後に実行される。</li>
+<li><code>break</code> 後は更新式を実行しない。</li>
+<li><code>continue</code> はループを抜けない。次の反復へ進む。</li>
+<li><code>i++</code> は値を使ってから増える。<code>++i</code> は増えてから値を使う。</li>
+<li>条件式がfalseでも、条件式内の <code>i++</code> などの副作用は実行済み。</li>
+<li><code>while(...);</code> は空文ループ。</li>
+<li>拡張for文の取り出し変数への再代入は、元の配列・List要素を置き換えない。</li>
+</ul>
+</section>
+
+    </main>
+  </div>
+  <script src="data/questions.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - 修飾子・アクセス制御</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main">
+      <section class="hero reference-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>修飾子・アクセス制御</h1>
+        <p>public/private/protected/default、static/final/abstract/sealedを試験用に整理します。</p>
+      </section>
+
+<section class="article-card">
+  <h2>アクセス修飾子</h2>
+  <div class="table-scroll"><table class="ref-table"><thead><tr><th>修飾子</th><th>同じクラス</th><th>同じパッケージ</th><th>別パッケージのサブクラス</th><th>別パッケージ非サブクラス</th></tr></thead><tbody><tr><td><code>private</code></td><td>OK</td><td>NG</td><td>NG</td><td>NG</td></tr><tr><td>なし(default)</td><td>OK</td><td>OK</td><td>NG</td><td>NG</td></tr><tr><td><code>protected</code></td><td>OK</td><td>OK</td><td>条件付きOK</td><td>NG</td></tr><tr><td><code>public</code></td><td>OK</td><td>OK</td><td>OK</td><td>OK</td></tr></tbody></table></div>
+  <p><code>protected</code> は「同じパッケージならOK」「別パッケージなら継承関係で条件付きOK」です。単純に“サブクラスなら何でもOK”ではありません。</p>
+</section>
+<section class="article-card">
+  <h2>クラスに使える修飾子</h2>
+  <div class="table-scroll"><table class="ref-table"><thead><tr><th>修飾子</th><th>トップレベルクラス</th><th>注意</th></tr></thead><tbody><tr><td><code>public</code></td><td>OK</td><td>ファイル名一致が必要。</td></tr><tr><td>なし(default)</td><td>OK</td><td>同じパッケージ内から使える。</td></tr><tr><td><code>private</code></td><td>NG</td><td>トップレベルでは不可。内部クラスなら可。</td></tr><tr><td><code>protected</code></td><td>NG</td><td>トップレベルでは不可。</td></tr><tr><td><code>final</code></td><td>OK</td><td>継承不可。</td></tr><tr><td><code>abstract</code></td><td>OK</td><td>インスタンス化不可。</td></tr><tr><td><code>sealed</code></td><td>OK</td><td>permitsとサブクラス修飾が論点。</td></tr></tbody></table></div>
+</section>
+<section class="article-card">
+  <h2>finalの3パターン</h2>
+  <div class="table-scroll"><table class="ref-table"><thead><tr><th>対象</th><th>意味</th><th>例</th></tr></thead><tbody><tr><td>変数</td><td>再代入不可</td><td>参照型の場合、参照先のオブジェクト変更まで禁止するわけではない。</td></tr><tr><td>メソッド</td><td>オーバーライド不可</td><td>オーバーロードは別問題。</td></tr><tr><td>クラス</td><td>継承不可</td><td><code>String</code> はfinalクラス。</td></tr></tbody></table></div>
+</section>
+<section class="article-card">
+  <h2>staticの見るポイント</h2>
+  <pre><code>class Sample {
+    int value = 10;
+    static void test() {
+        // System.out.println(value); // NG
+    }
+}</code></pre>
+  <p>staticメソッドはインスタンスなしで呼べるため、特定インスタンスに属するフィールドへ直接アクセスできません。</p>
+</section>
+
+    </main>
+  </div>
+  <script src="data/questions.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
