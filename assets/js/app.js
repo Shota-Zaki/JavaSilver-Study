@@ -858,10 +858,11 @@ service cloud.firestore {
   }
 
   function explanationHtml(q, isCorrect, selected) {
-    const exp = q.explanation || {};
+    const rawExp = q.explanation || {};
+    const exp = typeof rawExp === "string" ? { summary: rawExp, correctReason: rawExp } : rawExp;
     const answerText = (q.answer || []).join("・");
     const selectedText = selected.length ? selected.join("・") : "未選択";
-    const summary = exp.summary || "解説未入力。";
+    const summary = exp.summary || exp.correctReason || "解説未入力。";
     const correctReason = exp.correctReason || summary;
     const related = listHtml(exp.relatedKnowledge);
     const tips = listHtml(exp.examTips);
