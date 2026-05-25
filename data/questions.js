@@ -1,6 +1,6 @@
 window.JAVA_STUDY_DATA = {
   "title": "Java Silver 勉強用ページ",
-  "version": "option-confirm-notes-cleaned-2026-05-25",
+  "version": "final-clean-no-report-2026-05-25",
   "chapters": [
     {
       "id": "ch01",
