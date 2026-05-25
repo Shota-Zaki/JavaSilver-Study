@@ -1,6 +1,6 @@
 window.JAVA_STUDY_DATA = {
   "title": "Java Silver 勉強用ページ",
-  "version": "missing-explanations-fixed-2026-05-25",
+  "version": "ch04-final-check-explanations-normalized-2026-05-25",
   "chapters": [
     {
       "id": "ch01",
@@ -10963,7 +10963,7 @@ window.JAVA_STUDY_DATA = {
           "exception",
           "string/reference"
         ],
-        "status": "verified"
+        "status": "pdf_visual_checked"
       },
       {
         "id": "ch04-q02",
@@ -11084,7 +11084,7 @@ window.JAVA_STUDY_DATA = {
           "string/reference",
           "array"
         ],
-        "status": "verified"
+        "status": "pdf_visual_checked"
       },
       {
         "id": "ch04-q03",
@@ -11244,13 +11244,16 @@ window.JAVA_STUDY_DATA = {
               "text": "4行目のインスタンスは参照がなくなるため、対象となるインスタンスは存在します。"
             }
           ],
-          "examTip": "ガベージコレクション問題では、変数名ではなく「どのインスタンスを誰が参照しているか」を最後の行まで追跡します。null代入や参照のコピーで、参照関係が変わる点を見落とさないでください。",
-          "howToSolve": [
+          "examTips": [
+            "ガベージコレクション問題では、変数名ではなく「どのインスタンスを誰が参照しているか」を最後の行まで追跡します。null代入や参照のコピーで、参照関係が変わる点を見落とさないでください。"
+          ],
+          "judgeSteps": [
             "3行目と4行目で別々のObjectインスタンスが作られる。",
             "5行目でc = aとなり、3行目のインスタンスはaとcから参照される。",
             "6行目でaはnullになるが、cは残る。",
             "7行目でbがnullになり、4行目のインスタンスは参照されなくなる。"
-          ]
+          ],
+          "correctReason": "7行目終了時点でガベージコレクションの対象になるのは、4行目で作成したインスタンスだけです。\n\n3行目で作成したインスタンスは、5行目で変数cにも参照がコピーされています。6行目でaにnullを代入しても、cがまだ同じインスタンスを参照しているため対象になりません。\n\n4行目で作成したインスタンスは、変数bだけが参照していました。7行目でbにnullを代入すると、どの変数からも参照されなくなるため、ガベージコレクションの対象になります。"
         },
         "source": "4章 問題PDF / 4章 解説PDF",
         "codeBlocks": [
@@ -11263,7 +11266,7 @@ window.JAVA_STUDY_DATA = {
           "collection",
           "string/reference"
         ],
-        "status": "verified"
+        "status": "pdf_visual_checked"
       },
       {
         "id": "ch04-q05",
@@ -11331,13 +11334,16 @@ window.JAVA_STUDY_DATA = {
               "text": "インスタンス生成やstaticフィールドアクセスで実行時例外は発生しません。"
             }
           ],
-          "examTip": "staticフィールド問題では、「参照変数名.フィールド名」と書かれていても、staticならクラス側の1つの値を操作していると考えます。見た目に惑わされないでください。",
-          "howToSolve": [
+          "examTips": [
+            "staticフィールド問題では、「参照変数名.フィールド名」と書かれていても、staticならクラス側の1つの値を操作していると考えます。見た目に惑わされないでください。"
+          ],
+          "judgeSteps": [
             "static int num = 0 はSampleクラスに1つだけある。",
             "Sample.num = 10でnumは10。",
             "s.num += 10はSample.num += 10と同じなので20。",
             "s2.num = 30はSample.num = 30と同じなので、最後は30。"
-          ]
+          ],
+          "correctReason": "30が表示されます。\n\nnumはstaticフィールドなので、Sampleのインスタンスごとに別々に存在するのではなく、Sampleクラスに1つだけ存在します。\n\n3行目でSample.numに10を代入します。6行目のs.num += 10は、インスタンス参照経由で書いていますが、実質的にはSample.num += 10と同じです。ここで20になります。\n\n7行目のs2.num = 30も、同じstaticフィールドSample.numを書き換えるため、最後に30が表示されます。"
         },
         "source": "4章 問題PDF / 4章 解説PDF",
         "tags": [
@@ -11345,7 +11351,7 @@ window.JAVA_STUDY_DATA = {
           "main/args",
           "exception"
         ],
-        "status": "verified",
+        "status": "pdf_visual_checked",
         "codeBlocks": [
           {
             "title": "Sample.java",
@@ -12065,7 +12071,7 @@ window.JAVA_STUDY_DATA = {
           "compile-error",
           "overload"
         ],
-        "status": "verified",
+        "status": "pdf_visual_checked",
         "codeBlocks": [
           {
             "title": "Sample.java",
@@ -12140,7 +12146,7 @@ window.JAVA_STUDY_DATA = {
           "varargs",
           "compile-error"
         ],
-        "status": "verified",
+        "status": "pdf_visual_checked",
         "codeBlocks": []
       },
       {
@@ -12199,7 +12205,7 @@ window.JAVA_STUDY_DATA = {
           "compile-error",
           "method"
         ],
-        "status": "verified",
+        "status": "pdf_visual_checked",
         "codeBlocks": [
           {
             "title": "Sample.java",
@@ -12267,7 +12273,7 @@ window.JAVA_STUDY_DATA = {
           "method",
           "signature"
         ],
-        "status": "verified",
+        "status": "pdf_visual_checked",
         "codeBlocks": [
           {
             "title": "基準となるメソッド",
@@ -12395,7 +12401,7 @@ window.JAVA_STUDY_DATA = {
           "access-modifier",
           "compile-error"
         ],
-        "status": "verified",
+        "status": "pdf_visual_checked",
         "codeBlocks": [
           {
             "title": "基準となるメソッド",
@@ -12457,7 +12463,7 @@ window.JAVA_STUDY_DATA = {
           "constructor",
           "access-modifier"
         ],
-        "status": "verified",
+        "status": "pdf_visual_checked",
         "codeBlocks": []
       },
       {
@@ -12525,7 +12531,7 @@ window.JAVA_STUDY_DATA = {
           "method",
           "default-constructor"
         ],
-        "status": "verified"
+        "status": "pdf_visual_checked"
       },
       {
         "id": "ch04-q21",
@@ -12659,7 +12665,7 @@ window.JAVA_STUDY_DATA = {
           "exception",
           "string/reference"
         ],
-        "status": "verified"
+        "status": "pdf_visual_checked"
       },
       {
         "id": "ch04-q22",
@@ -12766,7 +12772,7 @@ window.JAVA_STUDY_DATA = {
           "string/reference",
           "array"
         ],
-        "status": "verified"
+        "status": "pdf_visual_checked"
       },
       {
         "id": "ch04-q23",
@@ -12882,7 +12888,7 @@ window.JAVA_STUDY_DATA = {
           "exception",
           "string/reference"
         ],
-        "status": "verified"
+        "status": "pdf_visual_checked"
       },
       {
         "id": "ch04-q24",
@@ -12934,7 +12940,8 @@ window.JAVA_STUDY_DATA = {
             }
           ],
           "related": "this(...) は同じクラスの別コンストラクタを呼び出します。super(...) はスーパークラスのコンストラクタを呼び出します。どちらもコンストラクタ本体の先頭にしか書けません。",
-          "exam": "this(...) と super(...) の違い、そして「先頭行でなければならない」という制約は頻出です。"
+          "exam": "this(...) と super(...) の違い、そして「先頭行でなければならない」という制約は頻出です。",
+          "correctReason": "正解はBです。コンストラクタから同じクラスの別コンストラクタを呼び出すには this(...) を使います。"
         },
         "source": "4章 問題PDF p.223-224 / 4章 解説PDF p.260",
         "codeBlocks": [
@@ -12953,7 +12960,7 @@ window.JAVA_STUDY_DATA = {
           "main/args",
           "string/reference"
         ],
-        "status": "verified"
+        "status": "pdf_visual_checked"
       },
       {
         "id": "ch04-q25",
@@ -13078,7 +13085,7 @@ window.JAVA_STUDY_DATA = {
           "main/args",
           "exception"
         ],
-        "status": "verified"
+        "status": "pdf_visual_checked"
       },
       {
         "id": "ch04-q26",
@@ -13195,7 +13202,7 @@ window.JAVA_STUDY_DATA = {
           "main/args",
           "exception"
         ],
-        "status": "verified"
+        "status": "pdf_visual_checked"
       },
       {
         "id": "ch04-q27",
@@ -13307,7 +13314,7 @@ window.JAVA_STUDY_DATA = {
           "exception",
           "string/reference"
         ],
-        "status": "verified"
+        "status": "pdf_visual_checked"
       },
       {
         "id": "ch04-q28",
@@ -13414,7 +13421,7 @@ window.JAVA_STUDY_DATA = {
           "string/reference",
           "array"
         ],
-        "status": "verified"
+        "status": "pdf_visual_checked"
       },
       {
         "id": "ch04-q29",
@@ -13521,7 +13528,7 @@ window.JAVA_STUDY_DATA = {
           "exception",
           "string/reference"
         ],
-        "status": "verified"
+        "status": "pdf_visual_checked"
       },
       {
         "id": "ch04-q30",
@@ -13650,7 +13657,7 @@ window.JAVA_STUDY_DATA = {
           "exception",
           "string/reference"
         ],
-        "status": "verified"
+        "status": "pdf_visual_checked"
       },
       {
         "id": "ch04-q31",
