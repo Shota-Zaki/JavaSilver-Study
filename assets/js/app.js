@@ -913,6 +913,7 @@ service cloud.firestore {
       updateProgressUi();
       renderQuestionPalette();
       renderChapterStats();
+      updateResetCurrentButton(q);
     }
   }
 
@@ -927,6 +928,7 @@ service cloud.firestore {
       renderQuestionPalette();
       renderChapterStats();
       renderExamPanel();
+      updateResetCurrentButton(q);
     }
   }
 
@@ -944,6 +946,7 @@ service cloud.firestore {
     renderQuestionPalette();
     renderChapterStats();
     renderExamPanel();
+    updateResetCurrentButton(q);
   }
 
   function updateSelectionStatus(card, q) {
@@ -1133,6 +1136,7 @@ service cloud.firestore {
       </div>
       <div class="today-actions">
         <a class="btn primary" href="${escapeHtml(wrongTarget ? chapterHref(wrongTarget.chapter, "wrong", { q: wrongTarget.question.id }) : "#chapterGrid")}">間違い ${stats.wrong}問</a>
+        <a class="btn" href="wrong-summary.html">間違いまとめ</a>
         <a class="btn" href="${escapeHtml(flaggedTarget ? chapterHref(flaggedTarget.chapter, "flagged", { q: flaggedTarget.question.id }) : "#chapterGrid")}">見直し ${stats.flagged}問</a>
         <a class="btn ghost" href="${escapeHtml(unansweredTarget ? chapterHref(unansweredTarget.chapter, "unanswered", { q: unansweredTarget.question.id }) : "#chapterGrid")}">未回答 ${Math.max(stats.total - stats.answered, 0)}問</a>
       </div>
@@ -1198,6 +1202,7 @@ service cloud.firestore {
       </a>`;
     }).join("");
     const path = (location.pathname || "").split("/").pop();
+    const wrongSummaryActive = path === "wrong-summary.html";
     const knowledgeActive = ["reference.html", "glossary.html", "syntax-basics.html", "decision-flow.html", "datatypes.html", "numeric-rules.html", "var-scope.html", "strings.html", "equality.html", "collections-arrays.html", "operators-control.html", "loop-control.html", "methods-constructors.html", "object-oriented.html", "modifiers-access.html", "inheritance-interface.html", "polymorphism-cast.html", "exceptions.html", "compile-runtime.html", "error-catalog.html", "method-list.html", "cheatsheet.html", "exam-traps.html", "fine-points.html", "mini-drills.html"].includes(path);
     const knowledgeLinks = `<div class="nav-divider"></div>
       <a class="nav-link${knowledgeActive && path === "reference.html" ? " active" : ""}" href="reference.html">学習記事トップ<span class="small">入口</span></a>
@@ -1217,7 +1222,9 @@ service cloud.firestore {
       <a class="nav-link${knowledgeActive && path === "cheatsheet.html" ? " active" : ""}" href="cheatsheet.html">頻出ルール早見表<span class="small">直前確認</span></a>
       <a class="nav-link${knowledgeActive && path === "exam-traps.html" ? " active" : ""}" href="exam-traps.html">試験ひっかけ集<span class="small">落とし穴</span></a>
       <a class="nav-link${knowledgeActive && path === "fine-points.html" ? " active" : ""}" href="fine-points.html">細かい挙動集<span class="small">yield/境界</span></a>`;
-    nav.innerHTML = chapterLinks + knowledgeLinks;
+    const reviewLinks = `<div class="nav-divider"></div>
+      <a class="nav-link${wrongSummaryActive ? " active" : ""}" href="wrong-summary.html">間違いまとめ<span class="small">復習一覧</span></a>`;
+    nav.innerHTML = chapterLinks + reviewLinks + knowledgeLinks;
   }
 
   function renderIndex() {
@@ -1357,6 +1364,22 @@ service cloud.firestore {
     btn.onclick = () => toggleFlag(q);
   }
 
+  function updateResetCurrentButton(q) {
+    const btn = document.getElementById("resetCurrentQuestion");
+    if (!btn) return;
+    const saved = readProgress()[q.id];
+    const answered = isAnswered(saved);
+    btn.disabled = !answered;
+    btn.textContent = answered ? "解答をリセット" : "未回答";
+    btn.onclick = () => {
+      const card = document.querySelector(`[data-question-id="${cssEscape(q.id)}"]`);
+      if (card) {
+        resetQuestion(card, q);
+        updateResetCurrentButton(q);
+      }
+    };
+  }
+
   function scrollToQuestionFocus() {
     const target = document.querySelector("#questionShell .question-card") || document.getElementById("questionShell");
     if (!target) return;
@@ -1418,6 +1441,7 @@ service cloud.firestore {
     renderQuestionPalette();
     updateNavButtons(index, list.length);
     updateFlagButton(q);
+    updateResetCurrentButton(q);
     if (options.focus) scrollToQuestionFocus();
   }
 
@@ -1584,6 +1608,7 @@ service cloud.firestore {
         </div>
         <div class="question-toolbar-sub">
           <select id="questionJump" class="question-jump" aria-label="問題番号を選択"></select>
+          <button id="resetCurrentQuestion" class="btn ghost reset-current-btn" disabled>解答をリセット</button>
           <button id="toggleFlag" class="btn flag-btn">後で見直す</button>
         </div>
       </div>
@@ -1620,11 +1645,102 @@ service cloud.firestore {
     if (unanswered) unanswered.onclick = firstUnanswered;
   }
 
+
+  function wrongQuestionItems() {
+    const progress = readProgress();
+    const items = [];
+    for (const ch of DATA.chapters) {
+      for (const q of DATA.questions[ch.id] || []) {
+        const record = progress[q.id];
+        if (!isAnswered(record) || record.isCorrect) continue;
+        items.push({ chapter: ch, question: q, record });
+      }
+    }
+    return items.sort((a, b) => {
+      const ta = Date.parse(a.record.answeredAt || "") || 0;
+      const tb = Date.parse(b.record.answeredAt || "") || 0;
+      return tb - ta;
+    });
+  }
+
+  function renderWrongSummary() {
+    const root = document.getElementById("wrongSummaryRoot");
+    if (!root) return;
+    const items = wrongQuestionItems();
+    const byChapter = new Map();
+    items.forEach(item => {
+      if (!byChapter.has(item.chapter.id)) byChapter.set(item.chapter.id, []);
+      byChapter.get(item.chapter.id).push(item);
+    });
+    const stats = globalStats();
+    const weak = weakTagStats().slice(0, 10);
+    if (!items.length) {
+      root.innerHTML = `<section class="empty-state">
+        <h2>間違えた問題はありません</h2>
+        <p class="inline-note">解答後、不正解になった問題がここに集まります。</p>
+        <a class="btn primary" href="index.html">トップへ戻る</a>
+      </section>`;
+      return;
+    }
+    const tagHtml = weak.length ? `<div class="weak-tags">${weak.map(item => `<span class="weak-tag">${escapeHtml(item.tag)} <b>${item.wrong}</b>/<small>${item.answered}</small></span>`).join("")}</div>` : "";
+    const chapterHtml = Array.from(byChapter.entries()).map(([id, rows]) => {
+      const ch = chapterById(id);
+      return `<section class="wrong-chapter-card">
+        <div class="wrong-chapter-head">
+          <h2>${escapeHtml(ch ? ch.title : id)}</h2>
+          <span class="badge todo">${rows.length}問</span>
+        </div>
+        <div class="wrong-item-list">
+          ${rows.map(({ chapter, question, record }) => {
+            const selected = (record.selected || []).join("・") || "未選択";
+            const answer = (question.answer || []).join("・");
+            const tags = getQuestionTags(question).slice(0, 4).map(tag => `<span class="tag-chip">${escapeHtml(tag)}</span>`).join("");
+            return `<article class="wrong-item">
+              <div class="wrong-item-main">
+                <h3>問${question.number}</h3>
+                <p><span>あなたの解答</span><strong class="bad-text">${escapeHtml(selected)}</strong></p>
+                <p><span>正解</span><strong class="ok-text">${escapeHtml(answer)}</strong></p>
+                ${tags ? `<div class="tag-list">${tags}</div>` : ""}
+              </div>
+              <div class="wrong-item-actions">
+                <a class="btn primary" href="${escapeHtml(chapterHref(chapter, "wrong", { q: question.id }))}">解き直す</a>
+                <button class="btn ghost" data-wrong-reset="${escapeHtml(question.id)}">履歴を消す</button>
+              </div>
+            </article>`;
+          }).join("")}
+        </div>
+      </section>`;
+    }).join("");
+    root.innerHTML = `<section class="summary-panel">
+        <div>
+          <h2>間違いまとめ</h2>
+          <p class="inline-note">不正解の問題だけを章ごとに集約しています。</p>
+        </div>
+        <div class="summary-stats">
+          <div class="stat-card"><span>不正解</span><strong>${stats.wrong}</strong></div>
+          <div class="stat-card"><span>解答済み</span><strong>${stats.answered}</strong></div>
+          <div class="stat-card"><span>正解率</span><strong>${stats.answered ? Math.round(stats.correct / stats.answered * 100) : 0}%</strong></div>
+        </div>
+        ${tagHtml}
+      </section>
+      ${chapterHtml}`;
+    root.querySelectorAll("[data-wrong-reset]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const found = findQuestionById(btn.dataset.wrongReset);
+        if (!found) return;
+        clearAnswer(found.question);
+        renderWrongSummary();
+        renderDashboard();
+      });
+    });
+  }
+
   function renderAll() {
     setSingleFileVisibility();
     renderNav();
     renderIndex();
     renderChapter();
+    renderWrongSummary();
     bindChapterToolbar();
     updateProgressUi();
   }
