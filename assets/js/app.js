@@ -745,16 +745,22 @@ service cloud.firestore {
     return inferTags(q, chapter);
   }
 
+  function owningChapterId(q) {
+    const chapter = DATA.chapters.find(ch => (DATA.questions[ch.id] || []).some(item => item.id === q.id));
+    return chapter ? chapter.id : chapterId;
+  }
+
   function saveAnswer(q, selected) {
     const progress = readProgress();
     const previous = progress[q.id] || {};
     const answeredAt = new Date().toISOString();
     const isCorrect = arraysEqual(selected, q.answer);
+    const ownerId = owningChapterId(q);
     const attempt = {
       selected: [...selected],
       isCorrect,
       answeredAt,
-      chapterId,
+      chapterId: ownerId,
       tags: getQuestionTags(q)
     };
     progress[q.id] = {
@@ -762,7 +768,7 @@ service cloud.firestore {
       selected: [...selected],
       isCorrect,
       answeredAt,
-      chapterId,
+      chapterId: ownerId,
       tags: getQuestionTags(q),
       attempts: [...attemptsOf(previous), attempt]
     };
@@ -775,7 +781,7 @@ service cloud.firestore {
     if (!previous) return;
     const next = {
       ...previous,
-      chapterId,
+      chapterId: previous.chapterId || owningChapterId(q),
       tags: previous.tags && previous.tags.length ? previous.tags : getQuestionTags(q),
       resetAt: new Date().toISOString()
     };
@@ -813,7 +819,7 @@ service cloud.firestore {
 
   function toggleFlag(q) {
     const progress = readProgress();
-    const record = progress[q.id] || { chapterId, tags: getQuestionTags(q) };
+    const record = progress[q.id] || { chapterId: owningChapterId(q), tags: getQuestionTags(q) };
     record.flagged = !record.flagged;
     if (!record.flagged && !isAnswered(record)) {
       delete progress[q.id];
@@ -1206,7 +1212,7 @@ service cloud.firestore {
         <h2>今日の復習</h2>
       </div>
       <div class="today-actions">
-        <a class="btn primary" href="${escapeHtml(wrongTarget ? chapterHref(wrongTarget.chapter, "wrong", { q: wrongTarget.question.id }) : "#chapterGrid")}">間違い ${stats.wrong}問</a>
+        <a class="btn primary" href="${stats.wrong ? "wrong-practice.html" : "#chapterGrid"}">間違い ${stats.wrong}問</a>
         <a class="btn" href="wrong-summary.html">間違いまとめ</a>
         <a class="btn" href="${escapeHtml(flaggedTarget ? chapterHref(flaggedTarget.chapter, "flagged", { q: flaggedTarget.question.id }) : "#chapterGrid")}">見直し ${stats.flagged}問</a>
         <a class="btn ghost" href="${escapeHtml(unansweredTarget ? chapterHref(unansweredTarget.chapter, "unanswered", { q: unansweredTarget.question.id }) : "#chapterGrid")}">未回答 ${Math.max(stats.total - stats.answered, 0)}問</a>
@@ -1237,7 +1243,7 @@ service cloud.firestore {
     const exam2 = chapterById("ch08");
     root.innerHTML = `<div class="quick-actions">
         ${quickActionHtml("前回の続き", resume ? `${resume.chapter.title} / 問${resume.question.number}` : "第1章から開始", resume, "resume")}
-        ${quickActionHtml("間違い復習", wrong ? `${stats.wrong}問を復習` : "対象なし", wrong, "wrong")}
+        ${stats.wrong ? `<a class="quick-card" href="wrong-practice.html"><span>間違い復習</span><strong>${stats.wrong}問をランダム復習</strong></a>` : quickActionHtml("間違い復習", "対象なし", null, "wrong")}
         ${quickActionHtml("見直し復習", flagged ? `${stats.flagged}問を復習` : "対象なし", flagged, "flagged")}
         <a class="quick-card" href="${escapeHtml(exam1 ? chapterHref(exam1, "all") : "#chapterGrid")}"><span>模試を開始</span><strong>模試① / 模試②</strong></a>
       </div>
@@ -1294,7 +1300,8 @@ service cloud.firestore {
       <a class="nav-link${knowledgeActive && path === "exam-traps.html" ? " active" : ""}" href="exam-traps.html">試験ひっかけ集<span class="small">落とし穴</span></a>
       <a class="nav-link${knowledgeActive && path === "fine-points.html" ? " active" : ""}" href="fine-points.html">細かい挙動集<span class="small">yield/境界</span></a>`;
     const reviewLinks = `<div class="nav-divider"></div>
-      <a class="nav-link${wrongSummaryActive ? " active" : ""}" href="wrong-summary.html">間違いまとめ<span class="small">復習一覧</span></a>`;
+      <a class="nav-link${wrongSummaryActive ? " active" : ""}" href="wrong-summary.html">間違いまとめ<span class="small">一覧</span></a>
+      <a class="nav-link${path === "wrong-practice.html" ? " active" : ""}" href="wrong-practice.html">間違い演習<span class="small">ランダム</span></a>`;
     nav.innerHTML = chapterLinks + reviewLinks + knowledgeLinks;
   }
 
@@ -1735,70 +1742,75 @@ service cloud.firestore {
     });
   }
 
+  function shuffleItems(items) {
+    const arr = [...items];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function wrongPracticeIds() {
+    return shuffleItems(wrongQuestionItems()).map(item => item.question.id);
+  }
+
   function renderWrongSummary() {
     const root = document.getElementById("wrongSummaryRoot");
     if (!root) return;
-    const items = wrongQuestionItems();
-    const byChapter = new Map();
-    items.forEach(item => {
-      if (!byChapter.has(item.chapter.id)) byChapter.set(item.chapter.id, []);
-      byChapter.get(item.chapter.id).push(item);
-    });
+    const items = shuffleItems(wrongQuestionItems());
     const stats = globalStats();
     const weak = weakTagStats().slice(0, 10);
     if (!items.length) {
       root.innerHTML = `<section class="empty-state">
         <h2>間違えた問題はありません</h2>
-        <p class="inline-note">解答後、不正解になった問題がここに集まります。</p>
         <a class="btn primary" href="index.html">トップへ戻る</a>
       </section>`;
       return;
     }
     const tagHtml = weak.length ? `<div class="weak-tags">${weak.map(item => `<span class="weak-tag">${escapeHtml(item.tag)} <b>${item.wrong}</b>/<small>${item.answered}</small></span>`).join("")}</div>` : "";
-    const chapterHtml = Array.from(byChapter.entries()).map(([id, rows]) => {
-      const ch = chapterById(id);
-      return `<section class="wrong-chapter-card">
-        <div class="wrong-chapter-head">
-          <h2>${escapeHtml(ch ? ch.title : id)}</h2>
-          <span class="badge todo">${rows.length}問</span>
-        </div>
-        <div class="wrong-item-list">
-          ${rows.map(({ chapter, question, record }) => {
-            const selected = (record.selected || []).join("・") || "未回答";
-            const answer = (question.answer || []).join("・");
-            const wrongCount = wrongAttemptCount(record);
-            const totalCount = totalAttemptCount(record);
-            const tags = getQuestionTags(question).slice(0, 4).map(tag => `<span class="tag-chip">${escapeHtml(tag)}</span>`).join("");
-            return `<article class="wrong-item">
-              <div class="wrong-item-main">
-                <h3>問${question.number}</h3>
-                <p><span>現在の解答</span><strong class="bad-text">${escapeHtml(selected)}</strong></p>
-                <p><span>正解</span><strong class="ok-text">${escapeHtml(answer)}</strong></p>
-                <p><span>履歴</span><strong>${wrongCount}回ミス / ${totalCount}回解答</strong></p>
-                ${tags ? `<div class="tag-list">${tags}</div>` : ""}
-              </div>
-              <div class="wrong-item-actions">
-                <a class="btn primary" href="${escapeHtml(chapterHref(chapter, "wrong", { q: question.id, retry: "1" }))}">リセットして解き直す</a>
-                <button class="btn ghost" data-wrong-reset="${escapeHtml(question.id)}">履歴を消す</button>
-              </div>
-            </article>`;
-          }).join("")}
-        </div>
-      </section>`;
-    }).join("");
+    const listHtml = `<section class="wrong-chapter-card wrong-random-card">
+      <div class="wrong-chapter-head">
+        <h2>ランダム間違い一覧</h2>
+        <span class="badge todo">${items.length}問</span>
+      </div>
+      <div class="wrong-item-list">
+        ${items.map(({ chapter, question, record }) => {
+          const selected = (record.selected || []).join("・") || "未回答";
+          const answer = (question.answer || []).join("・");
+          const wrongCount = wrongAttemptCount(record);
+          const totalCount = totalAttemptCount(record);
+          const tags = getQuestionTags(question).slice(0, 4).map(tag => `<span class="tag-chip">${escapeHtml(tag)}</span>`).join("");
+          return `<article class="wrong-item">
+            <div class="wrong-item-main">
+              <h3>${escapeHtml(chapter.title)} / 問${question.number}</h3>
+              <p><span>現在の解答</span><strong class="bad-text">${escapeHtml(selected)}</strong></p>
+              <p><span>正解</span><strong class="ok-text">${escapeHtml(answer)}</strong></p>
+              <p><span>履歴</span><strong>${wrongCount}回ミス / ${totalCount}回解答</strong></p>
+              ${tags ? `<div class="tag-list">${tags}</div>` : ""}
+            </div>
+            <div class="wrong-item-actions">
+              <a class="btn primary" href="wrong-practice.html?q=${encodeURIComponent(question.id)}">この問題から解く</a>
+              <button class="btn ghost" data-wrong-reset="${escapeHtml(question.id)}">履歴を消す</button>
+            </div>
+          </article>`;
+        }).join("")}
+      </div>
+    </section>`;
     root.innerHTML = `<section class="summary-panel">
         <div>
           <h2>間違いまとめ</h2>
-          <p class="inline-note">不正解の問題だけを章ごとに集約しています。</p>
+          <p class="inline-note">章で分けず、間違えた問題だけをランダム順にまとめています。</p>
         </div>
         <div class="summary-stats">
           <div class="stat-card"><span>不正解</span><strong>${stats.wrong}</strong></div>
           <div class="stat-card"><span>解答済み</span><strong>${stats.answered}</strong></div>
           <div class="stat-card"><span>正解率</span><strong>${stats.answered ? Math.round(stats.correct / stats.answered * 100) : 0}%</strong></div>
         </div>
+        <div class="summary-actions"><a class="btn primary" href="wrong-practice.html">ランダム演習を開始</a></div>
         ${tagHtml}
       </section>
-      ${chapterHtml}`;
+      ${listHtml}`;
     root.querySelectorAll("[data-wrong-reset]").forEach(btn => {
       btn.addEventListener("click", () => {
         const found = findQuestionById(btn.dataset.wrongReset);
@@ -1810,12 +1822,123 @@ service cloud.firestore {
     });
   }
 
+  let wrongPracticeList = [];
+  let wrongPracticeIndex = 0;
+
+  function setWrongPracticeMessage(text) {
+    const el = document.getElementById("wrongPracticeMessage");
+    if (el) el.textContent = text || "";
+  }
+
+  function ensureWrongPracticeList() {
+    const params = new URLSearchParams(location.search || "");
+    const requested = params.get("q");
+    const all = wrongQuestionItems();
+    if (!all.length) return [];
+    let ids = wrongPracticeIds();
+    if (requested && ids.includes(requested)) {
+      ids = [requested, ...ids.filter(id => id !== requested)];
+    }
+    return ids.map(id => {
+      const found = findQuestionById(id);
+      return found ? { chapter: found.chapter, question: found.question, record: readProgress()[id] } : null;
+    }).filter(Boolean);
+  }
+
+  function wrongPracticeQuestionHtml(item) {
+    const q = item.question;
+    const chapterLabel = item.chapter ? item.chapter.title : "";
+    const html = questionHtml(q).replace(`<h2 class="q-title">問${q.number}</h2>`, `<h2 class="q-title">${escapeHtml(chapterLabel)} / 問${q.number}</h2>`);
+    return html;
+  }
+
+  function renderWrongPracticeQuestion(options = {}) {
+    const shell = document.getElementById("wrongPracticeShell");
+    if (!shell) return;
+    if (!wrongPracticeList.length) wrongPracticeList = ensureWrongPracticeList();
+    if (!wrongPracticeList.length) {
+      shell.innerHTML = `<div class="empty-state"><h2>間違えた問題はありません</h2><a class="btn primary" href="index.html">トップへ戻る</a></div>`;
+      const pos = document.getElementById("wrongPracticePosition");
+      if (pos) pos.textContent = "0 / 0";
+      return;
+    }
+    wrongPracticeIndex = Math.min(Math.max(wrongPracticeIndex, 0), wrongPracticeList.length - 1);
+    const item = wrongPracticeList[wrongPracticeIndex];
+    const q = item.question;
+    shell.innerHTML = wrongPracticeQuestionHtml(item);
+    const card = shell.querySelector(`[data-question-id="${cssEscape(q.id)}"]`);
+    bindQuestion(card, q);
+    const cardNext = card.querySelector("[data-card-next]");
+    if (cardNext) {
+      const clone = cardNext.cloneNode(true);
+      cardNext.replaceWith(clone);
+      clone.addEventListener("click", () => moveWrongPractice(1));
+    }
+    const saved = readProgress()[q.id];
+    if (saved && hasWrongHistory(saved)) {
+      clearAnswer(q);
+    }
+    restoreQuestion(card, q);
+    const pos = document.getElementById("wrongPracticePosition");
+    if (pos) pos.textContent = `${wrongPracticeIndex + 1} / ${wrongPracticeList.length}`;
+    document.querySelectorAll("[data-wrong-practice-prev]").forEach(btn => { btn.disabled = wrongPracticeIndex <= 0; });
+    document.querySelectorAll("[data-wrong-practice-next]").forEach(btn => { btn.disabled = wrongPracticeIndex >= wrongPracticeList.length - 1; });
+    if (options.focus) scrollToQuestionFocus();
+  }
+
+  function moveWrongPractice(delta) {
+    if (!wrongPracticeList.length) return;
+    wrongPracticeIndex = Math.min(Math.max(wrongPracticeIndex + delta, 0), wrongPracticeList.length - 1);
+    renderWrongPracticeQuestion({ focus: true });
+  }
+
+  function renderWrongPractice() {
+    const root = document.getElementById("wrongPracticeRoot");
+    if (!root) return;
+    wrongPracticeList = ensureWrongPracticeList();
+    wrongPracticeIndex = 0;
+    root.innerHTML = `<div class="study-panel wrong-practice-panel">
+      <div class="question-toolbar wrong-practice-toolbar">
+        <div class="question-toolbar-main">
+          <button class="btn" data-wrong-practice-prev>前の問題</button>
+          <span id="wrongPracticePosition" class="question-position">0 / 0</span>
+          <button class="btn" data-wrong-practice-next>次の問題</button>
+        </div>
+        <div class="question-toolbar-sub">
+          <button class="btn" id="shuffleWrongPractice">並び替え</button>
+          <a class="btn ghost" href="wrong-summary.html">一覧へ戻る</a>
+        </div>
+      </div>
+      <p id="wrongPracticeMessage" class="inline-note"></p>
+      <div id="wrongPracticeShell"></div>
+      <div class="viewer-footer">
+        <button class="btn" data-wrong-practice-prev>前へ</button>
+        <button class="btn primary" data-wrong-practice-submit>解答する</button>
+        <button class="btn" data-wrong-practice-next>次へ</button>
+      </div>
+    </div>`;
+    root.querySelectorAll("[data-wrong-practice-prev]").forEach(btn => btn.addEventListener("click", () => moveWrongPractice(-1)));
+    root.querySelectorAll("[data-wrong-practice-next]").forEach(btn => btn.addEventListener("click", () => moveWrongPractice(1)));
+    document.getElementById("shuffleWrongPractice")?.addEventListener("click", () => {
+      wrongPracticeList = ensureWrongPracticeList();
+      wrongPracticeIndex = 0;
+      renderWrongPracticeQuestion({ focus: true });
+      setWrongPracticeMessage("ランダム順を更新しました。");
+    });
+    root.querySelector("[data-wrong-practice-submit]")?.addEventListener("click", () => {
+      const card = document.querySelector("#wrongPracticeShell .question-card");
+      card?.querySelector("[data-submit]")?.click();
+    });
+    renderWrongPracticeQuestion({ focus: true });
+  }
+
   function renderAll() {
     setSingleFileVisibility();
     renderNav();
     renderIndex();
     renderChapter();
     renderWrongSummary();
+    renderWrongPractice();
     bindChapterToolbar();
     updateProgressUi();
   }
