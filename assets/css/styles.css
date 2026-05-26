@@ -2146,3 +2146,32 @@ pre {
     grid-template-columns: 1fr;
   }
 }
+
+/* Wrong-practice source question label */
+.source-question-label {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin-right: 8px;
+  padding: 2px 8px;
+  border: 1px solid rgba(37, 99, 235, .22);
+  border-radius: 999px;
+  color: #1d4ed8;
+  background: #eff6ff;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: normal;
+}
+.q-meta .source-question-label + [data-select-status]::before {
+  content: " / ";
+  color: var(--muted);
+}
+@media (max-width: 640px) {
+  .q-meta .source-question-label {
+    display: flex;
+    margin: 4px 0 3px;
+  }
+  .q-meta .source-question-label + [data-select-status]::before {
+    content: "";
+  }
+}

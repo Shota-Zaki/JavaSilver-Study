@@ -1783,7 +1783,7 @@ service cloud.firestore {
           const tags = getQuestionTags(question).slice(0, 4).map(tag => `<span class="tag-chip">${escapeHtml(tag)}</span>`).join("");
           return `<article class="wrong-item">
             <div class="wrong-item-main">
-              <h3>${escapeHtml(chapter.title)} / 問${question.number}</h3>
+              <h3>元の問題: ${escapeHtml(chapter.title)} 問${question.number}</h3>
               <p><span>現在の解答</span><strong class="bad-text">${escapeHtml(selected)}</strong></p>
               <p><span>正解</span><strong class="ok-text">${escapeHtml(answer)}</strong></p>
               <p><span>履歴</span><strong>${wrongCount}回ミス / ${totalCount}回解答</strong></p>
@@ -1845,10 +1845,17 @@ service cloud.firestore {
     }).filter(Boolean);
   }
 
+  function originalQuestionLabel(chapter, question) {
+    const chapterText = chapter && chapter.title ? chapter.title : `第${question.chapter || ""}章`;
+    return `${chapterText} 問${question.number}`;
+  }
+
   function wrongPracticeQuestionHtml(item) {
     const q = item.question;
-    const chapterLabel = item.chapter ? item.chapter.title : "";
-    const html = questionHtml(q).replace(`<h2 class="q-title">問${q.number}</h2>`, `<h2 class="q-title">${escapeHtml(chapterLabel)} / 問${q.number}</h2>`);
+    const sourceLabel = originalQuestionLabel(item.chapter, q);
+    const html = questionHtml(q)
+      .replace(`<h2 class="q-title">問${q.number}</h2>`, `<h2 class="q-title">問${q.number}</h2>`)
+      .replace(`<div class="q-meta"><span data-select-status>${escapeHtml(selectInstruction(q))}</span></div>`, `<div class="q-meta"><span class="source-question-label">元の問題: ${escapeHtml(sourceLabel)}</span><span data-select-status>${escapeHtml(selectInstruction(q))}</span></div>`);
     return html;
   }
 
