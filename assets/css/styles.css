@@ -2103,3 +2103,19 @@ pre {
     width: 100%;
   }
 }
+
+/* Wrong retry history */
+.q-dot.wrong-history:not(.active) {
+  color: var(--bad);
+  background: #fff7ed;
+  border-color: #fb923c;
+}
+.wrong-item-main p {
+  margin: 4px 0;
+}
+.wrong-item-main p span {
+  color: var(--muted);
+  display: inline-block;
+  min-width: 6.5em;
+  font-size: 0.9em;
+}

@@ -127,10 +127,14 @@
         base = { ...currentRecord, ...incomingRecord };
       }
       const tags = Array.from(new Set([...(currentRecord.tags || []), ...(incomingRecord.tags || [])])).filter(Boolean);
+      const attempts = [...attemptsOf(currentRecord), ...attemptsOf(incomingRecord)]
+        .filter(attempt => attempt && attempt.answeredAt)
+        .sort((a, b) => (Date.parse(a.answeredAt || "") || 0) - (Date.parse(b.answeredAt || "") || 0));
       merged[qid] = {
         ...base,
         flagged: Boolean(currentRecord.flagged || incomingRecord.flagged),
-        tags: tags.length ? tags : base.tags
+        tags: tags.length ? tags : base.tags,
+        attempts
       };
     });
     return merged;
@@ -575,7 +579,8 @@ service cloud.firestore {
     const hashParams = new URLSearchParams(hashQuery);
     return {
       q: hashParams.get("q") || params.get("q") || "",
-      tag: hashParams.get("tag") || params.get("tag") || ""
+      tag: hashParams.get("tag") || params.get("tag") || "",
+      retry: hashParams.get("retry") || params.get("retry") || ""
     };
   }
 
@@ -628,8 +633,10 @@ service cloud.firestore {
   function chapterHref(ch, mode, extra = {}) {
     const params = new URLSearchParams();
     if (mode) params.set("mode", mode);
-    if (extra.q) params.set("q", extra.q);
-    if (extra.tag) params.set("tag", extra.tag);
+    Object.entries(extra || {}).forEach(([key, value]) => {
+      if (value === undefined || value === null || value === "") return;
+      params.set(key, value);
+    });
     const query = params.toString();
     if (isSingleFile) return query ? `#${ch.id}?${query}` : `#${ch.id}`;
     return query ? `${ch.page}?${query}` : ch.page;
@@ -658,6 +665,36 @@ service cloud.firestore {
 
   function isFlagged(record) {
     return Boolean(record && record.flagged);
+  }
+
+  function attemptsOf(record) {
+    return Array.isArray(record && record.attempts) ? record.attempts : [];
+  }
+
+  function wrongAttemptCount(record) {
+    if (!record) return 0;
+    const attempts = attemptsOf(record);
+    const count = attempts.filter(attempt => attempt && attempt.isCorrect === false).length;
+    if (count > 0) return count;
+    return isAnswered(record) && record.isCorrect === false ? 1 : 0;
+  }
+
+  function totalAttemptCount(record) {
+    if (!record) return 0;
+    const attempts = attemptsOf(record);
+    if (attempts.length) return attempts.length;
+    return isAnswered(record) ? 1 : 0;
+  }
+
+  function hasWrongHistory(record) {
+    return wrongAttemptCount(record) > 0;
+  }
+
+  function latestProgressTime(record) {
+    if (!record) return 0;
+    const attempts = attemptsOf(record);
+    const lastAttempt = attempts.length ? attempts[attempts.length - 1] : null;
+    return Date.parse(record.answeredAt || record.resetAt || lastAttempt && lastAttempt.answeredAt || "") || 0;
   }
 
   function normalizeTag(value) {
@@ -711,13 +748,23 @@ service cloud.firestore {
   function saveAnswer(q, selected) {
     const progress = readProgress();
     const previous = progress[q.id] || {};
+    const answeredAt = new Date().toISOString();
+    const isCorrect = arraysEqual(selected, q.answer);
+    const attempt = {
+      selected: [...selected],
+      isCorrect,
+      answeredAt,
+      chapterId,
+      tags: getQuestionTags(q)
+    };
     progress[q.id] = {
       ...previous,
       selected: [...selected],
-      isCorrect: arraysEqual(selected, q.answer),
-      answeredAt: new Date().toISOString(),
+      isCorrect,
+      answeredAt,
       chapterId,
-      tags: getQuestionTags(q)
+      tags: getQuestionTags(q),
+      attempts: [...attemptsOf(previous), attempt]
     };
     writeProgress(progress);
   }
@@ -726,11 +773,26 @@ service cloud.firestore {
     const progress = readProgress();
     const previous = progress[q.id];
     if (!previous) return;
-    if (previous.flagged) {
-      progress[q.id] = { flagged: true, chapterId, tags: getQuestionTags(q) };
+    const next = {
+      ...previous,
+      chapterId,
+      tags: previous.tags && previous.tags.length ? previous.tags : getQuestionTags(q),
+      resetAt: new Date().toISOString()
+    };
+    delete next.selected;
+    delete next.isCorrect;
+    delete next.answeredAt;
+    if (next.flagged || attemptsOf(next).length) {
+      progress[q.id] = next;
     } else {
       delete progress[q.id];
     }
+    writeProgress(progress);
+  }
+
+  function deleteQuestionProgress(q) {
+    const progress = readProgress();
+    delete progress[q.id];
     writeProgress(progress);
   }
 
@@ -1004,6 +1066,11 @@ service cloud.firestore {
     const progress = readProgress();
     const saved = progress[q.id];
     if (!saved) return;
+    if (getRouteParams().retry === "1" && hasWrongHistory(saved)) {
+      clearAnswer(q);
+      updateSelectionStatus(card, q);
+      return;
+    }
     if (Array.isArray(saved.selected)) {
       saved.selected.forEach(key => {
         const input = card.querySelector(`input[value="${cssEscape(key)}"]`);
@@ -1023,7 +1090,7 @@ service cloud.firestore {
     const progress = readProgress();
     const answered = questions.filter(q => isAnswered(progress[q.id])).length;
     const correct = questions.filter(q => isAnswered(progress[q.id]) && progress[q.id].isCorrect).length;
-    const wrong = questions.filter(q => isAnswered(progress[q.id]) && !progress[q.id].isCorrect).length;
+    const wrong = questions.filter(q => hasWrongHistory(progress[q.id])).length;
     const flagged = questions.filter(q => isFlagged(progress[q.id])).length;
     const rate = answered ? Math.round(correct / answered * 100) : 0;
     return { total: questions.length, answered, correct, wrong, flagged, rate };
@@ -1047,21 +1114,25 @@ service cloud.firestore {
     for (const ch of DATA.chapters) {
       for (const q of DATA.questions[ch.id] || []) {
         const record = progress[q.id];
-        if (!isAnswered(record)) continue;
+        if (!record) continue;
         const tags = record.tags && record.tags.length ? record.tags : getQuestionTags(q);
+        const attempts = attemptsOf(record);
+        const answeredCount = attempts.length || (isAnswered(record) ? 1 : 0);
+        const wrongCount = wrongAttemptCount(record);
+        if (!answeredCount && !wrongCount) continue;
         tags.forEach(tag => {
           const key = normalizeTag(tag);
           if (!key) return;
           const item = map.get(key) || { tag: key, answered: 0, wrong: 0 };
-          item.answered += 1;
-          if (!record.isCorrect) item.wrong += 1;
+          item.answered += answeredCount;
+          item.wrong += wrongCount;
           map.set(key, item);
         });
       }
     }
     return Array.from(map.values())
       .filter(item => item.wrong > 0)
-      .sort((a, b) => (b.wrong - a.wrong) || ((b.wrong / b.answered) - (a.wrong / a.answered)))
+      .sort((a, b) => (b.wrong - a.wrong) || ((b.wrong / Math.max(b.answered, 1)) - (a.wrong / Math.max(a.answered, 1))))
       .slice(0, 12);
   }
 
@@ -1080,7 +1151,7 @@ service cloud.firestore {
       const questions = DATA.questions[ch.id] || [];
       questions.forEach((q, index) => {
         const record = progress[q.id];
-        const t = Date.parse(record && record.answeredAt || "") || 0;
+        const t = latestProgressTime(record);
         if (t && (!latest || t > latest.time)) latest = { chapter: ch, question: q, index, time: t };
       });
     }
@@ -1103,7 +1174,7 @@ service cloud.firestore {
       const list = DATA.questions[ch.id] || [];
       const q = list.find(item => {
         const record = progress[item.id];
-        if (mode === "wrong") return isAnswered(record) && !record.isCorrect;
+        if (mode === "wrong") return hasWrongHistory(record);
         if (mode === "flagged") return isFlagged(record);
         if (mode === "unanswered") return !isAnswered(record);
         if (mode === "tag") {
@@ -1253,7 +1324,7 @@ service cloud.firestore {
     const questions = DATA.questions[chapterId] || [];
     const progress = readProgress();
     if (currentMode === "unanswered") return questions.filter(q => !isAnswered(progress[q.id]));
-    if (currentMode === "wrong") return questions.filter(q => isAnswered(progress[q.id]) && !progress[q.id].isCorrect);
+    if (currentMode === "wrong") return questions.filter(q => hasWrongHistory(progress[q.id]));
     if (currentMode === "flagged") return questions.filter(q => isFlagged(progress[q.id]));
     if (currentMode === "tag" && currentTagFilter) {
       return questions.filter(q => {
@@ -1321,6 +1392,7 @@ service cloud.firestore {
       const classes = ["q-dot"];
       if (q.id === currentQuestionId) classes.push("active");
       if (isAnswered(r)) classes.push(r.isCorrect ? "answered correct" : "answered wrong");
+      else if (hasWrongHistory(r)) classes.push("wrong-history");
       if (isFlagged(r)) classes.push("flagged");
       return `<button class="${classes.join(" ")}" data-qid="${escapeHtml(q.id)}" title="問${q.number}">${q.number}</button>`;
     }).join("");
@@ -1652,13 +1724,13 @@ service cloud.firestore {
     for (const ch of DATA.chapters) {
       for (const q of DATA.questions[ch.id] || []) {
         const record = progress[q.id];
-        if (!isAnswered(record) || record.isCorrect) continue;
+        if (!hasWrongHistory(record)) continue;
         items.push({ chapter: ch, question: q, record });
       }
     }
     return items.sort((a, b) => {
-      const ta = Date.parse(a.record.answeredAt || "") || 0;
-      const tb = Date.parse(b.record.answeredAt || "") || 0;
+      const ta = latestProgressTime(a.record);
+      const tb = latestProgressTime(b.record);
       return tb - ta;
     });
   }
@@ -1692,18 +1764,21 @@ service cloud.firestore {
         </div>
         <div class="wrong-item-list">
           ${rows.map(({ chapter, question, record }) => {
-            const selected = (record.selected || []).join("・") || "未選択";
+            const selected = (record.selected || []).join("・") || "未回答";
             const answer = (question.answer || []).join("・");
+            const wrongCount = wrongAttemptCount(record);
+            const totalCount = totalAttemptCount(record);
             const tags = getQuestionTags(question).slice(0, 4).map(tag => `<span class="tag-chip">${escapeHtml(tag)}</span>`).join("");
             return `<article class="wrong-item">
               <div class="wrong-item-main">
                 <h3>問${question.number}</h3>
-                <p><span>あなたの解答</span><strong class="bad-text">${escapeHtml(selected)}</strong></p>
+                <p><span>現在の解答</span><strong class="bad-text">${escapeHtml(selected)}</strong></p>
                 <p><span>正解</span><strong class="ok-text">${escapeHtml(answer)}</strong></p>
+                <p><span>履歴</span><strong>${wrongCount}回ミス / ${totalCount}回解答</strong></p>
                 ${tags ? `<div class="tag-list">${tags}</div>` : ""}
               </div>
               <div class="wrong-item-actions">
-                <a class="btn primary" href="${escapeHtml(chapterHref(chapter, "wrong", { q: question.id }))}">解き直す</a>
+                <a class="btn primary" href="${escapeHtml(chapterHref(chapter, "wrong", { q: question.id, retry: "1" }))}">リセットして解き直す</a>
                 <button class="btn ghost" data-wrong-reset="${escapeHtml(question.id)}">履歴を消す</button>
               </div>
             </article>`;
@@ -1728,7 +1803,7 @@ service cloud.firestore {
       btn.addEventListener("click", () => {
         const found = findQuestionById(btn.dataset.wrongReset);
         if (!found) return;
-        clearAnswer(found.question);
+        deleteQuestionProgress(found.question);
         renderWrongSummary();
         renderDashboard();
       });
