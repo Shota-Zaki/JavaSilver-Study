@@ -2146,3 +2146,45 @@ pre {
     grid-template-columns: 1fr;
   }
 }
+
+/* Wrong-practice source question label */
+.source-question-label {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin-right: 8px;
+  padding: 2px 8px;
+  border: 1px solid rgba(37, 99, 235, .22);
+  border-radius: 999px;
+  color: #1d4ed8;
+  background: #eff6ff;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: normal;
+}
+.q-meta .source-question-label + [data-select-status]::before {
+  content: " / ";
+  color: var(--muted);
+}
+@media (max-width: 640px) {
+  .q-meta .source-question-label {
+    display: flex;
+    margin: 4px 0 3px;
+  }
+  .q-meta .source-question-label + [data-select-status]::before {
+    content: "";
+  }
+}
+
+
+/* Learning article additions */
+.term-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 12px; }
+.term-card { padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+.term-card h3 { margin: 0 0 6px; font-size: 16px; }
+.term-card p { margin: 0; color: var(--muted); }
+.flow-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.flow-cards > div { padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+.flow-cards span { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; margin-bottom: 8px; border-radius: 999px; color: #fff; background: var(--accent); font-weight: 800; }
+.flow-cards strong { display: block; margin-bottom: 4px; }
+.flow-cards p { margin: 0; color: var(--muted); }
+.article-card .btn { text-decoration: none; }
