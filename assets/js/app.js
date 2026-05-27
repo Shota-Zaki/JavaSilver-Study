@@ -1280,11 +1280,12 @@ service cloud.firestore {
     }).join("");
     const path = (location.pathname || "").split("/").pop();
     const wrongSummaryActive = path === "wrong-summary.html";
-    const knowledgeActive = ["reference.html", "glossary.html", "syntax-basics.html", "decision-flow.html", "datatypes.html", "numeric-rules.html", "var-scope.html", "strings.html", "equality.html", "collections-arrays.html", "operators-control.html", "loop-control.html", "methods-constructors.html", "object-oriented.html", "modifiers-access.html", "inheritance-interface.html", "polymorphism-cast.html", "exceptions.html", "compile-runtime.html", "error-catalog.html", "method-list.html", "cheatsheet.html", "exam-traps.html", "fine-points.html", "mini-drills.html"].includes(path);
+    const knowledgeActive = ["reference.html", "glossary.html", "syntax-basics.html", "decision-flow.html", "java-qa-review.html", "datatypes.html", "numeric-rules.html", "var-scope.html", "strings.html", "equality.html", "collections-arrays.html", "operators-control.html", "loop-control.html", "methods-constructors.html", "object-oriented.html", "modifiers-access.html", "inheritance-interface.html", "polymorphism-cast.html", "exceptions.html", "compile-runtime.html", "error-catalog.html", "method-list.html", "cheatsheet.html", "exam-traps.html", "fine-points.html", "java-qa-review.html", "oop-relations.html", "mini-drills.html"].includes(path);
     const knowledgeLinks = `<div class="nav-divider"></div>
       <a class="nav-link${knowledgeActive && path === "reference.html" ? " active" : ""}" href="reference.html">学習記事トップ<span class="small">入口</span></a>
       <a class="nav-link${knowledgeActive && path === "glossary.html" ? " active" : ""}" href="glossary.html">単語集<span class="small">頻出用語</span></a>
       <a class="nav-link${knowledgeActive && path === "syntax-basics.html" ? " active" : ""}" href="syntax-basics.html">実行・package/import<span class="small">基礎</span></a>
+      <a class="nav-link${knowledgeActive && path === "java-qa-review.html" ? " active" : ""}" href="java-qa-review.html">質問まとめ<span class="small">復習</span></a>
       <a class="nav-link${knowledgeActive && path === "datatypes.html" ? " active" : ""}" href="datatypes.html">データ型・型変換<span class="small">primitive</span></a>
       <a class="nav-link${knowledgeActive && path === "strings.html" ? " active" : ""}" href="strings.html">String/StringBuilder<span class="small">文字列</span></a>
       <a class="nav-link${knowledgeActive && path === "equality.html" ? " active" : ""}" href="equality.html">同一性・同値性比較<span class="small">==/equals</span></a>
@@ -1294,6 +1295,7 @@ service cloud.firestore {
       <a class="nav-link${knowledgeActive && path === "methods-constructors.html" ? " active" : ""}" href="methods-constructors.html">メソッド・コンストラクタ<span class="small">overload</span></a>
       <a class="nav-link${knowledgeActive && path === "object-oriented.html" ? " active" : ""}" href="object-oriented.html">クラス・static・参照<span class="small">OOP</span></a>
       <a class="nav-link${knowledgeActive && path === "inheritance-interface.html" ? " active" : ""}" href="inheritance-interface.html">継承・interface<span class="small">override/sealed</span></a>
+      <a class="nav-link${knowledgeActive && path === "oop-relations.html" ? " active" : ""}" href="oop-relations.html">OOP関係整理<span class="small">overload/override</span></a>
       <a class="nav-link${knowledgeActive && path === "exceptions.html" ? " active" : ""}" href="exceptions.html">例外処理<span class="small">try/catch</span></a>
       <a class="nav-link${knowledgeActive && path === "compile-runtime.html" ? " active" : ""}" href="compile-runtime.html">コンパイル/例外判定<span class="small">判定フロー</span></a>
       <a class="nav-link${knowledgeActive && path === "cheatsheet.html" ? " active" : ""}" href="cheatsheet.html">頻出ルール早見表<span class="small">直前確認</span></a>

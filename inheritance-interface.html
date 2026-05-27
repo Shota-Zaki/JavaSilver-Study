@@ -18,44 +18,81 @@
       <section class="hero reference-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>継承・インタフェース・sealed</h1>
-        <p>多態性、オーバーライド、interface、sealedを判定できるようにします。</p>
+        <p>多態性、インタフェース実装、オーバーロード、オーバーライド、sealedを整理します。</p>
       </section>
-      <section class="article-card ">
-<h2>継承の基本</h2>
-<pre><code>class Parent {
-  void hello() { System.out.println(&quot;Parent&quot;); }
-}
-class Child extends Parent {
-  @Override
-  void hello() { System.out.println(&quot;Child&quot;); }
-}
-Parent p = new Child();
-p.hello(); // Child</code></pre><p>変数の型はParentでも、オーバーライドメソッドは実体Childのものが動きます。</p>
-</section><section class="article-card ">
-<h2>フィールドは多態的ではない</h2>
-<pre><code>class A { String name = &quot;A&quot;; }
-class B extends A { String name = &quot;B&quot;; }
-A obj = new B();
-System.out.println(obj.name); // A</code></pre><p>フィールドアクセスは宣言型で決まります。メソッド呼び出しと区別します。</p>
-</section><section class="article-card ">
-<h2>オーバーライド条件</h2>
-<div class="table-scroll"><table class="ref-table"><thead><tr><th>条件</th><th>説明</th></tr></thead><tbody><tr><td>シグネチャ</td><td>メソッド名と引数リストが同じ。</td></tr><tr><td>戻り値</td><td>同じ型または共変戻り値。</td></tr><tr><td>アクセス</td><td>親より狭くできない。</td></tr><tr><td>例外</td><td>チェック例外は親より広げられない。</td></tr></tbody></table></div>
-</section><section class="article-card ">
-<h2>インタフェース</h2>
-<pre><code>interface A {
-  void test(); // public abstract
-  default void log() { System.out.println(&quot;log&quot;); }
-}
-class B implements A {
-  public void test() {}
-}</code></pre><p>インタフェースの抽象メソッドはpublic扱いです。実装側でpublicを省くとアクセスを弱めることになりエラーです。</p>
-</section><section class="article-card ">
-<h2>sealed</h2>
-<pre><code>sealed class A permits B, C {}
-final class B extends A {}
-non-sealed class C extends A {}
-class D extends C {}</code></pre><p>sealedの直接の子は許可リストに必要で、さらにfinal/sealed/non-sealedのいずれかを宣言します。</p>
+      
+<section class="article-card important">
+  <h2>この章の見方</h2>
+  <p>継承・インタフェース問題は、最初に「宣言型で何を呼べるか」、次に「実体でどのメソッドが動くか」を分けます。フィールド、static、private、コンストラクタは扱いが違うため、同じ継承でも一括りにしないことが重要です。</p>
+  <p><a class="btn primary" href="oop-relations.html">関係整理ページを見る</a></p>
 </section>
+<section class="article-card">
+  <h2>継承で実装されるもの・されないもの</h2>
+  <div class="table-scroll"><table class="ref-table"><thead><tr><th>対象</th><th>扱い</th><th>試験での注意</th></tr></thead><tbody><tr><td>インスタンスメソッド</td><td>アクセス可能なら継承され、オーバーライド可能</td><td>呼び出しは宣言型で可否判定、実行は実体で決まる</td></tr><tr><td>フィールド</td><td>アクセス可能なら使えるが多態的ではない</td><td>同名フィールドは隠蔽。宣言型で決まる</td></tr><tr><td>privateメンバ</td><td>サブクラスから直接アクセス不可</td><td>継承関係でもprivateは同じクラス内だけ</td></tr><tr><td>コンストラクタ</td><td>継承されない</td><td>子のコンストラクタは先頭でsuper(...)またはthis(...)を呼ぶ</td></tr><tr><td>staticメソッド</td><td>隠蔽。オーバーライドではない</td><td>インスタンス経由で呼べても、解決は型寄り</td></tr></tbody></table></div>
+</section>
+<section class="article-card">
+  <h2>親型変数で子インスタンスを扱う</h2>
+  <pre><code>class Employee {
+  void work() { System.out.println("employee"); }
+}
+class Engineer extends Employee {
+  @Override
+  void work() { System.out.println("engineer"); }
+  void code() { System.out.println("code"); }
+}
+
+Employee e = new Engineer();
+e.work(); // engineer
+// e.code(); // コンパイルエラー。Employee型にcode()はない。</code></pre>
+  <p>変数の宣言型で呼べるメソッドが決まります。呼べると決まったインスタンスメソッドについては、実体クラスのオーバーライドが動きます。</p>
+</section>
+<section class="article-card">
+  <h2>interfaceは「扱い方」の契約</h2>
+  <pre><code>interface Worker {
+  void work(); // public abstract
+}
+
+class Engineer implements Worker {
+  public void work() {}
+}</code></pre>
+  <p>interfaceは実体ではなく型です。<code>Worker w = new Engineer();</code> のように扱えますが、Worker型で呼べるのはWorkerに定義されたメソッドです。</p>
+  <p>インタフェースの抽象メソッドはpublicなので、実装側もpublicにします。publicを省くとアクセスを弱める扱いになりコンパイルエラーです。</p>
+</section>
+<section class="article-card">
+  <h2>抽象クラスがinterfaceを実装する場合</h2>
+  <pre><code>interface Worker { void work(); }
+
+abstract class Employee implements Worker {
+  // work()を実装しなくてもよい
+}
+
+class Engineer extends Employee {
+  public void work() {}
+}</code></pre>
+  <p>抽象クラスは抽象メソッドを残せます。通常クラスになった時点で、残っている抽象メソッドをすべて実装する必要があります。</p>
+</section>
+<section class="article-card">
+  <h2>オーバーロードとオーバーライド</h2>
+  <div class="table-scroll"><table class="ref-table"><thead><tr><th>項目</th><th>オーバーロード</th><th>オーバーライド</th></tr></thead><tbody><tr><td>目的</td><td>同名メソッドを引数違いで複数作る</td><td>親のメソッドを子で再定義する</td></tr><tr><td>判定</td><td>コンパイル時</td><td>実行時</td></tr><tr><td>引数</td><td>違う必要がある</td><td>同じ必要がある</td></tr><tr><td>戻り値だけ違う</td><td>不可</td><td>共変戻り値なら可</td></tr><tr><td>アクセス修飾子</td><td>区別条件ではない</td><td>親より狭くできない</td></tr></tbody></table></div>
+</section>
+<section class="article-card">
+  <h2>defaultメソッドと衝突</h2>
+  <pre><code>interface A { default void test() {} }
+interface B { default void test() {} }
+
+class C implements A, B {
+  public void test() {} // 自分で解決する
+}</code></pre>
+  <p>複数インタフェースから同じシグネチャのdefaultメソッドを受け取る場合、クラス側で明示的に実装して衝突を解決します。</p>
+</section>
+<section class="article-card">
+  <h2>sealed</h2>
+  <pre><code>sealed class A permits B, C {}
+final class B extends A {}
+non-sealed class C extends A {}</code></pre>
+  <p>sealedの直接の子は許可リストに必要で、子側はfinal/sealed/non-sealedのいずれかを宣言します。</p>
+</section>
+
     </main>
   </div>
   <script src="data/questions.js"></script>
