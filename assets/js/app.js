@@ -1306,12 +1306,12 @@ service cloud.firestore {
     const nav = document.getElementById("chapterNav");
     if (!nav) return;
     const path = (location.pathname || "").split("/").pop() || "index.html";
-    const navStateKey = "java-study-nav-groups-v2";
+    const navStateKey = "java-study-nav-groups-v4";
     const navState = readJson(navStateKey, {});
 
     const learningItems = [
       ["reference.html", "学習記事トップ", "全体索引"],
-      ["decision-flow.html", "判定フロー", "最初に見る"],
+      ["decision-flow.html", "判定フロー（教材版）", "深掘り済み"],
       ["syntax-basics.html", "Java実行・宣言", "main/import"],
       ["compile-runtime.html", "コンパイル/例外", "判定順"],
       ["datatypes.html", "型・変数", "primitive/null"],
