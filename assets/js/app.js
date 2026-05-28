@@ -763,6 +763,14 @@ service cloud.firestore {
     return Boolean(document.getElementById("wrongPracticeRoot"));
   }
 
+  function isWrongReviewMode() {
+    return isWrongPracticePage() || currentMode === "wrong";
+  }
+
+  function shouldResolveWrongHistory(previous, isCorrect) {
+    return Boolean(isCorrect && previous && hasWrongHistory(previous) && isWrongReviewMode());
+  }
+
   function saveAnswer(q, selected) {
     const progress = readProgress();
     const previous = progress[q.id] || {};
@@ -784,7 +792,7 @@ service cloud.firestore {
       chapterId: ownerId,
       tags: getQuestionTags(q),
       attempts: [...attemptsOf(previous), attempt],
-      ...(isCorrect && isWrongPracticePage() ? { wrongResolvedAt: answeredAt } : {})
+      ...(shouldResolveWrongHistory(previous, isCorrect) ? { wrongResolvedAt: answeredAt } : {})
     };
     writeProgress(progress);
   }
@@ -939,11 +947,22 @@ service cloud.firestore {
     return points.length ? listHtml(points) : `<p class="muted">選択肢別の解説は未入力です。</p>`;
   }
 
+  function answerKeysHtml(keys) {
+    const values = Array.isArray(keys) ? keys : [];
+    if (!values.length) return `<span class="answer-empty">未選択</span>`;
+    return `<ul class="answer-key-list">${values.map(key => `<li><span class="answer-key-chip">${escapeHtml(key)}</span></li>`).join("")}</ul>`;
+  }
+
+  function answerSummaryHtml(label, keys, className = "") {
+    return `<div class="answer-summary-item ${className}">
+      <strong>${escapeHtml(label)}</strong>
+      ${answerKeysHtml(keys)}
+    </div>`;
+  }
+
   function explanationHtml(q, isCorrect, selected) {
     const rawExp = q.explanation || {};
     const exp = typeof rawExp === "string" ? { summary: rawExp, correctReason: rawExp } : rawExp;
-    const answerText = (q.answer || []).join("・");
-    const selectedText = selected.length ? selected.join("・") : "未選択";
     const summary = exp.summary || exp.correctReason || "解説未入力。";
     const mainParts = [];
     [exp.pdfExplanation, exp.additionalExplanation, exp.pdfExplanation ? "" : exp.correctReason].forEach(text => {
@@ -967,8 +986,8 @@ service cloud.firestore {
         <span class="result-badge ${isCorrect ? "ok" : "bad"}">${isCorrect ? "OK" : "REVIEW"}</span>
       </div>
       <div class="answer-summary">
-        <p><strong>あなたの解答:</strong> ${escapeHtml(selectedText)}</p>
-        <p><strong>正解:</strong> ${escapeHtml(answerText)}</p>
+        ${answerSummaryHtml("あなたの解答", selected, "user-answer")}
+        ${answerSummaryHtml("正解", q.answer || [], "correct-answer")}
       </div>
       ${detail("解説", mainExplanation, true, "main-explanation")}
       ${detail("選択肢別解説", optionAnalysisHtml(q), true)}
@@ -996,8 +1015,8 @@ service cloud.firestore {
       renderQuestionPalette();
       renderChapterStats();
       updateResetCurrentButton(q);
-      if (isCorrect && isWrongPracticePage()) {
-        scheduleWrongPracticeRemoval(q);
+      if (isCorrect && isWrongReviewMode() && hasWrongHistory(readProgress()[q.id]) === false) {
+        setWrongPracticeMessage("正解です。解説を確認してから次の問題へ進むと、この問題は間違い演習から外れます。");
       }
     }
   }
@@ -1544,9 +1563,36 @@ service cloud.firestore {
 
   function moveQuestion(delta) {
     const list = filteredQuestions();
-    if (!list.length) return;
-    const index = Math.max(0, list.findIndex(q => q.id === currentQuestionId));
-    const nextIndex = Math.min(Math.max(index + delta, 0), list.length - 1);
+    if (!list.length) {
+      renderActiveQuestion({ focus: true });
+      return;
+    }
+
+    const currentId = currentQuestionId;
+    let nextIndex;
+    const index = list.findIndex(q => q.id === currentId);
+
+    if (index >= 0) {
+      nextIndex = Math.min(Math.max(index + delta, 0), list.length - 1);
+    } else if (currentMode === "wrong" && currentId) {
+      const all = DATA.questions[chapterId] || [];
+      const currentOriginalIndex = all.findIndex(q => q.id === currentId);
+      const originalIndexOf = q => all.findIndex(item => item.id === q.id);
+      if (delta >= 0) {
+        const forward = list.findIndex(q => originalIndexOf(q) > currentOriginalIndex);
+        nextIndex = forward >= 0 ? forward : 0;
+      } else {
+        let backward = -1;
+        list.forEach((q, i) => {
+          const originalIndex = originalIndexOf(q);
+          if (originalIndex >= 0 && originalIndex < currentOriginalIndex) backward = i;
+        });
+        nextIndex = backward >= 0 ? backward : list.length - 1;
+      }
+    } else {
+      nextIndex = delta >= 0 ? 0 : list.length - 1;
+    }
+
     currentQuestionId = list[nextIndex].id;
     renderActiveQuestion({ focus: true });
   }
@@ -1794,16 +1840,16 @@ service cloud.firestore {
       </div>
       <div class="wrong-item-list">
         ${items.map(({ chapter, question, record }) => {
-          const selected = (record.selected || []).join("・") || "未回答";
-          const answer = (question.answer || []).join("・");
+          const selected = answerKeysHtml(record.selected || []);
+          const answer = answerKeysHtml(question.answer || []);
           const wrongCount = wrongAttemptCount(record);
           const totalCount = totalAttemptCount(record);
           const tags = getQuestionTags(question).slice(0, 4).map(tag => `<span class="tag-chip">${escapeHtml(tag)}</span>`).join("");
           return `<article class="wrong-item">
             <div class="wrong-item-main">
               <h3>元の問題: ${escapeHtml(chapter.title)} 問${question.number}</h3>
-              <p><span>現在の解答</span><strong class="bad-text">${escapeHtml(selected)}</strong></p>
-              <p><span>正解</span><strong class="ok-text">${escapeHtml(answer)}</strong></p>
+              <p><span>現在の解答</span><strong class="bad-text answer-key-compact">${selected}</strong></p>
+              <p><span>正解</span><strong class="ok-text answer-key-compact">${answer}</strong></p>
               <p><span>履歴</span><strong>${wrongCount}回ミス / ${totalCount}回解答</strong></p>
               ${tags ? `<div class="tag-list">${tags}</div>` : ""}
             </div>
@@ -1859,12 +1905,7 @@ service cloud.firestore {
 
   function scheduleWrongPracticeRemoval(q) {
     if (!isWrongPracticePage() || !q) return;
-    if (wrongPracticeRemovalTimer) window.clearTimeout(wrongPracticeRemovalTimer);
-    setWrongPracticeMessage("正解です。この問題は間違い演習から外します。");
-    wrongPracticeRemovalTimer = window.setTimeout(() => {
-      wrongPracticeRemovalTimer = null;
-      removeSolvedFromWrongPractice(q);
-    }, 900);
+    setWrongPracticeMessage("正解です。解説を確認してから次の問題へ進むと、この問題は間違い演習から外れます。");
   }
 
   function setWrongPracticeMessage(text) {
@@ -1935,14 +1976,37 @@ service cloud.firestore {
     if (options.focus) scrollToQuestionFocus();
   }
 
+  function flushSolvedWrongPracticeCurrent(delta) {
+    const current = wrongPracticeList[wrongPracticeIndex];
+    if (!current || !current.question) return false;
+    const record = readProgress()[current.question.id];
+    if (hasWrongHistory(record)) return false;
+    wrongPracticeList = wrongPracticeList.filter(item => item && item.question && item.question.id !== current.question.id);
+    if (!wrongPracticeList.length) {
+      wrongPracticeIndex = 0;
+      return true;
+    }
+    if (delta < 0) wrongPracticeIndex = Math.max(wrongPracticeIndex - 1, 0);
+    else wrongPracticeIndex = Math.min(wrongPracticeIndex, wrongPracticeList.length - 1);
+    return true;
+  }
+
   function moveWrongPractice(delta) {
     if (!wrongPracticeList.length) return;
     if (wrongPracticeRemovalTimer) {
       window.clearTimeout(wrongPracticeRemovalTimer);
       wrongPracticeRemovalTimer = null;
     }
-    wrongPracticeIndex = Math.min(Math.max(wrongPracticeIndex + delta, 0), wrongPracticeList.length - 1);
+    const removed = flushSolvedWrongPracticeCurrent(delta);
+    if (!removed) {
+      wrongPracticeIndex = Math.min(Math.max(wrongPracticeIndex + delta, 0), wrongPracticeList.length - 1);
+    }
     renderWrongPracticeQuestion({ focus: true });
+    if (removed) {
+      setWrongPracticeMessage(wrongPracticeList.length
+        ? "正解済みの問題を間違い演習から外しました。"
+        : "正解済みの問題を間違い演習から外しました。間違い演習は完了です。");
+    }
   }
 
   function renderWrongPractice() {
