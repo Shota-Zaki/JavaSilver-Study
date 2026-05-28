@@ -5,8 +5,8 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - 数値・リテラル・型昇格</title>
-  <link rel="stylesheet" href="assets/css/styles.css?v=20260528-sidebar-v5">
+  <title>Java Silver Study - 数値・リテラル・型昇格（教材版）</title>
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260528-var-strings-v7">
 </head>
 <body>
   <div class="layout">
@@ -17,72 +17,292 @@
     <main class="main reference-main article-main">
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>数値・リテラル・型昇格</h1>
-        <p>byte/short/charのint昇格、定数式、複合代入、リテラル表記を、試験で使える判定手順に落とします。</p>
+        <h1>数値・リテラル・型昇格（教材版）</h1>
+        <p>整数・小数リテラル、進数表記、アンダースコア、byte/short/charのint昇格、定数式、複合代入を教材レベルで整理します。</p>
       </section>
-      <section class="article-section">
-<h2>数値問題の判定順</h2>
-<ol class="article-list priority-list"><li>リテラルの型を確認する。整数は基本 <code>int</code>、小数は基本 <code>double</code>。</li><li>変数を含む演算か、リテラルだけの定数式かを分ける。</li><li>演算後の型を確認する。<code>byte</code>/<code>short</code>/<code>char</code> は原則 <code>int</code> へ昇格。</li><li>代入先へ暗黙変換できるか確認する。</li></ol>
+      
+<section class="article-section article-card important">
+  <h2>この単元の結論: 数値問題は「値」ではなく「式の型」で解く</h2>
+  <p>数値・型昇格の問題は、見た目の値だけで判断すると高確率で間違えます。毎回、次の順番で処理してください。</p>
+  <ol class="article-list priority-list">
+    <li><strong>各リテラルの型</strong>を決める。整数は基本 <code>int</code>、小数は基本 <code>double</code>。</li>
+    <li><strong>演算があるか</strong>を見る。<code>byte</code>/<code>short</code>/<code>char</code> は演算で原則 <code>int</code> に昇格。</li>
+    <li><strong>定数式か変数式か</strong>を見る。範囲内の定数式だけ特別に小さい型へ代入できる場合がある。</li>
+    <li><strong>代入先の型へ暗黙変換できるか</strong>を見る。</li>
+    <li><strong>複合代入</strong>なら、暗黙キャストを含むことを考慮する。</li>
+  </ol>
+  <div class="article-callout warn"><strong>重要:</strong> <code>byte b = 1 + 2;</code> と <code>byte b = a + 2;</code> は同じではありません。前者は定数式、後者は変数を含む式です。</div>
 </section>
+
 <section class="article-section">
-<h2>リテラルの基本型</h2>
-<pre class="article-code"><code>int a = 10;       // 10はint
-long b = 10;      // intからlongへ拡大変換
-long c = 10L;     // 10Lはlong
-float d = 1.0F;   // OK
-// float e = 1.0; // NG: 1.0はdouble</code></pre><p><code>L</code> や <code>F</code> はソースコード上の型指定です。出力結果に <code>L</code> や <code>F</code> が付くわけではありません。</p>
+  <h2>数値リテラルの基本型</h2>
+  <p>まず、ソースコードに直接書いた数値が何型として扱われるかを決めます。</p>
+  <table class="ref-table">
+    <thead><tr><th>リテラル</th><th>型</th><th>例</th><th>注意</th></tr></thead>
+    <tbody>
+      <tr><td>整数リテラル</td><td><code>int</code></td><td><code>10</code></td><td>範囲を超える整数は <code>L</code> が必要。</td></tr>
+      <tr><td><code>L</code>/<code>l</code>付き整数</td><td><code>long</code></td><td><code>10L</code></td><td>小文字 <code>l</code> は <code>1</code> と紛らわしい。</td></tr>
+      <tr><td>小数リテラル</td><td><code>double</code></td><td><code>1.0</code></td><td><code>float</code> へ直接代入不可。</td></tr>
+      <tr><td><code>F</code>/<code>f</code>付き小数</td><td><code>float</code></td><td><code>1.0F</code></td><td><code>float</code> へ入れるなら基本これ。</td></tr>
+      <tr><td><code>D</code>/<code>d</code>付き小数</td><td><code>double</code></td><td><code>1.0D</code></td><td>明示しなくても小数は基本 <code>double</code>。</td></tr>
+    </tbody>
+  </table>
+  <pre class="article-code"><code>int a = 10;       // 10 は int
+long b = 10;      // int から long へ拡大変換
+long c = 10L;     // 10L は long
+
+// float d = 1.0; // NG: 1.0 は double
+float e = 1.0F;   // OK
+double f = 1.0F;  // OK: float から double へ拡大変換</code></pre>
 </section>
+
 <section class="article-section">
-<h2>byte/short/charのint昇格</h2>
-<p>小さい整数型同士の演算は、基本的に <code>int</code> になります。値が小さく見えても、式の型が <code>int</code> なら小さい型へそのまま代入できません。</p><pre class="article-code"><code>byte a = 1;
+  <h2>整数リテラルの進数表記</h2>
+  <p>同じ整数でも、先頭の書き方で基数が変わります。特に8進数の <code>0</code> 始まりは見落としやすいです。</p>
+  <table class="ref-table">
+    <thead><tr><th>表記</th><th>例</th><th>10進での値</th><th>注意</th></tr></thead>
+    <tbody>
+      <tr><td>10進数</td><td><code>17</code></td><td>17</td><td>通常の表記。</td></tr>
+      <tr><td>2進数</td><td><code>0b10001</code></td><td>17</td><td><code>0b</code> または <code>0B</code>。</td></tr>
+      <tr><td>8進数</td><td><code>021</code></td><td>17</td><td>先頭が <code>0</code>。<code>8</code> と <code>9</code> は使えない。</td></tr>
+      <tr><td>16進数</td><td><code>0x11</code></td><td>17</td><td><code>0x</code> または <code>0X</code>。</td></tr>
+    </tbody>
+  </table>
+  <pre class="article-code"><code>int a = 17;
+int b = 0b10001;
+int c = 021;
+int d = 0x11;
+System.out.println(a + b + c + d); // 68
+
+// int e = 089; // NG: 8進数に 8/9 は使えない</code></pre>
+</section>
+
+<section class="article-section">
+  <h2>アンダースコアのルール</h2>
+  <p>数値リテラルの途中には <code>_</code> を置けます。読みやすくするための記号で、値には影響しません。ただし置ける場所に制限があります。</p>
+  <table class="ref-table">
+    <thead><tr><th>コード</th><th>可否</th><th>理由</th></tr></thead>
+    <tbody>
+      <tr><td><code>int a = 123_456;</code></td><td>OK</td><td>数字の間。</td></tr>
+      <tr><td><code>int b = 1__2__3;</code></td><td>OK</td><td>連続しても数字の間なら可。</td></tr>
+      <tr><td><code>int c = _123;</code></td><td>NG</td><td>リテラルの先頭。</td></tr>
+      <tr><td><code>int d = 123_;</code></td><td>NG</td><td>リテラルの末尾。</td></tr>
+      <tr><td><code>float e = 3_.14F;</code></td><td>NG</td><td>小数点の直前。</td></tr>
+      <tr><td><code>float f = 3._14F;</code></td><td>NG</td><td>小数点の直後。</td></tr>
+      <tr><td><code>long g = 100_L;</code></td><td>NG</td><td>接尾辞 <code>L</code> の直前。</td></tr>
+      <tr><td><code>int h = 0x_FF;</code></td><td>NG</td><td>基数接頭辞 <code>0x</code> の直後。</td></tr>
+      <tr><td><code>int i = 0xF_F;</code></td><td>OK</td><td>数字の間。</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="article-section">
+  <h2>拡大変換と縮小変換</h2>
+  <p>代入では、右辺の型から左辺の型へ安全に変換できるかを見ます。広い型へは暗黙変換できますが、狭い型へは原則キャストが必要です。</p>
+  <pre class="article-code"><code>int i = 10;
+long l = i;       // OK: int から long
+float f = l;      // OK: long から float
+// int x = l;     // NG: long から int
+int y = (int) l;  // OK: 明示キャスト</code></pre>
+  <p>ただし、浮動小数では「範囲」と「精度」は別です。<code>long</code> から <code>float</code> への変換は許されますが、精度が失われる可能性はあります。試験では主にコンパイル可否を見ます。</p>
+</section>
+
+<section class="article-section">
+  <h2>byte・short・charは演算でintに昇格する</h2>
+  <p>ここが最重要です。<code>byte</code>、<code>short</code>、<code>char</code> は、算術演算に入ると基本的に <code>int</code> に昇格します。</p>
+  <pre class="article-code"><code>byte a = 1;
 byte b = 2;
-// byte c = a + b; // NG: a + b はint
-byte d = 1 + 2;    // OK: リテラルだけの定数式で範囲内
+// byte c = a + b; // NG: a + b は int
+int d = a + b;     // OK
+byte e = (byte)(a + b); // OK: 明示キャスト</code></pre>
+  <pre class="article-code"><code>char c = 'A';
+// char next = c + 1; // NG: c + 1 は int
+char next = (char)(c + 1); // OK</code></pre>
+  <div class="article-callout warn"><strong>覚え方:</strong> 小さい整数型の演算結果は、だいたい <code>int</code> になる。代入先が <code>byte</code>/<code>short</code>/<code>char</code> なら警戒。</div>
+</section>
 
-char x = &#x27;A&#x27;;
-// char y = x + 1; // NG: x + 1 はint
-char z = (char)(x + 1); // OK</code></pre>
-</section>
 <section class="article-section">
-<h2>複合代入は暗黙キャストを含む</h2>
-<p><code>+=</code>、<code>-=</code> などの複合代入は、内部的に代入先の型へのキャストを含みます。通常の代入とは結果が変わります。</p><pre class="article-code"><code>byte b = 1;
-// b = b + 1; // NG: b + 1 はint
-b += 1;       // OK: (byte)(b + 1) 相当</code></pre><div class="article-callout warn">複合代入が便利だから安全、という意味ではありません。オーバーフローしてもコンパイルは通る場合があります。</div>
+  <h2>二項数値昇格の優先順位</h2>
+  <p>左右のオペランドの型が違う場合、広い型に寄せられます。大まかな優先順位は次の通りです。</p>
+  <table class="ref-table">
+    <thead><tr><th>含まれる型</th><th>演算結果の型</th><th>例</th></tr></thead>
+    <tbody>
+      <tr><td><code>double</code> が含まれる</td><td><code>double</code></td><td><code>1 + 2.0</code> は <code>double</code></td></tr>
+      <tr><td><code>float</code> が含まれる</td><td><code>float</code></td><td><code>1L + 2.0F</code> は <code>float</code></td></tr>
+      <tr><td><code>long</code> が含まれる</td><td><code>long</code></td><td><code>1 + 2L</code> は <code>long</code></td></tr>
+      <tr><td>それ以外の整数型</td><td><code>int</code></td><td><code>byte + short</code> は <code>int</code></td></tr>
+    </tbody>
+  </table>
+  <pre class="article-code"><code>int a = 10;
+long b = 20L;
+// int c = a + b;  // NG: a + b は long
+long d = a + b;    // OK
+
+float f = 1.0F;
+double g = 2.0;
+// float h = f + g; // NG: f + g は double
+double i = f + g;   // OK</code></pre>
 </section>
+
 <section class="article-section">
-<h2>アンダースコアと進数表記</h2>
-<p>数値リテラルには <code>_</code> を使えますが、先頭・末尾・小数点の隣・接尾辞の直前などには置けません。</p><pre class="article-code"><code>int a = 123_456;   // OK
-// int b = _123;   // NG
-// int c = 123_;   // NG
-// float d = 3_.14F; // NG
-int e = 0b1010;    // 2進数
-int f = 017;       // 8進数。10進で15
-int g = 0x10;      // 16進数。10進で16
-// int h = 089;    // NG: 8進数に8/9は使えない</code></pre>
+  <h2>定数式なら小さい型へ代入できる場合がある</h2>
+  <p>右辺がコンパイル時に値を確定できる定数式で、代入先の範囲内なら、<code>byte</code>、<code>short</code>、<code>char</code> へ代入できます。</p>
+  <pre class="article-code"><code>byte a = 10;        // OK
+byte b = 10 + 20;   // OK: 定数式で範囲内
+// byte c = 100 + 100; // NG: 200 は byte の範囲外
+
+short s = 1000 + 2000; // OK
+char ch = 65;          // OK</code></pre>
+  <p>定数式の例外を知らないと、「整数リテラルはintだから全部NG」と誤判定します。逆に、変数を含む式までOKにしてしまうのも誤りです。</p>
 </section>
+
 <section class="article-section">
-<h2>ミニ演習</h2>
-<details class="article-card"><summary><strong>Q. <code>short s = 10 + 20;</code> は？</strong></summary><p>OKです。リテラルだけの定数式で、結果がshortの範囲内です。</p></details><details class="article-card"><summary><strong>Q. <code>short a=10,b=20; short c=a+b;</code> は？</strong></summary><p>コンパイルエラーです。<code>a+b</code> は <code>int</code> です。</p></details><p class="inline-note">関連: <a href="decision-flow.html">判定フロー</a> / <a href="compile-runtime.html">コンパイル・実行時例外</a> / <a href="exam-traps.html">ひっかけ集</a></p>
-</section>
-<section class="article-section deep-extra">
-<h2>定数式と変数式の違い</h2>
-<p>Javaコンパイラは、リテラルだけで計算できる定数式については範囲内か判断できます。一方、変数を含むと、たとえfinalでも文脈によって扱いが変わるため、まず「コンパイル時定数か」を見ます。</p><pre class="article-code"><code>byte a = 10 + 20;       // OK
-final int x = 10;
-byte b = x + 20;        // OK: コンパイル時定数
+  <h2>final変数とコンパイル時定数</h2>
+  <p><code>final</code> が付いていて、宣言時に定数式で初期化されている場合、コンパイル時定数として扱われることがあります。</p>
+  <pre class="article-code"><code>final int x = 10;
+byte a = x;       // OK: x はコンパイル時定数で範囲内
+byte b = x + 20;  // OK
+
 int y = 10;
-// byte c = y + 20;     // NG</code></pre>
+// byte c = y;    // NG: y は変数
+// byte d = y + 20; // NG</code></pre>
+  <pre class="article-code"><code>final int z;
+z = 10;
+// byte e = z; // NGになり得る: 宣言時初期化のコンパイル時定数ではない</code></pre>
+  <div class="article-callout"><strong>試験用判断:</strong> <code>final int x = 10;</code> のように宣言と同時に定数で初期化されているかを確認します。</div>
 </section>
 
-<section class="article-section deep-extra">
-<h2>オーバーフローはコンパイルエラーとは限らない</h2>
-<p>複合代入やキャストでは、値が範囲を超えてもコンパイルできる場合があります。試験では「コンパイルできるか」と「結果の値」を分けてください。</p><pre class="article-code"><code>byte b = 127;
+<section class="article-section">
+  <h2>複合代入は暗黙キャストを含む</h2>
+  <p><code>+=</code>、<code>-=</code>、<code>*=</code>、<code>/=</code> などの複合代入は、左辺の型へのキャストを含むように動きます。</p>
+  <pre class="article-code"><code>byte b = 1;
+// b = b + 1; // NG: b + 1 は int
+b += 1;       // OK: b = (byte)(b + 1) 相当</code></pre>
+  <p>ただし、これは安全という意味ではありません。値が範囲を超えれば、オーバーフローした結果になります。</p>
+  <pre class="article-code"><code>byte b = 127;
 b += 1;
 System.out.println(b); // -128</code></pre>
 </section>
 
+<section class="article-section">
+  <h2>オーバーフロー: コンパイル可否と値を分ける</h2>
+  <p>整数型は範囲を超えると循環します。キャストや複合代入では、コンパイルできるが値が予想外になることがあります。</p>
+  <pre class="article-code"><code>byte b = (byte)128;
+System.out.println(b); // -128
+
+int max = Integer.MAX_VALUE;
+System.out.println(max + 1); // -2147483648</code></pre>
+  <p>Java Silverでは「コンパイルエラー」なのか「実行できるが値が変わる」のかを分けることが重要です。</p>
+</section>
+
+<section class="article-section">
+  <h2>整数除算と小数除算</h2>
+  <p>割り算は、オペランドの型で結果が変わります。整数同士なら小数部は切り捨てです。</p>
+  <pre class="article-code"><code>System.out.println(5 / 2);     // 2
+System.out.println(5 / 2.0);   // 2.5
+System.out.println(5.0 / 2);   // 2.5
+
+int a = 5;
+int b = 2;
+double c = a / b;
+System.out.println(c);         // 2.0</code></pre>
+  <p><code>double c = a / b;</code> は、先に <code>int / int</code> が計算されて <code>2</code> になり、その後 <code>double</code> に代入されます。<code>2.5</code> にはなりません。</p>
+</section>
+
+<section class="article-section">
+  <h2>余り演算子 %</h2>
+  <p><code>%</code> は割った余りを返します。出力追跡問題でよく使われます。</p>
+  <pre class="article-code"><code>System.out.println(10 % 3); // 1
+System.out.println(10 % 5); // 0
+System.out.println(3 % 10); // 3</code></pre>
+  <p>符号付きの余りも出題される可能性はありますが、Silverではまず正の整数の基本を確実に処理できれば十分です。</p>
+</section>
+
+<section class="article-section">
+  <h2>charの演算と出力</h2>
+  <p><code>char</code> は文字ですが、演算では数値として扱われ、結果は原則 <code>int</code> です。</p>
+  <pre class="article-code"><code>char c = 'A';
+System.out.println(c);     // A
+System.out.println(c + 1); // 66
+System.out.println((char)(c + 1)); // B</code></pre>
+  <p><code>println</code> に <code>char</code> 単体を渡すと文字として出ますが、<code>c + 1</code> は <code>int</code> なので数値として出ます。</p>
+</section>
+
+<section class="article-section">
+  <h2>String結合が混ざる数値問題</h2>
+  <p><code>+</code> は数値加算にも文字列結合にも使われます。左から評価され、途中で <code>String</code> が出ると以後は文字列結合になります。</p>
+  <pre class="article-code"><code>System.out.println(1 + 2 + "A"); // 3A
+System.out.println("A" + 1 + 2); // A12
+System.out.println("A" + (1 + 2)); // A3</code></pre>
+  <p>これは数値型昇格そのものではありませんが、数値問題の出力選択肢で頻出です。</p>
+</section>
+
+<section class="article-section">
+  <h2>キャストの優先順位</h2>
+  <p>キャストはどこにかかっているかを正確に見ます。</p>
+  <pre class="article-code"><code>byte a = 10;
+byte b = 20;
+
+byte c = (byte)(a + b); // OK: 合計結果を byte にキャスト
+// byte d = (byte)a + b; // NG: (byte)a は byte だが、+ b で int になる</code></pre>
+  <p>キャストを見つけたら「式全体にかかっているのか、一部だけか」を括弧で確認します。</p>
+</section>
+
+<section class="article-section">
+  <h2>出力追跡の例: 型を表にして追う</h2>
+  <pre class="article-code"><code>byte b = 10;
+int i = 20;
+long l = 30L;
+System.out.println(b + i + l);</code></pre>
+  <table class="ref-table">
+    <thead><tr><th>処理</th><th>型</th><th>値</th></tr></thead>
+    <tbody>
+      <tr><td><code>b + i</code></td><td><code>int</code></td><td>30</td></tr>
+      <tr><td><code>30 + l</code></td><td><code>long</code></td><td>60</td></tr>
+      <tr><td><code>println</code></td><td><code>long</code>値の表示</td><td><code>60</code></td></tr>
+    </tbody>
+  </table>
+  <p>出力には <code>L</code> は付きません。<code>L</code> はソースコード上のリテラル表記です。</p>
+</section>
+
+<section class="article-section">
+  <h2>典型ひっかけコード集</h2>
+  <details class="article-card"><summary><strong>1. <code>byte b = 128;</code></strong></summary><p>コンパイルエラー。<code>byte</code> の範囲は -128〜127 です。</p></details>
+  <details class="article-card"><summary><strong>2. <code>short s = 10 + 20;</code></strong></summary><p>OK。リテラルだけの定数式で、結果30は <code>short</code> の範囲内です。</p></details>
+  <details class="article-card"><summary><strong>3. <code>short a = 10, b = 20; short c = a + b;</code></strong></summary><p>コンパイルエラー。<code>a + b</code> は <code>int</code> です。</p></details>
+  <details class="article-card"><summary><strong>4. <code>float f = 10.0;</code></strong></summary><p>コンパイルエラー。<code>10.0</code> は <code>double</code> です。<code>10.0F</code> にします。</p></details>
+  <details class="article-card"><summary><strong>5. <code>int x = 2 * 3L;</code></strong></summary><p>コンパイルエラー。<code>3L</code> があるので演算結果は <code>long</code> です。</p></details>
+  <details class="article-card"><summary><strong>6. <code>int x = 08;</code></strong></summary><p>コンパイルエラー。先頭 <code>0</code> は8進数で、8進数に <code>8</code> は使えません。</p></details>
+</section>
+
+<section class="article-section">
+  <h2>ミニ演習</h2>
+  <details class="article-card"><summary><strong>Q1. <code>byte b = 1 + 2;</code> は？</strong></summary><p>OKです。リテラルだけの定数式で、結果3は <code>byte</code> の範囲内です。</p></details>
+  <details class="article-card"><summary><strong>Q2. <code>byte a = 1; byte b = 2; byte c = a + b;</code> は？</strong></summary><p>コンパイルエラーです。<code>a + b</code> は <code>int</code> になります。</p></details>
+  <details class="article-card"><summary><strong>Q3. <code>byte b = 127; b += 1; System.out.println(b);</code> は？</strong></summary><p><code>-128</code> と表示されます。<code>b += 1</code> はコンパイルできますが、<code>byte</code> の範囲を超えてオーバーフローします。</p></details>
+  <details class="article-card"><summary><strong>Q4. <code>double d = 5 / 2;</code> の値は？</strong></summary><p><code>2.0</code> です。先に <code>int / int</code> で <code>2</code> になり、その後 <code>double</code> に代入されます。</p></details>
+  <details class="article-card"><summary><strong>Q5. <code>System.out.println('A' + 1);</code> は？</strong></summary><p><code>66</code> と表示されます。<code>'A'</code> は演算で <code>int</code> に昇格します。</p></details>
+</section>
+
+<section class="article-section">
+  <h2>この単元の最終チェック</h2>
+  <ul class="article-list check-list">
+    <li>整数リテラルは基本 <code>int</code>、小数リテラルは基本 <code>double</code> と判断できる。</li>
+    <li><code>L</code>、<code>F</code>、<code>D</code> 接尾辞の意味を説明できる。</li>
+    <li>2進数・8進数・16進数表記を見分けられる。</li>
+    <li>数値リテラルの <code>_</code> を置ける場所・置けない場所を判断できる。</li>
+    <li><code>byte</code>/<code>short</code>/<code>char</code> の演算結果が原則 <code>int</code> になると判断できる。</li>
+    <li>定数式と変数式を区別できる。</li>
+    <li>複合代入が暗黙キャストを含むことを説明できる。</li>
+    <li>整数除算と小数除算の出力差を追跡できる。</li>
+  </ul>
+  <p class="inline-note">前に戻る: <a href="datatypes.html">型・変数・リテラル</a> / 次に読む: <a href="var-scope.html">var・スコープ</a> / 関連: <a href="operators-control.html">演算子・制御</a></p>
+</section>
+
+
     </main>
   </div>
-  <script src="data/questions.js?v=20260528-sidebar-v5"></script>
-  <script src="assets/js/app.js?v=20260528-sidebar-v5"></script>
+  <script src="data/questions.js?v=20260528-var-strings-v7"></script>
+  <script src="assets/js/app.js?v=20260528-var-strings-v7"></script>
 </body>
 </html>

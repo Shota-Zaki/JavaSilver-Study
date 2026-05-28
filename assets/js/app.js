@@ -1306,7 +1306,7 @@ service cloud.firestore {
     const nav = document.getElementById("chapterNav");
     if (!nav) return;
     const path = (location.pathname || "").split("/").pop() || "index.html";
-    const navStateKey = "java-study-nav-groups-v5";
+    const navStateKey = "java-study-nav-groups-v7";
     const navState = readJson(navStateKey, {});
 
     const learningItems = [
@@ -1314,10 +1314,10 @@ service cloud.firestore {
       ["decision-flow.html", "判定フロー（教材版）", "深掘り済み"],
       ["syntax-basics.html", "Java実行・宣言", "main/import"],
       ["compile-runtime.html", "コンパイル/例外", "判定順"],
-      ["datatypes.html", "型・変数", "primitive/null"],
-      ["numeric-rules.html", "数値・型昇格", "byte/short"],
-      ["var-scope.html", "var・スコープ", "初期化"],
-      ["strings.html", "文字列・比較", "StringBuilder"],
+      ["datatypes.html", "型・変数（教材版）", "primitive/null"],
+      ["numeric-rules.html", "数値・型昇格（教材版）", "byte/short"],
+      ["var-scope.html", "var・スコープ（教材版）", "初期化"],
+      ["strings.html", "文字列・StringBuilder（教材版）", "不変/可変"],
       ["equality.html", "同一性・同値性", "==/equals"],
       ["collections-arrays.html", "配列・List", "ArrayList"],
       ["operators-control.html", "演算子・制御", "評価順"],
