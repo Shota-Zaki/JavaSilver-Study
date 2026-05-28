@@ -1,6 +1,6 @@
 window.JAVA_STUDY_DATA = {
   "title": "Java Silver 勉強用ページ",
-  "version": "code-rendering-rechecked-2026-05-28",
+  "version": "q29-quote-fixed-2026-05-28",
   "chapters": [
     {
       "id": "ch01",
@@ -21939,7 +21939,7 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "title": "B クラス",
-            "code": "class B extends A {\n    public void setValue(String value) {\n        super.setValue(\"\"\" + value + \"\"\");\n    }\n    public void setValues(String[] parts) {\n        var sb = new StringBuilder();\n        for (String part : parts) {\n            sb.append(part).append(' ');\n        }\n        this.setValue(sb.toString());\n    }\n}"
+            "code": "class B extends A {\n    public void setValue(String value) {\n        super.setValue(\"\\\"\" + value + \"\\\"\");\n    }\n    public void setValues(String[] parts) {\n        var sb = new StringBuilder();\n        for (String part : parts) {\n            sb.append(part).append(' ');\n        }\n        this.setValue(sb.toString());\n    }\n}"
           }
         ],
         "tags": [

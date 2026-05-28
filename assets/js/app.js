@@ -130,11 +130,16 @@
       const attempts = [...attemptsOf(currentRecord), ...attemptsOf(incomingRecord)]
         .filter(attempt => attempt && attempt.answeredAt)
         .sort((a, b) => (Date.parse(a.answeredAt || "") || 0) - (Date.parse(b.answeredAt || "") || 0));
+      const resolvedCandidates = [currentRecord.wrongResolvedAt, incomingRecord.wrongResolvedAt]
+        .filter(Boolean)
+        .sort((a, b) => (Date.parse(a || "") || 0) - (Date.parse(b || "") || 0));
+      const wrongResolvedAt = resolvedCandidates.length ? resolvedCandidates[resolvedCandidates.length - 1] : base.wrongResolvedAt;
       merged[qid] = {
         ...base,
         flagged: Boolean(currentRecord.flagged || incomingRecord.flagged),
         tags: tags.length ? tags : base.tags,
-        attempts
+        attempts,
+        ...(wrongResolvedAt ? { wrongResolvedAt } : {})
       };
     });
     return merged;
@@ -672,10 +677,15 @@ service cloud.firestore {
 
   function wrongAttemptCount(record) {
     if (!record) return 0;
-    const attempts = attemptsOf(record);
+    const resolvedAt = Date.parse(record.wrongResolvedAt || "") || 0;
+    const attempts = attemptsOf(record).filter(attempt => {
+      const attemptAt = Date.parse(attempt && attempt.answeredAt || "") || 0;
+      return !resolvedAt || !attemptAt || attemptAt > resolvedAt;
+    });
     const count = attempts.filter(attempt => attempt && attempt.isCorrect === false).length;
     if (count > 0) return count;
-    return isAnswered(record) && record.isCorrect === false ? 1 : 0;
+    const answeredAt = Date.parse(record.answeredAt || "") || 0;
+    return isAnswered(record) && record.isCorrect === false && (!resolvedAt || !answeredAt || answeredAt > resolvedAt) ? 1 : 0;
   }
 
   function totalAttemptCount(record) {
@@ -749,6 +759,10 @@ service cloud.firestore {
     return chapter ? chapter.id : chapterId;
   }
 
+  function isWrongPracticePage() {
+    return Boolean(document.getElementById("wrongPracticeRoot"));
+  }
+
   function saveAnswer(q, selected) {
     const progress = readProgress();
     const previous = progress[q.id] || {};
@@ -769,7 +783,8 @@ service cloud.firestore {
       answeredAt,
       chapterId: ownerId,
       tags: getQuestionTags(q),
-      attempts: [...attemptsOf(previous), attempt]
+      attempts: [...attemptsOf(previous), attempt],
+      ...(isCorrect && isWrongPracticePage() ? { wrongResolvedAt: answeredAt } : {})
     };
     writeProgress(progress);
   }
@@ -981,6 +996,9 @@ service cloud.firestore {
       renderQuestionPalette();
       renderChapterStats();
       updateResetCurrentButton(q);
+      if (isCorrect && isWrongPracticePage()) {
+        scheduleWrongPracticeRemoval(q);
+      }
     }
   }
 
@@ -1824,6 +1842,30 @@ service cloud.firestore {
 
   let wrongPracticeList = [];
   let wrongPracticeIndex = 0;
+  let wrongPracticeRemovalTimer = null;
+
+  function removeSolvedFromWrongPractice(q) {
+    if (!isWrongPracticePage() || !q) return;
+    const before = wrongPracticeList.length;
+    wrongPracticeList = wrongPracticeList.filter(item => item && item.question && item.question.id !== q.id);
+    if (before === wrongPracticeList.length) return;
+    if (wrongPracticeIndex >= wrongPracticeList.length) wrongPracticeIndex = Math.max(wrongPracticeList.length - 1, 0);
+    renderWrongPracticeQuestion({ focus: wrongPracticeList.length > 0 });
+    setWrongPracticeMessage(wrongPracticeList.length
+      ? "正解したため、この問題を間違い演習から外しました。"
+      : "正解したため、この問題を間違い演習から外しました。間違い演習は完了です。");
+    renderDashboard();
+  }
+
+  function scheduleWrongPracticeRemoval(q) {
+    if (!isWrongPracticePage() || !q) return;
+    if (wrongPracticeRemovalTimer) window.clearTimeout(wrongPracticeRemovalTimer);
+    setWrongPracticeMessage("正解です。この問題は間違い演習から外します。");
+    wrongPracticeRemovalTimer = window.setTimeout(() => {
+      wrongPracticeRemovalTimer = null;
+      removeSolvedFromWrongPractice(q);
+    }, 900);
+  }
 
   function setWrongPracticeMessage(text) {
     const el = document.getElementById("wrongPracticeMessage");
@@ -1895,6 +1937,10 @@ service cloud.firestore {
 
   function moveWrongPractice(delta) {
     if (!wrongPracticeList.length) return;
+    if (wrongPracticeRemovalTimer) {
+      window.clearTimeout(wrongPracticeRemovalTimer);
+      wrongPracticeRemovalTimer = null;
+    }
     wrongPracticeIndex = Math.min(Math.max(wrongPracticeIndex + delta, 0), wrongPracticeList.length - 1);
     renderWrongPracticeQuestion({ focus: true });
   }
@@ -1927,6 +1973,10 @@ service cloud.firestore {
     root.querySelectorAll("[data-wrong-practice-prev]").forEach(btn => btn.addEventListener("click", () => moveWrongPractice(-1)));
     root.querySelectorAll("[data-wrong-practice-next]").forEach(btn => btn.addEventListener("click", () => moveWrongPractice(1)));
     document.getElementById("shuffleWrongPractice")?.addEventListener("click", () => {
+      if (wrongPracticeRemovalTimer) {
+        window.clearTimeout(wrongPracticeRemovalTimer);
+        wrongPracticeRemovalTimer = null;
+      }
       wrongPracticeList = ensureWrongPracticeList();
       wrongPracticeIndex = 0;
       renderWrongPracticeQuestion({ focus: true });
