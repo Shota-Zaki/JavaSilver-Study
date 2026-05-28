@@ -1,6 +1,6 @@
 window.JAVA_STUDY_DATA = {
   "title": "Java Silver 勉強用ページ",
-  "version": "article-layout-explanation-cleanup-2026-05-28",
+  "version": "code-indent-layout-fixed-2026-05-28",
   "chapters": [
     {
       "id": "ch01",
@@ -167,11 +167,11 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "key": "C",
-            "code": "import java.io.*;\npackage aaa {\n public class Sample {}\n}"
+            "code": "import java.io.*;\npackage aaa {\n    public class Sample {}\n}"
           },
           {
             "key": "D",
-            "code": "import java.io.*;\npackage aaa (\n public class Sample {}\n);"
+            "code": "import java.io.*;\npackage aaa (\npublic class Sample {}\n);"
           }
         ],
         "answer": [
@@ -330,11 +330,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n protected int num = 10;\n}"
+            "code": "public class Sample {\n    protected int num = 10;\n}"
           },
           {
             "title": "SampleImpl.java",
-            "code": "package ex4;\n\npublic class SampleImpl extends Sample {\n public static void main(String[] args) {\n System.out.println(num);\n }\n}"
+            "code": "package ex4;\n\npublic class SampleImpl extends Sample {\n    public static void main(String[] args) {\n        System.out.println(num);\n    }\n}"
           }
         ],
         "options": [
@@ -536,7 +536,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n System.out.println(args[0] + \" \" + args[1]);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        System.out.println(args[0] + \" \" + args[1]);\n    }\n}"
           }
         ],
         "options": [
@@ -744,7 +744,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String... args) {\n System.out.println(args.length);\n }\n}"
+            "code": "public class Sample {\n    public static void main(String... args) {\n        System.out.println(args.length);\n    }\n}"
           }
         ],
         "options": [
@@ -837,7 +837,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) {\n System.out.println(\"sample\");\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        System.out.println(\"sample\");\n    }\n}"
           }
         ],
         "options": [
@@ -1018,7 +1018,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n int val = 7;\n bool flg = true;\n if (flg == true) {\n do {\n System.out.println(val);\n } while (val > 10);\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int val = 7;\n        bool flg = true;\n        if (flg == true) {\n            do {\n                System.out.println(val);\n            } while (val > 10);\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -1672,11 +1672,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n private var value;\n public Sample(var value) {\n this.value = value;\n }\n public void test() {\n System.out.println(value);\n }\n}"
+            "code": "public class Sample {\n    private var value;\n    public Sample(var value) {\n        this.value = value;\n    }\n    public void test() {\n        System.out.println(value);\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Sample s = new Sample(\"sample\");\n s.test();\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Sample s = new Sample(\"sample\");\n        s.test();\n    }\n}"
           }
         ],
         "tags": [
@@ -1780,19 +1780,19 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public class A {\n public void test() {\n System.out.println(\"A\");\n }\n}"
+            "code": "public class A {\n    public void test() {\n        System.out.println(\"A\");\n    }\n}"
           },
           {
             "title": "B.java",
-            "code": "public class B extends A {\n @Override\n public void test() {\n System.out.println(\"B\");\n }\n}"
+            "code": "public class B extends A {\n    @Override\n    public void test() {\n        System.out.println(\"B\");\n    }\n}"
           },
           {
             "title": "C.java",
-            "code": "public class C extends A {\n @Override\n public void test() {\n System.out.println(\"C\");\n }\n}"
+            "code": "public class C extends A {\n    @Override\n    public void test() {\n        System.out.println(\"C\");\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n var a = new B();\n a = new C();\n a.test();\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        var a = new B();\n        a = new C();\n        a.test();\n    }\n}"
           }
         ],
         "tags": [
@@ -1995,7 +1995,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n String str = \"hoge, world.\";\n hello(str);\n System.out.println(str);\n }\n private static void hello(String msg) {\n msg.replaceAll(\"hoge\", \"hello\");\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        String str = \"hoge, world.\";\n        hello(str);\n        System.out.println(str);\n    }\n    private static void hello(String msg) {\n        msg.replaceAll(\"hoge\", \"hello\");\n    }\n}"
           }
         ],
         "tags": [
@@ -2109,7 +2109,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n String str = \"abcde\";\n System.out.println(str.charAt(5));\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        String str = \"abcde\";\n        System.out.println(str.charAt(5));\n    }\n}"
           }
         ],
         "tags": [
@@ -2232,7 +2232,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n String str = \"abcde\";\n System.out.println(str.indexOf(\"abcdef\"));\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        String str = \"abcde\";\n        System.out.println(str.indexOf(\"abcdef\"));\n    }\n}"
           }
         ],
         "tags": [
@@ -2328,7 +2328,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n String str = \"abcde\";\n System.out.println(str.substring(2, 4));\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        String str = \"abcde\";\n        System.out.println(str.substring(2, 4));\n    }\n}"
           }
         ],
         "tags": [
@@ -2424,7 +2424,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n String str = \"aaaa\";\n System.out.println(str.replace(\"aa\", \"b\"));\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        String str = \"aaaa\";\n        System.out.println(str.replace(\"aa\", \"b\"));\n    }\n}"
           }
         ],
         "tags": [
@@ -2538,7 +2538,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n String str = \"abcde\";\n System.out.println(str.charAt(str.length()));\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        String str = \"abcde\";\n        System.out.println(str.charAt(str.length()));\n    }\n}"
           }
         ],
         "tags": [
@@ -2652,7 +2652,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n String str = \"abcde\";\n System.out.println(str.substring(1, 3).startsWith(\"b\"));\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        String str = \"abcde\";\n        System.out.println(str.substring(1, 3).startsWith(\"b\"));\n    }\n}"
           }
         ],
         "tags": [
@@ -2749,7 +2749,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) {\n String str = /* blank */;\n System.out.println(str);\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        String str = /* blank */;\n        System.out.println(str);\n    }\n}"
           }
         ],
         "tags": [
@@ -2845,7 +2845,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n StringBuilder sb = new StringBuilder(\"abcde\");\n System.out.println(sb.capacity());\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        StringBuilder sb = new StringBuilder(\"abcde\");\n        System.out.println(sb.capacity());\n    }\n}"
           }
         ],
         "tags": [
@@ -2941,7 +2941,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n StringBuilder sb = new StringBuilder();\n sb.append(\"abcde\");\n sb.reverse();\n sb.replace(1, 3, \"a\");\n System.out.println(sb);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        StringBuilder sb = new StringBuilder();\n        sb.append(\"abcde\");\n        sb.reverse();\n        sb.replace(1, 3, \"a\");\n        System.out.println(sb);\n    }\n}"
           }
         ],
         "tags": [
@@ -3034,7 +3034,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) {\n StringBuilder sb = new StringBuilder(\"abcde\");\n System.out.println(sb.indexOf(\"bcd\"));\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        StringBuilder sb = new StringBuilder(\"abcde\");\n        System.out.println(sb.indexOf(\"bcd\"));\n    }\n}"
           }
         ],
         "tags": [
@@ -3315,7 +3315,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) {\n String str = \"\"\"\n A\n B\n C\n \"\"\";\n System.out.println(str);\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        String str = \"\"\"\n        A\n        B\n        C\n        \"\"\";\n        System.out.println(str);\n    }\n}"
           }
         ],
         "tags": [
@@ -3408,7 +3408,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n String a = \"sample\";\n String b = \"sample\";\n System.out.print(a == b);\n System.out.print(\", \");\n System.out.println(a.equals(b));\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        String a = \"sample\";\n        String b = \"sample\";\n        System.out.print(a == b);\n        System.out.print(\", \");\n        System.out.println(a.equals(b));\n    }\n}"
           }
         ],
         "tags": [
@@ -3501,7 +3501,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n String a = new String(\"sample\");\n String b = \"sample\";\n System.out.print(a == b);\n System.out.print(\", \");\n System.out.println(a.equals(b));\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        String a = new String(\"sample\");\n        String b = \"sample\";\n        System.out.print(a == b);\n        System.out.print(\", \");\n        System.out.println(a.equals(b));\n    }\n}"
           }
         ],
         "tags": [
@@ -3594,7 +3594,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n String a = \"abc\";\n String b = new String(a);\n\n int count = 0;\n if (a.intern() == \"abc\") {\n count++;\n }\n if (b.intern() == \"abc\") {\n count++;\n }\n if (a.intern() == b.intern()) {\n count++;\n }\n System.out.println(count);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        String a = \"abc\";\n        String b = new String(a);\n\n        int count = 0;\n        if (a.intern() == \"abc\") {\n            count++;\n        }\n        if (b.intern() == \"abc\") {\n            count++;\n        }\n        if (a.intern() == b.intern()) {\n            count++;\n        }\n        System.out.println(count);\n    }\n}"
           }
         ],
         "tags": [
@@ -3717,7 +3717,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n int[] array = new int[0];\n System.out.println(array);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int[] array = new int[0];\n        System.out.println(array);\n    }\n}"
           }
         ],
         "tags": [
@@ -3836,7 +3836,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n int[] a;\n int b[];\n int[][] c;\n int d[][];\n int[] e[];\n int[][] f[];\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int[] a;\n        int b[];\n        int[][] c;\n        int d[][];\n        int[] e[];\n        int[][] f[];\n    }\n}"
           }
         ],
         "tags": [
@@ -4148,11 +4148,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Item.java",
-            "code": "public class Item {\n String name;\n int price = 100;\n}"
+            "code": "public class Item {\n    String name;\n    int price = 100;\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Item[] items = new Item[3];\n int total = 0;\n for (int i = 0; i < items.length; i++) {\n total += items[i].price;\n }\n System.out.println(total);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Item[] items = new Item[3];\n        int total = 0;\n        for (int i = 0; i < items.length; i++) {\n            total += items[i].price;\n        }\n        System.out.println(total);\n    }\n}"
           }
         ],
         "tags": [
@@ -4263,7 +4263,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n String[] array = {\"A\", \"B\", \"C\", \"D\"};\n array[0] = null;\n for (String str : array) {\n System.out.print(str);\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        String[] array = {\"A\", \"B\", \"C\", \"D\"};\n        array[0] = null;\n        for (String str : array) {\n            System.out.print(str);\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -4461,7 +4461,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n String[][] array = {{\"A\", \"B\"}, null, {\"C\", \"D\", \"E\"}};\n int total = 0;\n for (String[] tmp : array) {\n total += tmp.length;\n }\n System.out.println(total);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        String[][] array = {{\"A\", \"B\"}, null, {\"C\", \"D\", \"E\"}};\n        int total = 0;\n        for (String[] tmp : array) {\n            total += tmp.length;\n        }\n        System.out.println(total);\n    }\n}"
           }
         ],
         "tags": [
@@ -4573,7 +4573,7 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n A[] array = {new C(), null, new D()};\n Object[] objArray = array;\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A[] array = {new C(), null, new D()};\n        Object[] objArray = array;\n    }\n}"
           }
         ],
         "tags": [
@@ -4665,7 +4665,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n int[][] arrayA = {{1, 2}, {1, 2}, {1, 2, 3}};\n int[][] arrayB = arrayA.clone();\n int total = 0;\n for (int[] tmp : arrayB) {\n for (int val : tmp) {\n total += val;\n }\n }\n System.out.println(total);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int[][] arrayA = {{1, 2}, {1, 2}, {1, 2, 3}};\n        int[][] arrayB = arrayA.clone();\n        int total = 0;\n        for (int[] tmp : arrayB) {\n            for (int val : tmp) {\n                total += val;\n            }\n        }\n        System.out.println(total);\n    }\n}"
           }
         ],
         "tags": [
@@ -4884,7 +4884,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "import java.util.ArrayList;\n\npublic class Main {\n public static void main(String[] args) {\n ArrayList list = new ArrayList<>();\n list.add(\"A\");\n list.add(10);\n list.add('B');\n for (Object obj : list) {\n System.out.print(obj);\n }\n }\n}"
+            "code": "import java.util.ArrayList;\n\npublic class Main {\n    public static void main(String[] args) {\n        ArrayList list = new ArrayList<>();\n        list.add(\"A\");\n        list.add(10);\n        list.add('B');\n        for (Object obj : list) {\n            System.out.print(obj);\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -4986,7 +4986,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "import java.util.ArrayList;\n\npublic class Main {\n public static void main(String[] args) {\n ArrayList<String> list = new ArrayList<>();\n list.add(\"A\");\n list.add(2, \"B\");\n list.add(\"C\");\n list.add(\"D\");\n for (String str : list) {\n System.out.print(str);\n }\n }\n}"
+            "code": "import java.util.ArrayList;\n\npublic class Main {\n    public static void main(String[] args) {\n        ArrayList<String> list = new ArrayList<>();\n        list.add(\"A\");\n        list.add(2, \"B\");\n        list.add(\"C\");\n        list.add(\"D\");\n        for (String str : list) {\n            System.out.print(str);\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -5108,7 +5108,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "import java.util.ArrayList;\n\npublic class Main {\n public static void main(String[] args) {\n ArrayList<String> list = new ArrayList<>();\n list.add(\"A\");\n list.set(0, \"B\");\n list.add(\"C\");\n list.set(1, \"D\");\n for (String str : list) {\n System.out.print(str);\n }\n }\n}"
+            "code": "import java.util.ArrayList;\n\npublic class Main {\n    public static void main(String[] args) {\n        ArrayList<String> list = new ArrayList<>();\n        list.add(\"A\");\n        list.set(0, \"B\");\n        list.add(\"C\");\n        list.set(1, \"D\");\n        for (String str : list) {\n            System.out.print(str);\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -5213,11 +5213,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Item.java",
-            "code": "public class Item {\n private String name;\n private int price;\n public Item(String name, int price) {\n this.name = name;\n this.price = price;\n }\n public boolean equals(Object obj) {\n if (obj instanceof Item) {\n Item tmp = (Item) obj;\n if (tmp.name.equals(this.name)) {\n return true;\n }\n }\n return false;\n }\n public String getName() {\n return name;\n }\n}"
+            "code": "public class Item {\n    private String name;\n    private int price;\n    public Item(String name, int price) {\n        this.name = name;\n        this.price = price;\n    }\n    public boolean equals(Object obj) {\n        if (obj instanceof Item) {\n            Item tmp = (Item) obj;\n            if (tmp.name.equals(this.name)) {\n                return true;\n            }\n        }\n        return false;\n    }\n    public String getName() {\n        return name;\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "import java.util.ArrayList;\n\npublic class Main {\n public static void main(String[] args) {\n ArrayList<Item> list = new ArrayList<>();\n list.add(new Item(\"A\", 100));\n list.add(new Item(\"B\", 200));\n list.add(new Item(\"C\", 300));\n list.add(new Item(\"A\", 100));\n list.remove(new Item(\"A\", 500));\n for (Item item : list) {\n System.out.println(item.getName());\n }\n }\n}"
+            "code": "import java.util.ArrayList;\n\npublic class Main {\n    public static void main(String[] args) {\n        ArrayList<Item> list = new ArrayList<>();\n        list.add(new Item(\"A\", 100));\n        list.add(new Item(\"B\", 200));\n        list.add(new Item(\"C\", 300));\n        list.add(new Item(\"A\", 100));\n        list.remove(new Item(\"A\", 500));\n        for (Item item : list) {\n            System.out.println(item.getName());\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -5322,7 +5322,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "import java.util.ArrayList;\n\npublic class Main {\n public static void main(String[] args) {\n ArrayList<String> list = new ArrayList<>();\n list.add(\"A\");\n list.add(\"B\");\n list.add(\"C\");\n for (String str : list) {\n if (\"B\".equals(str)) {\n list.remove(str);\n } else {\n System.out.println(str);\n }\n }\n }\n}"
+            "code": "import java.util.ArrayList;\n\npublic class Main {\n    public static void main(String[] args) {\n        ArrayList<String> list = new ArrayList<>();\n        list.add(\"A\");\n        list.add(\"B\");\n        list.add(\"C\");\n        for (String str : list) {\n            if (\"B\".equals(str)) {\n                list.remove(str);\n            } else {\n                System.out.println(str);\n            }\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -5427,7 +5427,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "import java.util.ArrayList;\n\npublic class Main {\n public static void main(String[] args) {\n ArrayList<String> list = new ArrayList<>();\n list.add(\"A\");\n list.add(\"B\");\n list.add(\"C\");\n list.add(\"D\");\n list.add(\"E\");\n for (String str : list) {\n if (\"C\".equals(str)) {\n list.remove(str);\n }\n }\n for (String str : list) {\n System.out.println(str);\n }\n }\n}"
+            "code": "import java.util.ArrayList;\n\npublic class Main {\n    public static void main(String[] args) {\n        ArrayList<String> list = new ArrayList<>();\n        list.add(\"A\");\n        list.add(\"B\");\n        list.add(\"C\");\n        list.add(\"D\");\n        list.add(\"E\");\n        for (String str : list) {\n            if (\"C\".equals(str)) {\n                list.remove(str);\n            }\n        }\n        for (String str : list) {\n            System.out.println(str);\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -5626,7 +5626,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n int a = 3;\n int b = a += 5;\n System.out.println(a + b);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int a = 3;\n        int b = a += 5;\n        System.out.println(a + b);\n    }\n}"
           }
         ],
         "tags": [
@@ -5826,7 +5826,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n int a = 10;\n int b = a++ + a + a-- - a-- + ++a;\n System.out.println(b);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int a = 10;\n        int b = a++ + a + a-- - a-- + ++a;\n        System.out.println(b);\n    }\n}"
           }
         ],
         "tags": [
@@ -5919,7 +5919,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n boolean a = true;\n boolean b = true;\n System.out.println(a <= b);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        boolean a = true;\n        boolean b = true;\n        System.out.println(a <= b);\n    }\n}"
           }
         ],
         "tags": [
@@ -6021,7 +6021,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n int a = 10;\n int b = 10;\n if (10 < a && 10 < ++b) {\n a++;\n }\n System.out.println(a + b);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int a = 10;\n        int b = 10;\n        if (10 < a && 10 < ++b) {\n            a++;\n        }\n        System.out.println(a + b);\n    }\n}"
           }
         ],
         "tags": [
@@ -6124,7 +6124,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n int a = 100, b = 20, c = 30;\n System.out.println(a % b * c + a / b);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int a = 100, b = 20, c = 30;\n        System.out.println(a % b * c + a / b);\n    }\n}"
           }
         ],
         "tags": [
@@ -6227,7 +6227,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n int result = 30 - 12 / (2 * 5) + 1;\n System.out.println(result);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int result = 30 - 12 / (2 * 5) + 1;\n        System.out.println(result);\n    }\n}"
           }
         ],
         "tags": [
@@ -6320,11 +6320,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n private int num;\n public Sample(int num) {\n this.num = num;\n }\n}"
+            "code": "public class Sample {\n    private int num;\n    public Sample(int num) {\n        this.num = num;\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Sample s1 = new Sample(10);\n Sample s2 = s1;\n s1 = new Sample(10);\n System.out.println(s1 == s2);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Sample s1 = new Sample(10);\n        Sample s2 = s1;\n        s1 = new Sample(10);\n        System.out.println(s1 == s2);\n    }\n}"
           }
         ],
         "tags": [
@@ -6427,11 +6427,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n private int num;\n private String name;\n public Sample(int num, String name) {\n this.num = num;\n this.name = name;\n }\n public boolean equals(Object obj) {\n if (obj == null) {\n return false;\n }\n if (obj instanceof Sample) {\n Sample s = (Sample) obj;\n return s.num == this.num;\n }\n return false;\n }\n}"
+            "code": "public class Sample {\n    private int num;\n    private String name;\n    public Sample(int num, String name) {\n        this.num = num;\n        this.name = name;\n    }\n    public boolean equals(Object obj) {\n        if (obj == null) {\n            return false;\n        }\n        if (obj instanceof Sample) {\n            Sample s = (Sample) obj;\n            return s.num == this.num;\n        }\n        return false;\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Sample a = new Sample(10, \"a\");\n Sample b = new Sample(10, \"b\");\n System.out.println(a.equals(b));\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Sample a = new Sample(10, \"a\");\n        Sample b = new Sample(10, \"b\");\n        System.out.println(a.equals(b));\n    }\n}"
           }
         ],
         "tags": [
@@ -6534,11 +6534,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n private int num;\n public Sample(int num) {\n this.num = num;\n }\n public boolean equals(Sample obj) {\n if (obj == null) {\n return false;\n }\n return this.num == obj.num;\n }\n}"
+            "code": "public class Sample {\n    private int num;\n    public Sample(int num) {\n        this.num = num;\n    }\n    public boolean equals(Sample obj) {\n        if (obj == null) {\n            return false;\n        }\n        return this.num == obj.num;\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Object a = new Sample(10);\n Object b = new Sample(10);\n System.out.println(a.equals(b));\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Object a = new Sample(10);\n        Object b = new Sample(10);\n        System.out.println(a.equals(b));\n    }\n}"
           }
         ],
         "tags": [
@@ -6631,7 +6631,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Object a = new Object();\n Object b = null;\n System.out.println(a.equals(b));\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Object a = new Object();\n        Object b = null;\n        System.out.println(a.equals(b));\n    }\n}"
           }
         ],
         "tags": [
@@ -6725,7 +6725,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n private final static int FLAG_A = 0b0001;\n private final static int FLAG_B = 0b0010;\n private final static int FLAG_C = 0b0100;\n private final static int FLAG_D = 0b1000;\n\n public static void main(String[] args) {\n int status = 0b1011;\n boolean result = (status ____ FLAG_C) != 0;\n System.out.println(result);\n }\n}"
+            "code": "public class Sample {\n    private final static int FLAG_A = 0b0001;\n    private final static int FLAG_B = 0b0010;\n    private final static int FLAG_C = 0b0100;\n    private final static int FLAG_D = 0b1000;\n\n    public static void main(String[] args) {\n        int status = 0b1011;\n        boolean result = (status ____ FLAG_C) != 0;\n        System.out.println(result);\n    }\n}"
           }
         ],
         "tags": [
@@ -6818,7 +6818,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n int num = 10;\n ____\n System.out.println(\"ok\");\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int num = 10;\n        ____\n        System.out.println(\"ok\");\n    }\n}"
           }
         ],
         "tags": [
@@ -6929,7 +6929,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n if (false)\n System.out.println(\"A\");\n System.out.println(\"B\");\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        if (false)\n        System.out.println(\"A\");\n        System.out.println(\"B\");\n    }\n}"
           }
         ],
         "tags": [
@@ -7041,7 +7041,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n int num = 10;\n if (num < 10)\n System.out.println(\"A\");\n else\n System.out.println(\"B\");\n if (num == 10)\n System.out.println(\"C\");\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int num = 10;\n        if (num < 10)\n        System.out.println(\"A\");\n        else\n        System.out.println(\"B\");\n        if (num == 10)\n        System.out.println(\"C\");\n    }\n}"
           }
         ],
         "tags": [
@@ -7152,7 +7152,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n int num = 10;\n if (num == 100)\n System.out.println(\"A\");\n else if (10 < num)\n System.out.println(\"B\");\n else\n if (num == 10)\n System.out.println(\"C\");\n else\n if (num == 10)\n System.out.println(\"D\");\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int num = 10;\n        if (num == 100)\n        System.out.println(\"A\");\n        else if (10 < num)\n        System.out.println(\"B\");\n        else\n        if (num == 10)\n        System.out.println(\"C\");\n        else\n        if (num == 10)\n        System.out.println(\"D\");\n    }\n}"
           }
         ],
         "tags": [
@@ -7373,7 +7373,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n final int NUM = 0;\n int num = 10;\n switch (num) {\n case \"10\": System.out.println(\"A\");\n break;\n case num: System.out.println(\"B\");\n break;\n case 2 * 5: System.out.println(\"C\");\n break;\n case NUM: System.out.println(\"D\");\n break;\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        final int NUM = 0;\n        int num = 10;\n        switch (num) {\n        case \"10\": System.out.println(\"A\");\n                break;\n        case num: System.out.println(\"B\");\n                break;\n        case 2 * 5: System.out.println(\"C\");\n                break;\n        case NUM: System.out.println(\"D\");\n                break;\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -7484,7 +7484,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n int num = 1;\n switch (num) {\n case 1:\n case 2:\n case 3: System.out.println(\"A\");\n case 4: System.out.println(\"B\");\n default:\n System.out.println(\"C\");\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int num = 1;\n        switch (num) {\n        case 1:\n        case 2:\n        case 3: System.out.println(\"A\");\n        case 4: System.out.println(\"B\");\n        default:\n                System.out.println(\"C\");\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -7587,7 +7587,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n int data = 1;\n switch (data) {\n default: System.out.print(\"C\");\n case 0: System.out.print(\"A\");\n break;\n case 10: System.out.print(\"B\");\n break;\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int data = 1;\n        switch (data) {\n        default: System.out.print(\"C\");\n        case 0: System.out.print(\"A\");\n                break;\n        case 10: System.out.print(\"B\");\n                break;\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -7689,7 +7689,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) {\n int a = 2;\n switch (a) {\n case 1 -> System.out.println(\"A\");\n case 2 -> System.out.println(\"B\");\n case 3 -> System.out.println(\"C\");\n default -> System.out.println(\"D\");\n };\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        int a = 2;\n        switch (a) {\n            case 1 -> System.out.println(\"A\");\n            case 2 -> System.out.println(\"B\");\n            case 3 -> System.out.println(\"C\");\n            default -> System.out.println(\"D\");\n        };\n    }\n}"
           }
         ],
         "tags": [
@@ -7791,7 +7791,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) {\n int score = 85;\n String grade = switch (score / 10) {\n case 10, 9 -> \"A\";\n case 8 -> \"B\";\n case 7 -> \"C\";\n case 6 -> \"D\";\n };\n System.out.println(\"Grade: \" + grade);\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        int score = 85;\n        String grade = switch (score / 10) {\n            case 10, 9 -> \"A\";\n            case 8 -> \"B\";\n            case 7 -> \"C\";\n            case 6 -> \"D\";\n        };\n        System.out.println(\"Grade: \" + grade);\n    }\n}"
           }
         ],
         "tags": [
@@ -7886,7 +7886,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) {\n int a = 3;\n String result = switch (a) {\n case 1 -> \"A\";\n case 2 -> \"B\";\n case 3 -> \"C\";\n default -> \"D\";\n }\n System.out.println(result);\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        int a = 3;\n        String result = switch (a) {\n            case 1 -> \"A\";\n            case 2 -> \"B\";\n            case 3 -> \"C\";\n            default -> \"D\";\n        }\n        System.out.println(result);\n    }\n}"
           }
         ],
         "tags": [
@@ -7980,7 +7980,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) {\n int a = 2;\n int b = 100;\n\n int result = switch (a) {\n case 1 -> b * 2;\n case 2 -> {\n b = b * 3;\n ____ b;\n }\n default -> b;\n };\n System.out.println(result);\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        int a = 2;\n        int b = 100;\n\n        int result = switch (a) {\n            case 1 -> b * 2;\n            case 2 -> {\n                b = b * 3;\n                ____ b;\n            }\n            default -> b;\n        };\n        System.out.println(result);\n    }\n}"
           }
         ],
         "tags": [
@@ -8091,7 +8091,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n int a = 11;\n int b = 0;\n while (____) {\n if (5 < a) {\n System.out.println(b);\n }\n a--;\n b++;\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int a = 11;\n        int b = 0;\n        while (____) {\n            if (5 < a) {\n                System.out.println(b);\n            }\n            a--;\n            b++;\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -8185,7 +8185,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n int a = 0;\n ① {\n System.out.println(a++);\n } ②\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int a = 0;\n        ① {\n            System.out.println(a++);\n        } ②\n    }\n}"
           }
         ],
         "tags": [
@@ -8296,7 +8296,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n int a = 0;\n while (a < 5)\n do\n a++;\n System.out.print(a);\n while (true);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int a = 0;\n        while (a < 5)\n        do\n        a++;\n        System.out.print(a);\n        while (true);\n    }\n}"
           }
         ],
         "tags": [
@@ -8389,7 +8389,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n for (int i = 1, long j = 2; i < 5; i++) {\n System.out.print(i * j);\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        for (int i = 1, long j = 2; i < 5; i++) {\n            System.out.print(i * j);\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -8500,7 +8500,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n int a = 1;\n for (int b = 2, total = 0; b <= 5; b++) {\n total += a * b;\n }\n System.out.println(total);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int a = 1;\n        for (int b = 2, total = 0; b <= 5; b++) {\n            total += a * b;\n        }\n        System.out.println(total);\n    }\n}"
           }
         ],
         "tags": [
@@ -8593,7 +8593,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n for (int i = 0; ____; i++)\n System.out.println(i);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        for (int i = 0; ____; i++)\n        System.out.println(i);\n    }\n}"
           }
         ],
         "tags": [
@@ -8695,7 +8695,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n for (int i = 0, j = 0; i < 3, j < 5; i++) {\n System.out.println(i++);\n j += i;\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        for (int i = 0, j = 0; i < 3, j < 5; i++) {\n            System.out.println(i++);\n            j += i;\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -8806,7 +8806,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n for (int i = 0; i < 3; i++, period()) {\n System.out.print(i);\n }\n }\n private static void period() {\n System.out.print(\",\");\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        for (int i = 0; i < 3; i++, period()) {\n            System.out.print(i);\n        }\n    }\n    private static void period() {\n        System.out.print(\",\");\n    }\n}"
           }
         ],
         "tags": [
@@ -8900,7 +8900,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n int[][] array = new int[][] { {1, 2}, {3, 4} };\n int total = 0;\n for (int i = 0; i < array.length; i++) {\n for (____) {\n total += array[i][j];\n }\n }\n System.out.println(total);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int[][] array = new int[][] { {1, 2}, {3, 4} };\n        int total = 0;\n        for (int i = 0; i < array.length; i++) {\n            for (____) {\n                total += array[i][j];\n            }\n        }\n        System.out.println(total);\n    }\n}"
           }
         ],
         "tags": [
@@ -9002,7 +9002,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Test.java",
-            "code": "public class Test {\n public static void main(String[] args) {\n String[][] array = new String[2][];\n array[0] = new String[2];\n array[1] = new String[5];\n int i = 97;\n for (int a = 0; a < array.length; a++) {\n for (int b = 0; b < array.length; b++) {\n array[a][b] = \"\" + i;\n i++;\n }\n }\n for (String[] tmp : array) {\n for (String s : tmp) {\n System.out.print(s + \" \" );\n }\n System.out.println();\n }\n }\n}"
+            "code": "public class Test {\n    public static void main(String[] args) {\n        String[][] array = new String[2][];\n        array[0] = new String[2];\n        array[1] = new String[5];\n        int i = 97;\n        for (int a = 0; a < array.length; a++) {\n            for (int b = 0; b < array.length; b++) {\n                array[a][b] = \"\" + i;\n                i++;\n            }\n        }\n        for (String[] tmp : array) {\n            for (String s : tmp) {\n                System.out.print(s + \" \" );\n            }\n            System.out.println();\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -9098,7 +9098,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n for (____) {\n System.out.println(i);\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        for (____) {\n            System.out.println(i);\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -9210,7 +9210,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n String[][] array = { { \"A\", \"B\", \"C\" } };\n for (____) {\n System.out.print(obj);\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        String[][] array = { { \"A\", \"B\", \"C\" } };\n        for (____) {\n            System.out.print(obj);\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -9303,7 +9303,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n String[] array = { \"A\", \"B\", \"C\" };\n for (String str : array) {\n str = \"D\";\n }\n for (String str : array) {\n System.out.print(str);\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        String[] array = { \"A\", \"B\", \"C\" };\n        for (String str : array) {\n            str = \"D\";\n        }\n        for (String str : array) {\n            System.out.print(str);\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -9324,19 +9324,19 @@ window.JAVA_STUDY_DATA = {
         "options": [
           {
             "key": "A",
-            "code": "int num = 10;\nwhile (++num < 10) {\n num++;\n}\nSystem.out.println(num);"
+            "code": "int num = 10;\nwhile (++num < 10) {\n    num++;\n}\nSystem.out.println(num);"
           },
           {
             "key": "B",
-            "code": "int num = 10;\nwhile (++num <= 10) {\n num++;\n}\nSystem.out.println(num);"
+            "code": "int num = 10;\nwhile (++num <= 10) {\n    num++;\n}\nSystem.out.println(num);"
           },
           {
             "key": "C",
-            "code": "int num = 10;\nwhile (num++ < 10) {\n num++;\n}\nSystem.out.println(num);"
+            "code": "int num = 10;\nwhile (num++ < 10) {\n    num++;\n}\nSystem.out.println(num);"
           },
           {
             "key": "D",
-            "code": "int num = 10;\nwhile (num++ <= 10) {\n num++;\n}\nSystem.out.println(num);"
+            "code": "int num = 10;\nwhile (num++ <= 10) {\n    num++;\n}\nSystem.out.println(num);"
           },
           {
             "key": "E",
@@ -9406,7 +9406,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "元コード",
-            "code": "int num = 10;\ndo {\n num++;\n} while (++num < 10);\nSystem.out.println(num);"
+            "code": "int num = 10;\ndo {\n    num++;\n} while (++num < 10);\nSystem.out.println(num);"
           }
         ],
         "tags": [
@@ -9424,23 +9424,23 @@ window.JAVA_STUDY_DATA = {
         "options": [
           {
             "key": "A",
-            "code": "while (0 <= x) {\n System.out.println(array[x]);\n x--;\n}"
+            "code": "while (0 <= x) {\n    System.out.println(array[x]);\n    x--;\n}"
           },
           {
             "key": "B",
-            "code": "do {\n x--;\n System.out.println(array[x]);\n} while (0 <= x);"
+            "code": "do {\n    x--;\n    System.out.println(array[x]);\n} while (0 <= x);"
           },
           {
             "key": "C",
-            "code": "do {\n System.out.println(array[x]);\n x--;\n} while (0 <= x);"
+            "code": "do {\n    System.out.println(array[x]);\n    x--;\n} while (0 <= x);"
           },
           {
             "key": "D",
-            "code": "while (0 < x) {\n x--;\n System.out.println(array[x]);\n}"
+            "code": "while (0 < x) {\n    x--;\n    System.out.println(array[x]);\n}"
           },
           {
             "key": "E",
-            "code": "while (0 < x) {\n System.out.println(array[--x]);\n}"
+            "code": "while (0 < x) {\n    System.out.println(array[--x]);\n}"
           }
         ],
         "answer": [
@@ -9507,7 +9507,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n int[] array = {1, 2, 3, 4, 5};\n int x = array.length;\n ____\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int[] array = {1, 2, 3, 4, 5};\n        int x = array.length;\n        ____\n    }\n}"
           }
         ],
         "tags": [
@@ -9609,7 +9609,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n String[] array = { \"A\", \"B\" };\n for (String a : array) {\n for (String b : array) {\n if (\"B\".equals(b))\n break;\n System.out.print(b);\n }\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        String[] array = { \"A\", \"B\" };\n        for (String a : array) {\n            for (String b : array) {\n                if (\"B\".equals(b))\n                break;\n                System.out.print(b);\n            }\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -9711,7 +9711,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n int[] array = { 1, 2, 3, 4, 5 };\n int total = 0;\n for (int i : array) {\n if (i % 2 == 0)\n continue;\n total += i;\n }\n System.out.println(total);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int[] array = { 1, 2, 3, 4, 5 };\n        int total = 0;\n        for (int i : array) {\n            if (i % 2 == 0)\n            continue;\n            total += i;\n        }\n        System.out.println(total);\n    }\n}"
           }
         ],
         "tags": [
@@ -9917,7 +9917,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n int total = 0;\n a: for (int i = 0; i < 5; i++) {\n b: for (int j = 0; j < 5; j++) {\n if (i % 2 == 0) continue a;\n if (3 < j) break b;\n total += j;\n }\n }\n System.out.println(total);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int total = 0;\n        a: for (int i = 0; i < 5; i++) {\n            b: for (int j = 0; j < 5; j++) {\n                if (i % 2 == 0) continue a;\n                if (3 < j) break b;\n                total += j;\n            }\n        }\n        System.out.println(total);\n    }\n}"
           }
         ],
         "tags": [
@@ -10021,11 +10021,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Item.java",
-            "code": "public class Item {\n private int num = 10;\n public void setNum(int num) { this.num = num; }\n public int getNum() { return this.num; }\n}"
+            "code": "public class Item {\n    private int num = 10;\n    public void setNum(int num) { this.num = num; }\n    public int getNum() { return this.num; }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Item a = new Item();\n Item b = new Item();\n b.setNum(20);\n System.out.println(a.getNum());\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Item a = new Item();\n        Item b = new Item();\n        b.setNum(20);\n        System.out.println(a.getNum());\n    }\n}"
           }
         ],
         "tags": [
@@ -10136,11 +10136,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Item.java",
-            "code": "public class Item {\n public String name;\n public int price;\n public void printInfo() {\n System.out.println(name + \", \" + price);\n }\n}"
+            "code": "public class Item {\n    public String name;\n    public int price;\n    public void printInfo() {\n        System.out.println(name + \", \" + price);\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Item a = new Item();\n Item b = new Item();\n a.name = \"apple\";\n b.price = 100;\n a.price = 200;\n b.name = \"banana\";\n a = b;\n a.printInfo();\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Item a = new Item();\n        Item b = new Item();\n        a.name = \"apple\";\n        b.price = 100;\n        a.price = 200;\n        b.name = \"banana\";\n        a = b;\n        a.printInfo();\n    }\n}"
           }
         ],
         "tags": [
@@ -10249,7 +10249,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n \n System.out.println(obj);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n\n        System.out.println(obj);\n    }\n}"
           }
         ]
       },
@@ -10334,7 +10334,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Object a = new Object();\n Object b = new Object();\n Object c = a;\n a = null;\n b = null;\n // more code\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Object a = new Object();\n        Object b = new Object();\n        Object c = a;\n        a = null;\n        b = null;\n        // more code\n    }\n}"
           }
         ],
         "tags": [
@@ -10440,11 +10440,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n static int num = 0;\n}"
+            "code": "public class Sample {\n    static int num = 0;\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Sample.num = 10;\n Sample s = new Sample();\n Sample s2 = new Sample();\n s.num += 10;\n s2.num = 30;\n System.out.println(Sample.num);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Sample.num = 10;\n        Sample s = new Sample();\n        Sample s2 = new Sample();\n        s.num += 10;\n        s2.num = 30;\n        System.out.println(Sample.num);\n    }\n}"
           }
         ]
       },
@@ -10641,11 +10641,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public void hello() {\n System.out.println(\"hello\");\n }\n}"
+            "code": "public class Sample {\n    public void hello() {\n        System.out.println(\"hello\");\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Sample sample = new Sample();\n \n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Sample sample = new Sample();\n\n    }\n}"
           }
         ]
       },
@@ -10739,11 +10739,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public int add(Integer a, Integer b) {\n return a + b;\n }\n}"
+            "code": "public class Sample {\n    public int add(Integer a, Integer b) {\n        return a + b;\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Sample s = new Sample();\n System.out.println(s.add(10));\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Sample s = new Sample();\n        System.out.println(s.add(10));\n    }\n}"
           }
         ]
       },
@@ -10827,7 +10827,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n int a = 1;\n int b = 2;\n \n int c = b;\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int a = 1;\n        int b = 2;\n\n        int c = b;\n    }\n}"
           }
         ]
       },
@@ -11009,11 +11009,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n private String value;\n public void setValue(String value) {\n this.value = value;\n }\n public String getValue() {\n return this.value;\n }\n}"
+            "code": "public class Sample {\n    private String value;\n    public void setValue(String value) {\n        this.value = value;\n    }\n    public String getValue() {\n        return this.value;\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Sample s = new Sample();\n String val = s.setValue(\"hello\");\n s.getValue();\n System.out.println(val);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Sample s = new Sample();\n        String val = s.setValue(\"hello\");\n        s.getValue();\n        System.out.println(val);\n    }\n}"
           }
         ]
       },
@@ -11113,11 +11113,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n float divide(int a, int b) {\n return (float) a / (float) b;\n }\n}"
+            "code": "public class Sample {\n    float divide(int a, int b) {\n        return (float) a / (float) b;\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Sample s = new Sample();\n ____ result = s.divide(10, 2);\n System.out.println(result);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Sample s = new Sample();\n        ____ result = s.divide(10, 2);\n        System.out.println(result);\n    }\n}"
           }
         ]
       },
@@ -11182,11 +11182,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public int method(int a, int b) {\n return a + b;\n }\n}"
+            "code": "public class Sample {\n    public int method(int a, int b) {\n        return a + b;\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Sample s = new Sample();\n int result = s.method(2);\n System.out.println(result);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Sample s = new Sample();\n        int result = s.method(2);\n        System.out.println(result);\n    }\n}"
           }
         ]
       },
@@ -11326,7 +11326,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public void method(int num) {\n if (num < 0) return;\n System.out.println(\"A\");\n return;\n System.out.println(\"B\");\n }\n}"
+            "code": "public class Sample {\n    public void method(int num) {\n        if (num < 0) return;\n        System.out.println(\"A\");\n        return;\n        System.out.println(\"B\");\n    }\n}"
           }
         ]
       },
@@ -11399,7 +11399,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "基準となるメソッド",
-            "code": "int calc(double a, int b) {\n return (int) a + b;\n}"
+            "code": "int calc(double a, int b) {\n    return (int) a + b;\n}"
           }
         ]
       },
@@ -11468,7 +11468,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Main m = new Main();\n System.out.println(m.calc(2, 3));\n }\n private double calc(double a, int b) {\n return (a + b) / 2;\n }\n private double calc(int a, double b) {\n return (a + b) / 2;\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Main m = new Main();\n        System.out.println(m.calc(2, 3));\n    }\n    private double calc(double a, int b) {\n        return (a + b) / 2;\n    }\n    private double calc(int a, double b) {\n        return (a + b) / 2;\n    }\n}"
           }
         ]
       },
@@ -11537,7 +11537,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "基準となるメソッド",
-            "code": "void method() {\n // do something\n}"
+            "code": "void method() {\n    // do something\n}"
           }
         ]
       },
@@ -11657,11 +11657,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n void Sample() {\n System.out.println(\"hello.\");\n }\n}"
+            "code": "public class Sample {\n    void Sample() {\n        System.out.println(\"hello.\");\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Sample s = new Sample();\n s.Sample();\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Sample s = new Sample();\n        s.Sample();\n    }\n}"
           }
         ],
         "tags": [
@@ -11780,11 +11780,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n Sample() {\n System.out.println(\"A\");\n }\n {\n System.out.println(\"B\");\n }\n}"
+            "code": "public class Sample {\n    Sample() {\n        System.out.println(\"A\");\n    }\n    {\n        System.out.println(\"B\");\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Sample s = new Sample();\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Sample s = new Sample();\n    }\n}"
           }
         ],
         "tags": [
@@ -11877,11 +11877,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n static int num;\n {\n num = 10;\n }\n public Sample() {\n num = 100;\n }\n}"
+            "code": "public class Sample {\n    static int num;\n    {\n        num = 10;\n    }\n    public Sample() {\n        num = 100;\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n System.out.println(Sample.num);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        System.out.println(Sample.num);\n    }\n}"
           }
         ],
         "tags": [
@@ -11983,11 +11983,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n void Sample() {\n System.out.println(\"A\");\n }\n Sample(String str) {\n System.out.println(str);\n }\n}"
+            "code": "public class Sample {\n    void Sample() {\n        System.out.println(\"A\");\n    }\n    Sample(String str) {\n        System.out.println(str);\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Sample s = new Sample();\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Sample s = new Sample();\n    }\n}"
           }
         ],
         "tags": [
@@ -12063,11 +12063,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public Sample() {\n // ここにコードを入れる\n }\n public Sample(String str, int num) {\n System.out.println(\"ok.\");\n }\n}"
+            "code": "public class Sample {\n    public Sample() {\n        // ここにコードを入れる\n    }\n    public Sample(String str, int num) {\n        System.out.println(\"ok.\");\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Sample s = new Sample();\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Sample s = new Sample();\n    }\n}"
           }
         ],
         "tags": [
@@ -12088,11 +12088,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sampleクラス",
-            "code": "public class Sample {\n public Sample() {\n System.out.println(\"A\");\n this(\"B\");\n }\n public Sample(String str) {\n System.out.println(str);\n }\n}"
+            "code": "public class Sample {\n    public Sample() {\n        System.out.println(\"A\");\n        this(\"B\");\n    }\n    public Sample(String str) {\n        System.out.println(str);\n    }\n}"
           },
           {
             "title": "Mainクラス",
-            "code": "public class Main {\n public static void main(String[] args) {\n Sample s = new Sample();\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Sample s = new Sample();\n    }\n}"
           }
         ],
         "options": [
@@ -12203,11 +12203,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Parent.java",
-            "code": "package ex26;\n\npublic class Parent {\n int num = 10;\n}"
+            "code": "package ex26;\n\npublic class Parent {\n    int num = 10;\n}"
           },
           {
             "title": "Child.java",
-            "code": "package other;\nimport ex26.Parent;\n\npublic class Child extends Parent {\n public static void main(String[] args) {\n System.out.println(num);\n }\n}"
+            "code": "package other;\nimport ex26.Parent;\n\npublic class Child extends Parent {\n    public static void main(String[] args) {\n        System.out.println(num);\n    }\n}"
           }
         ],
         "options": [
@@ -12309,7 +12309,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Bookクラス",
-            "code": "package other;\n\npublic class Book {\n private String isbn;\n public void setIsbn(String isbn) {\n this.isbn = isbn;\n }\n protected void printInfo() {\n System.out.println(isbn);\n }\n}"
+            "code": "package other;\n\npublic class Book {\n    private String isbn;\n    public void setIsbn(String isbn) {\n        this.isbn = isbn;\n    }\n    protected void printInfo() {\n        System.out.println(isbn);\n    }\n}"
           },
           {
             "title": "StoryBookクラス",
@@ -12317,7 +12317,7 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "title": "Mainクラス",
-            "code": "package ex27;\n\npublic class Main {\n public static void main(String[] args) {\n StoryBook story = new StoryBook();\n story.setIsbn(\"xxx-x-xxxxx-xx-x\");\n story.printInfo();\n }\n}"
+            "code": "package ex27;\n\npublic class Main {\n    public static void main(String[] args) {\n        StoryBook story = new StoryBook();\n        story.setIsbn(\"xxx-x-xxxxx-xx-x\");\n        story.printInfo();\n    }\n}"
           }
         ],
         "options": [
@@ -12410,11 +12410,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sampleクラス",
-            "code": "public class Sample {\n int num;\n public Sample(int num) {\n this.num = num;\n }\n}"
+            "code": "public class Sample {\n    int num;\n    public Sample(int num) {\n        this.num = num;\n    }\n}"
           },
           {
             "title": "Mainクラス",
-            "code": "public class Main {\n public static void main(String[] args) {\n Sample s = new Sample(10);\n modify(s.num);\n System.out.println(s.num);\n }\n private static void modify(int num) {\n num *= 2;\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Sample s = new Sample(10);\n        modify(s.num);\n        System.out.println(s.num);\n    }\n    private static void modify(int num) {\n        num *= 2;\n    }\n}"
           }
         ],
         "options": [
@@ -12507,11 +12507,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sampleクラス",
-            "code": "public class Sample {\n int num;\n public Sample(int num) {\n this.num = num;\n }\n}"
+            "code": "public class Sample {\n    int num;\n    public Sample(int num) {\n        this.num = num;\n    }\n}"
           },
           {
             "title": "Mainクラス",
-            "code": "public class Main {\n public static void main(String[] args) {\n Sample s = new Sample(10);\n modify(s);\n System.out.println(s.num);\n }\n private static void modify(Sample s) {\n s.num *= 2;\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Sample s = new Sample(10);\n        modify(s);\n        System.out.println(s.num);\n    }\n    private static void modify(Sample s) {\n        s.num *= 2;\n    }\n}"
           }
         ],
         "options": [
@@ -12604,15 +12604,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Aクラス",
-            "code": "public class A {\n public void test() {\n System.out.println(\"A\");\n }\n}"
+            "code": "public class A {\n    public void test() {\n        System.out.println(\"A\");\n    }\n}"
           },
           {
             "title": "Bクラス",
-            "code": "public class B extends A {\n @Override\n public void test() {\n System.out.println(\"B\");\n }\n}"
+            "code": "public class B extends A {\n    @Override\n    public void test() {\n        System.out.println(\"B\");\n    }\n}"
           },
           {
             "title": "Sampleクラス",
-            "code": "public class Sample {\n public static void main(String[] args) {\n A[] array = {new A(), new B(), new A(), new B()};\n for (A a : array) {\n if (a instanceof B b) {\n a.test();\n } else {\n b.test();\n }\n }\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        A[] array = {new A(), new B(), new A(), new B()};\n        for (A a : array) {\n            if (a instanceof B b) {\n                a.test();\n            } else {\n                b.test();\n            }\n        }\n    }\n}"
           }
         ],
         "options": [
@@ -13212,7 +13212,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public record Data(String value) {\n public Data() {\n }\n}"
+            "code": "public record Data(String value) {\n    public Data() {\n    }\n}"
           }
         ],
         "options": [
@@ -13408,7 +13408,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Data.java",
-            "code": "public record Data(String value) {\n public Data() {\n // insert code here\n }\n}"
+            "code": "public record Data(String value) {\n    public Data() {\n        // insert code here\n    }\n}"
           }
         ],
         "options": [
@@ -13510,11 +13510,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Dataレコード",
-            "code": "public record Data(String value) {\n public Data {\n if (this.value == null) {\n System.out.println(\"value is null\");\n }\n }\n}"
+            "code": "public record Data(String value) {\n    public Data {\n        if (this.value == null) {\n            System.out.println(\"value is null\");\n        }\n    }\n}"
           },
           {
             "title": "Sampleクラス",
-            "code": "public class Sample {\n public static void main(String[] args) {\n Data data = new Data(null);\n System.out.println(data.value());\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        Data data = new Data(null);\n        System.out.println(data.value());\n    }\n}"
           }
         ],
         "options": [
@@ -13607,7 +13607,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Testインタフェース",
-            "code": "public interface Test {\n default void value() {\n System.out.println(\"A\");\n }\n}"
+            "code": "public interface Test {\n    default void value() {\n        System.out.println(\"A\");\n    }\n}"
           },
           {
             "title": "Dataレコード",
@@ -13615,7 +13615,7 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "title": "Sampleクラス",
-            "code": "public class Sample {\n public static void main(String[] args) {\n Data data = new Data(\"B\");\n System.out.println(data.value());\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        Data data = new Data(\"B\");\n        System.out.println(data.value());\n    }\n}"
           }
         ],
         "options": [
@@ -13783,7 +13783,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public class Child extends Parent {\n Child() {\n name = \"java\";\n }\n void hello() {\n System.out.println(\"hello, \" + name);\n }\n}"
+            "code": "public class Child extends Parent {\n    Child() {\n        name = \"java\";\n    }\n    void hello() {\n        System.out.println(\"hello, \" + name);\n    }\n}"
           }
         ],
         "tags": [
@@ -14063,7 +14063,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public interface A {\n void sample() {\n System.out.println(\"sample\");\n }\n}"
+            "code": "public interface A {\n    void sample() {\n        System.out.println(\"sample\");\n    }\n}"
           },
           {
             "title": "B.java",
@@ -14071,7 +14071,7 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n A a = new B();\n a.sample();\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A a = new B();\n        a.sample();\n    }\n}"
           }
         ],
         "tags": [
@@ -14173,15 +14173,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public interface A {\n @Override\n default String toString() {\n return \"A\";\n }\n}"
+            "code": "public interface A {\n    @Override\n    default String toString() {\n        return \"A\";\n    }\n}"
           },
           {
             "title": "B.java",
-            "code": "public class B implements A {\n @Override\n public String toString() {\n return \"B\";\n }\n}"
+            "code": "public class B implements A {\n    @Override\n    public String toString() {\n        return \"B\";\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n A a = new B();\n System.out.println(a);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A a = new B();\n        System.out.println(a);\n    }\n}"
           }
         ],
         "tags": [
@@ -14281,7 +14281,7 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "title": "A.java",
-            "code": "public interface A {\n default void sample() {\n System.out.println(\"Hello\");\n }\n}"
+            "code": "public interface A {\n    default void sample() {\n        System.out.println(\"Hello\");\n    }\n}"
           },
           {
             "title": "B.java",
@@ -14289,11 +14289,11 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "title": "C.java",
-            "code": "public class C implements B {\n @Override\n public void sample() {\n // insert code here\n System.out.println(\"Java\");\n }\n}"
+            "code": "public class C implements B {\n    @Override\n    public void sample() {\n        // insert code here\n        System.out.println(\"Java\");\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n A a = new C();\n a.sample();\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A a = new C();\n        a.sample();\n    }\n}"
           }
         ],
         "tags": [
@@ -14385,15 +14385,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public interface A {\n default void test() { System.out.println(\"A\"); }\n}"
+            "code": "public interface A {\n    default void test() { System.out.println(\"A\"); }\n}"
           },
           {
             "title": "B.java",
-            "code": "public interface B {\n default void test() { System.out.println(\"B\"); }\n}"
+            "code": "public interface B {\n    default void test() { System.out.println(\"B\"); }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main implements A, B {\n public static void main(String[] args) {\n new Main().test();\n }\n}"
+            "code": "public class Main implements A, B {\n    public static void main(String[] args) {\n        new Main().test();\n    }\n}"
           }
         ],
         "tags": [
@@ -14602,15 +14602,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "AbstractSample クラス",
-            "code": "abstract class AbstractSample {\n public void sample() {\n System.out.println(\"A\");\n test();\n System.out.println(\"C\");\n }\n protected abstract void test();\n}"
+            "code": "abstract class AbstractSample {\n    public void sample() {\n        System.out.println(\"A\");\n        test();\n        System.out.println(\"C\");\n    }\n    protected abstract void test();\n}"
           },
           {
             "title": "ConcreteSample クラス",
-            "code": "class ConcreteSample extends AbstractSample {\n protected void test() { System.out.println(\"B\"); }\n}"
+            "code": "class ConcreteSample extends AbstractSample {\n    protected void test() { System.out.println(\"B\"); }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n AbstractSample s = new ConcreteSample();\n s.sample();\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        AbstractSample s = new ConcreteSample();\n        s.sample();\n    }\n}"
           }
         ],
         "tags": [
@@ -14784,7 +14784,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public class Sample {\n protected void hello() {\n System.out.println(\"hello\");\n }\n}"
+            "code": "public class Sample {\n    protected void hello() {\n        System.out.println(\"hello\");\n    }\n}"
           }
         ],
         "tags": [
@@ -14892,15 +14892,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A クラス",
-            "code": "class A {\n String val = \"A\";\n void print() { System.out.print(val); }\n}"
+            "code": "class A {\n    String val = \"A\";\n    void print() { System.out.print(val); }\n}"
           },
           {
             "title": "B クラス",
-            "code": "class B extends A {\n String val = \"B\";\n}"
+            "code": "class B extends A {\n    String val = \"B\";\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n A a = new A();\n A b = new B();\n System.out.print(a.val);\n System.out.print(b.val);\n a.print();\n b.print();\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A a = new A();\n        A b = new B();\n        System.out.print(a.val);\n        System.out.print(b.val);\n        a.print();\n        b.print();\n    }\n}"
           }
         ],
         "tags": [
@@ -14997,7 +14997,7 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "title": "Employee クラス",
-            "code": "class Employee {\n public void work() { System.out.println(\"work\"); }\n}"
+            "code": "class Employee {\n    public void work() { System.out.println(\"work\"); }\n}"
           },
           {
             "title": "Engineer クラス",
@@ -15005,7 +15005,7 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Worker worker = new Engineer();\n worker.work();\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Worker worker = new Engineer();\n        worker.work();\n    }\n}"
           }
         ],
         "tags": [
@@ -15112,15 +15112,15 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "title": "Employee クラス",
-            "code": "class Employee implements Worker {\n public void work() { System.out.println(\"work\"); }\n public void report() { System.out.println(\"report\"); }\n}"
+            "code": "class Employee implements Worker {\n    public void work() { System.out.println(\"work\"); }\n    public void report() { System.out.println(\"report\"); }\n}"
           },
           {
             "title": "Engineer クラス",
-            "code": "class Engineer extends Employee {\n public void create() { System.out.println(\"create future\"); }\n}"
+            "code": "class Engineer extends Employee {\n    public void create() { System.out.println(\"create future\"); }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Worker a = new Engineer();\n Employee b = new Engineer();\n Engineer c = new Engineer();\n a.create();\n b.work();\n c.report();\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Worker a = new Engineer();\n        Employee b = new Engineer();\n        Engineer c = new Engineer();\n        a.create();\n        b.work();\n        c.report();\n    }\n}"
           }
         ],
         "tags": [
@@ -15266,7 +15266,7 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n A[] array = {\n new B(),\n new C(),\n new A(),\n new D()\n };\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A[] array = {\n            new B(),\n            new C(),\n            new A(),\n            new D()\n        };\n    }\n}"
           }
         ],
         "tags": [
@@ -15381,11 +15381,11 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "title": "B クラス",
-            "code": "class B extends A {\n void hello() { System.out.println(\"hello\"); }\n}"
+            "code": "class B extends A {\n    void hello() { System.out.println(\"hello\"); }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n A a = new B();\n // insert code here\n b.hello();\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A a = new B();\n        // insert code here\n        b.hello();\n    }\n}"
           }
         ],
         "tags": [
@@ -15486,7 +15486,7 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n A a = new A();\n B b = (B) a;\n b.hello();\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A a = new A();\n        B b = (B) a;\n        b.hello();\n    }\n}"
           }
         ],
         "tags": [
@@ -15591,11 +15591,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample クラス",
-            "code": "class Sample {\n private int num;\n public Sample(int num) {\n // insert code here\n }\n public int getNum() { return num; }\n public void setNum(int num) { this.num = num; }\n}"
+            "code": "class Sample {\n    private int num;\n    public Sample(int num) {\n        // insert code here\n    }\n    public int getNum() { return num; }\n    public void setNum(int num) { this.num = num; }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Sample s = new Sample(10);\n System.out.println(s.getNum());\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Sample s = new Sample(10);\n        System.out.println(s.getNum());\n    }\n}"
           }
         ],
         "tags": [
@@ -15697,15 +15697,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Parent クラス",
-            "code": "class Parent {\n String name;\n String getName() { return this.name; }\n}"
+            "code": "class Parent {\n    String name;\n    String getName() { return this.name; }\n}"
           },
           {
             "title": "Child.java",
-            "code": "public class Child extends Parent {\n String name;\n}"
+            "code": "public class Child extends Parent {\n    String name;\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Child child = new Child();\n child.name = \"sample\";\n System.out.println(child.getName());\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Child child = new Child();\n        child.name = \"sample\";\n        System.out.println(child.getName());\n    }\n}"
           }
         ],
         "tags": [
@@ -15816,15 +15816,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A クラス",
-            "code": "class A {\n public A() { System.out.println(\"A\"); }\n}"
+            "code": "class A {\n    public A() { System.out.println(\"A\"); }\n}"
           },
           {
             "title": "B クラス",
-            "code": "class B extends A {\n public B() { System.out.println(\"B\"); }\n}"
+            "code": "class B extends A {\n    public B() { System.out.println(\"B\"); }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n A a = new B();\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A a = new B();\n    }\n}"
           }
         ],
         "tags": [
@@ -15935,15 +15935,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Parent クラス",
-            "code": "class Parent {\n public Parent() { System.out.println(\"A\"); }\n public Parent(String val) {\n this();\n System.out.println(val);\n }\n}"
+            "code": "class Parent {\n    public Parent() { System.out.println(\"A\"); }\n    public Parent(String val) {\n        this();\n        System.out.println(val);\n    }\n}"
           },
           {
             "title": "Child クラス",
-            "code": "class Child extends Parent {\n public Child() {\n super(\"B\");\n System.out.println(\"C\");\n }\n public Child(String val) {\n this();\n System.out.println(val);\n }\n}"
+            "code": "class Child extends Parent {\n    public Child() {\n        super(\"B\");\n        System.out.println(\"C\");\n    }\n    public Child(String val) {\n        this();\n        System.out.println(val);\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n new Child(\"D\");\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        new Child(\"D\");\n    }\n}"
           }
         ],
         "tags": [
@@ -16034,7 +16034,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public interface Sample {\n // insert code here\n}"
+            "code": "public interface Sample {\n    // insert code here\n}"
           }
         ],
         "tags": [
@@ -16309,7 +16309,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public sealed class Sample permits A {\n // something code\n}"
+            "code": "public sealed class Sample permits A {\n    // something code\n}"
           }
         ],
         "tags": [
@@ -16400,19 +16400,19 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Test.java",
-            "code": "public sealed interface Test permits A {\n void sample();\n}"
+            "code": "public sealed interface Test permits A {\n    void sample();\n}"
           },
           {
             "title": "A.java",
-            "code": "public abstract class A implements Test {\n abstract void hello();\n}"
+            "code": "public abstract class A implements Test {\n    abstract void hello();\n}"
           },
           {
             "title": "B.java",
-            "code": "public final class B extends A {\n @Override void hello() { System.out.println(\"hello\"); }\n @Override public void sample() { System.out.println(\"sample\"); }\n}"
+            "code": "public final class B extends A {\n    @Override void hello() { System.out.println(\"hello\"); }\n    @Override public void sample() { System.out.println(\"sample\"); }\n}"
           },
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) {\n Test t = new B();\n t.sample();\n A a = (A) t;\n a.hello();\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        Test t = new B();\n        t.sample();\n        A a = (A) t;\n        a.hello();\n    }\n}"
           }
         ],
         "tags": [
@@ -16526,7 +16526,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public class Main {\n public static void main(String[] args) {\n try {\n int[] array = {};\n array[0] = 10;\n System.out.println(\"finish\");\n } catch (ArrayIndexOutOfBoundsException e) {\n System.out.println(\"error\");\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        try {\n            int[] array = {};\n            array[0] = 10;\n            System.out.println(\"finish\");\n        } catch (ArrayIndexOutOfBoundsException e) {\n            System.out.println(\"error\");\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -16638,7 +16638,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public class Main {\n public static void main(String[] args) {\n try {\n if (args.length == 0) {\n System.out.println(\"A\");\n }\n } catch (NullPointerException e) {\n System.out.println(\"B\");\n } finally {\n System.out.println(\"C\");\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        try {\n            if (args.length == 0) {\n                System.out.println(\"A\");\n            }\n        } catch (NullPointerException e) {\n            System.out.println(\"B\");\n        } finally {\n            System.out.println(\"C\");\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -16758,7 +16758,7 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n try {\n sample();\n sub();\n } catch (SampleException e) {\n System.out.println(\"A\");\n } catch (SubSampleException e) {\n System.out.println(\"B\");\n }\n }\n private static void sample() throws SampleException {\n throw new SampleException();\n }\n private static void sub() throws SubSampleException {\n throw new SubSampleException();\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        try {\n            sample();\n            sub();\n        } catch (SampleException e) {\n            System.out.println(\"A\");\n        } catch (SubSampleException e) {\n            System.out.println(\"B\");\n        }\n    }\n    private static void sample() throws SampleException {\n        throw new SampleException();\n    }\n    private static void sub() throws SubSampleException {\n        throw new SubSampleException();\n    }\n}"
           }
         ],
         "tags": [
@@ -16861,7 +16861,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public class Main {\n public static void main(String[] args) {\n try {\n Object obj = null;\n System.out.println(obj.toString());\n System.out.println(\"A\");\n } finally {\n System.out.println(\"B\");\n } catch (NullPointerException e) {\n System.out.println(\"C\");\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        try {\n            Object obj = null;\n            System.out.println(obj.toString());\n            System.out.println(\"A\");\n        } finally {\n            System.out.println(\"B\");\n        } catch (NullPointerException e) {\n            System.out.println(\"C\");\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -16973,7 +16973,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public class Main {\n public static void main(String[] args) {\n System.out.println(test(null));\n }\n private static String test(Object obj) {\n try {\n System.out.println(obj.toString());\n } catch (NullPointerException e) {\n return \"A\";\n } finally {\n System.out.println(\"B\");\n }\n return \"C\";\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        System.out.println(test(null));\n    }\n    private static String test(Object obj) {\n        try {\n            System.out.println(obj.toString());\n        } catch (NullPointerException e) {\n            return \"A\";\n        } finally {\n            System.out.println(\"B\");\n        }\n        return \"C\";\n    }\n}"
           }
         ],
         "tags": [
@@ -17076,7 +17076,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public class Main {\n public static void main(String[] args) {\n int result = sample();\n System.out.println(result);\n }\n private static int sample() {\n try {\n throw new RuntimeException();\n } catch (RuntimeException e) {\n return 10;\n } finally {\n return 20;\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int result = sample();\n        System.out.println(result);\n    }\n    private static int sample() {\n        try {\n            throw new RuntimeException();\n        } catch (RuntimeException e) {\n            return 10;\n        } finally {\n            return 20;\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -17179,7 +17179,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public class Main {\n public static void main(String[] args) {\n System.out.println(sample());\n }\n private static int sample() {\n int val = 10;\n try {\n val += 10;\n return val;\n } finally {\n val += 10;\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        System.out.println(sample());\n    }\n    private static int sample() {\n        int val = 10;\n        try {\n            val += 10;\n            return val;\n        } finally {\n            val += 10;\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -17392,7 +17392,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public class Main {\n public static void main(String[] args) {\n try {\n try {\n int[] array = {1, 2, 3};\n System.out.println(array[3]);\n } catch (ArrayIndexOutOfBoundsException e) {\n System.out.println(\"D\");\n } finally {\n System.out.println(\"E\");\n }\n } catch (ArrayIndexOutOfBoundsException e) {\n System.out.println(\"F\");\n } finally {\n System.out.println(\"G\");\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        try {\n            try {\n                int[] array = {1, 2, 3};\n                System.out.println(array[3]);\n            } catch (ArrayIndexOutOfBoundsException e) {\n                System.out.println(\"D\");\n            } finally {\n                System.out.println(\"E\");\n            }\n        } catch (ArrayIndexOutOfBoundsException e) {\n            System.out.println(\"F\");\n        } finally {\n            System.out.println(\"G\");\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -17589,7 +17589,7 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public void hello(String name) /* ここに入る */ {\n if (name == null) {\n throw new SampleException();\n }\n if (\"\".equals(name)) {\n throw new TestException();\n }\n }\n}"
+            "code": "public class Sample {\n    public void hello(String name) /* ここに入る */ {\n        if (name == null) {\n            throw new SampleException();\n        }\n        if (\"\".equals(name)) {\n            throw new TestException();\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -17769,7 +17769,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public class Main {\n public static void main(String[] args) {\n System.out.println(args[0].length());\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        System.out.println(args[0].length());\n    }\n}"
           }
         ],
         "tags": [
@@ -17864,7 +17864,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Main {\n public static void main(String[] args) {\n List<String> list = new ArrayList<>();\n list.get(0);\n }\n}"
+            "code": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Main {\n    public static void main(String[] args) {\n        List<String> list = new ArrayList<>();\n        list.get(0);\n    }\n}"
           }
         ],
         "tags": [
@@ -17957,15 +17957,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public class A {\n private int num;\n public A(int num) { this.num = num; }\n public boolean equals(Object obj) {\n A a = (A) obj;\n return this.num == a.num;\n }\n}"
+            "code": "public class A {\n    private int num;\n    public A(int num) { this.num = num; }\n    public boolean equals(Object obj) {\n        A a = (A) obj;\n        return this.num == a.num;\n    }\n}"
           },
           {
             "title": "B.java",
-            "code": "public class B {\n private int num;\n public B(int num) { this.num = num; }\n public boolean equals(Object obj) {\n B b = (B) obj;\n return this.num == b.num;\n }\n}"
+            "code": "public class B {\n    private int num;\n    public B(int num) { this.num = num; }\n    public boolean equals(Object obj) {\n        B b = (B) obj;\n        return this.num == b.num;\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n A a = new A(10);\n B b = new B(10);\n System.out.println(a.equals(b));\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A a = new A(10);\n        B b = new B(10);\n        System.out.println(a.equals(b));\n    }\n}"
           }
         ],
         "tags": [
@@ -18059,7 +18059,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public class Main {\n public static void main(String[] args) {\n String str = null;\n if (str.equals(\"\")) {\n System.out.println(\"blank\");\n } else {\n System.out.println(\"null\");\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        String str = null;\n        if (str.equals(\"\")) {\n            System.out.println(\"blank\");\n        } else {\n            System.out.println(\"null\");\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -18153,7 +18153,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public class Main {\n public static void main(String[] args) {\n main(args);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        main(args);\n    }\n}"
           }
         ],
         "tags": [
@@ -18698,7 +18698,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "try (A a = new A(); B b = new B(); C c = new C()) {\n // do something\n}\n// close順は C -> B -> A"
+            "code": "try (A a = new A(); B b = new B(); C c = new C()) {\n    // do something\n}\n// close順は C -> B -> A"
           }
         ],
         "tags": [
@@ -18876,11 +18876,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "TroubleResource.java",
-            "code": "public class TroubleResource implements AutoCloseable {\n @Override\n public void close() throws Exception {\n throw new RuntimeException(\"trouble\");\n }\n}"
+            "code": "public class TroubleResource implements AutoCloseable {\n    @Override\n    public void close() throws Exception {\n        throw new RuntimeException(\"trouble\");\n    }\n}"
           },
           {
             "title": "TroubleMaker.java",
-            "code": "public class TroubleMaker {\n public static void main(String[] args) {\n try (TroubleResource a = new TroubleResource()) {\n throw new Exception();\n } catch (RuntimeException e) {\n System.out.println(\"A\");\n } catch (Exception e) {\n System.out.println(\"B\");\n }\n }\n}"
+            "code": "public class TroubleMaker {\n    public static void main(String[] args) {\n        try (TroubleResource a = new TroubleResource()) {\n            throw new Exception();\n        } catch (RuntimeException e) {\n            System.out.println(\"A\");\n        } catch (Exception e) {\n            System.out.println(\"B\");\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -18966,7 +18966,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public interface A {\n boolean search(int[] data, int target);\n}\n\npublic interface B extends A {\n @Override\n default boolean search(int[] data, int target) {\n int cnt = 0;\n for (int i : data) {\n if (i == target) {\n cnt++;\n }\n }\n return cnt > 0;\n }\n}\n\npublic class C implements B {\n}\n\npublic class Sample {\n public static void main(String... args) {\n if (new C().search(\n new int[]{1, 2, 3, 7, 9},\n Integer.parseInt(args[0]))) {\n System.out.println(\"A\");\n } else {\n System.out.println(\"B\");\n }\n }\n}\n\n> java Sample 5 2"
+            "code": "public interface A {\n    boolean search(int[] data, int target);\n}\n\npublic interface B extends A {\n    @Override\n    default boolean search(int[] data, int target) {\n        int cnt = 0;\n        for (int i : data) {\n            if (i == target) {\n                cnt++;\n            }\n        }\n        return cnt > 0;\n    }\n}\n\npublic class C implements B {\n}\n\npublic class Sample {\n    public static void main(String... args) {\n        if (new C().search(\n        new int[]{1, 2, 3, 7, 9},\n        Integer.parseInt(args[0]))) {\n            System.out.println(\"A\");\n        } else {\n            System.out.println(\"B\");\n        }\n    }\n}\n\n> java Sample 5 2"
           }
         ],
         "tags": [
@@ -19067,7 +19067,7 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "title": "C.java",
-            "code": "// C.java\npublic class C extends A {\n public void sample() {\n B b = new B();\n }\n}"
+            "code": "// C.java\npublic class C extends A {\n    public void sample() {\n        B b = new B();\n    }\n}"
           }
         ],
         "tags": [
@@ -19168,11 +19168,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public class A implements AutoCloseable {\n private String name;\n\n public A(String name) {\n this.name = name;\n }\n\n public void close() throws Exception {\n System.out.println(name);\n }\n}"
+            "code": "public class A implements AutoCloseable {\n    private String name;\n\n    public A(String name) {\n        this.name = name;\n    }\n\n    public void close() throws Exception {\n        System.out.println(name);\n    }\n}"
           },
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) throws Exception {\n try (A a = new A(\"A\");\n A b = new A(\"B\")) {\n } finally {\n System.out.println(\"C\");\n }\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) throws Exception {\n        try (A a = new A(\"A\");\n        A b = new A(\"B\")) {\n        } finally {\n            System.out.println(\"C\");\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -19256,7 +19256,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public class Sample {\n public static void main(String[] args) {\n String a = new String(\"sample\");\n String b = a;\n String c = a.intern();\n String d = \"sample\";\n\n if (a == b) {\n System.out.println(\"A\");\n }\n if (a == c) {\n System.out.println(\"B\");\n }\n if (a == d) {\n System.out.println(\"C\");\n }\n if (b == c) {\n System.out.println(\"D\");\n }\n if (b == d) {\n System.out.println(\"E\");\n }\n if (c == d) {\n System.out.println(\"F\");\n }\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        String a = new String(\"sample\");\n        String b = a;\n        String c = a.intern();\n        String d = \"sample\";\n\n        if (a == b) {\n            System.out.println(\"A\");\n        }\n        if (a == c) {\n            System.out.println(\"B\");\n        }\n        if (a == d) {\n            System.out.println(\"C\");\n        }\n        if (b == c) {\n            System.out.println(\"D\");\n        }\n        if (b == d) {\n            System.out.println(\"E\");\n        }\n        if (c == d) {\n            System.out.println(\"F\");\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -19467,11 +19467,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public class A {\n private var num = 10; // (1)\n\n public A(String num) {\n var var = Integer.parseInt(num); // (2)\n this.num = var; // (3)\n }\n\n public void print() {\n int var = num; // (4)\n System.out.println(var); // (5)\n }\n}"
+            "code": "public class A {\n    private var num = 10; // (1)\n\n    public A(String num) {\n        var var = Integer.parseInt(num); // (2)\n        this.num = var; // (3)\n    }\n\n    public void print() {\n        int var = num; // (4)\n        System.out.println(var); // (5)\n    }\n}"
           },
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) {\n new A(\"20\").print();\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        new A(\"20\").print();\n    }\n}"
           }
         ],
         "tags": [
@@ -19796,15 +19796,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public class A {\n public int num;\n\n public A(int num) {\n this.num = num;\n }\n}"
+            "code": "public class A {\n    public int num;\n\n    public A(int num) {\n        this.num = num;\n    }\n}"
           },
           {
             "title": "B.java",
-            "code": "public class B extends A {\n public B(int num) {\n super(num);\n }\n}"
+            "code": "public class B extends A {\n    public B(int num) {\n        super(num);\n    }\n}"
           },
           {
             "title": "Sample.java",
-            "code": "public interface Sample {\n A execute(int num);\n}"
+            "code": "public interface Sample {\n    A execute(int num);\n}"
           }
         ],
         "tags": [
@@ -19914,15 +19914,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public class A {\n public void execute() {\n System.out.println(\"A\");\n }\n}"
+            "code": "public class A {\n    public void execute() {\n        System.out.println(\"A\");\n    }\n}"
           },
           {
             "title": "B.java",
-            "code": "public class B extends A {\n private void test() {\n System.out.println(\"B\");\n }\n\n public void execute() {\n test();\n }\n}"
+            "code": "public class B extends A {\n    private void test() {\n        System.out.println(\"B\");\n    }\n\n    public void execute() {\n        test();\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Object[] objects = {\n new A(), new B(), \"C\"\n };\n for (Object obj : objects) {\n test(obj);\n }\n }\n\n private static void test(Object obj) {\n if (obj instanceof A b) {\n b.execute();\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Object[] objects = {\n            new A(), new B(), \"C\"\n        };\n        for (Object obj : objects) {\n            test(obj);\n        }\n    }\n\n    private static void test(Object obj) {\n        if (obj instanceof A b) {\n            b.execute();\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -20032,7 +20032,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Test.java",
-            "code": "public class Test {\n int a, b, c, d;\n\n void setA(int a) {\n a = a;\n }\n void setB() {\n this.b = b;\n }\n int setC() {\n return c;\n }\n int setD(int d) {\n d = d;\n return d;\n }\n void setAll(int x) {\n a = b = this.c = d = setD(x);\n }\n}"
+            "code": "public class Test {\n    int a, b, c, d;\n\n    void setA(int a) {\n        a = a;\n    }\n    void setB() {\n        this.b = b;\n    }\n    int setC() {\n        return c;\n    }\n    int setD(int d) {\n        d = d;\n        return d;\n    }\n    void setAll(int x) {\n        a = b = this.c = d = setD(x);\n    }\n}"
           }
         ],
         "tags": [
@@ -20119,11 +20119,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public abstract class A {\n private int id;\n public A(int id) {\n this.id = id;\n }\n void sample() {\n System.out.println(\"A\");\n }\n}"
+            "code": "public abstract class A {\n    private int id;\n    public A(int id) {\n        this.id = id;\n    }\n    void sample() {\n        System.out.println(\"A\");\n    }\n}"
           },
           {
             "title": "B.java",
-            "code": "public class B extends A {\n public void sample() {\n System.out.println(\"B\");\n }\n}"
+            "code": "public class B extends A {\n    public void sample() {\n        System.out.println(\"B\");\n    }\n}"
           }
         ],
         "tags": [
@@ -20212,19 +20212,19 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public class A {\n public void sample() {\n System.out.println(\"A\");\n }\n}"
+            "code": "public class A {\n    public void sample() {\n        System.out.println(\"A\");\n    }\n}"
           },
           {
             "title": "B.java",
-            "code": "public class B extends A {\n public void sample() {\n System.out.println(\"B\");\n }\n}"
+            "code": "public class B extends A {\n    public void sample() {\n        System.out.println(\"B\");\n    }\n}"
           },
           {
             "title": "C.java",
-            "code": "public class C extends A {\n public void sample() {\n System.out.println(\"C\");\n }\n}"
+            "code": "public class C extends A {\n    public void sample() {\n        System.out.println(\"C\");\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n A[] list = {\n new A(), new B(), new C()\n };\n for (A obj : list) {\n obj.sample();\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A[] list = {\n            new A(), new B(), new C()\n        };\n        for (A obj : list) {\n            obj.sample();\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -20244,19 +20244,19 @@ window.JAVA_STUDY_DATA = {
         "options": [
           {
             "key": "A",
-            "code": "for (int i = 0; i < array.length; i++) {\n System.out.println(array[i]);\n}"
+            "code": "for (int i = 0; i < array.length; i++) {\n    System.out.println(array[i]);\n}"
           },
           {
             "key": "B",
-            "code": "for (int i = 0; i <= array.length; i++) {\n System.out.println(array[i]);\n}"
+            "code": "for (int i = 0; i <= array.length; i++) {\n    System.out.println(array[i]);\n}"
           },
           {
             "key": "C",
-            "code": "for (int i = 0; i <= array.length; ++i) {\n System.out.println(array[i]);\n}"
+            "code": "for (int i = 0; i <= array.length; ++i) {\n    System.out.println(array[i]);\n}"
           },
           {
             "key": "D",
-            "code": "for (int i = 0; ++i < array.length;) {\n System.out.println(array[i]);\n}"
+            "code": "for (int i = 0; ++i < array.length;) {\n    System.out.println(array[i]);\n}"
           }
         ],
         "answer": [
@@ -20313,7 +20313,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "int[] array = {1, 2, 3, 4, 5};\nfor (int num : array) {\n System.out.println(num);\n}"
+            "code": "int[] array = {1, 2, 3, 4, 5};\nfor (int num : array) {\n    System.out.println(num);\n}"
           }
         ],
         "tags": [
@@ -20420,11 +20420,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Test.java",
-            "code": "public class Test {\n private int value;\n public Test(int value) {\n this.value = value;\n }\n}"
+            "code": "public class Test {\n    private int value;\n    public Test(int value) {\n        this.value = value;\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n String s = \"A\";\n String t = new String(\"A\");\n Test a = new Test(17);\n Test b = new Test(17);\n\n if (s == t) {\n System.out.println(\"A\");\n } else {\n System.out.println(\"B\");\n }\n if (s.equals(t)) {\n System.out.println(\"C\");\n } else {\n System.out.println(\"D\");\n }\n if (a == b) {\n System.out.println(\"E\");\n } else {\n System.out.println(\"F\");\n }\n if (a.equals(b)) {\n System.out.println(\"G\");\n } else {\n System.out.println(\"H\");\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        String s = \"A\";\n        String t = new String(\"A\");\n        Test a = new Test(17);\n        Test b = new Test(17);\n\n        if (s == t) {\n            System.out.println(\"A\");\n        } else {\n            System.out.println(\"B\");\n        }\n        if (s.equals(t)) {\n            System.out.println(\"C\");\n        } else {\n            System.out.println(\"D\");\n        }\n        if (a == b) {\n            System.out.println(\"E\");\n        } else {\n            System.out.println(\"F\");\n        }\n        if (a.equals(b)) {\n            System.out.println(\"G\");\n        } else {\n            System.out.println(\"H\");\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -20444,27 +20444,27 @@ window.JAVA_STUDY_DATA = {
         "options": [
           {
             "key": "A",
-            "code": "String str = switch (data) {\n case 0x0000FF -> \"A\"; break;\n case 0x008000 -> \"B\"; break;\n case 0xFF0000 -> \"C\"; break;\n case 0xFFFF00 -> \"D\"; break;\n case 0xFFFFFF -> \"E\"; break;\n default -> \"F\";\n};"
+            "code": "String str = switch (data) {\n    case 0x0000FF -> \"A\"; break;\n    case 0x008000 -> \"B\"; break;\n    case 0xFF0000 -> \"C\"; break;\n    case 0xFFFF00 -> \"D\"; break;\n    case 0xFFFFFF -> \"E\"; break;\n    default -> \"F\";\n};"
           },
           {
             "key": "B",
-            "code": "String str = switch (data) {\n case 0x0000FF -> \"A\";\n case 0x008000 -> \"B\";\n case 0xFF0000 -> \"C\";\n case 0xFFFF00 -> \"D\";\n case 0xFFFFFF -> \"E\";\n default -> \"F\";\n};"
+            "code": "String str = switch (data) {\n    case 0x0000FF -> \"A\";\n    case 0x008000 -> \"B\";\n    case 0xFF0000 -> \"C\";\n    case 0xFFFF00 -> \"D\";\n    case 0xFFFFFF -> \"E\";\n    default -> \"F\";\n};"
           },
           {
             "key": "C",
-            "code": "String str = switch (data) {\n case 0x0000FF -> \"A\";\n case 0x008000 -> \"B\";\n case 0xFF0000 -> \"C\";\n case 0xFFFF00 -> \"D\";\n case 0xFFFFFF -> \"E\";\n default : yield \"F\";\n};"
+            "code": "String str = switch (data) {\n    case 0x0000FF -> \"A\";\n    case 0x008000 -> \"B\";\n    case 0xFF0000 -> \"C\";\n    case 0xFFFF00 -> \"D\";\n    case 0xFFFFFF -> \"E\";\ndefault : yield \"F\";\n};"
           },
           {
             "key": "D",
-            "code": "String str = switch (data) {\n case 0x0000FF : color = \"A\";\n case 0x008000 : color = \"B\";\n case 0xFF0000 : color = \"C\";\n case 0xFFFF00 : color = \"D\";\n case 0xFFFFFF : color = \"E\";\n default : color = \"F\";\n};"
+            "code": "String str = switch (data) {\ncase 0x0000FF : color = \"A\";\ncase 0x008000 : color = \"B\";\ncase 0xFF0000 : color = \"C\";\ncase 0xFFFF00 : color = \"D\";\ncase 0xFFFFFF : color = \"E\";\ndefault : color = \"F\";\n};"
           },
           {
             "key": "E",
-            "code": "String str = switch (data) {\n case 0x0000FF := \"A\";\n case 0x008000 := \"B\";\n case 0xFF0000 := \"C\";\n case 0xFFFF00 := \"D\";\n case 0xFFFFFF := \"E\";\n default := \"F\";\n};"
+            "code": "String str = switch (data) {\ncase 0x0000FF := \"A\";\ncase 0x008000 := \"B\";\ncase 0xFF0000 := \"C\";\ncase 0xFFFF00 := \"D\";\ncase 0xFFFFFF := \"E\";\ndefault := \"F\";\n};"
           },
           {
             "key": "F",
-            "code": "String str = switch (data) {\n case 0x0000FF : yield \"A\";\n case 0x008000 : yield \"B\";\n case 0xFF0000 : yield \"C\";\n case 0xFFFF00 : yield \"D\";\n case 0xFFFFFF : yield \"E\";\n};"
+            "code": "String str = switch (data) {\ncase 0x0000FF : yield \"A\";\ncase 0x008000 : yield \"B\";\ncase 0xFF0000 : yield \"C\";\ncase 0xFFFF00 : yield \"D\";\ncase 0xFFFFFF : yield \"E\";\n};"
           }
         ],
         "answer": [
@@ -20533,7 +20533,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "int data = 0xFF0000;\nString str = \"\";\nswitch (data) {\n case 0x0000FF : str = \"A\"; break;\n case 0x008000 : str = \"B\"; break;\n case 0xFF0000 : str = \"C\"; break;\n case 0xFFFF00 : str = \"D\"; break;\n case 0xFFFFFF : str = \"E\"; break;\n default : str = \"F\";\n}"
+            "code": "int data = 0xFF0000;\nString str = \"\";\nswitch (data) {\ncase 0x0000FF : str = \"A\"; break;\ncase 0x008000 : str = \"B\"; break;\ncase 0xFF0000 : str = \"C\"; break;\ncase 0xFFFF00 : str = \"D\"; break;\ncase 0xFFFFFF : str = \"E\"; break;\ndefault : str = \"F\";\n}"
           }
         ],
         "tags": [
@@ -20632,19 +20632,19 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n ((A) new C()).sample();\n ((B) new C()).sample();\n ((C) new C()).sample();\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        ((A) new C()).sample();\n        ((B) new C()).sample();\n        ((C) new C()).sample();\n    }\n}"
           },
           {
             "title": "A インタフェース",
-            "code": "interface A {\n default void sample() {\n System.out.println(\"A\");\n }\n}"
+            "code": "interface A {\n    default void sample() {\n        System.out.println(\"A\");\n    }\n}"
           },
           {
             "title": "B クラス",
-            "code": "abstract sealed class B implements A {\n private void sample() {\n System.out.println(\"B\");\n }\n}"
+            "code": "abstract sealed class B implements A {\n    private void sample() {\n        System.out.println(\"B\");\n    }\n}"
           },
           {
             "title": "C クラス",
-            "code": "final class C extends B {\n public void sample() {\n System.out.println(\"C\");\n }\n}"
+            "code": "final class C extends B {\n    public void sample() {\n        System.out.println(\"C\");\n    }\n}"
           }
         ],
         "tags": [
@@ -20665,23 +20665,23 @@ window.JAVA_STUDY_DATA = {
         "options": [
           {
             "key": "A",
-            "code": "public long test(Integer i) {\n return i.longValue();\n}"
+            "code": "public long test(Integer i) {\n    return i.longValue();\n}"
           },
           {
             "key": "B",
-            "code": "public int test(int x, int y) {\n return x + y;\n}"
+            "code": "public int test(int x, int y) {\n    return x + y;\n}"
           },
           {
             "key": "C",
-            "code": "public int test(Integer i, Integer j) {\n return i + j;\n}"
+            "code": "public int test(Integer i, Integer j) {\n    return i + j;\n}"
           },
           {
             "key": "D",
-            "code": "public void test(int a, int b) {\n return a + b;\n}"
+            "code": "public void test(int a, int b) {\n    return a + b;\n}"
           },
           {
             "key": "E",
-            "code": "private int test(int x, int y) {\n return x + y;\n}"
+            "code": "private int test(int x, int y) {\n    return x + y;\n}"
           }
         ],
         "answer": [
@@ -20743,7 +20743,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public int test(int a, int b) {\n return a + b;\n }\n\n // insert code here\n}"
+            "code": "public class Sample {\n    public int test(int a, int b) {\n        return a + b;\n    }\n\n    // insert code here\n}"
           }
         ],
         "tags": [
@@ -20991,7 +20991,7 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n\n Book a = new Book(\"A\");\n Book b = new Book(\"B\");\n\n // insert code here\n\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n\n        Book a = new Book(\"A\");\n        Book b = new Book(\"B\");\n\n        // insert code here\n\n    }\n}"
           }
         ],
         "tags": [
@@ -21100,7 +21100,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) {\n int[] array = {1,2,3,4,5,6,7,8,9,10};\n // insert code here\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        int[] array = {1,2,3,4,5,6,7,8,9,10};\n        // insert code here\n    }\n}"
           }
         ],
         "tags": [
@@ -21208,11 +21208,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Value.java",
-            "code": "public class Value {\n public String data;\n\n public Value(String data) {\n this.data = data;\n }\n\n public String toString() {\n return this.data;\n }\n}"
+            "code": "public class Value {\n    public String data;\n\n    public Value(String data) {\n        this.data = data;\n    }\n\n    public String toString() {\n        return this.data;\n    }\n}"
           },
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n private static Value[] values = {\n new Value(\"A\"),\n new Value(\"B\"),\n new Value(\"C\"),\n null\n };\n\n public static void main(String[] args) {\n System.out.println(values[1]);\n System.out.println(values[2].data);\n System.out.println(values[3]);\n }\n}"
+            "code": "public class Sample {\n    private static Value[] values = {\n        new Value(\"A\"),\n        new Value(\"B\"),\n        new Value(\"C\"),\n        null\n    };\n\n    public static void main(String[] args) {\n        System.out.println(values[1]);\n        System.out.println(values[2].data);\n        System.out.println(values[3]);\n    }\n}"
           }
         ],
         "tags": [
@@ -21403,11 +21403,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public interface A {\n int a = 1;\n static int b = 2;\n static final int c = 3;\n}"
+            "code": "public interface A {\n    int a = 1;\n    static int b = 2;\n    static final int c = 3;\n}"
           },
           {
             "title": "B クラス",
-            "code": "class B implements A {\n public static void main(String[] args) {\n A t = new B();\n // insert code here\n }\n}"
+            "code": "class B implements A {\n    public static void main(String[] args) {\n        A t = new B();\n        // insert code here\n    }\n}"
           }
         ],
         "tags": [
@@ -21516,11 +21516,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) {\n int result = new Test().execute(\"A\");\n System.out.println(result);\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        int result = new Test().execute(\"A\");\n        System.out.println(result);\n    }\n}"
           },
           {
             "title": "Test クラス",
-            "code": "class Test {\n int execute(String str) {\n int total = 0;\n switch (str) {\n case \"A\" -> total++;\n case \"B\", \"C\" -> total++;\n case \"D\", \"E\" -> total++;\n default -> total++;\n };\n return total;\n }\n}"
+            "code": "class Test {\n    int execute(String str) {\n        int total = 0;\n        switch (str) {\n            case \"A\" -> total++;\n            case \"B\", \"C\" -> total++;\n            case \"D\", \"E\" -> total++;\n            default -> total++;\n        };\n        return total;\n    }\n}"
           }
         ],
         "tags": [
@@ -21629,7 +21629,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public void hello() throws SampleException {\n // some code\n }\n}"
+            "code": "public class Sample {\n    public void hello() throws SampleException {\n        // some code\n    }\n}"
           }
         ],
         "tags": [
@@ -21722,15 +21722,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "p1/A.java",
-            "code": "package p1;\n\npublic class A {\n protected void hello() {\n System.out.println(\"A\");\n }\n}"
+            "code": "package p1;\n\npublic class A {\n    protected void hello() {\n        System.out.println(\"A\");\n    }\n}"
           },
           {
             "title": "p2/B.java",
-            "code": "package p2;\n\nimport p1.A;\n\npublic class B {\n private static B b;\n public static B getInstance() {\n if (b == null) {\n b = new B();\n }\n return b;\n }\n public void hello() {\n new A().hello();\n }\n}"
+            "code": "package p2;\n\nimport p1.A;\n\npublic class B {\n    private static B b;\n    public static B getInstance() {\n        if (b == null) {\n            b = new B();\n        }\n        return b;\n    }\n    public void hello() {\n        new A().hello();\n    }\n}"
           },
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) {\n B b = B.getInstance();\n b.hello();\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        B b = B.getInstance();\n        b.hello();\n    }\n}"
           }
         ],
         "tags": [
@@ -21828,11 +21828,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) {\n Item a = new Item(\"A\");\n System.out.print(a.name + a.id + \",\");\n Item b = new Item(\"B\");\n System.out.print(b.name + b.id + \",\");\n b.id = \"2\";\n a.name = \"C\";\n System.out.print(a.name + a.id + \",\");\n System.out.print(b.name + b.id + \",\");\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        Item a = new Item(\"A\");\n        System.out.print(a.name + a.id + \",\");\n        Item b = new Item(\"B\");\n        System.out.print(b.name + b.id + \",\");\n        b.id = \"2\";\n        a.name = \"C\";\n        System.out.print(a.name + a.id + \",\");\n        System.out.print(b.name + b.id + \",\");\n    }\n}"
           },
           {
             "title": "Item クラス",
-            "code": "class Item {\n public static String id;\n public String name;\n public Item(String name) {\n this.name = name;\n id = \"1\";\n }\n}"
+            "code": "class Item {\n    public static String id;\n    public String name;\n    public Item(String name) {\n        this.name = name;\n        id = \"1\";\n    }\n}"
           }
         ],
         "tags": [
@@ -21931,15 +21931,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) {\n B b = new B();\n b.setValues(args);\n System.out.println(b);\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        B b = new B();\n        b.setValues(args);\n        System.out.println(b);\n    }\n}"
           },
           {
             "title": "A クラス",
-            "code": "class A {\n private String value;\n\n public String getValue() {\n return value;\n }\n\n public void setValue(String name) {\n this.value = name;\n }\n\n public String toString() {\n return getValue();\n }\n}"
+            "code": "class A {\n    private String value;\n\n    public String getValue() {\n        return value;\n    }\n\n    public void setValue(String name) {\n        this.value = name;\n    }\n\n    public String toString() {\n        return getValue();\n    }\n}"
           },
           {
             "title": "B クラス",
-            "code": "class B extends A {\n public void setValue(String value) {\n super.setValue(\"\"\" + value + \"\"\");\n }\n public void setValues(String[] parts) {\n var sb = new StringBuilder();\n for (String part : parts) {\n sb.append(part).append(' ');\n }\n this.setValue(sb.toString());\n }\n}"
+            "code": "class B extends A {\n    public void setValue(String value) {\n        super.setValue(\"\"\" + value + \"\"\");\n    }\n    public void setValues(String[] parts) {\n        var sb = new StringBuilder();\n        for (String part : parts) {\n            sb.append(part).append(' ');\n        }\n        this.setValue(sb.toString());\n    }\n}"
           }
         ],
         "tags": [
@@ -22029,7 +22029,7 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "title": "a/A.java",
-            "code": "package a;\nimport b.B;\n\npublic class A {\n public static void main(String[] args) {\n B b = new B();\n }\n}"
+            "code": "package a;\nimport b.B;\n\npublic class A {\n    public static void main(String[] args) {\n        B b = new B();\n    }\n}"
           }
         ],
         "tags": [
@@ -22111,15 +22111,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "// Sample.java\npackage com.sample;\npublic class Sample {\n public void sample() {\n // any code\n }\n}"
+            "code": "// Sample.java\npackage com.sample;\npublic class Sample {\n    public void sample() {\n        // any code\n    }\n}"
           },
           {
             "title": "Test.java",
-            "code": "// Test.java\npackage com.sample.test;\npublic class Test {\n public void test(int num) {\n // any code\n }\n}"
+            "code": "// Test.java\npackage com.sample.test;\npublic class Test {\n    public void test(int num) {\n        // any code\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "// Main.java\npackage com;\n// 空欄\npublic class Main {\n public static void main(String[] args) {\n new Sample().sample();\n int num = Integer.parseInt(args[0]);\n new Test().test(num);\n }\n}"
+            "code": "// Main.java\npackage com;\n// 空欄\npublic class Main {\n    public static void main(String[] args) {\n        new Sample().sample();\n        int num = Integer.parseInt(args[0]);\n        new Test().test(num);\n    }\n}"
           }
         ],
         "tags": [
@@ -22201,7 +22201,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public class Sample {\n static int num = 23;\n public static void main(String[] args) {\n int num = num;\n System.out.println(num);\n }\n}"
+            "code": "public class Sample {\n    static int num = 23;\n    public static void main(String[] args) {\n        int num = num;\n        System.out.println(num);\n    }\n}"
           }
         ],
         "tags": [
@@ -22281,15 +22281,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public interface A {\n abstract void x();\n}"
+            "code": "public interface A {\n    abstract void x();\n}"
           },
           {
             "title": "B.java",
-            "code": "public abstract class B /* position 1 */ {\n /* position 2 */\n public void x() {}\n public abstract void z();\n}"
+            "code": "public abstract class B /* position 1 */ {\n    /* position 2 */\n    public void x() {}\n    public abstract void z();\n}"
           },
           {
             "title": "C.java",
-            "code": "public class C extends B implements A {\n /* position 3 */\n}"
+            "code": "public class C extends B implements A {\n    /* position 3 */\n}"
           }
         ],
         "tags": [
@@ -22370,7 +22370,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public class Main {\n public static void main(String... args) {\n for (var value : args) {\n System.out.println(value);\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String... args) {\n        for (var value : args) {\n            System.out.println(value);\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -22459,7 +22459,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public class Main {\n public static void main(String[] args) {\n String str = \"abcd ef gh\";\n int x = str.indexOf(\"ef\");\n str.substring(x + 3);\n x = str.indexOf(\"ef\");\n System.out.println(str + \" \" + x);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        String str = \"abcd ef gh\";\n        int x = str.indexOf(\"ef\");\n        str.substring(x + 3);\n        x = str.indexOf(\"ef\");\n        System.out.println(str + \" \" + x);\n    }\n}"
           }
         ],
         "tags": [
@@ -22538,7 +22538,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public class Sample {\n static String str;\n public static void main(String[] args) {\n switch (str) {\n case \"10\" : str += \"10\";\n default : str += \"def\";\n case \"20\" : str += \"20\";\n }\n System.out.println(str);\n }\n}"
+            "code": "public class Sample {\n    static String str;\n    public static void main(String[] args) {\n        switch (str) {\n        case \"10\" : str += \"10\";\n        default : str += \"def\";\n        case \"20\" : str += \"20\";\n        }\n        System.out.println(str);\n    }\n}"
           }
         ],
         "tags": [
@@ -22617,11 +22617,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "// ex15/Sample.java\npackage ex15;\n\npublic class Sample {\n private final String name;\n public Sample(String name) {\n this.name = name;\n }\n public String getName() {\n return name;\n }\n public String toString() {\n return name;\n }\n}"
+            "code": "// ex15/Sample.java\npackage ex15;\n\npublic class Sample {\n    private final String name;\n    public Sample(String name) {\n        this.name = name;\n    }\n    public String getName() {\n        return name;\n    }\n    public String toString() {\n        return name;\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "// ex15/Main.java\npackage ex15;\n\nimport java.util.logging.Logger;\n\npublic class Main {\n static final Logger logger = Logger.getAnonymousLogger();\n public static void main(String[] args) {\n var d = new Sample(\"sample\");\n logger.info(d.toString());\n }\n}"
+            "code": "// ex15/Main.java\npackage ex15;\n\nimport java.util.logging.Logger;\n\npublic class Main {\n    static final Logger logger = Logger.getAnonymousLogger();\n    public static void main(String[] args) {\n        var d = new Sample(\"sample\");\n        logger.info(d.toString());\n    }\n}"
           }
         ],
         "tags": [
@@ -22711,15 +22711,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public class A {\n public void hello() {\n System.out.println(\"hello\");\n }\n}"
+            "code": "public class A {\n    public void hello() {\n        System.out.println(\"hello\");\n    }\n}"
           },
           {
             "title": "B.java",
-            "code": "public class B extends A {\n public void bye() {\n System.out.println(\"bye\");\n }\n}"
+            "code": "public class B extends A {\n    public void bye() {\n        System.out.println(\"bye\");\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n A a = new B();\n a.bye();\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A a = new B();\n        a.bye();\n    }\n}"
           }
         ],
         "tags": [
@@ -22800,7 +22800,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public class Sample {\n private char a;\n private int b = 1;\n String test(char a, int b) {\n return a + \", \" + b;\n }\n public static void main(String[] args) {\n Sample app = new Sample();\n System.out.println(app.test('A'));\n }\n}"
+            "code": "public class Sample {\n    private char a;\n    private int b = 1;\n    String test(char a, int b) {\n        return a + \", \" + b;\n    }\n    public static void main(String[] args) {\n        Sample app = new Sample();\n        System.out.println(app.test('A'));\n    }\n}"
           }
         ],
         "tags": [
@@ -22967,15 +22967,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public class A {\n int num = 10;\n public double getValue() {\n return 0.0;\n }\n}"
+            "code": "public class A {\n    int num = 10;\n    public double getValue() {\n        return 0.0;\n    }\n}"
           },
           {
             "title": "B.java",
-            "code": "public class B extends A {\n @Override\n public double getValue() {\n // ...\n return 1.0;\n }\n}"
+            "code": "public class B extends A {\n    @Override\n    public double getValue() {\n        // ...\n        return 1.0;\n    }\n}"
           },
           {
             "title": "C.java",
-            "code": "public class C extends B {\n @Override\n public double getValue() {\n System.out.println(super.num);\n return super.getValue();\n }\n}"
+            "code": "public class C extends B {\n    @Override\n    public double getValue() {\n        System.out.println(super.num);\n        return super.getValue();\n    }\n}"
           }
         ],
         "tags": [
@@ -23071,15 +23071,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "import java.util.Collection;\n\npublic class A {\n public void sample(Collection arg) {\n System.out.println(\"A\");\n }\n}"
+            "code": "import java.util.Collection;\n\npublic class A {\n    public void sample(Collection arg) {\n        System.out.println(\"A\");\n    }\n}"
           },
           {
             "title": "B.java",
-            "code": "import java.util.Collection;\nimport java.util.List;\n\npublic class B extends A {\n public void sample(Collection arg) {\n System.out.println(\"B\");\n }\n public void sample(List arg) {\n System.out.println(\"C\");\n }\n}"
+            "code": "import java.util.Collection;\nimport java.util.List;\n\npublic class B extends A {\n    public void sample(Collection arg) {\n        System.out.println(\"B\");\n    }\n    public void sample(List arg) {\n        System.out.println(\"C\");\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Main {\n public static void main(String[] args) {\n A a1 = new A();\n A a2 = new B();\n B b1 = new B();\n\n List<String> list = new ArrayList<>();\n\n // do something\n }\n}"
+            "code": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Main {\n    public static void main(String[] args) {\n        A a1 = new A();\n        A a2 = new B();\n        B b1 = new B();\n\n        List<String> list = new ArrayList<>();\n\n        // do something\n    }\n}"
           }
         ],
         "tags": [
@@ -23160,19 +23160,19 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public interface A {\n void sample();\n}"
+            "code": "public interface A {\n    void sample();\n}"
           },
           {
             "title": "B.java",
-            "code": "public interface B extends A {\n default void sample() {\n System.out.println(\"B\");\n }\n}"
+            "code": "public interface B extends A {\n    default void sample() {\n        System.out.println(\"B\");\n    }\n}"
           },
           {
             "title": "C.java",
-            "code": "public interface C extends A {\n @Override\n default void sample() {\n System.out.println(\"C\");\n }\n}"
+            "code": "public interface C extends A {\n    @Override\n    default void sample() {\n        System.out.println(\"C\");\n    }\n}"
           },
           {
             "title": "D.java",
-            "code": "public class D implements B, C {\n @Override\n public void sample() {\n super.sample();\n }\n}"
+            "code": "public class D implements B, C {\n    @Override\n    public void sample() {\n        super.sample();\n    }\n}"
           }
         ],
         "tags": [
@@ -23379,11 +23379,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public interface A {\n public A build(String str);\n}"
+            "code": "public interface A {\n    public A build(String str);\n}"
           },
           {
             "title": "B.java",
-            "code": "public class B implements A {\n public B(String str) {\n // ...\n }\n\n @Override\n public B build(String str) {\n return new B(str);\n }\n}"
+            "code": "public class B implements A {\n    public B(String str) {\n        // ...\n    }\n\n    @Override\n    public B build(String str) {\n        return new B(str);\n    }\n}"
           }
         ],
         "tags": [
@@ -23466,19 +23466,19 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A クラス",
-            "code": "class A {\n public A() {\n System.out.print(\"A\");\n }\n}"
+            "code": "class A {\n    public A() {\n        System.out.print(\"A\");\n    }\n}"
           },
           {
             "title": "B クラス",
-            "code": "class B extends A {\n public B() {\n System.out.print(\"B\");\n }\n}"
+            "code": "class B extends A {\n    public B() {\n        System.out.print(\"B\");\n    }\n}"
           },
           {
             "title": "C クラス",
-            "code": "class C extends B {\n public C() {\n System.out.print(\"C\");\n }\n}"
+            "code": "class C extends B {\n    public C() {\n        System.out.print(\"C\");\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n new C();\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        new C();\n    }\n}"
           }
         ],
         "tags": [
@@ -23559,11 +23559,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public class A {\n private void print() {\n System.out.println(\"A\");\n }\n public void a() {\n print();\n }\n}"
+            "code": "public class A {\n    private void print() {\n        System.out.println(\"A\");\n    }\n    public void a() {\n        print();\n    }\n}"
           },
           {
             "title": "B.java",
-            "code": "public class B extends A {\n private void print() {\n System.out.println(\"B\");\n }\n public void b() {\n print();\n }\n public static void main(String... args) {\n B b = new B();\n b.a();\n b.b();\n }\n}"
+            "code": "public class B extends A {\n    private void print() {\n        System.out.println(\"B\");\n    }\n    public void b() {\n        print();\n    }\n    public static void main(String... args) {\n        B b = new B();\n        b.a();\n        b.b();\n    }\n}"
           }
         ],
         "tags": [
@@ -23583,23 +23583,23 @@ window.JAVA_STUDY_DATA = {
         "options": [
           {
             "key": "A",
-            "code": "public void methodA(int x) {\n return ++x;\n}"
+            "code": "public void methodA(int x) {\n    return ++x;\n}"
           },
           {
             "key": "B",
-            "code": "public String methodB() {\n System.out.println(\"B\");\n}"
+            "code": "public String methodB() {\n    System.out.println(\"B\");\n}"
           },
           {
             "key": "C",
-            "code": "public boolean methodC(int a) {\n return a < 0;\n}"
+            "code": "public boolean methodC(int a) {\n    return a < 0;\n}"
           },
           {
             "key": "D",
-            "code": "public char methodD(String str) {\n return str;\n}"
+            "code": "public char methodD(String str) {\n    return str;\n}"
           },
           {
             "key": "E",
-            "code": "public void methodE() {\n return;\n}"
+            "code": "public void methodE() {\n    return;\n}"
           }
         ],
         "answer": [
@@ -23739,7 +23739,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "// command\n// > java A \"AB\" AB\n\npublic class A {\n public static void main(String[] args) {\n for (String str : args) {\n System.out.print(str);\n }\n }\n}"
+            "code": "// command\n// > java A \"AB\" AB\n\npublic class A {\n    public static void main(String[] args) {\n        for (String str : args) {\n            System.out.print(str);\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -23823,15 +23823,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public interface A {\n public Iterable a();\n}"
+            "code": "public interface A {\n    public Iterable a();\n}"
           },
           {
             "title": "B.java",
-            "code": "import java.util.Collection;\n\npublic interface B extends A {\n public Collection a();\n}"
+            "code": "import java.util.Collection;\n\npublic interface B extends A {\n    public Collection a();\n}"
           },
           {
             "title": "C.java",
-            "code": "import java.nio.file.Path;\n\npublic interface C extends A {\n public Path a();\n}"
+            "code": "import java.nio.file.Path;\n\npublic interface C extends A {\n    public Path a();\n}"
           },
           {
             "title": "D.java",
@@ -23919,15 +23919,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "package ex42.a;\n\npublic class A {\n public String x = \"A\";\n protected A() {}\n}"
+            "code": "package ex42.a;\n\npublic class A {\n    public String x = \"A\";\n    protected A() {}\n}"
           },
           {
             "title": "B.java",
-            "code": "package ex42.b;\n\nimport ex42.a.A;\n\npublic class B extends A {\n String x = \"B\";\n public B() {\n super();\n }\n}"
+            "code": "package ex42.b;\n\nimport ex42.a.A;\n\npublic class B extends A {\n    String x = \"B\";\n    public B() {\n        super();\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "package ex42;\n\nimport ex42.a.A;\nimport ex42.b.B;\n\npublic class Main {\n public static void main(String[] args) {\n A a = new B();\n System.out.println(a.x);\n }\n}"
+            "code": "package ex42;\n\nimport ex42.a.A;\nimport ex42.b.B;\n\npublic class Main {\n    public static void main(String[] args) {\n        A a = new B();\n        System.out.println(a.x);\n    }\n}"
           }
         ],
         "tags": [
@@ -24018,15 +24018,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n String name;\n int num;\n public Sample(String name, int num) {\n this.name = name;\n this.num = num;\n }\n}"
+            "code": "public class Sample {\n    String name;\n    int num;\n    public Sample(String name, int num) {\n        this.name = name;\n        this.num = num;\n    }\n}"
           },
           {
             "title": "SubSample.java",
-            "code": "public class SubSample extends Sample {\n int price;\n public SubSample(int price) {\n this.price = price;\n }\n public SubSample(String name, int num, int price) {\n super(name, num);\n this(price);\n }\n}"
+            "code": "public class SubSample extends Sample {\n    int price;\n    public SubSample(int price) {\n        this.price = price;\n    }\n    public SubSample(String name, int num, int price) {\n        super(name, num);\n        this(price);\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n // ...\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        // ...\n    }\n}"
           }
         ],
         "tags": [
@@ -24118,23 +24118,23 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A インタフェース",
-            "code": "interface A {\n public void sample();\n}"
+            "code": "interface A {\n    public void sample();\n}"
           },
           {
             "title": "B インタフェース",
-            "code": "interface B extends A {\n public void test();\n}"
+            "code": "interface B extends A {\n    public void test();\n}"
           },
           {
             "title": "C クラス",
-            "code": "abstract class C implements B {\n public void test() {\n System.out.println(\"A\");\n }\n}"
+            "code": "abstract class C implements B {\n    public void test() {\n        System.out.println(\"A\");\n    }\n}"
           },
           {
             "title": "D クラス",
-            "code": "class D extends C {\n public void test() {\n System.out.println(\"B\");\n }\n}"
+            "code": "class D extends C {\n    public void test() {\n        System.out.println(\"B\");\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n C c = new D();\n c.test();\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        C c = new D();\n        c.test();\n    }\n}"
           }
         ],
         "tags": [
@@ -24308,7 +24308,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public class Main {\n public static void main(String[] args) {\n try {\n throw new Exception();\n } catch (Exception e) {\n throw new RuntimeException();\n } catch (RuntimeException e) {\n System.out.println(\"A\");\n } finally {\n System.out.println(\"B\");\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        try {\n            throw new Exception();\n        } catch (Exception e) {\n            throw new RuntimeException();\n        } catch (RuntimeException e) {\n            System.out.println(\"A\");\n        } finally {\n            System.out.println(\"B\");\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -24399,7 +24399,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public class Main {\n public static void main(String[] args) {\n String s1 = new String(\"Java\");\n String s2 = \"Java\";\n String s3 = s2.intern();\n System.out.print((s1 == s2) + \", \");\n System.out.print((s2 == s3) + \", \");\n System.out.println(s1 == s3);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        String s1 = new String(\"Java\");\n        String s2 = \"Java\";\n        String s3 = s2.intern();\n        System.out.print((s1 == s2) + \", \");\n        System.out.print((s2 == s3) + \", \");\n        System.out.println(s1 == s3);\n    }\n}"
           }
         ],
         "tags": [
@@ -24481,7 +24481,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public class Main {\n public static void main(String[] args) {\n char[][] arrays = {{'a', 'd'}, {'b', 'e'}, {'c', 'f'}};\n for (char[] array : arrays) {\n for (char ch : array) {\n System.out.print(ch);\n }\n System.out.print(\" \");\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        char[][] arrays = {{'a', 'd'}, {'b', 'e'}, {'c', 'f'}};\n        for (char[] array : arrays) {\n            for (char ch : array) {\n                System.out.print(ch);\n            }\n            System.out.print(\" \");\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -24563,15 +24563,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public class A {\n protected A() {\n this(2);\n System.out.print(\"1\");\n }\n protected A(int a) {\n System.out.print(a);\n }\n}"
+            "code": "public class A {\n    protected A() {\n        this(2);\n        System.out.print(\"1\");\n    }\n    protected A(int a) {\n        System.out.print(a);\n    }\n}"
           },
           {
             "title": "B.java",
-            "code": "public class B extends A {\n B() {\n this(4);\n System.out.print(\"3\");\n }\n B(int b) {\n System.out.print(b);\n }\n}"
+            "code": "public class B extends A {\n    B() {\n        this(4);\n        System.out.print(\"3\");\n    }\n    B(int b) {\n        System.out.print(b);\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n B b = new B();\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        B b = new B();\n    }\n}"
           }
         ],
         "tags": [
@@ -24591,19 +24591,19 @@ window.JAVA_STUDY_DATA = {
         "options": [
           {
             "key": "A",
-            "code": "for (int i = 1; i < 2; i++) {\n for (int j = 1; j < 2; j++) {\n System.out.print(array[i][j]);\n }\n}"
+            "code": "for (int i = 1; i < 2; i++) {\n    for (int j = 1; j < 2; j++) {\n        System.out.print(array[i][j]);\n    }\n}"
           },
           {
             "key": "B",
-            "code": "for (int i = 0; i < 2; ++i) {\n for (int j = 0; j < i; ++j) {\n System.out.print(array[i][j]);\n }\n}"
+            "code": "for (int i = 0; i < 2; ++i) {\n    for (int j = 0; j < i; ++j) {\n        System.out.print(array[i][j]);\n    }\n}"
           },
           {
             "key": "C",
-            "code": "for (String a : array) {\n for (String b : array) {\n System.out.println(b);\n }\n}"
+            "code": "for (String a : array) {\n    for (String b : array) {\n        System.out.println(b);\n    }\n}"
           },
           {
             "key": "D",
-            "code": "for (int i = 0; i < 2;) {\n for (int j = 0; j < 2;) {\n System.out.print(array[i][j]);\n j++;\n }\n i++;\n}"
+            "code": "for (int i = 0; i < 2;) {\n    for (int j = 0; j < 2;) {\n        System.out.print(array[i][j]);\n        j++;\n    }\n    i++;\n}"
           }
         ],
         "answer": [
@@ -24653,7 +24653,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public class Sample {\n public static void main(String[] args) {\n String[][] array = new String[2][2];\n array[0][0] = \"a\";\n array[0][1] = \"b\";\n array[1][0] = \"c\";\n array[1][1] = \"d\";\n // insert code here\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        String[][] array = new String[2][2];\n        array[0][0] = \"a\";\n        array[0][1] = \"b\";\n        array[1][0] = \"c\";\n        array[1][1] = \"d\";\n        // insert code here\n    }\n}"
           }
         ],
         "tags": [
@@ -24738,7 +24738,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public class Main {\n public static void main(String[] args) {\n String[] str = new String[2];\n int i = 0;\n for (String s : str) {\n str[i].concat(\"e\" + i);\n i++;\n }\n for (i = 0; i < str.length; i++) {\n System.out.println(str[i]);\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        String[] str = new String[2];\n        int i = 0;\n        for (String s : str) {\n            str[i].concat(\"e\" + i);\n            i++;\n        }\n        for (i = 0; i < str.length; i++) {\n            System.out.println(str[i]);\n        }\n    }\n}"
           }
         ],
         "tags": [
@@ -24761,7 +24761,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) {\n long a, b, c;\n a = 1;\n b = 10L;\n System.out.println(a + \",\" + b + \",\" + c);\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        long a, b, c;\n        a = 1;\n        b = 10L;\n        System.out.println(a + \",\" + b + \",\" + c);\n    }\n}"
           }
         ],
         "options": [
@@ -24873,11 +24873,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public class A {\n public static void main(String[] args) {\n System.out.println(\"A\");\n }\n}"
+            "code": "public class A {\n    public static void main(String[] args) {\n        System.out.println(\"A\");\n    }\n}"
           },
           {
             "title": "B クラス",
-            "code": "class B {\n public static void main(String[] args) {\n System.out.println(\"B\");\n }\n}"
+            "code": "class B {\n    public static void main(String[] args) {\n        System.out.println(\"B\");\n    }\n}"
           }
         ],
         "options": [
@@ -24999,11 +24999,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Value.java",
-            "code": "public class Value {\n private String contents;\n public Value(String contents) {\n super();\n this.contents = contents;\n }\n public Value() {\n this.contents = \"\";\n }\n public static void print() {\n System.out.println(contents);\n }\n}"
+            "code": "public class Value {\n    private String contents;\n    public Value(String contents) {\n        super();\n        this.contents = contents;\n    }\n    public Value() {\n        this.contents = \"\";\n    }\n    public static void print() {\n        System.out.println(contents);\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Value.print();\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Value.print();\n    }\n}"
           }
         ],
         "options": [
@@ -25096,7 +25096,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main",
-            "code": "public class Main {\n public static void main(String[] args) {\n String result = test(0b0110);\n System.out.println(result);\n }\n\n private static String test(Number n) {\n if (n instanceof Byte b) {\n return \"A\";\n } else if (n instanceof Short s) {\n return \"B\";\n } else if (n instanceof Integer i) {\n return \"C\";\n } else if (n instanceof Long l) {\n return \"D\";\n } else {\n return \"E\";\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        String result = test(0b0110);\n        System.out.println(result);\n    }\n\n    private static String test(Number n) {\n        if (n instanceof Byte b) {\n            return \"A\";\n        } else if (n instanceof Short s) {\n            return \"B\";\n        } else if (n instanceof Integer i) {\n            return \"C\";\n        } else if (n instanceof Long l) {\n            return \"D\";\n        } else {\n            return \"E\";\n        }\n    }\n}"
           }
         ],
         "options": [
@@ -25217,7 +25217,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample",
-            "code": "public class Sample {\n public static void main(String[] args) {\n try {\n test(null);\n } catch (IllegalStateException e) {\n System.out.println(\"A\");\n } catch (RuntimeException e) {\n System.out.println(\"B\");\n } catch (Exception e) {\n System.out.println(\"C\");\n }\n }\n\n private static void test(String str) {\n if (str.equalsIgnoreCase(\"\")) {\n throw new IllegalStateException();\n }\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        try {\n            test(null);\n        } catch (IllegalStateException e) {\n            System.out.println(\"A\");\n        } catch (RuntimeException e) {\n            System.out.println(\"B\");\n        } catch (Exception e) {\n            System.out.println(\"C\");\n        }\n    }\n\n    private static void test(String str) {\n        if (str.equalsIgnoreCase(\"\")) {\n            throw new IllegalStateException();\n        }\n    }\n}"
           }
         ],
         "options": [
@@ -25328,19 +25328,19 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n B b = new C();\n A t = new C();\n\n b.test(1); // (1)\n (A)b.test(2); // (2)\n ((A)b).test(3); // (3)\n t.test(4); // (4)\n (A)t.test(5); // (5)\n ((A)t).test(6); // (6)\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        B b = new C();\n        A t = new C();\n\n        b.test(1); // (1)\n        (A)b.test(2); // (2)\n        ((A)b).test(3); // (3)\n        t.test(4); // (4)\n        (A)t.test(5); // (5)\n        ((A)t).test(6); // (6)\n    }\n}"
           },
           {
             "title": "A インタフェース",
-            "code": "sealed interface A permits C { // (7)\n void test(int i);\n}"
+            "code": "sealed interface A permits C { // (7)\n    void test(int i);\n}"
           },
           {
             "title": "B クラス",
-            "code": "class B { // (8)\n public static final int NUM = 2;\n}"
+            "code": "class B { // (8)\n    public static final int NUM = 2;\n}"
           },
           {
             "title": "C クラス",
-            "code": "final class C extends B implements A { // (9)\n @Override\n public void test(int i) {\n System.out.println(i * B.NUM);\n }\n}"
+            "code": "final class C extends B implements A { // (9)\n    @Override\n    public void test(int i) {\n        System.out.println(i * B.NUM);\n    }\n}"
           }
         ],
         "options": [
@@ -25480,15 +25480,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n A b = new B();\n System.out.print(b.data + \",\" + b.getData() + \"|\");\n b.data = 20;\n System.out.print(b.data + \",\" + b.getData() + \"|\");\n B s = (B)b;\n System.out.print(s.data + \",\" + s.getData() + \"|\");\n s.data = 21;\n System.out.print(s.data + \",\" + s.getData() + \"|\");\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A b = new B();\n        System.out.print(b.data + \",\" + b.getData() + \"|\");\n        b.data = 20;\n        System.out.print(b.data + \",\" + b.getData() + \"|\");\n        B s = (B)b;\n        System.out.print(s.data + \",\" + s.getData() + \"|\");\n        s.data = 21;\n        System.out.print(s.data + \",\" + s.getData() + \"|\");\n    }\n}"
           },
           {
             "title": "A クラス",
-            "code": "class A {\n public int data = 10;\n public int getData() {\n return data;\n }\n}"
+            "code": "class A {\n    public int data = 10;\n    public int getData() {\n        return data;\n    }\n}"
           },
           {
             "title": "B クラス",
-            "code": "class B extends A {\n int data = 11;\n public int getData() {\n return data;\n }\n}"
+            "code": "class B extends A {\n    int data = 11;\n    public int getData() {\n        return data;\n    }\n}"
           }
         ],
         "options": [
@@ -25612,7 +25612,7 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) {\n try {\n test();\n } catch (ExceptionA e) {\n System.out.println(\"A\");\n } catch (SampleException e) {\n System.out.println(\"B\");\n } catch (RuntimeException e) {\n System.out.println(\"C\");\n } catch (Exception e) {\n System.out.println(\"D\");\n } finally {\n System.out.println(\"E\");\n }\n }\n\n private static void test() throws ExceptionA {\n throw new ExceptionA();\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        try {\n            test();\n        } catch (ExceptionA e) {\n            System.out.println(\"A\");\n        } catch (SampleException e) {\n            System.out.println(\"B\");\n        } catch (RuntimeException e) {\n            System.out.println(\"C\");\n        } catch (Exception e) {\n            System.out.println(\"D\");\n        } finally {\n            System.out.println(\"E\");\n        }\n    }\n\n    private static void test() throws ExceptionA {\n        throw new ExceptionA();\n    }\n}"
           }
         ],
         "options": [
@@ -25741,7 +25741,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main",
-            "code": "public class Main {\n public static void main(String[] args) {\n int[] values = {70, 80, 90, 95, 40, 20, 10, 60};\n for (int i : values) {\n System.out.print(test(i));\n }\n }\n\n public static String test(int value) {\n return switch (value) {\n case 10, 20 -> \"D\";\n case 30, 40 -> \"C\";\n case 50, 60, 70 -> \"B\";\n case 80, 90 -> \"A\";\n case 100 -> \"S\";\n default -> \"E\";\n };\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int[] values = {70, 80, 90, 95, 40, 20, 10, 60};\n        for (int i : values) {\n            System.out.print(test(i));\n        }\n    }\n\n    public static String test(int value) {\n        return switch (value) {\n            case 10, 20 -> \"D\";\n            case 30, 40 -> \"C\";\n            case 50, 60, 70 -> \"B\";\n            case 80, 90 -> \"A\";\n            case 100 -> \"S\";\n            default -> \"E\";\n        };\n    }\n}"
           }
         ],
         "options": [
@@ -25847,7 +25847,7 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) {\n List<Item> list = new ArrayList<Item>();\n // insert code here\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        List<Item> list = new ArrayList<Item>();\n        // insert code here\n    }\n}"
           }
         ],
         "options": [
@@ -25951,7 +25951,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample",
-            "code": "public class Sample {\n public static void main(String[] args) {\n String a = \"sample\";\n String b = new String(\"sample\");\n String c = \"sample\";\n String d = new String(\"sample\");\n String e = c;\n String f = d;\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        String a = \"sample\";\n        String b = new String(\"sample\");\n        String c = \"sample\";\n        String d = new String(\"sample\");\n        String e = c;\n        String f = d;\n    }\n}"
           }
         ],
         "options": [
@@ -26062,7 +26062,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Test.java",
-            "code": "public class Test implements AutoCloseable {\n public void close() throws Exception {\n System.out.println(\"C\");\n }\n}"
+            "code": "public class Test implements AutoCloseable {\n    public void close() throws Exception {\n        System.out.println(\"C\");\n    }\n}"
           },
           {
             "title": "SampleException.java",
@@ -26070,7 +26070,7 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) {\n try (Test t = new Test()) {\n throw new SampleException();\n } catch (Exception e) {\n System.out.println(\"A\");\n } finally {\n System.out.println(\"B\");\n }\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        try (Test t = new Test()) {\n            throw new SampleException();\n        } catch (Exception e) {\n            System.out.println(\"A\");\n        } finally {\n            System.out.println(\"B\");\n        }\n    }\n}"
           }
         ],
         "options": [
@@ -26199,29 +26199,29 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Test",
-            "code": "interface Test {\n void execute();\n}"
+            "code": "interface Test {\n    void execute();\n}"
           }
         ],
         "options": [
           {
             "key": "A",
-            "code": "public class A implements Test {\n private void execute() {\n System.out.println(\"sample\");\n }\n}"
+            "code": "public class A implements Test {\n    private void execute() {\n        System.out.println(\"sample\");\n    }\n}"
           },
           {
             "key": "B",
-            "code": "public class B implements Test {\n public void execute(String str) {\n System.out.println(str);\n }\n}"
+            "code": "public class B implements Test {\n    public void execute(String str) {\n        System.out.println(str);\n    }\n}"
           },
           {
             "key": "C",
-            "code": "public class C implements Test {\n public void execute() {\n System.out.println(\"sample\");\n }\n}"
+            "code": "public class C implements Test {\n    public void execute() {\n        System.out.println(\"sample\");\n    }\n}"
           },
           {
             "key": "D",
-            "code": "public class D implements Test {\n public String execute() {\n return \"sample\";\n }\n}"
+            "code": "public class D implements Test {\n    public String execute() {\n        return \"sample\";\n    }\n}"
           },
           {
             "key": "E",
-            "code": "public abstract class E implements Test {\n public void print(String str) {\n System.out.println(str);\n }\n}"
+            "code": "public abstract class E implements Test {\n    public void print(String str) {\n        System.out.println(str);\n    }\n}"
           }
         ],
         "answer": [
@@ -26301,7 +26301,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) {\n int[] numbers = {1,2,3,4,5,6,7,8,9,10};\n for (int i : numbers) {\n try {\n if (test(i)) {\n System.out.println(i);\n }\n } catch (SampleException e) {\n continue;\n }\n }\n }\n\n private static boolean test(int num) throws Exception {\n for (int i = 2; i < num; i++) {\n if (num % i == 0) {\n throw new SampleException();\n }\n return true;\n }\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        int[] numbers = {1,2,3,4,5,6,7,8,9,10};\n        for (int i : numbers) {\n            try {\n                if (test(i)) {\n                    System.out.println(i);\n                }\n            } catch (SampleException e) {\n                continue;\n            }\n        }\n    }\n\n    private static boolean test(int num) throws Exception {\n        for (int i = 2; i < num; i++) {\n            if (num % i == 0) {\n                throw new SampleException();\n            }\n            return true;\n        }\n    }\n}"
           },
           {
             "title": "SampleException クラス",
@@ -26407,15 +26407,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public interface A {\n default void hello() {\n System.out.println(\"A\");\n }\n}"
+            "code": "public interface A {\n    default void hello() {\n        System.out.println(\"A\");\n    }\n}"
           },
           {
             "title": "B.java",
-            "code": "public interface B {\n default void hello() {\n System.out.println(\"B\");\n }\n}"
+            "code": "public interface B {\n    default void hello() {\n        System.out.println(\"B\");\n    }\n}"
           },
           {
             "title": "Sample.java",
-            "code": "public class Sample implements A, B {\n // some code\n}"
+            "code": "public class Sample implements A, B {\n    // some code\n}"
           }
         ],
         "options": [
@@ -26513,33 +26513,33 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A",
-            "code": "public sealed interface A permits B {\n void sample();\n}"
+            "code": "public sealed interface A permits B {\n    void sample();\n}"
           }
         ],
         "options": [
           {
             "key": "A",
-            "code": "abstract class B implements A {\n // some codes\n}"
+            "code": "abstract class B implements A {\n    // some codes\n}"
           },
           {
             "key": "B",
-            "code": "non-sealed class B implements A {\n public void sample() {}\n}"
+            "code": "non-sealed class B implements A {\n    public void sample() {}\n}"
           },
           {
             "key": "C",
-            "code": "final class B implements A {\n public void sample() {}\n}"
+            "code": "final class B implements A {\n    public void sample() {}\n}"
           },
           {
             "key": "D",
-            "code": "class B implements A {\n public void sample() {}\n}"
+            "code": "class B implements A {\n    public void sample() {}\n}"
           },
           {
             "key": "E",
-            "code": "sealed class B implements A {\n public void sample() {}\n}"
+            "code": "sealed class B implements A {\n    public void sample() {}\n}"
           },
           {
             "key": "F",
-            "code": "abstract class B implements A {\n public void sample() {}\n}"
+            "code": "abstract class B implements A {\n    public void sample() {}\n}"
           }
         ],
         "answer": [
@@ -26623,15 +26623,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) {\n A b = new B();\n b.test();\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        A b = new B();\n        b.test();\n    }\n}"
           },
           {
             "title": "A クラス",
-            "code": "sealed class A {\n public void test() {\n System.out.println(\"A\");\n }\n}"
+            "code": "sealed class A {\n    public void test() {\n        System.out.println(\"A\");\n    }\n}"
           },
           {
             "title": "B クラス",
-            "code": "final class B extends A {\n private void hello() {\n System.out.println(\"B\");\n }\n public void test() {\n hello();\n }\n}"
+            "code": "final class B extends A {\n    private void hello() {\n        System.out.println(\"B\");\n    }\n    public void test() {\n        hello();\n    }\n}"
           }
         ],
         "options": [
@@ -26742,7 +26742,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample",
-            "code": "public class Sample {\n private static int result = 0;\n private static boolean a() {\n result += 1;\n return true;\n }\n private static boolean b() {\n result += 2;\n return true;\n }\n public static void test() {\n if (/* blank */) {\n result += 3;\n } else {\n result += 4;\n }\n }\n public static void main(String[] args) {\n test();\n System.out.println(result);\n }\n}"
+            "code": "public class Sample {\n    private static int result = 0;\n    private static boolean a() {\n        result += 1;\n        return true;\n    }\n    private static boolean b() {\n        result += 2;\n        return true;\n    }\n    public static void test() {\n        if (/* blank */) {\n            result += 3;\n        } else {\n            result += 4;\n        }\n    }\n    public static void main(String[] args) {\n        test();\n        System.out.println(result);\n    }\n}"
           }
         ],
         "options": [
@@ -26853,7 +26853,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Test",
-            "code": "class Test {\n static int a() { return 1; }\n private static int b() { return 2; }\n public static int c() { return 3; }\n public int d() { return 4; }\n protected int e() { return 5; }\n}"
+            "code": "class Test {\n    static int a() { return 1; }\n    private static int b() { return 2; }\n    public static int c() { return 3; }\n    public int d() { return 4; }\n    protected int e() { return 5; }\n}"
           }
         ],
         "options": [
@@ -26960,15 +26960,15 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "key": "C",
-            "code": "class A {\n abstract void method() {}\n}"
+            "code": "class A {\n    abstract void method() {}\n}"
           },
           {
             "key": "D",
-            "code": "abstract class A {\n void method();\n}"
+            "code": "abstract class A {\n    void method();\n}"
           },
           {
             "key": "E",
-            "code": "abstract class A {\n final void method() {}\n}"
+            "code": "abstract class A {\n    final void method() {}\n}"
           }
         ],
         "answer": [
@@ -27045,7 +27045,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample",
-            "code": "import java.util.Arrays;\nimport java.util.List;\n\npublic class Sample {\n public static void main(String[] args) {\n List<String> words = Arrays.asList(new String[]{\"A\", \"B\", \"C\", \"D\", \"E\"});\n for (String word : words) {\n switch (word) {\n case \"B\" : continue;\n case \"D\" : break;\n default : System.out.print(word);\n }\n System.out.print(\":\");\n }\n }\n}"
+            "code": "import java.util.Arrays;\nimport java.util.List;\n\npublic class Sample {\n    public static void main(String[] args) {\n        List<String> words = Arrays.asList(new String[]{\"A\", \"B\", \"C\", \"D\", \"E\"});\n        for (String word : words) {\n            switch (word) {\n            case \"B\" : continue;\n            case \"D\" : break;\n            default : System.out.print(word);\n            }\n            System.out.print(\":\");\n        }\n    }\n}"
           }
         ],
         "options": [
@@ -27166,7 +27166,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample",
-            "code": "public class Sample {\n public static void main(String[] args) {\n int num = 2;\n while (num < 5) {\n switch (num % 2) {\n case 0: num++; break;\n case 1: num++;\n }\n }\n System.out.println(num);\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        int num = 2;\n        while (num < 5) {\n            switch (num % 2) {\n            case 0: num++; break;\n            case 1: num++;\n            }\n        }\n        System.out.println(num);\n    }\n}"
           }
         ],
         "options": [
@@ -27286,7 +27286,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample",
-            "code": "public class Sample {\n public static void main(String[] args) {\n String[][] data = {{\"A\", \"B\", \"C\"}, {\"D\", \"E\", \"F\"}};\n for (int i = 0; i < data.length; i++) {\n for (int j = 0; j < data[i].length; j++) {\n System.out.println(data[i][j]);\n }\n }\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        String[][] data = {{\"A\", \"B\", \"C\"}, {\"D\", \"E\", \"F\"}};\n        for (int i = 0; i < data.length; i++) {\n            for (int j = 0; j < data[i].length; j++) {\n                System.out.println(data[i][j]);\n            }\n        }\n    }\n}"
           }
         ],
         "options": [
@@ -27404,7 +27404,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample",
-            "code": "public class Sample {\n public static void main(String[] args) {\n System.out.println(test(\"A\"));\n }\n public static String test(Object obj) {\n String s = \"\";\n if (!(obj instanceof String str)) {\n s = obj.toString();\n } else {\n s = str.toLowerCase();\n }\n return s;\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        System.out.println(test(\"A\"));\n    }\n    public static String test(Object obj) {\n        String s = \"\";\n        if (!(obj instanceof String str)) {\n            s = obj.toString();\n        } else {\n            s = str.toLowerCase();\n        }\n        return s;\n    }\n}"
           }
         ],
         "options": [
@@ -27507,15 +27507,15 @@ window.JAVA_STUDY_DATA = {
         "options": [
           {
             "key": "A",
-            "code": "class A {\n public void hello() {\n var x = new ArrayList<>();\n x.add(0);\n x.add(\"0\");\n System.out.println(x);\n }\n}"
+            "code": "class A {\n    public void hello() {\n        var x = new ArrayList<>();\n        x.add(0);\n        x.add(\"0\");\n        System.out.println(x);\n    }\n}"
           },
           {
             "key": "B",
-            "code": "class B {\n public void hello() {\n var a = 0;\n a = \"0\";\n }\n}"
+            "code": "class B {\n    public void hello() {\n        var a = 0;\n        a = \"0\";\n    }\n}"
           },
           {
             "key": "C",
-            "code": "class C {\n var x = 10;\n}"
+            "code": "class C {\n    var x = 10;\n}"
           },
           {
             "key": "D",
@@ -27523,15 +27523,15 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "key": "E",
-            "code": "class E {\n private int x = 0;\n public void hello() {\n var x = \"hello\";\n System.out.println(x);\n }\n}"
+            "code": "class E {\n    private int x = 0;\n    public void hello() {\n        var x = \"hello\";\n        System.out.println(x);\n    }\n}"
           },
           {
             "key": "F",
-            "code": "class F {\n public void hello(int x) {\n var x = 0;\n }\n}"
+            "code": "class F {\n    public void hello(int x) {\n        var x = 0;\n    }\n}"
           },
           {
             "key": "G",
-            "code": "class G {\n public void hello() {\n var v = null;\n }\n}"
+            "code": "class G {\n    public void hello() {\n        var v = null;\n    }\n}"
           }
         ],
         "answer": [
@@ -27623,7 +27623,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample",
-            "code": "public class Sample {\n private int i;\n public Sample(int i) {\n i = ++i;\n }\n public void test() {\n int total = 0;\n for (var j = i; j < 10; j++) {\n if (i++ % 3 != 0) {\n continue;\n }\n total += j;\n }\n System.out.println(total);\n }\n public static void main(String[] args) {\n new Sample(3).test();\n }\n}"
+            "code": "public class Sample {\n    private int i;\n    public Sample(int i) {\n        i = ++i;\n    }\n    public void test() {\n        int total = 0;\n        for (var j = i; j < 10; j++) {\n            if (i++ % 3 != 0) {\n                continue;\n            }\n            total += j;\n        }\n        System.out.println(total);\n    }\n    public static void main(String[] args) {\n        new Sample(3).test();\n    }\n}"
           }
         ],
         "options": [
@@ -27734,15 +27734,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) {\n B b1 = new B();\n A a1 = new B();\n B b2 = new B(20);\n A a2 = new B(10);\n\n b1.print();\n b2.print();\n a1.print();\n a2.print();\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        B b1 = new B();\n        A a1 = new B();\n        B b2 = new B(20);\n        A a2 = new B(10);\n\n        b1.print();\n        b2.print();\n        a1.print();\n        a2.print();\n    }\n}"
           },
           {
             "title": "A クラス",
-            "code": "abstract class A {\n int value;\n public A() { this.value = 100; }\n public A(int value) { this.value = value; }\n public void print() { System.out.print(\"result=\" + value); }\n abstract void print(int value);\n}"
+            "code": "abstract class A {\n    int value;\n    public A() { this.value = 100; }\n    public A(int value) { this.value = value; }\n    public void print() { System.out.print(\"result=\" + value); }\n    abstract void print(int value);\n}"
           },
           {
             "title": "B クラス",
-            "code": "class B extends A {\n int value;\n public B() { this.value = 200; }\n public B(int value) { this.value = value; }\n @Override\n public void print(int value) { System.out.print(\"result=\" + value); }\n}"
+            "code": "class B extends A {\n    int value;\n    public B() { this.value = 200; }\n    public B(int value) { this.value = value; }\n    @Override\n    public void print(int value) { System.out.print(\"result=\" + value); }\n}"
           }
         ],
         "options": [
@@ -27862,7 +27862,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample",
-            "code": "public class Sample {\n public static void main(String[] args) {\n int[] values = {1, 4, 2, 5, 3};\n int num = 0;\n for (int value : values) {\n switch (value) {\n case 1: num++;\n case 2: num++; break;\n case 3: ++num;\n case 4: ++num; break;\n case 5: num++;\n default: --num;\n }\n }\n System.out.println(num);\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        int[] values = {1, 4, 2, 5, 3};\n        int num = 0;\n        for (int value : values) {\n            switch (value) {\n            case 1: num++;\n            case 2: num++; break;\n            case 3: ++num;\n            case 4: ++num; break;\n            case 5: num++;\n            default: --num;\n            }\n        }\n        System.out.println(num);\n    }\n}"
           }
         ],
         "options": [
@@ -27962,11 +27962,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Trash.java",
-            "code": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Trash {\n List<String> list = new ArrayList<>();\n protected Trash(String val) {\n add(val);\n }\n public boolean test(String val) {\n return true;\n }\n public void delete(String val) {\n list.remove(val);\n }\n public final void add(String val) {\n list.add(val);\n }\n}"
+            "code": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Trash {\n    List<String> list = new ArrayList<>();\n    protected Trash(String val) {\n        add(val);\n    }\n    public boolean test(String val) {\n        return true;\n    }\n    public void delete(String val) {\n        list.remove(val);\n    }\n    public final void add(String val) {\n        list.add(val);\n    }\n}"
           },
           {
             "title": "CacheTrash.java",
-            "code": "public class CacheTrash extends Trash {\n private String tmp = null;\n public CacheTrash() {\n super(null);\n }\n public boolean test(String val) {\n return list.contains(val);\n }\n public void delete(String val) {\n this.tmp = val;\n }\n public void flush() {\n super.delete(tmp);\n }\n}"
+            "code": "public class CacheTrash extends Trash {\n    private String tmp = null;\n    public CacheTrash() {\n        super(null);\n    }\n    public boolean test(String val) {\n        return list.contains(val);\n    }\n    public void delete(String val) {\n        this.tmp = val;\n    }\n    public void flush() {\n        super.delete(tmp);\n    }\n}"
           }
         ],
         "options": [
@@ -28079,11 +28079,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n private String value;\n public void setValue(String value) {\n value = \"Hello, \" + value;\n }\n public String toString() {\n return value;\n }\n}"
+            "code": "public class Sample {\n    private String value;\n    public void setValue(String value) {\n        value = \"Hello, \" + value;\n    }\n    public String toString() {\n        return value;\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Sample s = new Sample();\n s.setValue(\"Java\");\n System.out.println(s.toString());\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Sample s = new Sample();\n        s.setValue(\"Java\");\n        System.out.println(s.toString());\n    }\n}"
           }
         ],
         "options": [
@@ -28174,7 +28174,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) {\n System.out.println(\"Hello\");\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        System.out.println(\"Hello\");\n    }\n}"
           }
         ],
         "options": [
@@ -28286,7 +28286,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample",
-            "code": "public class Sample {\n public static void main(String[] args) {\n short a = 97;\n int b = 98;\n System.out.print((char) a + \"\");\n System.out.print((char) b);\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        short a = 97;\n        int b = 98;\n        System.out.print((char) a + \"\");\n        System.out.print((char) b);\n    }\n}"
           }
         ],
         "options": [
@@ -28377,11 +28377,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "package ex06.a;\npublic class A {\n String a = \"A\";\n protected String b = \"B\";\n public String c = \"C\";\n}"
+            "code": "package ex06.a;\npublic class A {\n    String a = \"A\";\n    protected String b = \"B\";\n    public String c = \"C\";\n}"
           },
           {
             "title": "B.java",
-            "code": "package ex06.b;\nimport ex06.a.A;\npublic class B extends A {\n public void test() {\n System.out.println(/* blank */);\n }\n}"
+            "code": "package ex06.b;\nimport ex06.a.A;\npublic class B extends A {\n    public void test() {\n        System.out.println(/* blank */);\n    }\n}"
           }
         ],
         "options": [
@@ -28558,15 +28558,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public class A {\n private String value;\n public String getValue() { return value; }\n public void setValue(String value) { this.value = value; }\n public String toString() { return getValue(); }\n}"
+            "code": "public class A {\n    private String value;\n    public String getValue() { return value; }\n    public void setValue(String value) { this.value = value; }\n    public String toString() { return getValue(); }\n}"
           },
           {
             "title": "B.java",
-            "code": "public class B extends A {\n public void setValue(String value) {\n super.setValue(\"[\" + value + \"]\");\n }\n public void setValue(String... values) {\n setValue(test(values));\n }\n private String test(String... values) {\n var sb = new StringBuilder();\n for (String value : values) {\n sb.append(value + \",\");\n }\n return sb.toString();\n }\n}"
+            "code": "public class B extends A {\n    public void setValue(String value) {\n        super.setValue(\"[\" + value + \"]\");\n    }\n    public void setValue(String... values) {\n        setValue(test(values));\n    }\n    private String test(String... values) {\n        var sb = new StringBuilder();\n        for (String value : values) {\n            sb.append(value + \",\");\n        }\n        return sb.toString();\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n A a = new B();\n a.setValue(args);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        A a = new B();\n        a.setValue(args);\n    }\n}"
           }
         ],
         "options": [
@@ -28668,15 +28668,15 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "package ex23.a;\npublic class A {\n public int num = 10;\n}"
+            "code": "package ex23.a;\npublic class A {\n    public int num = 10;\n}"
           },
           {
             "title": "B.java",
-            "code": "package ex23.b;\nimport ex23.a.A;\npublic class B extends A {\n int num = 20;\n}"
+            "code": "package ex23.b;\nimport ex23.a.A;\npublic class B extends A {\n    int num = 20;\n}"
           },
           {
             "title": "Main.java",
-            "code": "package ex23;\nimport ex23.a.A;\nimport ex23.b.B;\npublic class Main {\n public static void main(String[] args) {\n A a = new B();\n System.out.println(a.num);\n }\n}"
+            "code": "package ex23;\nimport ex23.a.A;\nimport ex23.b.B;\npublic class Main {\n    public static void main(String[] args) {\n        A a = new B();\n        System.out.println(a.num);\n    }\n}"
           }
         ],
         "options": [
@@ -28767,11 +28767,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n String name;\n}"
+            "code": "public class Sample {\n    String name;\n}"
           },
           {
             "title": "Test.java",
-            "code": "import java.util.ArrayList;\n\npublic class Test {\n var sample = new ArrayList<Sample>(); // 4\n public var test() { // 5\n var sample = new Sample(); // 6\n var samples = new ArrayList<>(); // 7\n samples.add(\"Java\"); // 8\n samples.add(\"Lambda\"); // 9\n for (var s : samples) { // 10\n System.out.println(s); // 11\n }\n }\n}"
+            "code": "import java.util.ArrayList;\n\npublic class Test {\n    var sample = new ArrayList<Sample>(); // 4\n    public var test() { // 5\n        var sample = new Sample(); // 6\n        var samples = new ArrayList<>(); // 7\n        samples.add(\"Java\"); // 8\n        samples.add(\"Lambda\"); // 9\n        for (var s : samples) { // 10\n            System.out.println(s); // 11\n        }\n    }\n}"
           }
         ],
         "options": [
@@ -28874,11 +28874,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A.java",
-            "code": "public class A {\n private int num;\n public A(int num) {\n this.num = num;\n }\n}"
+            "code": "public class A {\n    private int num;\n    public A(int num) {\n        this.num = num;\n    }\n}"
           },
           {
             "title": "B.java",
-            "code": "public class B extends A {\n private String val;\n public B(String val, int num) {\n // blank\n }\n}"
+            "code": "public class B extends A {\n    private String val;\n    public B(String val, int num) {\n        // blank\n    }\n}"
           }
         ],
         "options": [
@@ -28978,7 +28978,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main",
-            "code": "public class Main {\n public static void main(String[] args) {\n int a = 10;\n float b = 10.0f;\n double c = 20;\n a = b;\n b = a;\n c = b;\n c = a;\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int a = 10;\n        float b = 10.0f;\n        double c = 20;\n        a = b;\n        b = a;\n        c = b;\n        c = a;\n    }\n}"
           }
         ],
         "options": [
@@ -29069,7 +29069,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main",
-            "code": "public class Main {\n public static void main(String[] args) {\n try {\n String[] array = new String[5];\n array[1] = \"A\";\n array[2] = \"B\";\n array[3] = \"C\";\n for (String str : array) {\n System.out.println(str);\n }\n } catch (Exception e) {\n System.out.println(\"Error\");\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        try {\n            String[] array = new String[5];\n            array[1] = \"A\";\n            array[2] = \"B\";\n            array[3] = \"C\";\n            for (String str : array) {\n                System.out.println(str);\n            }\n        } catch (Exception e) {\n            System.out.println(\"Error\");\n        }\n    }\n}"
           }
         ],
         "options": [
@@ -29160,11 +29160,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n static String header = \"A:\";\n private String value = \"B\";\n public static String getValue() {\n return new Sample().value;\n }\n}"
+            "code": "public class Sample {\n    static String header = \"A:\";\n    private String value = \"B\";\n    public static String getValue() {\n        return new Sample().value;\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Sample s = new Sample();\n // blank\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Sample s = new Sample();\n        // blank\n    }\n}"
           }
         ],
         "options": [
@@ -29273,11 +29273,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public void test(Object[] val) { System.out.println(\"A\"); }\n public void test(long[] val) { System.out.println(\"B\"); }\n public void test(Object val) { System.out.println(\"C\"); }\n}"
+            "code": "public class Sample {\n    public void test(Object[] val) { System.out.println(\"A\"); }\n    public void test(long[] val) { System.out.println(\"B\"); }\n    public void test(Object val) { System.out.println(\"C\"); }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n new Sample().test(new int[3]);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        new Sample().test(new int[3]);\n    }\n}"
           }
         ],
         "options": [
@@ -29377,7 +29377,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main",
-            "code": "public class Main {\n int num;\n private static void test() {\n num++;\n System.out.println(num);\n }\n public static void main(String[] args) {\n Main.test();\n Main.test();\n }\n}"
+            "code": "public class Main {\n    int num;\n    private static void test() {\n        num++;\n        System.out.println(num);\n    }\n    public static void main(String[] args) {\n        Main.test();\n        Main.test();\n    }\n}"
           }
         ],
         "options": [
@@ -29477,7 +29477,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample",
-            "code": "public class Sample {\n public static void main(String[] args) {\n String str = \"abcde\";\n str.replace('c', 'x');\n str.substring(2, 4);\n System.out.println(str);\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        String str = \"abcde\";\n        str.replace('c', 'x');\n        str.substring(2, 4);\n        System.out.println(str);\n    }\n}"
           }
         ],
         "options": [
@@ -29568,7 +29568,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main",
-            "code": "public class Main {\n public static void main(String[] args) {\n int num = 0;\n System.out.println(num++ + num + \",\" + ++num + num);\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int num = 0;\n        System.out.println(num++ + num + \",\" + ++num + num);\n    }\n}"
           }
         ],
         "options": [
@@ -29659,7 +29659,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main",
-            "code": "public class Main {\n public static void main(String[] args) {\n String[] array = {\"A\", \"B\", \"C\", \"D\", \"E\"};\n for (String str : array) {\n if (\"B\".equals(str)) {\n continue;\n }\n System.out.println(str);\n if (\"C\".equals(str)) {\n break;\n }\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        String[] array = {\"A\", \"B\", \"C\", \"D\", \"E\"};\n        for (String str : array) {\n            if (\"B\".equals(str)) {\n                continue;\n            }\n            System.out.println(str);\n            if (\"C\".equals(str)) {\n                break;\n            }\n        }\n    }\n}"
           }
         ],
         "options": [
@@ -29759,7 +29759,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Main",
-            "code": "public class Main {\n public static void main(String[] args) {\n int[][] array = new int[2][4];\n array[0] = new int[]{1, 2, 3, 4};\n array[1] = new int[]{1, 2};\n for (int[] a : array) {\n for (int b : a) {\n System.out.print(b);\n }\n System.out.println();\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        int[][] array = new int[2][4];\n        array[0] = new int[]{1, 2, 3, 4};\n        array[1] = new int[]{1, 2};\n        for (int[] a : array) {\n            for (int b : a) {\n                System.out.print(b);\n            }\n            System.out.println();\n        }\n    }\n}"
           }
         ],
         "options": [
@@ -29859,7 +29859,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample",
-            "code": "public class Sample {\n public static void main(String[] args) {\n String a = \"A\";\n a = a.concat(\"B\");\n String b = \"C\";\n a = a.concat(b);\n a.replace('C', 'D');\n a = a.concat(b);\n System.out.println(a);\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        String a = \"A\";\n        a = a.concat(\"B\");\n        String b = \"C\";\n        a = a.concat(b);\n        a.replace('C', 'D');\n        a = a.concat(b);\n        System.out.println(a);\n    }\n}"
           }
         ],
         "options": [
@@ -29959,11 +29959,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample.java",
-            "code": "public class Sample implements AutoCloseable {\n @Override\n public void close() throws Exception {\n System.out.println(\"C\");\n }\n}"
+            "code": "public class Sample implements AutoCloseable {\n    @Override\n    public void close() throws Exception {\n        System.out.println(\"C\");\n    }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n try (Sample s = new Sample()) {\n throw new Exception();\n } catch (Exception e) {\n System.out.println(\"A\");\n } finally {\n System.out.println(\"B\");\n }\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        try (Sample s = new Sample()) {\n            throw new Exception();\n        } catch (Exception e) {\n            System.out.println(\"A\");\n        } finally {\n            System.out.println(\"B\");\n        }\n    }\n}"
           }
         ],
         "options": [
@@ -30054,7 +30054,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample",
-            "code": "public class Sample {\n public static void main(String[] args) {\n int[] array = {1, 2, 3, 4, 5};\n int key = 3;\n int cnt = 0;\n for (int i : array) {\n if (i != key) {\n continue;\n cnt++;\n }\n }\n System.out.println(cnt);\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        int[] array = {1, 2, 3, 4, 5};\n        int key = 3;\n        int cnt = 0;\n        for (int i : array) {\n            if (i != key) {\n                continue;\n                cnt++;\n            }\n        }\n        System.out.println(cnt);\n    }\n}"
           }
         ],
         "options": [
@@ -30145,7 +30145,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A",
-            "code": "import java.util.*;\n\npublic class A {\n public List<Number> test(Set<CharSequence> s) {\n return null;\n }\n}"
+            "code": "import java.util.*;\n\npublic class A {\n    public List<Number> test(Set<CharSequence> s) {\n        return null;\n    }\n}"
           }
         ],
         "options": [
@@ -30257,7 +30257,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample",
-            "code": "public class Sample {\n public static void main(String[] args) {\n // insert code here\n array[0] = 2;\n array[1] = 3;\n System.out.println(array[0] + \",\" + array[1]);\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        // insert code here\n        array[0] = 2;\n        array[1] = 3;\n        System.out.println(array[0] + \",\" + array[1]);\n    }\n}"
           }
         ],
         "options": [
@@ -30438,19 +30438,19 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "A クラス",
-            "code": "class A {\n public A() { System.out.print(\"A\"); }\n}"
+            "code": "class A {\n    public A() { System.out.print(\"A\"); }\n}"
           },
           {
             "title": "B クラス",
-            "code": "class B extends A {\n public B() { System.out.print(\"B\"); }\n}"
+            "code": "class B extends A {\n    public B() { System.out.print(\"B\"); }\n}"
           },
           {
             "title": "C クラス",
-            "code": "class C extends B {\n public C() { System.out.print(\"C\"); }\n}"
+            "code": "class C extends B {\n    public C() { System.out.print(\"C\"); }\n}"
           },
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n public static void main(String[] args) {\n new C();\n }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) {\n        new C();\n    }\n}"
           }
         ],
         "options": [
@@ -30541,7 +30541,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Item",
-            "code": "public abstract class Item {\n int num;\n // insert code here\n}"
+            "code": "public abstract class Item {\n    int num;\n    // insert code here\n}"
           }
         ],
         "options": [
@@ -30551,11 +30551,11 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "key": "B",
-            "code": "public int calculate() {\n return num * 2;\n}"
+            "code": "public int calculate() {\n    return num * 2;\n}"
           },
           {
             "key": "C",
-            "code": "public abstract int getNum() {\n return num;\n}"
+            "code": "public abstract int getNum() {\n    return num;\n}"
           },
           {
             "key": "D",
@@ -30563,7 +30563,7 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "key": "E",
-            "code": "public static void sample() {\n // some codes\n}"
+            "code": "public static void sample() {\n    // some codes\n}"
           }
         ],
         "answer": [
@@ -30638,7 +30638,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample",
-            "code": "public class Sample {\n int a, b;\n public Sample(int a, int b) {\n init(a, b);\n }\n public void init(int a, int b) {\n this.a = a * a;\n this.b = b * b;\n }\n public static void main(String[] args) {\n int a = 2, b = 3;\n Sample s = new Sample(a, b);\n System.out.println(a + \",\" + b);\n }\n}"
+            "code": "public class Sample {\n    int a, b;\n    public Sample(int a, int b) {\n        init(a, b);\n    }\n    public void init(int a, int b) {\n        this.a = a * a;\n        this.b = b * b;\n    }\n    public static void main(String[] args) {\n        int a = 2, b = 3;\n        Sample s = new Sample(a, b);\n        System.out.println(a + \",\" + b);\n    }\n}"
           }
         ],
         "options": [
@@ -30729,11 +30729,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Test クラス",
-            "code": "class Test {\n public int num;\n public Test(int num) { this.num = num; }\n public int getNum() { return num; }\n public void modify(int x) { num += x; }\n}"
+            "code": "class Test {\n    public int num;\n    public Test(int num) { this.num = num; }\n    public int getNum() { return num; }\n    public void modify(int x) { num += x; }\n}"
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n public static void main(String[] args) {\n Test t = new Test(100);\n // blank\n System.out.println(t.getNum());\n }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        Test t = new Test(100);\n        // blank\n        System.out.println(t.getNum());\n    }\n}"
           }
         ],
         "options": [
@@ -30865,25 +30865,25 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample",
-            "code": "public class Sample {\n private String value;\n}"
+            "code": "public class Sample {\n    private String value;\n}"
           }
         ],
         "options": [
           {
             "key": "A",
-            "code": "public void setValue(String value) {\n value = value;\n}"
+            "code": "public void setValue(String value) {\n    value = value;\n}"
           },
           {
             "key": "B",
-            "code": "public String setValue(String str) {\n String value = str;\n return value;\n}"
+            "code": "public String setValue(String str) {\n    String value = str;\n    return value;\n}"
           },
           {
             "key": "C",
-            "code": "public void setValue(String value) {\n this.value = value;\n}"
+            "code": "public void setValue(String value) {\n    this.value = value;\n}"
           },
           {
             "key": "D",
-            "code": "public void setValue() {\n this.value = value;\n}"
+            "code": "public void setValue() {\n    this.value = value;\n}"
           }
         ],
         "answer": [
@@ -30955,11 +30955,11 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample クラス",
-            "code": "abstract class Sample {\n protected void doProcess() {}\n abstract void doTest();\n}"
+            "code": "abstract class Sample {\n    protected void doProcess() {}\n    abstract void doTest();\n}"
           },
           {
             "title": "Test.java",
-            "code": "public class Test extends Sample {\n void doProcess() {}\n protected void doTest() {}\n}"
+            "code": "public class Test extends Sample {\n    void doProcess() {}\n    protected void doTest() {}\n}"
           }
         ],
         "options": [
@@ -31058,7 +31058,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "Sample",
-            "code": "public class Sample {\n int a;\n int b;\n int c;\n int d;\n\n void setA(int a) {\n a = a;\n }\n void setB() {\n this.b = b;\n }\n int setC() {\n return c;\n }\n int setD(int num) {\n d = num;\n return d;\n }\n void setAll(int x) {\n a = b = this.c = setD(x);\n }\n @Override\n public String toString() {\n return \"Sample [a=\" + a + \", b=\" + b + \", c=\" + c + \", d=\" + d + \"]\";\n }\n public static void main(String[] args) {\n Sample s = new Sample();\n s.setAll(10);\n System.out.println(s);\n }\n}"
+            "code": "public class Sample {\n    int a;\n    int b;\n    int c;\n    int d;\n\n    void setA(int a) {\n        a = a;\n    }\n    void setB() {\n        this.b = b;\n    }\n    int setC() {\n        return c;\n    }\n    int setD(int num) {\n        d = num;\n        return d;\n    }\n    void setAll(int x) {\n        a = b = this.c = setD(x);\n    }\n    @Override\n    public String toString() {\n        return \"Sample [a=\" + a + \", b=\" + b + \", c=\" + c + \", d=\" + d + \"]\";\n    }\n    public static void main(String[] args) {\n        Sample s = new Sample();\n        s.setAll(10);\n        System.out.println(s);\n    }\n}"
           }
         ],
         "options": [
