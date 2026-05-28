@@ -18,21 +18,16 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>細かい仕様メモ</h1>
-        <p>一見小さいが、選択肢判定で落とされる仕様だけをまとめます。</p>
+        <p>一問単位で落とされやすい細かい仕様を短く整理します。</p>
       </section>
-
       <section class="article-section">
-        <h2>細かいが落とす仕様</h2>
-        <div class="article-card-grid">
-          <article class="article-card"><h3>switchのcase</h3><p>caseラベルは定数式が基本。実行時に変わる変数は使えません。</p></article>
-          <article class="article-card"><h3>charとString</h3><p><code>'a'</code> はchar、<code>"a"</code> はString。互換性はありません。</p></article>
-          <article class="article-card"><h3>配列初期化子</h3><p><code>int[] a; a = {{1,2}};</code> のような後代入は不可。<code>new int[]</code> が必要。</p></article>
-          <article class="article-card"><h3>コンストラクタ</h3><p>戻り値型を書いたらコンストラクタではなくメソッドです。</p></article>
-          <article class="article-card"><h3>protected</h3><p>同じパッケージなら継承関係なしでもアクセス可能です。</p></article>
-          <article class="article-card"><h3>List.of</h3><p>変更不可。add/removeで実行時例外。</p></article>
-        </div>
-      </section>
-
+<h2>細かいが出る論点</h2>
+<ul class="article-list dense-list"><li><code>String[] args</code> は引数なしでも <code>null</code> ではなく長さ0配列。</li><li>配列の長さは <code>length</code>、Stringの長さは <code>length()</code>、Listのサイズは <code>size()</code>。</li><li><code>println(null)</code> は表示できるが、<code>null.toString()</code> は例外。</li><li><code>String</code> は不変、<code>StringBuilder</code> は可変。</li><li>フィールドには初期値があるが、ローカル変数にはない。</li><li>interfaceの抽象メソッドはpublic。実装側でpublicを外すとアクセスを狭くするため不可。</li><li>privateメソッドはoverrideされない。</li><li>フィールドは多態的に解決されない。メソッドは実体で解決される。</li></ul>
+</section>
+<section class="article-section">
+<h2>試験での使い方</h2>
+<p>このページは暗記帳として使うより、模試直前に「うっかり落とす仕様」を確認する用途に向いています。理解が曖昧なら、該当する詳説記事へ戻ってください。</p>
+</section>
     </main>
   </div>
   <script src="data/questions.js"></script>

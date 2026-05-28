@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - エラー・例外カタログ完全版</title>
+  <title>Java Silver Study - エラー・例外カタログ</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -17,16 +17,21 @@
     <main class="main reference-main article-main">
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>エラー・例外カタログ完全版</h1>
-        <p>コンパイルエラーと実行時例外を、原因・コード形・試験での見分け方に分けて整理します。</p>
+        <h1>エラー・例外カタログ</h1>
+        <p>コンパイルエラーと実行時例外を、原因・典型コード・切り方で逆引きします。</p>
       </section>
-
-      <section class="article-section"><h2>このページの使い方</h2><p>「なぜ間違えたか」を、単なる不注意で終わらせないためのページです。エラー名を覚えることより、どのコード形で起きるかを覚える方が点につながります。</p><div class="article-callout"><strong>分類：</strong>コンパイルエラーは実行前に止まる。RuntimeException系は実行中に発生する。checked例外は処理漏れがコンパイルエラーになる。</div></section>
-      <section class="article-section"><h2>コンパイルエラー・カタログ</h2><table class="ref-table"><thead><tr><th>原因</th><th>コード例</th><th>理由</th><th>対処</th></tr></thead><tbody><tr><td>狭い型への代入</td><td><code>byte b = 128;</code></td><td>byteの範囲は -128〜127</td><td>範囲内にするかcastする</td></tr><tr><td>演算後の型昇格</td><td><code>byte b=1; b = b + 1;</code></td><td>b + 1 はint</td><td>b += 1 またはcast</td></tr><tr><td>doubleからfloat</td><td><code>float f = 1.0;</code></td><td>1.0 はdouble</td><td>1.0F にする</td></tr><tr><td>longからint</td><td><code>int i = 10L;</code></td><td>大きい型から小さい型へ暗黙変換不可</td><td>castまたはlong変数</td></tr><tr><td>未初期化ローカル変数</td><td><code>int x; System.out.println(x);</code></td><td>ローカル変数にデフォルト値はない</td><td>全経路で代入する</td></tr><tr><td>宣言型にないメソッド</td><td><code>Object o="x"; o.length();</code></td><td>コンパイル時は宣言型で確認</td><td>型をStringにするかcast</td></tr><tr><td>staticからinstance参照</td><td><code>static void m(){ System.out.println(name); }</code></td><td>static文脈にthisはない</td><td>インスタンス経由かstatic化</td></tr><tr><td>override不正</td><td><code>親publicを子protected</code></td><td>アクセスを狭められない</td><td>同じか広いアクセスにする</td></tr><tr><td>interface実装のpublic不足</td><td><code>void work(){}</code></td><td>interfaceメソッドはpublic扱い</td><td>public void work(){}</td></tr><tr><td>checked例外未処理</td><td><code>throw new IOException();</code></td><td>catchまたはthrowsが必要</td><td>例外処理を追加</td></tr><tr><td>catch到達不能</td><td><code>catch(Exception) → catch(IOException)</code></td><td>親で先に捕まる</td><td>子から親へ並べる</td></tr><tr><td>sealed継承不備</td><td><code>許可サブクラスに修飾子なし</code></td><td>final/sealed/non-sealedが必要</td><td>いずれかを付ける</td></tr></tbody></table></section>
-      <section class="article-section"><h2>実行時例外・カタログ</h2><table class="ref-table"><thead><tr><th>例外</th><th>コード例</th><th>ポイント</th><th>試験での見方</th></tr></thead><tbody><tr><td><code>NullPointerException</code></td><td><code>String s=null; s.length();</code></td><td>nullにメソッド呼び出し</td><td>println(s) だけなら表示は null</td></tr><tr><td><code>ArrayIndexOutOfBoundsException</code></td><td><code>int[] a = new int[0]; a[0];</code></td><td>配列生成と要素アクセスを分ける</td><td>長さ0の配列は作成可</td></tr><tr><td><code>StringIndexOutOfBoundsException</code></td><td><code>"abc".charAt(3)</code></td><td>最後はindex 2</td><td>substringの終了位置は含まない</td></tr><tr><td><code>ClassCastException</code></td><td><code>Parent p=new Parent(); Child c=(Child)p;</code></td><td>実体がChildではない</td><td>コンパイル可でも実行で落ちる</td></tr><tr><td><code>NumberFormatException</code></td><td><code>Integer.parseInt("1.0")</code></td><td>整数形式ではない</td><td>L、空白、小数点に注意</td></tr><tr><td><code>UnsupportedOperationException</code></td><td><code>List.of("A").remove(0)</code></td><td>変更不可List</td><td>コンパイルは通る</td></tr><tr><td><code>ArithmeticException</code></td><td><code>10 / 0</code></td><td>整数0除算</td><td>10.0 / 0 とは別</td></tr></tbody></table></section>
-      <section class="article-section"><h2>例外階層で混乱しやすい点</h2><div class="article-card-grid"><article class="article-card"><h3>Exception</h3><p>多くの例外の親。catch順では後ろに置く。</p></article><article class="article-card"><h3>RuntimeException</h3><p>非チェック例外。catch/throwsがなくてもコンパイルは通る。</p></article><article class="article-card"><h3>IOExceptionなど</h3><p>checked例外。処理しないとコンパイルエラー。</p></article><article class="article-card"><h3>Error</h3><p>通常アプリで処理対象にしない重大な問題。Exceptionとは別系統。</p></article></div></section>
-      <section class="article-section"><h2>見分けミニ問題</h2><details class="article-card drill-card"><summary><code>String s = null; System.out.println(s.toString());</code></summary><p>実行時に NullPointerException。println(s) ではなく、先に s.toString() を呼んでいる。</p></details><details class="article-card drill-card"><summary><code>int[] a = {{1,2}};</code></summary><p>コンパイルエラー。左辺は1次元配列なのに、右辺は2次元配列の初期化子。</p></details><details class="article-card drill-card"><summary><code>List&lt;String&gt; list = List.of("A"); list.add("B");</code></summary><p>コンパイルは通るが実行時に UnsupportedOperationException。</p></details><details class="article-card drill-card"><summary><code>Object o = new StringBuilder("A"); String s = (String)o;</code></summary><p>コンパイルは通るが実行時に ClassCastException。実体はStringBuilder。</p></details></section>
-
+      <section class="article-section">
+<h2>コンパイルエラー早見</h2>
+<table class="ref-table"><thead><tr><th>原因</th><th>典型コード</th><th>判断</th></tr></thead><tbody><tr><td>未初期化ローカル変数</td><td><code>int a; println(a);</code></td><td>ローカル変数にはデフォルト値なし</td></tr><tr><td>型不一致</td><td><code>float f = 1.0;</code></td><td>小数リテラルはdouble</td></tr><tr><td>小さい整数型の演算</td><td><code>byte c = a + b;</code></td><td>演算結果はint</td></tr><tr><td>override違反</td><td>アクセスを狭くする</td><td>同じか広くする必要</td></tr><tr><td>catch順序不正</td><td><code>catch(Exception)</code> の後に <code>catch(IOException)</code></td><td>後続catchが到達不能</td></tr></tbody></table>
+</section>
+<section class="article-section">
+<h2>実行時例外早見</h2>
+<table class="ref-table"><thead><tr><th>例外</th><th>典型原因</th><th>試験での見分け方</th></tr></thead><tbody><tr><td><code>NullPointerException</code></td><td>null参照でメソッド/フィールドアクセス</td><td><code>println(null)</code> は例外ではない点に注意</td></tr><tr><td><code>ArrayIndexOutOfBoundsException</code></td><td>配列範囲外アクセス</td><td>長さ0配列の <code>[0]</code></td></tr><tr><td><code>StringIndexOutOfBoundsException</code></td><td>文字列の範囲外</td><td><code>charAt</code>, <code>substring</code></td></tr><tr><td><code>ClassCastException</code></td><td>実体と合わないダウンキャスト</td><td>コンパイル可でも実行時に落ちる</td></tr><tr><td><code>NumberFormatException</code></td><td>数値変換できない文字列</td><td><code>Integer.parseInt("A")</code></td></tr></tbody></table>
+</section>
+<section class="article-section">
+<h2>迷ったときの切り方</h2>
+<ol class="article-list priority-list"><li>コンパイルエラー候補を先に潰す。</li><li>コンパイル可能なら、左から実行して最初に発生する例外を見る。</li><li>例外がcatchされるなら、catch後のfinallyや後続処理を見る。</li><li>例外がcatchされないなら、そこで異常終了。後続出力はない。</li></ol>
+</section>
     </main>
   </div>
   <script src="data/questions.js"></script>

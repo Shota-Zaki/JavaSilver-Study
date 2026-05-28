@@ -18,106 +18,72 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>演算子・分岐・ループ</h1>
-        <p>評価順、インクリメント、短絡評価、条件演算子、switch、ループ制御を、出力問題で使える粒度で整理します。</p>
+        <p>評価順、インクリメント、短絡評価、三項演算子、switchを、出力追跡の観点で整理します。</p>
       </section>
+      <section class="article-section">
+<h2>演算子問題の基本方針</h2>
+<p>演算子問題では、暗算で一気に答えようとすると崩れます。副作用を持つ演算子を見つけたら、変数表を書いて左から評価します。ただし、優先順位と短絡評価は先に確認します。</p><table class="ref-table"><thead><tr><th>確認</th><th>見るもの</th></tr></thead><tbody><tr><td>優先順位</td><td>括弧、単項演算子、算術、比較、論理、代入</td></tr><tr><td>副作用</td><td><code>++</code>, <code>--</code>, <code>+=</code> など</td></tr><tr><td>短絡評価</td><td><code>&&</code>, <code>||</code> で右辺が評価されるか</td></tr><tr><td>型</td><td>比較できる型か、booleanが必要な場所か</td></tr></tbody></table>
+</section>
+<section class="article-section">
+<h2>前置・後置インクリメント</h2>
+<p>前置は増やしてから値として使います。後置は現在値を使ってから増やします。</p><pre class="article-code"><code>int a = 10;
+int b = ++a; // a=11, b=11
+int c = a++; // c=11, その後 a=12
+System.out.println(a + &quot;,&quot; + b + &quot;,&quot; + c); // 12,11,11</code></pre>
+</section>
+<section class="article-section">
+<h2>短絡評価と非短絡評価</h2>
+<p><code>&&</code> と <code>||</code> は短絡評価します。<code>&</code> と <code>|</code> はbooleanにも使えますが、右辺も評価します。</p><pre class="article-code"><code>int a = 10;
+int b = 10;
+if (a &lt; 10 &amp;&amp; ++b &gt; 10) { }
+System.out.println(b); // 10: 右辺は評価されない
 
-      <section class="article-section">
-        <h2>演算子問題の基本姿勢</h2>
-        <p>演算子問題では、式を見た瞬間に左から雑に計算すると負けます。先に確認するのは次の4つです。</p>
-        <ol class="article-list">
-          <li><strong>コンパイルできる型か</strong>: booleanに <code>&lt;=</code> を使っていないか、数値型へ代入できるか。</li>
-          <li><strong>短絡評価か</strong>: <code>&amp;&amp;</code> と <code>||</code> で右辺が実行されるか。</li>
-          <li><strong>前置/後置</strong>: <code>++a</code> と <code>a++</code> の値の使われ方。</li>
-          <li><strong>代入を含む式か</strong>: <code>a += 5</code> の結果がそのまま式の値になる。</li>
-        </ol>
-      </section>
-      <section class="article-section">
-        <h2>代入演算子と複合代入</h2>
-        <p>代入式自体にも値があります。<code>int b = a += 5;</code> は、まず <code>a</code> に加算代入し、その結果を <code>b</code> に代入します。</p>
-        <pre class="article-code"><code>int a = 3;
-        int b = a += 5;
-        System.out.println(a + b); // 16</code></pre>
-        <p><code>a += 5</code> 後の <code>a</code> は8です。<code>b</code> も8になります。</p>
-      </section>
-      <section class="article-section">
-        <h2>前置・後置インクリメント</h2>
-        <p>前置は「変えてから値として使う」、後置は「今の値を使ってから変える」です。</p>
-        <pre class="article-code"><code>int a = 10;
-        int x = ++a; // a=11, x=11
-        int y = a++; // y=11, a=12</code></pre>
-        <p>複雑な式では、各項が式に渡す値を順にメモすると崩れません。</p>
-        <pre class="article-code"><code>int a = 10;
-        int b = a++ + a + a-- - a-- + ++a;
-        // 渡される値: 10 + 11 + 11 - 10 + 10
-        System.out.println(b); // 32</code></pre>
-        <div class="article-callout warn">副作用のある式は実務では避けるべきですが、試験では出ます。出力問題として割り切って、値の渡し方だけ追ってください。</div>
-      </section>
-      <section class="article-section">
-        <h2>短絡評価と非短絡評価</h2>
-        <p><code>&amp;&amp;</code> と <code>||</code> は短絡評価します。左辺だけで結果が決まる場合、右辺は評価されません。<code>&amp;</code> と <code>|</code> はboolean同士にも使えますが、短絡しません。</p>
-        <pre class="article-code"><code>int a = 10;
-        int b = 10;
-        if (10 &lt; a &amp;&amp; 10 &lt; ++b) {
-            a++;
-        }
-        System.out.println(a + b); // 20。右辺は評価されない</code></pre>
-        <pre class="article-code"><code>int a = 10;
-        int b = 10;
-        if (10 &lt; a &amp; 10 &lt; ++b) {
-            a++;
-        }
-        System.out.println(a + b); // 21。右辺は評価される</code></pre>
-      </section>
-      <section class="article-section">
-        <h2>関係演算子とboolean</h2>
-        <p><code>&lt;</code>、<code>&lt;=</code>、<code>&gt;</code>、<code>&gt;=</code> は数値比較に使います。<code>boolean</code> 同士には使えません。</p>
-        <pre class="article-code"><code>boolean a = true;
-        boolean b = false;
-        System.out.println(a == b); // OK
-        // System.out.println(a &lt;= b); // NG</code></pre>
-        <p><code>==</code> と <code>!=</code> はbooleanにも使えます。</p>
-      </section>
-      <section class="article-section">
-        <h2>switch文とswitch式</h2>
-        <p>Java 17では、従来のswitch文とswitch式の両方が出題対象になります。switch式は値を返すため、すべての経路で値が必要です。</p>
-        <pre class="article-code"><code>int n = 2;
-        String s = switch (n) {
-            case 1 -&gt; "one";
-            case 2 -&gt; "two";
-            default -&gt; "other";
-        };</code></pre>
-        <p>従来の <code>case:</code> 形式では、<code>break</code> がないと次のcaseへ流れます。<code>-></code> 形式は基本的にフォールスルーしません。</p>
-        <pre class="article-code"><code>int n = 1;
-        switch (n) {
-            case 1:
-                System.out.print("A");
-            case 2:
-                System.out.print("B");
-                break;
-            default:
-                System.out.print("C");
-        }
-        // AB</code></pre>
-      </section>
-      <section class="article-section">
-        <h2>ラベル付きbreak/continue</h2>
-        <p>ラベルは文につけられます。試験では二重ループから抜ける問題で使われます。<code>break label;</code> はラベルの付いた文そのものを抜けます。<code>continue label;</code> はラベル付きループの次の反復へ進みます。</p>
-        <pre class="article-code"><code>outer:
-        for (int i = 0; i &lt; 3; i++) {
-            for (int j = 0; j &lt; 3; j++) {
-                if (j == 1) break outer;
-                System.out.print(i + ":" + j + " ");
-            }
-        }
-        // 0:0</code></pre>
-        <p><code>continue</code> の対象はループでなければなりません。ラベルなら何でも <code>continue</code> できるわけではありません。</p>
-      </section>
-      <section class="article-section">
-        <h2>ミニ判定</h2>
-        <details class="article-card"><summary><strong>Q1.</strong> <code>false && ++x > 0</code> で <code>x</code> は増える？</summary><p>増えません。<code>&amp;&amp;</code> は左辺がfalseなら右辺を評価しません。</p></details>
-        <details class="article-card"><summary><strong>Q2.</strong> <code>false & ++x > 0</code> で <code>x</code> は増える？</summary><p>増えます。<code>&amp;</code> はboolean演算でも短絡しません。</p></details>
-        <details class="article-card"><summary><strong>Q3.</strong> <code>boolean</code> に <code>&lt;=</code> は使える？</summary><p>使えません。<code>==</code> または <code>!=</code> だけです。</p></details>
-      </section>
+if (a &lt; 10 &amp; ++b &gt; 10) { }
+System.out.println(b); // 11: 右辺も評価される</code></pre>
+</section>
+<section class="article-section">
+<h2>booleanに使えない比較</h2>
+<p><code>&lt;</code>、<code>&lt;=</code>、<code>&gt;</code>、<code>&gt;=</code> は数値などの大小比較に使います。boolean同士に <code>&lt;=</code> は使えません。</p><pre class="article-code"><code>boolean a = true;
+boolean b = false;
+System.out.println(a == b); // OK
+// System.out.println(a &lt;= b); // NG</code></pre>
+</section>
+<section class="article-section">
+<h2>三項演算子</h2>
+<p>三項演算子は <code>条件 ? 式1 : 式2</code> です。条件部分はbooleanでなければいけません。式1と式2の型の調整も発生します。</p><pre class="article-code"><code>int score = 80;
+String result = score &gt;= 60 ? &quot;OK&quot; : &quot;NG&quot;;
+System.out.println(result);</code></pre>
+</section>
+<section class="article-section">
+<h2>switchの基本</h2>
+<p>switchは、対象型、caseラベル、breakの有無、defaultの位置を確認します。breakがなければフォールスルーします。</p><pre class="article-code"><code>int n = 2;
+switch (n) {
+    case 1: System.out.print(&quot;A&quot;);
+    case 2: System.out.print(&quot;B&quot;);
+    default: System.out.print(&quot;C&quot;);
+}
+// BC</code></pre>
+</section>
+<section class="article-section">
+<h2>ミニ演習</h2>
+<details class="article-card"><summary><strong>Q. <code>if (10)</code> は？</strong></summary><p>コンパイルエラーです。if条件はbooleanでなければいけません。</p></details><details class="article-card"><summary><strong>Q. <code>&&</code> の左辺がfalseのとき右辺の <code>++</code> は実行される？</strong></summary><p>実行されません。短絡評価です。</p></details><p class="inline-note">関連: <a href="decision-flow.html">判定フロー</a> / <a href="compile-runtime.html">コンパイル・実行時例外</a> / <a href="exam-traps.html">ひっかけ集</a></p>
+</section>
+<section class="article-section deep-extra">
+<h2>代入演算子も値を返す</h2>
+<p><code>a += 5</code> のような代入式は、代入後の値を式全体の値として返します。複合代入と他の代入が連なる問題では、この性質を使います。</p><pre class="article-code"><code>int a = 3;
+int b = a += 5;
+System.out.println(a + b); // 16</code></pre>
+</section>
+
+<section class="article-section deep-extra">
+<h2>switchのcase定数</h2>
+<p>caseラベルには、switch対象型と互換性のあるコンパイル時定数が必要です。変数を置けばよいわけではありません。</p><pre class="article-code"><code>final int A = 1;
+int b = 2;
+switch (b) {
+    case A: break; // OK
+    // case b: break; // NG: 変数bは定数ではない
+}</code></pre>
+</section>
 
     </main>
   </div>

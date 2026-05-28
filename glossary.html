@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - Java Silver単語集</title>
+  <title>Java Silver Study - 単語集</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -17,10 +17,17 @@
     <main class="main reference-main article-main">
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>Java Silver単語集</h1>
-        <p>試験で出る用語を、意味・注意点・関連ルール付きで整理します。</p>
+        <h1>単語集</h1>
+        <p>Java Silverで出る用語を、単なる和訳ではなく問題での使われ方まで整理します。</p>
       </section>
-      <section class="article-section"><h2>重要語句</h2><div class="article-card-grid"><article class="article-card"><h3>JDK</h3><div>開発用キット。javacなどを含む。</div></article><article class="article-card"><h3>JRE/JVM</h3><div>Javaプログラムを実行する環境。現在はJDKに含まれる形で考えることが多い。</div></article><article class="article-card"><h3>コンパイル</h3><div>ソースコードをclassファイルへ変換する段階。型や構文の誤りはここで落ちる。</div></article><article class="article-card"><h3>実行時例外</h3><div>コンパイルは通るが、実行中の状態によって発生する例外。</div></article><article class="article-card"><h3>インスタンス</h3><div>newで作られるオブジェクトの実体。</div></article><article class="article-card"><h3>参照</h3><div>オブジェクトへのリンク情報。変数に入るのは参照。</div></article><article class="article-card"><h3>抽象メソッド</h3><div>宣言だけで本体がないメソッド。具象クラスでは実装が必要。</div></article><article class="article-card"><h3>ポリモーフィズム</h3><div>親型・interface型で子クラスの実体を扱う仕組み。</div></article><article class="article-card"><h3>オーバーロード</h3><div>同名で引数リストが違うメソッドを定義すること。</div></article><article class="article-card"><h3>オーバーライド</h3><div>親メソッドを子で再定義すること。</div></article><article class="article-card"><h3>同一性比較</h3><div><code>==</code> による同じ参照かの比較。</div></article><article class="article-card"><h3>同値比較</h3><div><code>equals()</code> による値として同じかの比較。</div></article><article class="article-card"><h3>record</h3><div>データ保持用クラスを簡潔に書く仕組み。</div></article><article class="article-card"><h3>sealed</h3><div>継承・実装できる相手を制限する修飾子。</div></article></div></section>
+      <section class="article-section">
+<h2>基礎用語</h2>
+<table class="ref-table"><thead><tr><th>用語</th><th>意味</th><th>試験での注意</th></tr></thead><tbody><tr><td>プリミティブ型</td><td>値そのものを扱う型</td><td>null不可、booleanは数値非互換</td></tr><tr><td>参照型</td><td>オブジェクトへの参照を扱う型</td><td>null可、==は参照比較</td></tr><tr><td>リテラル</td><td>ソースに直接書く値</td><td>整数はint、小数はdoubleが基本</td></tr><tr><td>ローカル変数</td><td>メソッドやブロック内の変数</td><td>初期値なし</td></tr><tr><td>フィールド</td><td>クラスに属する変数</td><td>デフォルト値あり</td></tr></tbody></table>
+</section>
+<section class="article-section">
+<h2>オブジェクト指向用語</h2>
+<table class="ref-table"><thead><tr><th>用語</th><th>意味</th><th>試験での注意</th></tr></thead><tbody><tr><td>継承</td><td>既存クラスを拡張する仕組み</td><td>コンストラクタ/privateは引き継がない</td></tr><tr><td>オーバーロード</td><td>同名で引数が違うメソッド</td><td>戻り値だけ違うのは不可</td></tr><tr><td>オーバーライド</td><td>親のメソッドを子で再定義</td><td>アクセスを狭くできない</td></tr><tr><td>ポリモーフィズム</td><td>同じ型で異なる実体を扱う性質</td><td>呼べるメソッドは宣言型、動く実装は実体</td></tr><tr><td>インタフェース</td><td>扱い方を定める型</td><td>抽象メソッドはpublic</td></tr></tbody></table>
+</section>
     </main>
   </div>
   <script src="data/questions.js"></script>

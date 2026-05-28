@@ -18,42 +18,72 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>同一性比較・同値比較</h1>
-        <p>==、equals、recordのequals、nullとの比較を整理します。</p>
+        <p>==、equals、null、recordのequalsを、参照型とプリミティブ型に分けて整理します。</p>
       </section>
-
       <section class="article-section">
-        <h2>同一性と同値性</h2>
-        <p>Javaの比較は、まず「何を比較しているか」を決めます。プリミティブ値なら値比較、参照型に対する <code>==</code> なら参照比較、<code>equals</code> ならクラスごとの同値比較です。</p>
-        <pre class="article-code"><code>Integer a = 100;
-Integer b = 100;
-System.out.println(a.equals(b)); // true
+<h2>==の意味は型で変わる</h2>
+<p>プリミティブ型では値の比較です。参照型では参照先が同じオブジェクトかどうかを比較します。</p><table class="ref-table"><thead><tr><th>対象</th><th><code>==</code> の意味</th></tr></thead><tbody><tr><td>プリミティブ型</td><td>値が同じか</td></tr><tr><td>参照型</td><td>同じインスタンスを参照しているか</td></tr></tbody></table><pre class="article-code"><code>int a = 10;
+int b = 10;
+System.out.println(a == b); // true
 
-String s1 = new String(&quot;A&quot;);
-String s2 = &quot;A&quot;;
-System.out.println(s1 == s2);      // false
-System.out.println(s1.equals(s2)); // true</code></pre>
-      </section>
+String x = new String(&quot;A&quot;);
+String y = new String(&quot;A&quot;);
+System.out.println(x == y);      // false
+System.out.println(x.equals(y)); // true</code></pre>
+</section>
+<section class="article-section">
+<h2>equalsはメソッド</h2>
+<p><code>equals</code> はメソッドです。左辺が <code>null</code> なら呼び出し時に <code>NullPointerException</code> です。</p><pre class="article-code"><code>String s = null;
+// s.equals(&quot;A&quot;);      // NullPointerException
+&quot;A&quot;.equals(s);          // false。null安全に書ける</code></pre>
+</section>
+<section class="article-section">
+<h2>Objectのequalsとオーバーライド</h2>
+<p><code>Object</code> の <code>equals</code> は、基本的に同一性比較です。Stringやrecordなどは内容比較になるようにオーバーライドされています。</p><pre class="article-code"><code>class Item {
+    int id;
+    Item(int id) { this.id = id; }
+}
 
-      <section class="article-section">
-        <h2>recordのequals</h2>
-        <p>recordはコンポーネント値に基づく <code>equals</code>、<code>hashCode</code>、<code>toString</code> を自動生成します。ただし <code>==</code> は通常通り参照比較です。</p>
-        <pre class="article-code"><code>record Point(int x, int y) {}
+Item a = new Item(1);
+Item b = new Item(1);
+System.out.println(a.equals(b)); // false: equalsをoverrideしていない</code></pre>
+</section>
+<section class="article-section">
+<h2>recordのequals</h2>
+<p>recordは、全コンポーネントを使った <code>equals</code>、<code>hashCode</code>、<code>toString</code> が自動生成されます。</p><pre class="article-code"><code>record Point(int x, int y) {}
 
 Point p1 = new Point(1, 2);
 Point p2 = new Point(1, 2);
-
 System.out.println(p1 == p2);      // false
 System.out.println(p1.equals(p2)); // true</code></pre>
-      </section>
+</section>
+<section class="article-section">
+<h2>ラッパークラスの注意</h2>
+<p>ラッパークラスではオートボクシングにより見た目が単純になりますが、<code>==</code> は原則として参照比較です。値比較なら <code>equals</code> またはアンボクシング後の比較として読む必要があります。</p><pre class="article-code"><code>Integer a = 1000;
+Integer b = 1000;
+System.out.println(a == b);      // 実装依存のキャッシュに頼らない。試験ではequalsで考える
+System.out.println(a.equals(b)); // true</code></pre>
+</section>
+<section class="article-section">
+<h2>ミニ演習</h2>
+<details class="article-card"><summary><strong>Q. <code>String a="x"; String b="x"; a==b</code> は？</strong></summary><p>trueです。同じ文字列リテラルは文字列プール上の同じインスタンスを参照します。</p></details><details class="article-card"><summary><strong>Q. <code>new String("x") == "x"</code> は？</strong></summary><p>falseです。<code>new</code> は別インスタンスを作ります。</p></details><p class="inline-note">関連: <a href="decision-flow.html">判定フロー</a> / <a href="compile-runtime.html">コンパイル・実行時例外</a> / <a href="exam-traps.html">ひっかけ集</a></p>
+</section>
+<section class="article-section deep-extra">
+<h2>比較前に型を見る</h2>
+<p><code>==</code> は、比較対象の型によって意味が変わります。プリミティブ同士なら値比較、参照型同士なら参照比較です。プリミティブとラッパーの比較ではアンボクシングが絡むことがあります。</p><pre class="article-code"><code>Integer a = 10;
+int b = 10;
+System.out.println(a == b); // true: aがアンボクシングされる
 
-      <section class="article-section">
-        <h2>equalsを呼ぶ側</h2>
-        <p><code>equals</code> はメソッド呼び出しです。呼び出し元が <code>null</code> なら <code>NullPointerException</code> です。比較対象の引数が <code>null</code> なら、多くの実装ではfalseを返します。</p>
-        <pre class="article-code"><code>String s = null;
-// s.equals(&quot;A&quot;);       // NullPointerException
-&quot;A&quot;.equals(s);          // false</code></pre>
-        <div class="article-callout warn">nullの可能性がある変数に対して <code>変数.equals(...)</code> と呼ぶコードは危険です。試験ではNPEの発生箇所として狙われます。</div>
-      </section>
+Integer c = null;
+// System.out.println(c == b); // NullPointerException</code></pre>
+</section>
+
+<section class="article-section deep-extra">
+<h2>equalsを安全に呼ぶ形</h2>
+<p>左辺がnullの可能性があるなら、定数やnullでないことが明らかな値を左に置くと安全です。</p><pre class="article-code"><code>String input = null;
+System.out.println(&quot;yes&quot;.equals(input)); // false
+// System.out.println(input.equals(&quot;yes&quot;)); // NullPointerException</code></pre>
+</section>
 
     </main>
   </div>

@@ -21,7 +21,22 @@
         <p>試験直前に見るため、細かい説明よりも判定基準を優先して圧縮したページです。</p>
       </section>
 <section class="article-section"><h2>試験直前の判定順</h2><div class="decision-lane compact"><div><span>1</span><strong>コンパイル</strong><p>型・宣言・アクセス・例外処理。</p></div><div><span>2</span><strong>実行時例外</strong><p>null・境界外・cast・parse。</p></div><div><span>3</span><strong>出力</strong><p>評価順・参照・動的束縛。</p></div></div></section><section class="article-section"><h2>型・リテラル</h2><table class="ref-table"><thead><tr><th>項目</th><th>要点</th></tr></thead><tbody><tr><td><code>byte</code></td><td>-128〜127。整数定数が範囲内なら代入可。</td></tr><tr><td><code>short</code></td><td>-32768〜32767。演算すると基本int。</td></tr><tr><td><code>char</code></td><td>0〜65535。数値としても扱えるが演算ではint。</td></tr><tr><td><code>float</code></td><td><code>1.0F</code> が必要。<code>1.0</code> はdouble。</td></tr><tr><td><code>long</code></td><td><code>10L</code>。小文字lは見間違いが多い。</td></tr><tr><td><code>boolean</code></td><td>数値と互換性なし。<code>0/1</code> は使えない。</td></tr><tr><td><code>var</code></td><td>ローカル変数のみ。null単独、配列初期化子単独、ラムダ単独は不可。</td></tr></tbody></table></section><section class="article-section"><h2>文字列・配列・List</h2><ul class="check-list dense-list"><li><code>String</code> は不変。戻り値を受けないと変わらない。</li><li><code>StringBuilder</code> は可変。append等は自分を変える。</li><li><code>==</code> は参照比較。<code>equals</code> は内容比較。</li><li><code>intern()</code> はプール上の参照を返す。</li><li>配列の長さは <code>length</code>、Stringの長さは <code>length()</code>。</li><li>配列は固定長。ArrayListは要素数を変えられる。</li><li><code>Arrays.asList</code> と <code>List.of</code> は変更可否が違う。</li><li>拡張forのループ変数代入では元要素は差し替わらない。</li></ul></section><section class="article-section"><h2>オブジェクト指向</h2><table class="ref-table"><thead><tr><th>項目</th><th>要点</th></tr></thead><tbody><tr><td>コンストラクタ</td><td>継承されない。戻り値型を書いたらメソッド。</td></tr><tr><td>overload</td><td>引数リストが違う。同じ引数で戻り値だけ違うのは不可。</td></tr><tr><td>override</td><td>同じシグネチャ。戻り値は同じか共変戻り値。アクセスは狭めない。</td></tr><tr><td>static</td><td>インスタンスなしで使える。staticからinstanceを直接読めない。</td></tr><tr><td>フィールド</td><td>overrideされない。宣言型で決まる。</td></tr><tr><td>メソッド</td><td>overrideされたインスタンスメソッドは実体で決まる。</td></tr><tr><td>interface</td><td>抽象メソッドはpublic abstract扱い。フィールドはpublic static final扱い。</td></tr><tr><td>abstract</td><td>抽象クラスはインスタンス化不可。抽象メソッド未実装なら子もabstract。</td></tr></tbody></table></section><section class="article-section"><h2>Java 17系</h2><ul class="article-list"><li><strong>record</strong>: アクセサは <code>name()</code> 型。暗黙的にfinal。</li><li><strong>sealed</strong>: <code>permits</code> で許可。サブクラス側は <code>final/sealed/non-sealed</code> 必須。</li><li><strong>switch式</strong>: 値を返す。ブロックでは <code>yield</code>。</li><li><strong>instanceof pattern</strong>: trueの範囲でだけパターン変数が使える。</li></ul></section><section class="article-section"><h2>例外</h2><table class="ref-table"><thead><tr><th>項目</th><th>要点</th></tr></thead><tbody><tr><td>checked例外</td><td>catchまたはthrowsが必要。未処理はコンパイルエラー。</td></tr><tr><td>RuntimeException</td><td>非チェック例外。処理しなくてもコンパイル可。</td></tr><tr><td>catch順</td><td>子から親。親が先だと後続catchが到達不能。</td></tr><tr><td>finally</td><td>例外の有無に関わらず基本実行。</td></tr><tr><td>try-with-resources</td><td>closeは宣言の逆順。finallyより前。</td></tr></tbody></table></section>
-    </main>
+<section class="article-section">
+  <h2>さらに深掘り：直前に見る最小チェック</h2>
+  <ul class="article-list dense-list">
+    <li><code>String</code> は不変、<code>StringBuilder</code> は可変。</li>
+    <li><code>==</code> は参照比較、<code>equals</code> は実装依存の内容比較。</li>
+    <li>ローカル変数にデフォルト値はない。</li>
+    <li><code>byte/short/char</code> の演算結果は基本 <code>int</code>。</li>
+    <li><code>var</code> はローカル変数のみ。<code>null</code> 単独不可。</li>
+    <li><code>interface</code> の抽象メソッドは暗黙に <code>public</code>。</li>
+    <li>オーバーライドでアクセスを狭くできない。</li>
+    <li>チェック例外はcatchまたはthrowsが必要。</li>
+    <li>try-with-resourcesはcloseが逆順。</li>
+    <li>出力追跡はコンパイル可否を確認した後。</li>
+  </ul>
+</section>
+</main>
   </div>
   <script src="data/questions.js"></script>
   <script src="assets/js/app.js"></script>

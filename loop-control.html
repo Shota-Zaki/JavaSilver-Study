@@ -18,44 +18,76 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>ループ制御</h1>
-        <p>while、do-while、for、break、continue、ラベル付き制御を、出力順の追跡に絞って整理します。</p>
+        <p>while、do-while、for、拡張for、break、continue、ラベルの使い分けを整理します。</p>
       </section>
-
       <section class="article-section">
-        <h2>ループの基本判定</h2>
-        <p>ループ問題は、初期化、条件判定、本文、更新式の順に追います。<code>while</code> は最初に条件を見ますが、<code>do-while</code> は本文を1回実行してから条件を見ます。</p>
-        <pre class="article-code"><code>int n = 0;
+<h2>ループ問題の見る順番</h2>
+<ol class="article-list priority-list"><li>初期値を表に書く。</li><li>条件判定が先か後かを確認する。<code>do-while</code> は最低1回実行。</li><li>更新式がいつ実行されるか確認する。</li><li><code>break</code> / <code>continue</code> でどこへ移動するか確認する。</li><li>ラベルが付いている場合、対象がブロックまたは文として正しいか見る。</li></ol>
+</section>
+<section class="article-section">
+<h2>whileとdo-while</h2>
+<pre class="article-code"><code>int a = 10;
+while (a &lt; 10) {
+    System.out.println(&quot;while&quot;);
+}
+
 do {
-    System.out.println(n);
-    n++;
-} while (n &lt; 0);
-// 0 は1回出力される</code></pre>
-      </section>
-
-      <section class="article-section">
-        <h2>breakとcontinue</h2>
-        <p><code>break</code> は現在のループを終了します。<code>continue</code> は現在の反復を終了し、次の反復へ進みます。for文ではcontinue後に更新式が実行される点も忘れないこと。</p>
-        <pre class="article-code"><code>for (int i = 0; i &lt; 5; i++) {
-    if (i == 2) continue;
-    if (i == 4) break;
+    System.out.println(&quot;do&quot;);
+} while (a &lt; 10);</code></pre><p><code>while</code> は条件が先なので0回の可能性があります。<code>do-while</code> は本体を実行してから条件を見るので最低1回実行されます。</p>
+</section>
+<section class="article-section">
+<h2>for文の実行順序</h2>
+<p>通常のfor文は「初期化 → 条件 → 本体 → 更新 → 条件 → ...」です。</p><pre class="article-code"><code>for (int i = 0; i &lt; 3; i++) {
     System.out.print(i);
 }
-// 013</code></pre>
-      </section>
-
-      <section class="article-section">
-        <h2>ラベル付き制御</h2>
-        <p>ネストしたループでは、ラベル付き <code>break</code> / <code>continue</code> で外側のループを対象にできます。試験では、どのループが終了・継続されるかを問われます。</p>
-        <pre class="article-code"><code>outer:
-for (int i = 0; i &lt; 2; i++) {
+// 012</code></pre>
+</section>
+<section class="article-section">
+<h2>continueと更新式</h2>
+<p>for文で <code>continue</code> すると、本体の残りを飛ばして更新式へ進みます。while文では条件判定へ戻ります。</p><pre class="article-code"><code>for (int i = 0; i &lt; 3; i++) {
+    if (i == 1) continue;
+    System.out.print(i);
+}
+// 02</code></pre>
+</section>
+<section class="article-section">
+<h2>ラベル付きbreak/continue</h2>
+<p>ラベルは任意の文に付けられますが、<code>continue</code> の飛び先にできるのはループです。<code>break</code> はラベル付きブロックから抜ける用途にも使えます。</p><pre class="article-code"><code>outer:
+for (int i = 0; i &lt; 3; i++) {
     for (int j = 0; j &lt; 3; j++) {
         if (j == 1) break outer;
-        System.out.println(i + &quot;:&quot; + j);
     }
+}</code></pre><div class="article-callout warn"><code>continue label;</code> のlabelが単なるブロックについている場合はコンパイルエラーです。</div>
+</section>
+<section class="article-section">
+<h2>無限ループと到達不能</h2>
+<p><code>while(true)</code> の後ろは到達不能になる場合があります。ただし、ループ内に条件付きbreakがあると到達可能と判断されることがあります。</p><pre class="article-code"><code>while (true) {
+    break;
 }
-// 0:0 のみ</code></pre>
-        <div class="article-callout warn">ラベル付き <code>continue outer;</code> は、外側ループの次の反復へ進みます。外側ループ自体を完全に抜けるのは <code>break outer;</code> です。</div>
-      </section>
+System.out.println(&quot;reachable&quot;); // OK</code></pre>
+</section>
+<section class="article-section">
+<h2>ミニ演習</h2>
+<details class="article-card"><summary><strong>Q. do-whileの末尾にセミコロンは必要？</strong></summary><p>必要です。<code>do { } while (condition);</code> の形です。</p></details><details class="article-card"><summary><strong>Q. ラベルはif文にも付けられる？</strong></summary><p>付けられます。ただし <code>continue</code> の対象にはできません。</p></details><p class="inline-note">関連: <a href="decision-flow.html">判定フロー</a> / <a href="compile-runtime.html">コンパイル・実行時例外</a> / <a href="exam-traps.html">ひっかけ集</a></p>
+</section>
+<section class="article-section deep-extra">
+<h2>for文の各部は省略できる</h2>
+<p>for文は初期化式、条件式、更新式を省略できます。条件式を省略するとtrue扱いです。無限ループかどうか、breakで抜けるかを見ます。</p><pre class="article-code"><code>for (;;) {
+    break;
+}
+System.out.println(&quot;end&quot;); // 到達可能</code></pre>
+</section>
+
+<section class="article-section deep-extra">
+<h2>ネストループのbreak/continue</h2>
+<p>ラベルなしの <code>break</code> は最も内側のループだけを抜けます。外側まで抜けるにはラベル付きbreakを使います。</p><pre class="article-code"><code>for (int i = 0; i &lt; 2; i++) {
+    for (int j = 0; j &lt; 2; j++) {
+        break; // jのループだけ抜ける
+    }
+    System.out.print(i);
+}
+// 01</code></pre>
+</section>
 
     </main>
   </div>

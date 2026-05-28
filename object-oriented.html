@@ -18,81 +18,86 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>クラス・static・record</h1>
-        <p>インスタンス、参照、static、final、record、ガベージコレクションを、出力問題で迷わない形に整理します。</p>
+        <p>インスタンス、参照、static、final、ガベージコレクション、recordを整理します。</p>
       </section>
+      <section class="article-section">
+<h2>クラスとインスタンス</h2>
+<p>クラスは設計図、インスタンスは実体です。変数が直接インスタンスを持つのではなく、参照を持ちます。</p><pre class="article-code"><code>Item a = new Item();
+Item b = new Item();
+System.out.println(a == b); // false: 別インスタンス
+b = a;
+System.out.println(a == b); // true: 同じ参照</code></pre>
+</section>
+<section class="article-section">
+<h2>インスタンスフィールドとstaticフィールド</h2>
+<p>インスタンスフィールドは各インスタンスごとに持ちます。staticフィールドはクラスに1つです。</p><pre class="article-code"><code>class Counter {
+    int instanceCount;
+    static int classCount;
+}
 
-      <section class="article-section">
-        <h2>クラスとインスタンス</h2>
-        <p>クラスは設計図、インスタンスは実体です。変数に入っているのはインスタンスそのものではなく、インスタンスへの参照です。</p>
-        <pre class="article-code"><code>Item a = new Item();
-        Item b = new Item();
-        a == b; // false。別インスタンス</code></pre>
-        <p>同じクラスから作ったインスタンスでも、フィールドの値は別々に保持されます。</p>
-      </section>
-      <section class="article-section">
-        <h2>参照の代入</h2>
-        <p>参照型変数の代入は、インスタンスをコピーするのではなく、参照をコピーします。</p>
-        <pre class="article-code"><code>Item a = new Item();
-        Item b = new Item();
-        a.name = "apple";
-        b.name = "banana";
-        a = b;
-        System.out.println(a.name); // banana</code></pre>
-        <p><code>a = b</code> 後は、<code>a</code> と <code>b</code> が同じインスタンスを参照します。元の <code>a</code> が参照していたインスタンスは、他から参照されていなければGC対象です。</p>
-      </section>
-      <section class="article-section">
-        <h2>staticメンバ</h2>
-        <p><code>static</code> はインスタンスではなくクラスに属します。staticメソッドからインスタンスフィールドへ直接アクセスすることはできません。</p>
-        <pre class="article-code"><code>class Value {
-            private String contents;
+Counter a = new Counter();
+Counter b = new Counter();
+a.instanceCount++;
+a.classCount++;
+System.out.println(b.instanceCount); // 0
+System.out.println(b.classCount);    // 1</code></pre><div class="article-callout warn">staticメンバはインスタンス経由でも呼べてしまう場合がありますが、試験では「共有される」という性質を見ます。</div>
+</section>
+<section class="article-section">
+<h2>staticメソッドから見えるもの</h2>
+<p>staticメソッドから、インスタンスフィールドやインスタンスメソッドへ直接アクセスできません。インスタンスが必要です。</p><pre class="article-code"><code>class Sample {
+    int value;
+    static void test() {
+        // System.out.println(value); // NG
+        Sample s = new Sample();
+        System.out.println(s.value);  // OK
+    }
+}</code></pre>
+</section>
+<section class="article-section">
+<h2>finalの意味</h2>
+<p><code>final</code> は対象によって意味が変わります。変数なら再代入不可、メソッドならoverride不可、クラスなら継承不可です。</p><table class="ref-table"><thead><tr><th>対象</th><th>意味</th></tr></thead><tbody><tr><td>変数</td><td>再代入できない</td></tr><tr><td>メソッド</td><td>オーバーライドできない</td></tr><tr><td>クラス</td><td>継承できない</td></tr></tbody></table><pre class="article-code"><code>final StringBuilder sb = new StringBuilder(&quot;A&quot;);
+sb.append(&quot;B&quot;);       // OK: 中身の変更
+// sb = new StringBuilder(); // NG: 再代入</code></pre>
+</section>
+<section class="article-section">
+<h2>ガベージコレクション</h2>
+<p>どの変数からも参照されなくなったインスタンスは、ガベージコレクションの対象になります。ただし、実際に回収されるタイミングは保証されません。</p><pre class="article-code"><code>Object a = new Object();
+Object b = new Object();
+Object c = a;
+a = null;
+b = null;
+// ここで対象になるのは、もともとbが参照していたインスタンスだけ
+// aの元インスタンスはcが参照している</code></pre>
+</section>
+<section class="article-section">
+<h2>recordの基本</h2>
+<p>recordはデータを保持するクラスを簡潔に定義する仕組みです。コンポーネント、アクセサ、equals、hashCode、toStringなどが自動生成されます。</p><pre class="article-code"><code>record User(String name, int age) {}
 
-            public static void print() {
-                // System.out.println(contents); // NG
-            }
-        }</code></pre>
-        <p>インスタンスメンバに触るには、インスタンス参照が必要です。</p>
-        <pre class="article-code"><code>Value v = new Value();
-        // v.contents など。ただしprivateなら同一クラス外から不可</code></pre>
-      </section>
-      <section class="article-section">
-        <h2>finalの意味</h2>
-        <p><code>final</code> は文脈によって意味が変わります。</p>
-        <table class="ref-table"><thead><tr><th>対象</th><th>意味</th></tr></thead><tbody>
-        <tr><td>変数</td><td>再代入不可。参照先オブジェクトの変更不可ではない。</td></tr>
-        <tr><td>メソッド</td><td>オーバーライド不可。</td></tr>
-        <tr><td>クラス</td><td>継承不可。</td></tr>
-        </tbody></table>
-        <pre class="article-code"><code>final StringBuilder sb = new StringBuilder("A");
-        sb.append("B"); // OK。参照先の中身変更
-        // sb = new StringBuilder("C"); // NG。再代入</code></pre>
-      </section>
-      <section class="article-section">
-        <h2>recordの基本</h2>
-        <p><code>record</code> は、データを運ぶためのクラスを簡潔に書く仕組みです。コンポーネントに対応する <code>private final</code> フィールド、アクセサ、<code>equals</code>、<code>hashCode</code>、<code>toString</code> が生成されます。</p>
-        <pre class="article-code"><code>record Point(int x, int y) {}
+User u = new User(&quot;A&quot;, 20);
+System.out.println(u.name()); // A
+// u.name = &quot;B&quot;;             // NG</code></pre>
+</section>
+<section class="article-section">
+<h2>ミニ演習</h2>
+<details class="article-card"><summary><strong>Q. staticメソッドからthisは使える？</strong></summary><p>使えません。staticメソッドは特定のインスタンスに属さないためです。</p></details><details class="article-card"><summary><strong>Q. final参照型変数の中身は絶対に変更不可？</strong></summary><p>違います。再代入不可です。参照先オブジェクトが可変なら中身は変更できます。</p></details><p class="inline-note">関連: <a href="decision-flow.html">判定フロー</a> / <a href="compile-runtime.html">コンパイル・実行時例外</a> / <a href="exam-traps.html">ひっかけ集</a></p>
+</section>
+<section class="article-section deep-extra">
+<h2>参照のコピーとオブジェクトのコピーは違う</h2>
+<p><code>a = b</code> は、bが見ているインスタンスへの参照をaへコピーするだけです。オブジェクトが複製されるわけではありません。</p><pre class="article-code"><code>Item a = new Item();
+Item b = new Item();
+a = b; // bの参照をaへコピー。もともとのaのインスタンスは参照されなくなる可能性</code></pre>
+</section>
 
-        Point p = new Point(10, 20);
-        System.out.println(p.x());      // 10
-        System.out.println(p);          // Point[x=10, y=20]</code></pre>
-        <p>recordは暗黙に <code>final</code> です。他のクラスを継承できません。ただしインタフェースは実装できます。</p>
-      </section>
-      <section class="article-section">
-        <h2>ガベージコレクション</h2>
-        <p>GC対象になるのは、どこからも到達できなくなったインスタンスです。<code>null</code> 代入や参照の上書きによって到達不能になります。</p>
-        <pre class="article-code"><code>Object a = new Object(); // インスタンス1
-        Object b = new Object(); // インスタンス2
-        Object c = a;
-        a = null;
-        b = null;
-        // この時点でGC対象はインスタンス2だけ。インスタンス1はcから参照されている。</code></pre>
-        <p><code>System.gc()</code> はGC実行を保証しません。試験で問われるのは「対象になるか」であって「いつ回収されるか」ではありません。</p>
-      </section>
-      <section class="article-section">
-        <h2>ミニ判定</h2>
-        <details class="article-card"><summary><strong>Q1.</strong> staticメソッドからインスタンスフィールドを直接読める？</summary><p>読めません。インスタンス参照が必要です。</p></details>
-        <details class="article-card"><summary><strong>Q2.</strong> <code>final ArrayList</code> は要素追加不可？</summary><p>いいえ。変数への再代入が不可なだけで、参照先リストの変更は可能です。</p></details>
-        <details class="article-card"><summary><strong>Q3.</strong> recordは継承できる？</summary><p>record自身は暗黙にfinalなので、他クラスから継承できません。</p></details>
-      </section>
+<section class="article-section deep-extra">
+<h2>static初期化の見方</h2>
+<p>staticフィールドはインスタンスごとではなくクラスごとに1つです。複数インスタンスから更新しても同じ値を共有します。</p><pre class="article-code"><code>class Sample {
+    static int count;
+    Sample() { count++; }
+}
+new Sample();
+new Sample();
+System.out.println(Sample.count); // 2</code></pre>
+</section>
 
     </main>
   </div>

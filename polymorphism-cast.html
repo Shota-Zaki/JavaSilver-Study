@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - ポリモーフィズム・キャスト・instanceof</title>
+  <title>Java Silver Study - ポリモーフィズム・キャスト</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -17,67 +17,65 @@
     <main class="main reference-main article-main">
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>ポリモーフィズム・キャスト・instanceof</h1>
-        <p>宣言型と実体、メソッド呼び出し、フィールド参照、キャスト、instanceofパターンを整理します。</p>
+        <h1>ポリモーフィズム・キャスト</h1>
+        <p>宣言型、実体、メソッド解決、キャスト、instanceof、ClassCastExceptionを整理します。</p>
       </section>
+      <section class="article-section">
+<h2>宣言型と実体を分ける</h2>
+<p>ポリモーフィズム問題では、変数の宣言型と実際のインスタンス型を必ず分けて書きます。呼べるメソッドは宣言型で決まり、実行されるoverrideメソッドは実体で決まります。</p><pre class="article-code"><code>class A { void test() { System.out.println(&quot;A&quot;); } }
+class B extends A { void test() { System.out.println(&quot;B&quot;); } void onlyB() {} }
 
-      <section class="article-section">
-        <h2>宣言型と実体を分ける</h2>
-        <p>参照型変数には、宣言型と実体があります。コンパイル時に見えるメンバは宣言型で決まり、オーバーライドされたインスタンスメソッドの実行内容は実体で決まります。</p>
-        <pre class="article-code"><code>Animal a = new Dog();
-        a.eat();      // 呼べるかはAnimal型にeatがあるかで決まる
-                      // 実行される内容はDogのoverride実装</code></pre>
-        <div class="article-callout warn">まず「そのメソッド名が宣言型に存在するか」を見ます。存在しないなら、実体にあってもコンパイルエラーです。</div>
-      </section>
-      <section class="article-section">
-        <h2>メソッドは実体、フィールドは宣言型</h2>
-        <p>オーバーライドされたメソッドは実体側で決まります。一方、フィールドはオーバーライドされません。参照変数の宣言型で決まります。</p>
-        <pre class="article-code"><code>class A {
-            String name = "A";
-            String getName() { return name; }
-        }
-        class B extends A {
-            String name = "B";
-            @Override String getName() { return name; }
-        }
-        A obj = new B();
-        System.out.println(obj.name);     // A
-        System.out.println(obj.getName()); // B</code></pre>
-        <p>同名フィールドは隠蔽されるだけで、ポリモーフィズムの対象ではありません。</p>
-      </section>
-      <section class="article-section">
-        <h2>アップキャストとダウンキャスト</h2>
-        <p>サブクラスからスーパークラスへの代入はアップキャストで、暗黙にできます。スーパークラス型の参照をサブクラス型へ戻すにはダウンキャストが必要です。</p>
-        <pre class="article-code"><code>Dog d = new Dog();
-        Animal a = d;       // OK。アップキャスト
-        Dog d2 = (Dog) a;   // OK。実体がDogなら成功</code></pre>
-        <p>コンパイルできるキャストでも、実体が合わなければ <code>ClassCastException</code> です。</p>
-        <pre class="article-code"><code>Animal a = new Cat();
-        // Dog d = (Dog) a; // 実行時例外</code></pre>
-      </section>
-      <section class="article-section">
-        <h2>instanceofとパターンマッチング</h2>
-        <p><code>instanceof</code> は、実体が指定型として扱えるかを判定します。Java 17ではパターン変数も使えます。</p>
-        <pre class="article-code"><code>Object obj = "java";
-        if (obj instanceof String s) {
-            System.out.println(s.length());
-        }</code></pre>
-        <p>パターン変数 <code>s</code> は、条件がtrueの範囲でだけ使えます。<code>obj</code> が <code>null</code> の場合、<code>instanceof</code> はfalseです。</p>
-      </section>
-      <section class="article-section">
-        <h2>キャスト式の優先順位</h2>
-        <p>キャストしてからメソッドを呼びたい場合、カッコの位置が重要です。</p>
-        <pre class="article-code"><code>Object obj = "abc";
-        // (String)obj.length(); // NG。lengthを先に探してしまう
-        System.out.println(((String)obj).length()); // OK</code></pre>
-        <p>メソッド呼び出しの対象をどの型として解釈させるかを、カッコで明確にします。</p>
-      </section>
-      <section class="article-section">
-        <h2>ミニ判定</h2>
-        <details class="article-card"><summary><strong>Q1.</strong> <code>Parent p = new Child(); p.childOnly();</code> は？</summary><p><code>childOnly</code> が <code>Parent</code> にないならコンパイルエラーです。実体が <code>Child</code> でも、宣言型で見えません。</p></details>
-        <details class="article-card"><summary><strong>Q2.</strong> <code>obj instanceof String s</code> で <code>obj</code> がnullなら？</summary><p>falseです。例外は発生しません。</p></details>
-        <details class="article-card"><summary><strong>Q3.</strong> フィールドはオーバーライドされる？</summary><p>されません。同名フィールドは隠蔽され、参照変数の宣言型で参照先が決まります。</p></details>
-      </section>
+A obj = new B();
+obj.test();  // B
+// obj.onlyB(); // NG: 宣言型AにonlyBがない</code></pre>
+</section>
+<section class="article-section">
+<h2>アップキャストとダウンキャスト</h2>
+<p>サブクラスからスーパークラスへのアップキャストは暗黙にできます。スーパークラス型からサブクラス型へのダウンキャストは明示キャストが必要です。</p><pre class="article-code"><code>B b = new B();
+A a = b;       // アップキャスト。OK
+B b2 = (B) a;  // ダウンキャスト。実体がBなのでOK</code></pre>
+</section>
+<section class="article-section">
+<h2>ClassCastException</h2>
+<p>コンパイル時に型の関連があればキャスト式は書けます。しかし、実行時の実体がその型でなければ <code>ClassCastException</code> です。</p><pre class="article-code"><code>class A {}
+class B extends A {}
+class C extends A {}
+
+A a = new C();
+B b = (B) a; // コンパイルは通るが、実行時にClassCastException</code></pre>
+</section>
+<section class="article-section">
+<h2>instanceofとパターンマッチング</h2>
+<p><code>instanceof</code> は、実体が指定型として扱えるかを調べます。パターン変数を使うと、trueの範囲内でキャスト済み変数を使えます。</p><pre class="article-code"><code>Object obj = &quot;abc&quot;;
+if (obj instanceof String s) {
+    System.out.println(s.length());
+}</code></pre>
+</section>
+<section class="article-section">
+<h2>メソッド呼び出しとキャストの優先</h2>
+<p>キャストしてからメソッドを呼びたい場合、括弧の位置が重要です。</p><pre class="article-code"><code>Object obj = &quot;abc&quot;;
+// (String)obj.length(); // NG: 先にobj.length()を探してしまう形
+System.out.println(((String) obj).length()); // OK</code></pre>
+</section>
+<section class="article-section">
+<h2>ミニ演習</h2>
+<details class="article-card"><summary><strong>Q. <code>A a = new B();</code> のとき、Bだけにあるメソッドは呼べる？</strong></summary><p>宣言型Aにそのメソッドがなければ呼べません。呼ぶには適切なキャストが必要です。</p></details><details class="article-card"><summary><strong>Q. キャストを書けば必ず実行時も安全？</strong></summary><p>違います。実体がその型として扱えなければ <code>ClassCastException</code> です。</p></details><p class="inline-note">関連: <a href="decision-flow.html">判定フロー</a> / <a href="compile-runtime.html">コンパイル・実行時例外</a> / <a href="exam-traps.html">ひっかけ集</a></p>
+</section>
+<section class="article-section deep-extra">
+<h2>キャストは「呼べるようにする」だけではない</h2>
+<p>キャストすると、コンパイル時にその型としてメンバを探せます。ただし、実行時に実体がその型でなければ落ちます。つまり、キャストはコンパイル時の見え方と実行時の安全性の両方を考えます。</p><pre class="article-code"><code>A a = new B();
+((B) a).onlyB(); // コンパイルも実行もOK。実体がBだから。
+
+A x = new C();
+// ((B) x).onlyB(); // コンパイルは可能でも実行時にClassCastException</code></pre>
+</section>
+
+<section class="article-section deep-extra">
+<h2>instanceofで安全に狭める</h2>
+<p>ダウンキャスト前に <code>instanceof</code> を使うと、実行時例外を避けられます。</p><pre class="article-code"><code>if (a instanceof B b) {
+    b.onlyB();
+}</code></pre>
+</section>
 
     </main>
   </div>

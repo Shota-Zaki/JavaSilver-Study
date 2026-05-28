@@ -2823,3 +2823,172 @@ details.article-card[open] summary { margin-bottom: 10px; }
   }
 }
 
+
+
+/* 2026-05-28 deeper learning article additions */
+.article-section .check-list li { margin-bottom: 8px; }
+.article-section .priority-list li { border-bottom: 1px dashed rgba(148,163,184,.30); }
+.article-section .priority-list li:last-child { border-bottom: 0; }
+.article-section table.ref-table td, .article-section table.ref-table th { vertical-align: top; }
+
+/* 2026-05-28 collapsible unit sidebar and ultra detailed articles */
+.nav-list {
+  gap: 10px;
+}
+.nav-group {
+  border: 1px solid rgba(148, 163, 184, .36);
+  border-radius: 14px;
+  background: rgba(255,255,255,.72);
+  overflow: hidden;
+}
+.nav-group.active {
+  border-color: rgba(37, 99, 235, .34);
+  background: linear-gradient(180deg, #eff6ff, #ffffff);
+}
+.nav-group-summary {
+  position: relative;
+  display: grid;
+  gap: 2px;
+  padding: 11px 36px 11px 12px;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+}
+.nav-group-summary::-webkit-details-marker { display: none; }
+.nav-group-summary::after {
+  content: "＋";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #eef2f7;
+  color: var(--muted);
+  font-weight: 900;
+  line-height: 1;
+}
+.nav-group[open] .nav-group-summary::after {
+  content: "−";
+  background: var(--accent-weak);
+  color: var(--accent);
+}
+.nav-group-summary span {
+  font-size: 13px;
+  font-weight: 950;
+  color: var(--ink);
+}
+.nav-group-summary small {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 750;
+}
+.nav-group-body {
+  display: grid;
+  gap: 5px;
+  padding: 0 8px 10px;
+}
+.nav-group-body .nav-link {
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+.nav-group-body .nav-link .small {
+  font-size: 11px;
+}
+.unit-roadmap {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+.unit-roadmap article {
+  padding: 18px;
+  border: 1px solid rgba(37, 99, 235, .20);
+  border-radius: 18px;
+  background: linear-gradient(180deg, #ffffff, #f8fbff);
+  box-shadow: 0 8px 20px rgba(31,41,55,.05);
+}
+.unit-roadmap span {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 8px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--accent-weak);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 950;
+}
+.unit-roadmap h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+.unit-roadmap p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.8;
+}
+.article-section .dense-list li {
+  margin-bottom: 9px;
+}
+.article-section .priority-list li {
+  padding: 8px 0;
+}
+.drill-card summary {
+  cursor: pointer;
+  font-weight: 900;
+  line-height: 1.8;
+}
+.drill-card[open] {
+  border-color: rgba(37, 99, 235, .35);
+  background: linear-gradient(180deg, #eff6ff, #ffffff 62%);
+}
+@media (max-width: 860px) {
+  .nav-list {
+    display: grid !important;
+    overflow-x: visible !important;
+    padding-bottom: 0 !important;
+    scroll-snap-type: none !important;
+  }
+  .nav-group {
+    min-width: 0;
+  }
+  .nav-group-body .nav-link,
+  .nav-link {
+    min-width: 0 !important;
+    width: 100%;
+  }
+  .sidebar {
+    max-height: 68vh;
+    overflow-y: auto;
+  }
+  .unit-roadmap {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* Deep learning article additions */
+.article-section .priority-list,
+.article-section .dense-list {
+  padding-left: 1.35rem;
+}
+.article-section .priority-list li,
+.article-section .dense-list li {
+  margin: 8px 0;
+}
+.article-section details.article-card summary code,
+.article-section details.article-card p code {
+  white-space: normal;
+}
+.article-section .inline-note {
+  color: var(--muted);
+}
+.ref-index-grid.clean-index {
+  align-items: stretch;
+}

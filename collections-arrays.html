@@ -18,93 +18,72 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>配列・ArrayList・List</h1>
-        <p>配列の宣言・初期化・参照、ArrayListの操作、List.ofの制約、拡張forの落とし穴を整理します。</p>
+        <p>配列、ArrayList、List.of、拡張for、要素数とインデックスの境界を整理します。</p>
       </section>
+      <section class="article-section">
+<h2>配列の基本</h2>
+<p>配列は固定長のオブジェクトです。作成後に長さは変わりません。インデックスは0始まりです。</p><pre class="article-code"><code>int[] a = new int[3];
+System.out.println(a.length); // 3
+System.out.println(a[0]);     // 0
+// System.out.println(a[3]);  // ArrayIndexOutOfBoundsException</code></pre>
+</section>
+<section class="article-section">
+<h2>配列宣言と初期化</h2>
+<p>配列初期化子 <code>{...}</code> は、宣言と同時に使うか、<code>new 型[]{...}</code> の形で使います。</p><pre class="article-code"><code>int[] a = {1, 2, 3};       // OK
+int[] b;
+// b = {1, 2, 3};          // NG
+b = new int[]{1, 2, 3};    // OK
 
-      <section class="article-section">
-        <h2>配列はオブジェクト</h2>
-        <p>配列は複数の値を入れる箱ではありますが、Java上はオブジェクトです。配列変数は配列インスタンスへの参照を持ちます。</p>
-        <pre class="article-code"><code>int[] a = new int[3];
-        System.out.println(a.length); // 3
-        System.out.println(a[0]);     // 0</code></pre>
-        <p><code>length</code> はフィールドです。<code>length()</code> ではありません。<code>String</code> は <code>length()</code> メソッドです。</p>
-        <div class="article-callout warn">要素数0の配列は作れます。<code>new int[0]</code> はOKです。ただし <code>a[0]</code> は実行時例外です。</div>
-      </section>
-      <section class="article-section">
-        <h2>配列宣言の形</h2>
-        <p>角括弧の位置には複数の書き方があります。試験では読めれば十分ですが、変な形に見えても有効なものがあります。</p>
-        <pre class="article-code"><code>int[] a;
-        int b[];
-        int[][] c;
-        int[] d[];</code></pre>
-        <p>初期化子 <code>{}</code> は、宣言と同時に使うか、<code>new 型[]</code> と組み合わせます。</p>
-        <pre class="article-code"><code>int[] a = {1, 2, 3};
-        int[] b;
-        b = new int[]{1, 2, 3};
-        // b = {1, 2, 3}; // NG</code></pre>
-      </section>
-      <section class="article-section">
-        <h2>多次元配列とジャグ配列</h2>
-        <p>Javaの多次元配列は「配列の配列」です。行ごとに長さが違っても構いません。</p>
-        <pre class="article-code"><code>int[][] data = new int[2][];
-        data[0] = new int[]{1, 2};
-        data[1] = new int[]{3, 4, 5};
+int c[] = new int[2];      // OK。ただし int[] c が読みやすい</code></pre>
+</section>
+<section class="article-section">
+<h2>多次元配列</h2>
+<p>Javaの多次元配列は、配列の配列です。行ごとに長さが違っても構いません。</p><pre class="article-code"><code>int[][] data = new int[2][];
+data[0] = new int[]{1, 2};
+data[1] = new int[]{3, 4, 5};
+System.out.println(data.length);    // 2
+System.out.println(data[1].length); // 3</code></pre>
+</section>
+<section class="article-section">
+<h2>ArrayListの基本操作</h2>
+<p><code>ArrayList</code> は可変長です。<code>add</code>、<code>remove</code>、<code>set</code> の戻り値と副作用を区別します。</p><table class="ref-table"><thead><tr><th>操作</th><th>意味</th><th>注意</th></tr></thead><tbody><tr><td><code>add(e)</code></td><td>末尾に追加</td><td>戻り値はboolean</td></tr><tr><td><code>add(index,e)</code></td><td>指定位置に挿入</td><td>後ろの要素がずれる</td></tr><tr><td><code>set(index,e)</code></td><td>置換</td><td>サイズは変わらない。古い要素を返す</td></tr><tr><td><code>remove(index)</code></td><td>指定位置を削除</td><td>削除した要素を返す</td></tr><tr><td><code>remove(Object)</code></td><td>一致する要素を削除</td><td>削除できたかbooleanを返す</td></tr></tbody></table><pre class="article-code"><code>var list = new java.util.ArrayList&lt;String&gt;();
+list.add(&quot;A&quot;);
+list.add(&quot;B&quot;);
+list.add(1, &quot;C&quot;);
+System.out.println(list); // [A, C, B]</code></pre>
+</section>
+<section class="article-section">
+<h2>List.ofの注意</h2>
+<p><code>List.of</code> で作ったリストは変更不可です。<code>add</code> や <code>remove</code> はコンパイルはできても、実行時に <code>UnsupportedOperationException</code> が発生します。</p><pre class="article-code"><code>List&lt;String&gt; list = java.util.List.of(&quot;A&quot;, &quot;B&quot;);
+// list.add(&quot;C&quot;); // 実行時例外</code></pre>
+</section>
+<section class="article-section">
+<h2>拡張forの注意</h2>
+<p>拡張forの変数は要素のコピー、または参照のコピーです。変数へ別の値を代入しても、配列やリストのスロット自体は置き換わりません。</p><pre class="article-code"><code>int[] nums = {1, 2, 3};
+for (int n : nums) {
+    n = 0;
+}
+System.out.println(nums[0]); // 1</code></pre>
+</section>
+<section class="article-section">
+<h2>ミニ演習</h2>
+<details class="article-card"><summary><strong>Q. <code>new int[0]</code> は作れる？</strong></summary><p>作れます。長さ0の配列です。ただし <code>[0]</code> にアクセスすると実行時例外です。</p></details><details class="article-card"><summary><strong>Q. <code>remove(1)</code> と <code>remove(Integer.valueOf(1))</code> は同じ？</strong></summary><p>違います。前者はインデックス削除、後者は要素値1の削除です。</p></details><p class="inline-note">関連: <a href="decision-flow.html">判定フロー</a> / <a href="compile-runtime.html">コンパイル・実行時例外</a> / <a href="exam-traps.html">ひっかけ集</a></p>
+</section>
+<section class="article-section deep-extra">
+<h2>配列とListのAPIを混同しない</h2>
+<table class="ref-table"><thead><tr><th>対象</th><th>要素数</th><th>アクセス</th><th>変更</th></tr></thead><tbody><tr><td><code>int[]</code></td><td><code>length</code></td><td><code>a[0]</code></td><td>長さ固定、要素変更可</td></tr><tr><td><code>String</code></td><td><code>length()</code></td><td><code>charAt(0)</code></td><td>不変</td></tr><tr><td><code>ArrayList</code></td><td><code>size()</code></td><td><code>get(0)</code></td><td>可変</td></tr><tr><td><code>List.of</code></td><td><code>size()</code></td><td><code>get(0)</code></td><td>変更不可</td></tr></tbody></table>
+</section>
 
-        System.out.println(data.length);    // 2
-        System.out.println(data[1].length); // 3</code></pre>
-        <p><code>new int[2][]</code> の時点では内側の配列はまだ <code>null</code> です。<code>data[0][0]</code> に触る前に内側を生成しているか確認します。</p>
-      </section>
-      <section class="article-section">
-        <h2>ArrayListの基本</h2>
-        <p><code>ArrayList</code> は要素数を変更できるリストです。配列と違い、要素数は <code>size()</code> で取得します。</p>
-        <pre class="article-code"><code>ArrayList&lt;String&gt; list = new ArrayList&lt;&gt;();
-        list.add("A");
-        list.add("B");
-        System.out.println(list.size()); // 2
-        System.out.println(list.get(0)); // A</code></pre>
-        <table class="ref-table"><thead><tr><th>操作</th><th>戻り値/挙動</th><th>注意</th></tr></thead><tbody>
-        <tr><td><code>add(e)</code></td><td><code>boolean</code></td><td>末尾に追加</td></tr>
-        <tr><td><code>add(index,e)</code></td><td><code>void</code></td><td>指定位置に挿入</td></tr>
-        <tr><td><code>remove(index)</code></td><td>削除した要素</td><td><code>int</code>ならインデックス扱い</td></tr>
-        <tr><td><code>remove(Object)</code></td><td><code>boolean</code></td><td>一致する要素を1つ削除</td></tr>
-        <tr><td><code>set(index,e)</code></td><td>置換前の要素</td><td>要素数は増えない</td></tr>
-        </tbody></table>
-      </section>
-      <section class="article-section">
-        <h2>removeのオーバーロード</h2>
-        <p><code>ArrayList&lt;Integer&gt;</code> では <code>remove(1)</code> が「値1を消す」ではなく「インデックス1を消す」になる点が頻出です。</p>
-        <pre class="article-code"><code>ArrayList&lt;Integer&gt; nums = new ArrayList&lt;&gt;();
-        nums.add(10);
-        nums.add(20);
-        nums.add(30);
-        nums.remove(1);              // index 1の20を削除
-        nums.remove(Integer.valueOf(10)); // 値10を削除</code></pre>
-        <div class="article-callout warn"><code>remove(int)</code> と <code>remove(Object)</code> のどちらが選ばれるかは、引数の型で決まります。</div>
-      </section>
-      <section class="article-section">
-        <h2>List.ofと固定・不変リスト</h2>
-        <p><code>List.of</code> は変更不可のリストを返します。<code>add</code>、<code>remove</code>、<code>set</code> は実行時例外です。また、<code>null</code> 要素も不可です。</p>
-        <pre class="article-code"><code>List&lt;String&gt; list = List.of("A", "B");
-        // list.add("C"); // UnsupportedOperationException
-        // List.of("A", null); // NullPointerException</code></pre>
-        <p><code>Arrays.asList</code> はサイズ固定のリストです。<code>set</code> はできますが、<code>add</code>/<code>remove</code> はできません。</p>
-      </section>
-      <section class="article-section">
-        <h2>拡張forの罠</h2>
-        <p>拡張forのループ変数は、要素のコピーまたは参照のコピーです。プリミティブ配列の要素そのものを書き換えるわけではありません。</p>
-        <pre class="article-code"><code>int[] nums = {1, 2, 3};
-        for (int n : nums) {
-            n *= 2;
-        }
-        System.out.println(nums[0]); // 1</code></pre>
-        <p>参照型の要素では、参照先オブジェクトを変更するメソッドを呼ぶと中身は変わります。ただし、ループ変数に別の参照を代入しても配列・リスト側は変わりません。</p>
-      </section>
-      <section class="article-section">
-        <h2>ミニ判定</h2>
-        <details class="article-card"><summary><strong>Q1.</strong> <code>int[] a; System.out.println(a.length);</code> は？</summary><p>ローカル変数ならコンパイルエラーです。配列変数を宣言しただけで、配列インスタンスはありません。</p></details>
-        <details class="article-card"><summary><strong>Q2.</strong> <code>new int[2][]</code> の <code>a[0]</code> は？</summary><p><code>null</code> です。内側の配列はまだ生成されていません。</p></details>
-        <details class="article-card"><summary><strong>Q3.</strong> <code>List.of("A").add("B")</code> は？</summary><p>コンパイルはできますが、実行時に <code>UnsupportedOperationException</code> です。</p></details>
-      </section>
+<section class="article-section deep-extra">
+<h2>削除しながら走査する罠</h2>
+<p>拡張for中にリスト構造を変更するコードは、実行時例外につながる場合があります。Silverでは複雑なIteratorよりも、拡張forの変数が要素のコピーである点を優先して押さえます。</p><pre class="article-code"><code>var list = new java.util.ArrayList&lt;String&gt;();
+list.add(&quot;A&quot;);
+list.add(&quot;B&quot;);
+for (String s : list) {
+    s = &quot;X&quot;;
+}
+System.out.println(list); // [A, B]</code></pre>
+</section>
 
     </main>
   </div>

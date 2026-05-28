@@ -1305,41 +1305,85 @@ service cloud.firestore {
   function renderNav() {
     const nav = document.getElementById("chapterNav");
     if (!nav) return;
-    const chapterLinks = DATA.chapters.map(ch => {
+    const path = (location.pathname || "").split("/").pop() || "index.html";
+    const navStateKey = "java-study-nav-groups-v2";
+    const navState = readJson(navStateKey, {});
+
+    const learningItems = [
+      ["reference.html", "学習記事トップ", "全体索引"],
+      ["decision-flow.html", "判定フロー", "最初に見る"],
+      ["syntax-basics.html", "Java実行・宣言", "main/import"],
+      ["compile-runtime.html", "コンパイル/例外", "判定順"],
+      ["datatypes.html", "型・変数", "primitive/null"],
+      ["numeric-rules.html", "数値・型昇格", "byte/short"],
+      ["var-scope.html", "var・スコープ", "初期化"],
+      ["strings.html", "文字列・比較", "StringBuilder"],
+      ["equality.html", "同一性・同値性", "==/equals"],
+      ["collections-arrays.html", "配列・List", "ArrayList"],
+      ["operators-control.html", "演算子・制御", "評価順"],
+      ["loop-control.html", "ループ制御", "break/continue"],
+      ["output-tracing.html", "出力追跡", "表で追う"],
+      ["methods-constructors.html", "メソッド・コンストラクタ", "overload"],
+      ["object-oriented.html", "クラス・static・record", "GC/static"],
+      ["modifiers-access.html", "修飾子・アクセス", "protected"],
+      ["oop-relations.html", "継承・interface", "override"],
+      ["inheritance-interface.html", "継承/interface詳細", "default"],
+      ["polymorphism-cast.html", "ポリモーフィズム", "cast"],
+      ["exceptions.html", "例外処理", "try/catch"],
+      ["silver17-points.html", "Java 17論点", "record/sealed"]
+    ];
+
+    const otherItems = [
+      ["index.html", "トップページ", "演習・記事一覧"],
+      ["cheatsheet.html", "直前確認", "圧縮版"],
+      ["method-list.html", "頻出メソッド", "戻り値"],
+      ["fine-points.html", "細かい仕様", "境界"],
+      ["exam-traps.html", "ひっかけ集", "模試前"],
+      ["weakness-map.html", "弱点マップ", "復習順"],
+      ["mini-drills.html", "ミニ演習", "短問"],
+      ["glossary.html", "単語集", "用語"],
+      ["java-qa-review.html", "質問整理", "最近の弱点"]
+    ];
+
+    function linkHtml(href, label, hint, active) {
+      return `<a class="nav-link${active ? " active" : ""}" href="${escapeHtml(href)}">${escapeHtml(label)}<span class="small">${escapeHtml(hint || "")}</span></a>`;
+    }
+
+    function groupHtml(id, title, hint, itemsHtml, active, defaultOpen) {
+      const saved = Object.prototype.hasOwnProperty.call(navState, id) ? Boolean(navState[id]) : null;
+      const open = saved === null ? Boolean(defaultOpen || active) : saved;
+      return `<details class="nav-group${active ? " active" : ""}" data-nav-group="${escapeHtml(id)}"${open ? " open" : ""}>
+        <summary class="nav-group-summary"><span>${escapeHtml(title)}</span><small>${escapeHtml(hint || "")}</small></summary>
+        <div class="nav-group-body">${itemsHtml}</div>
+      </details>`;
+    }
+
+    const chapterItems = DATA.chapters.map(ch => {
       const count = (DATA.questions[ch.id] || []).length;
-      const active = ch.id === chapterId ? " active" : "";
+      const active = ch.id === chapterId;
       const status = ch.status === "ready" ? `${count}問` : "準備中";
-      return `<a class="nav-link${active}" href="${escapeHtml(chapterHref(ch))}">
-        ${escapeHtml(ch.title)}
-        <span class="small">${escapeHtml(status)}</span>
-      </a>`;
+      return linkHtml(chapterHref(ch), ch.title, status, active);
     }).join("");
-    const path = (location.pathname || "").split("/").pop();
-    const wrongSummaryActive = path === "wrong-summary.html";
-    const knowledgeActive = ["reference.html", "decision-flow.html", "weakness-map.html", "output-tracing.html", "silver17-points.html", "syntax-basics.html", "datatypes.html", "numeric-rules.html", "var-scope.html", "operators-control.html", "loop-control.html", "fine-points.html", "strings.html", "equality.html", "collections-arrays.html", "object-oriented.html", "methods-constructors.html", "modifiers-access.html", "inheritance-interface.html", "oop-relations.html", "polymorphism-cast.html", "exceptions.html", "compile-runtime.html", "error-catalog.html", "method-list.html", "cheatsheet.html", "exam-traps.html", "java-qa-review.html", "glossary.html", "mini-drills.html"].includes(path);
-    const knowledgeLinks = `<div class="nav-divider"></div>
-      <a class="nav-link${knowledgeActive && path === "reference.html" ? " active" : ""}" href="reference.html">学習記事<span class="small">一覧</span></a>
-      <a class="nav-link${knowledgeActive && path === "decision-flow.html" ? " active" : ""}" href="decision-flow.html">判定フロー<span class="small">3段階</span></a>
-      <a class="nav-link${knowledgeActive && path === "weakness-map.html" ? " active" : ""}" href="weakness-map.html">弱点マップ<span class="small">復習順</span></a>
-      <a class="nav-link${knowledgeActive && path === "output-tracing.html" ? " active" : ""}" href="output-tracing.html">出力追跡<span class="small">表で追う</span></a>
-      <a class="nav-link${knowledgeActive && path === "silver17-points.html" ? " active" : ""}" href="silver17-points.html">Java17論点<span class="small">record/sealed</span></a>
-      <a class="nav-link${knowledgeActive && path === "syntax-basics.html" ? " active" : ""}" href="syntax-basics.html">実行・宣言<span class="small">main/import</span></a>
-      <a class="nav-link${knowledgeActive && path === "datatypes.html" ? " active" : ""}" href="datatypes.html">型・変数<span class="small">var/昇格</span></a>
-      <a class="nav-link${knowledgeActive && path === "strings.html" ? " active" : ""}" href="strings.html">文字列・比較<span class="small">String/equals</span></a>
-      <a class="nav-link${knowledgeActive && path === "collections-arrays.html" ? " active" : ""}" href="collections-arrays.html">配列・List<span class="small">ArrayList</span></a>
-      <a class="nav-link${knowledgeActive && path === "operators-control.html" ? " active" : ""}" href="operators-control.html">演算子・制御<span class="small">switch/loop</span></a>
-      <a class="nav-link${knowledgeActive && path === "methods-constructors.html" ? " active" : ""}" href="methods-constructors.html">メソッド・コンストラクタ<span class="small">overload</span></a>
-      <a class="nav-link${knowledgeActive && path === "object-oriented.html" ? " active" : ""}" href="object-oriented.html">クラス・static<span class="small">record</span></a>
-      <a class="nav-link${knowledgeActive && path === "oop-relations.html" ? " active" : ""}" href="oop-relations.html">継承・interface<span class="small">override/cast</span></a>
-      <a class="nav-link${knowledgeActive && path === "exceptions.html" ? " active" : ""}" href="exceptions.html">例外処理<span class="small">try/catch</span></a>
-      <a class="nav-link${knowledgeActive && path === "method-list.html" ? " active" : ""}" href="method-list.html">頻出メソッド<span class="small">戻り値</span></a>
-      <a class="nav-link${knowledgeActive && path === "cheatsheet.html" ? " active" : ""}" href="cheatsheet.html">直前確認<span class="small">ひっかけ</span></a>
-      <a class="nav-link${knowledgeActive && path === "glossary.html" ? " active" : ""}" href="glossary.html">単語集<span class="small">用語</span></a>
-      <a class="nav-link${knowledgeActive && path === "mini-drills.html" ? " active" : ""}" href="mini-drills.html">ミニ演習<span class="small">短問</span></a>`;
-    const reviewLinks = `<div class="nav-divider"></div>
-      <a class="nav-link${wrongSummaryActive ? " active" : ""}" href="wrong-summary.html">間違いまとめ<span class="small">一覧</span></a>
-      <a class="nav-link${path === "wrong-practice.html" ? " active" : ""}" href="wrong-practice.html">間違い演習<span class="small">ランダム</span></a>`;
-    nav.innerHTML = chapterLinks + reviewLinks + knowledgeLinks;
+    const practiceActive = Boolean(chapterId);
+
+    const learningActive = learningItems.some(([href]) => href === path);
+    const learningHtml = learningItems.map(([href, label, hint]) => linkHtml(href, label, hint, href === path)).join("");
+
+    const otherActive = otherItems.some(([href]) => href === path);
+    const otherHtml = otherItems.map(([href, label, hint]) => linkHtml(href, label, hint, href === path)).join("");
+
+    nav.innerHTML =
+      groupHtml("nav-practice", "問題演習", "1〜8章", chapterItems, practiceActive, practiceActive || path === "index.html") +
+      groupHtml("nav-learning", "学習記事", "基礎〜Java 17", learningHtml, learningActive, learningActive) +
+      groupHtml("nav-other", "その他", "直前確認・補助", otherHtml, otherActive, otherActive || path === "index.html");
+
+    nav.querySelectorAll("details.nav-group").forEach(details => {
+      details.addEventListener("toggle", () => {
+        const state = readJson(navStateKey, {});
+        state[details.dataset.navGroup] = details.open;
+        writeJson(navStateKey, state);
+      });
+    });
   }
 
   function renderIndex() {
@@ -1355,7 +1399,7 @@ service cloud.firestore {
         <span class="chapter-progress-line">${s.answered}/${s.total} 解答済み・正解率 ${s.rate}%・復習 ${s.wrong + s.flagged}</span>
       </a>`;
     }).join("");
-    renderDashboard();
+    // ダッシュボードは renderDashboard() 側でヘッダー直下に挿入する。
   }
 
   function setSingleFileVisibility() {
@@ -1711,7 +1755,8 @@ service cloud.firestore {
 
   function updateProgressUi() {
     if (!chapterId) {
-      renderDashboard();
+      // トップページは「ヘッダー → 演習一覧 → 学習記事一覧」に固定するため、
+    // ダッシュボードの自動挿入は行わない。
       return;
     }
     const s = chapterStats(chapterId);
@@ -1881,7 +1926,8 @@ service cloud.firestore {
         if (!found) return;
         deleteQuestionProgress(found.question);
         renderWrongSummary();
-        renderDashboard();
+        // トップページは「ヘッダー → 演習一覧 → 学習記事一覧」に固定するため、
+    // ダッシュボードの自動挿入は行わない。
       });
     });
   }
@@ -1900,7 +1946,8 @@ service cloud.firestore {
     setWrongPracticeMessage(wrongPracticeList.length
       ? "正解したため、この問題を間違い演習から外しました。"
       : "正解したため、この問題を間違い演習から外しました。間違い演習は完了です。");
-    renderDashboard();
+    // トップページは「ヘッダー → 演習一覧 → 学習記事一覧」に固定するため、
+    // ダッシュボードの自動挿入は行わない。
   }
 
   function scheduleWrongPracticeRemoval(q) {
@@ -2111,6 +2158,7 @@ service cloud.firestore {
     renderNav();
     enhanceArticlePage();
     renderIndex();
+    renderDashboard();
     renderChapter();
     renderWrongSummary();
     renderWrongPractice();

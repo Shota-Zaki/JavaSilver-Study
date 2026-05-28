@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - 頻出メソッド一覧</title>
+  <title>Java Silver Study - 頻出メソッド</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -17,62 +17,21 @@
     <main class="main reference-main article-main">
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>頻出メソッド一覧</h1>
-        <p>戻り値・副作用・例外の有無を中心に、Java Silverで間違えやすいメソッドをまとめます。</p>
-      </section>
-
-      <section class="article-section">
-        <h2>String</h2>
-        <table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>副作用</th><th>注意</th></tr></thead><tbody>
-        <tr><td><code>length()</code></td><td><code>int</code></td><td>なし</td><td>配列は <code>length</code> フィールド</td></tr>
-        <tr><td><code>charAt(int)</code></td><td><code>char</code></td><td>なし</td><td>範囲外で例外</td></tr>
-        <tr><td><code>substring(int,int)</code></td><td><code>String</code></td><td>なし</td><td>終了位置は含まない</td></tr>
-        <tr><td><code>replace</code></td><td><code>String</code></td><td>なし</td><td>元のStringは変わらない</td></tr>
-        <tr><td><code>concat</code></td><td><code>String</code></td><td>なし</td><td>戻り値を受け取る</td></tr>
-        <tr><td><code>intern</code></td><td><code>String</code></td><td>なし</td><td>文字列プールの参照を返す</td></tr>
-        </tbody></table>
+        <h1>頻出メソッド</h1>
+        <p>String、StringBuilder、ArrayList、List、ラッパークラスの頻出メソッドを戻り値・副作用で整理します。</p>
       </section>
       <section class="article-section">
-        <h2>StringBuilder</h2>
-        <table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>副作用</th><th>注意</th></tr></thead><tbody>
-        <tr><td><code>append</code></td><td><code>StringBuilder</code></td><td>あり</td><td>同じインスタンスを返す</td></tr>
-        <tr><td><code>insert</code></td><td><code>StringBuilder</code></td><td>あり</td><td>位置指定に注意</td></tr>
-        <tr><td><code>delete</code></td><td><code>StringBuilder</code></td><td>あり</td><td>endは含まない</td></tr>
-        <tr><td><code>reverse</code></td><td><code>StringBuilder</code></td><td>あり</td><td>元が逆順になる</td></tr>
-        <tr><td><code>substring</code></td><td><code>String</code></td><td>なし</td><td>Builder本体は変わらない</td></tr>
-        </tbody></table>
-      </section>
-      <section class="article-section">
-        <h2>ArrayList / List</h2>
-        <table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>副作用</th><th>注意</th></tr></thead><tbody>
-        <tr><td><code>size()</code></td><td><code>int</code></td><td>なし</td><td>配列は <code>length</code></td></tr>
-        <tr><td><code>add(E)</code></td><td><code>boolean</code></td><td>あり</td><td>末尾追加</td></tr>
-        <tr><td><code>add(int,E)</code></td><td><code>void</code></td><td>あり</td><td>挿入</td></tr>
-        <tr><td><code>remove(int)</code></td><td>削除した要素</td><td>あり</td><td>インデックス指定</td></tr>
-        <tr><td><code>remove(Object)</code></td><td><code>boolean</code></td><td>あり</td><td>値指定</td></tr>
-        <tr><td><code>set(int,E)</code></td><td>置換前の要素</td><td>あり</td><td>要素数は変わらない</td></tr>
-        </tbody></table>
-      </section>
-      <section class="article-section">
-        <h2>Wrapper / parse</h2>
-        <table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>注意</th></tr></thead><tbody>
-        <tr><td><code>Integer.parseInt(String)</code></td><td><code>int</code></td><td>変換不可なら <code>NumberFormatException</code></td></tr>
-        <tr><td><code>Integer.valueOf(String)</code></td><td><code>Integer</code></td><td>戻り値はラッパー</td></tr>
-        <tr><td><code>String.valueOf(Object)</code></td><td><code>String</code></td><td>nullなら文字列 <code>"null"</code></td></tr>
-        <tr><td><code>Objects.equals(a,b)</code></td><td><code>boolean</code></td><td>null安全な比較</td></tr>
-        </tbody></table>
-      </section>
-      <section class="article-section">
-        <h2>覚える基準</h2>
-        <p>丸暗記ではなく、次の基準で分類してください。</p>
-        <ul class="article-list">
-          <li><strong>戻り値を受け取らないと意味がない</strong>: <code>String</code> 系。</li>
-          <li><strong>本体を変える</strong>: <code>StringBuilder</code> の編集系、<code>ArrayList</code> の追加削除。</li>
-          <li><strong>境界で例外</strong>: <code>charAt</code>、<code>substring</code>、<code>get</code>。</li>
-          <li><strong>見つからなくても例外ではない</strong>: <code>indexOf</code> は <code>-1</code>。</li>
-        </ul>
-      </section>
-
+<h2>String</h2>
+<table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>副作用/注意</th></tr></thead><tbody><tr><td><code>length()</code></td><td>int</td><td>文字数。配列は <code>length</code> フィールド</td></tr><tr><td><code>charAt(i)</code></td><td>char</td><td>範囲外は例外</td></tr><tr><td><code>substring(a,b)</code></td><td>String</td><td>a以上b未満。元文字列は不変</td></tr><tr><td><code>replace</code></td><td>String</td><td>新しい文字列を返す</td></tr><tr><td><code>equals</code></td><td>boolean</td><td>左辺nullに注意</td></tr></tbody></table>
+</section>
+<section class="article-section">
+<h2>StringBuilder</h2>
+<table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値/副作用</th><th>注意</th></tr></thead><tbody><tr><td><code>append</code></td><td>自分自身を変更して返す</td><td>戻り値は同じインスタンス</td></tr><tr><td><code>insert</code></td><td>挿入</td><td>インデックス境界に注意</td></tr><tr><td><code>delete(a,b)</code></td><td>削除</td><td>a以上b未満</td></tr><tr><td><code>reverse</code></td><td>反転</td><td>自分自身が変わる</td></tr></tbody></table>
+</section>
+<section class="article-section">
+<h2>ArrayList/List</h2>
+<table class="ref-table"><thead><tr><th>メソッド</th><th>要点</th></tr></thead><tbody><tr><td><code>add(e)</code></td><td>末尾追加。booleanを返す</td></tr><tr><td><code>add(i,e)</code></td><td>指定位置へ挿入。戻り値なし</td></tr><tr><td><code>set(i,e)</code></td><td>置換。古い要素を返す</td></tr><tr><td><code>remove(i)</code></td><td>インデックス削除。削除要素を返す</td></tr><tr><td><code>remove(Object)</code></td><td>要素削除。booleanを返す</td></tr><tr><td><code>size()</code></td><td>要素数。配列は <code>length</code></td></tr></tbody></table>
+</section>
     </main>
   </div>
   <script src="data/questions.js"></script>

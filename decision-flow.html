@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - 判定フロー完全版</title>
+  <title>Java Silver Study - 判定フロー</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -17,45 +17,51 @@
     <main class="main reference-main article-main">
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>判定フロー完全版</h1>
-        <p>コンパイル可否、実行時例外、正常出力を分離して、出力問題の見落としを減らすための基準です。</p>
+        <h1>判定フロー</h1>
+        <p>Java Silverのコード問題を、コンパイル可否、実行時例外、出力結果の順に切るための基本手順です。</p>
       </section>
-
       <section class="article-section">
-        <h2>結論：出力を追う前に、問題を3段階に分解する</h2>
-        <p>Java Silverのコード問題で一番多い失敗は、いきなり値を追い始めることです。出力候補が見えても、コンパイルできなければ出力は存在しません。実行時例外が起きれば、正常な出力は最後まで出ません。</p>
-        <div class="decision-lane">
-          <div><span>1</span><strong>コンパイル可否</strong><p>型、宣言、アクセス、override、checked例外、到達不能catchを見る。</p></div>
-          <div><span>2</span><strong>実行時例外</strong><p>null、配列境界、キャスト、parse、0除算、変更不可Listを見る。</p></div>
-          <div><span>3</span><strong>正常出力</strong><p>評価順、参照、動的束縛、ループ回数、finally/close順を追う。</p></div>
-        </div>
-        <div class="article-callout warn"><strong>試験での現実：</strong>出力計算が合っていても、前段階のコンパイルエラーを見落としたら不正解です。出力問題ではなく「実行可能性判定問題」だと考えてください。</div>
-      </section>
-      <section class="article-section"><h2>1段階目：コンパイル可否のチェック順</h2><p>コンパイルエラーは、コードが実行される前に確定します。次の順に見ると漏れが減ります。</p><table class="ref-table"><thead><tr><th>順番</th><th>見るもの</th><th>典型例</th><th>判断</th></tr></thead><tbody><tr><td>1</td><td>クラス・ファイル・main</td><td><code>public class A</code> なのに <code>B.java</code></td><td>publicトップレベルクラス名とファイル名は一致が必要</td></tr><tr><td>2</td><td>宣言位置</td><td><code>package</code> より前に <code>import</code></td><td>package宣言はコメントを除き先頭</td></tr><tr><td>3</td><td>型と代入</td><td><code>float f = 1.0;</code></td><td>浮動小数点リテラルは基本double</td></tr><tr><td>4</td><td>変数初期化</td><td>ローカル変数を代入前に読む</td><td>ローカル変数にデフォルト値はない</td></tr><tr><td>5</td><td>宣言型のメンバ</td><td><code>Object o = "x"; o.length();</code></td><td>メソッド呼び出しは宣言型で判定</td></tr><tr><td>6</td><td>継承・override</td><td>interface実装で <code>void run()</code></td><td>publicが必要。アクセスを狭められない</td></tr><tr><td>7</td><td>例外処理</td><td>checked例外をcatch/throwsしない</td><td>コンパイルエラー</td></tr><tr><td>8</td><td>catch順</td><td><code>catch(Exception)</code> の後に <code>catch(IOException)</code></td><td>後続catchが到達不能</td></tr></tbody></table></section>
-      <section class="article-section"><h2>2段階目：実行時例外のチェック順</h2><p>コンパイルできるコードだけが実行時例外の候補になります。例外が出た時点で、通常の後続処理は飛び、対応するcatchまたはfinallyへ移ります。</p><table class="ref-table"><thead><tr><th>例外</th><th>発生条件</th><th>見落としやすい形</th></tr></thead><tbody><tr><td><code>NullPointerException</code></td><td>null参照に対してメソッド・フィールド・配列長を使う</td><td><code>System.out.println(s)</code> はOK、<code>s.length()</code> はNG</td></tr><tr><td><code>ArrayIndexOutOfBoundsException</code></td><td>配列の範囲外アクセス</td><td>要素数0の配列は作れるが <code>a[0]</code> は不可</td></tr><tr><td><code>StringIndexOutOfBoundsException</code></td><td><code>charAt</code> や <code>substring</code> の範囲外</td><td><code>substring(開始, 終了)</code> の終了位置は含まない</td></tr><tr><td><code>ClassCastException</code></td><td>実体に合わないダウンキャスト</td><td>宣言型ではなく実体を見る</td></tr><tr><td><code>NumberFormatException</code></td><td>数値でない文字列をparse</td><td><code>"10L"</code> は整数文字列ではない</td></tr><tr><td><code>UnsupportedOperationException</code></td><td>変更不可コレクションを変更</td><td><code>List.of(...).add(...)</code></td></tr><tr><td><code>ArithmeticException</code></td><td>整数の0除算</td><td>浮動小数点の0除算とは扱いが違う</td></tr></tbody></table></section>
-      <section class="article-section">
-        <h2>3段階目：正常出力を追うときの型</h2>
-        <div class="article-card-grid">
-          <article class="article-card"><h3>評価順型</h3><p><code>++</code>、<code>--</code>、代入式、短絡評価、三項演算子。式の途中で値が変わる。</p></article>
-          <article class="article-card"><h3>参照型</h3><p><code>a = b</code> 後に、変数がどのインスタンスを指しているかを追う。</p></article>
-          <article class="article-card"><h3>動的束縛型</h3><p>オーバーライドメソッドは実体で決まる。フィールドは宣言型で決まる。</p></article>
-          <article class="article-card"><h3>例外制御型</h3><p>try内のどこで止まり、catch/finally/closeがどの順で動くかを見る。</p></article>
-        </div>
-      </section>
-      <section class="article-section"><h2>判定例：宣言型と実体を分ける</h2><pre class="article-code"><code>class Parent { void run() { System.out.println("P"); } }
-class Child extends Parent { void run() { System.out.println("C"); } void childOnly() {} }
-
-public class Main {
+<h2>最初に固定する判定順</h2>
+<p>出力問題で一番やってはいけないのは、コンパイルエラーを確認する前に値を追い始めることです。Java Silverでは「実行すればこうなる」は正しくても、そもそも実行できないコードが頻出します。</p><table class="ref-table"><thead><tr><th>順番</th><th>見るもの</th><th>ここで落ちる典型</th></tr></thead><tbody><tr><td>1</td><td>クラス・ファイル・宣言</td><td>publicクラス名とファイル名、package/importの順序、トップレベルクラスの修飾子</td></tr><tr><td>2</td><td>メソッド・変数宣言</td><td>mainの形、戻り値、引数、var使用場所、ローカル変数の初期化</td></tr><tr><td>3</td><td>型変換・演算</td><td>byte/short/charのint昇格、booleanと数値の非互換、戻り値型</td></tr><tr><td>4</td><td>継承・override</td><td>アクセスを狭くしていないか、戻り値型、throws、abstract実装漏れ</td></tr><tr><td>5</td><td>例外処理</td><td>catch順序、チェック例外の処理、finally/catchの並び</td></tr><tr><td>6</td><td>実行時例外</td><td>NullPointerException、ArrayIndexOutOfBoundsException、ClassCastExceptionなど</td></tr><tr><td>7</td><td>出力追跡</td><td>副作用、参照、短絡評価、例外発生後の処理スキップ</td></tr></tbody></table>
+</section>
+<section class="article-section">
+<h2>選択肢の切り方</h2>
+<p>選択肢に「コンパイルエラー」「実行時例外」「何も表示されない」「特定の出力」が混在する問題では、まずエラー系を検討します。</p><pre class="article-code"><code>public class Main {
     public static void main(String[] args) {
-        Parent p = new Child();
-        p.run();
-        p.childOnly();
+        int a;
+        System.out.println(a);
     }
-}</code></pre>
-        <ol class="article-list"><li><code>p.run()</code> はコンパイル可。<code>Parent</code> に <code>run</code> がある。</li><li><code>p.childOnly()</code> はコンパイルエラー。実体が <code>Child</code> でも、宣言型 <code>Parent</code> にそのメソッドはない。</li><li>したがって <code>C</code> が表示される、ではありません。コードは実行されません。</li></ol>
-      </section>
-      <section class="article-section"><h2>30秒チェックリスト</h2><ul class="check-list dense-list">
-        <li>publicクラス名とファイル名は一致しているか。</li><li>package/importの順番は正しいか。</li><li>mainは <code>public static void main(String[] args)</code> か <code>String... args</code> か。</li><li><code>var</code> をフィールド・引数・戻り値型に使っていないか。</li><li>ローカル変数を初期化前に読んでいないか。</li><li><code>byte/short/char</code> の演算結果をそのまま狭い型に入れていないか。</li><li>interface実装メソッドに <code>public</code> があるか。</li><li>overrideでアクセスを狭めていないか。</li><li>checked例外の処理漏れはないか。</li><li>親例外catchが先に来ていないか。</li><li>null参照に対してメソッドを呼んでいないか。</li><li>配列・List・Stringのインデックス範囲は正しいか。</li></ul></section>
+}</code></pre><p>このコードは出力を考える問題ではありません。ローカル変数 <code>a</code> が初期化されていないため、コンパイルエラーです。</p>
+</section>
+<section class="article-section">
+<h2>実行時例外を判定する順序</h2>
+<p>コンパイルできると判断した後は、左から順に実行して、例外が発生した時点で通常の続きは実行されないと考えます。ただし <code>finally</code> は別です。</p><pre class="article-code"><code>try {
+    String s = null;
+    System.out.println(s.length());
+    System.out.println(&quot;A&quot;);
+} catch (NullPointerException e) {
+    System.out.println(&quot;B&quot;);
+} finally {
+    System.out.println(&quot;C&quot;);
+}</code></pre><p><code>s.length()</code> で例外が発生するため <code>A</code> は表示されません。対応する <code>catch</code> の <code>B</code>、その後 <code>finally</code> の <code>C</code> が表示されます。</p>
+</section>
+<section class="article-section">
+<h2>20秒チェックリスト</h2>
+<ol class="article-list priority-list"><li>トップレベルクラスに使えない修飾子がないか。</li><li><code>main</code> が <code>public static void main(String[] args)</code> または <code>String... args</code> か。</li><li>ローカル変数が使用前に確実に初期化されているか。</li><li><code>var</code> がフィールド・引数・戻り値・<code>null</code> 初期化に使われていないか。</li><li>小さい整数型の演算結果をそのまま小さい型へ戻していないか。</li><li>overrideでアクセスを狭くしていないか。</li><li>チェック例外を処理または宣言しているか。</li></ol>
+</section>
+<section class="article-section">
+<h2>ミニ演習</h2>
+<details class="article-card"><summary><strong>Q. 選択肢に出力とコンパイルエラーが両方ある場合、最初に何を見る？</strong></summary><p>最初にコンパイル可否です。出力を追うのは、コンパイルできることを確認した後です。</p></details><details class="article-card"><summary><strong>Q. try内で例外が出た後、tryの残りは実行される？</strong></summary><p>実行されません。対応するcatchへ移動します。finallyがあれば最後に実行されます。</p></details><p class="inline-note">関連: <a href="decision-flow.html">判定フロー</a> / <a href="compile-runtime.html">コンパイル・実行時例外</a> / <a href="exam-traps.html">ひっかけ集</a></p>
+</section>
+<section class="article-section deep-extra">
+<h2>実戦での読み順テンプレート</h2>
+<p>問題文が長いときほど、コードを上から読む前に「問われている結果」を確認します。選択肢にコンパイルエラーがあるなら宣言・型・例外処理を先に見ます。選択肢がすべて出力なら、コンパイル可否の確認を短く済ませて追跡に入ります。</p><table class="ref-table"><thead><tr><th>選択肢の構成</th><th>優先する確認</th></tr></thead><tbody><tr><td>コンパイルエラーを含む</td><td>宣言、型、override、catch順序</td></tr><tr><td>実行時例外を含む</td><td>null、範囲外、キャスト、parse</td></tr><tr><td>出力だけ</td><td>副作用、参照、分岐、ループ</td></tr><tr><td>複数選択</td><td>正しい説明だけでなく、誤説明の根拠も切る</td></tr></tbody></table>
+</section>
+
+<section class="article-section deep-extra">
+<h2>自分に問いかける質問</h2>
+<ul class="article-list dense-list"><li>このコードはclassファイルを作れるか。</li><li>実行されるmainは本当に存在するか。</li><li>例外が出る行に到達するか。</li><li>例外が出た場合、それはcatchされるか。</li><li>出力される前に処理が止まっていないか。</li><li>最後まで正常終了する場合、printlnに渡る値は何か。</li></ul>
+</section>
 
     </main>
   </div>

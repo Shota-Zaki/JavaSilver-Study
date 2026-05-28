@@ -18,161 +18,20 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>質問整理まとめ</h1>
-        <p>最近確認した論点を、試験で使える判断基準として再整理します。用語暗記ではなく、コードを読んだときの失点箇所を潰すためのページです。</p>
+        <p>最近つまずきやすい論点を、Q&A形式で復習します。</p>
       </section>
-
       <section class="article-section">
-        <h2>interface Worker { void work(); } はどういう状態か</h2>
-        <p>これは「Workerとして扱うなら <code>work()</code> を呼べる」という契約だけを定義している状態です。実装はありません。interface内の抽象メソッドは暗黙的に <code>public abstract</code> です。</p>
-        <pre class="article-code"><code>interface Worker {
-    void work(); // public abstract void work(); と同じ扱い
-}
-
-class Engineer implements Worker {
-    public void work() {
-        System.out.println(&quot;work&quot;);
-    }
-}</code></pre>
-        <p>実装クラス側で <code>public</code> を付け忘れると、interfaceのpublicメソッドよりアクセスを狭めることになりコンパイルエラーです。</p>
-      </section>
-
-      <section class="article-section">
-        <h2>抽象メソッド</h2>
-        <p>抽象メソッドは、本体を持たない未完成のメソッドです。抽象メソッドを含むクラスはabstractでなければなりません。具象クラスにするなら、継承した抽象メソッドをすべて実装する必要があります。</p>
-        <pre class="article-code"><code>abstract class Employee {
-    abstract void work();
-}
-
-class Engineer extends Employee {
-    @Override
-    void work() {
-        System.out.println(&quot;engineer&quot;);
-    }
-}</code></pre>
-        <div class="article-callout">抽象メソッドは「まだ処理が決まっていないメソッド」です。呼び出し方だけ先に決め、具体的な処理はサブクラスに任せます。</div>
-      </section>
-
-      <section class="article-section">
-        <h2>Engineerにwork()がなくても、親にwork()があればOKか</h2>
-        <p>はい、条件付きでOKです。具象親クラスが <code>work()</code> を実装済みなら、子クラスはそのメソッドを継承しているため、interfaceの契約を満たせます。</p>
-        <pre class="article-code"><code>interface Worker {
-    void work();
-}
-
-class Employee {
-    public void work() {
-        System.out.println(&quot;employee&quot;);
-    }
-}
-
-class Engineer extends Employee implements Worker {
-    // work()を書かなくても、Employeeから継承したpublic work()で契約を満たす
-}</code></pre>
-        <p>ただし、親の <code>work()</code> がprivateだったり、戻り値や引数が違ったり、アクセスがpublicでなかったりすると満たせません。</p>
-      </section>
-
-      <section class="article-section">
-        <h2>extends / implements / abstract の整理</h2>
-        <div class="article-card-grid">
-          <article class="article-card"><h3>extends</h3><p>クラスなら1つだけ継承。interface同士なら複数継承可能です。</p></article>
-          <article class="article-card"><h3>implements</h3><p>クラスがinterfaceの契約を満たすときに使います。複数実装可能です。</p></article>
-          <article class="article-card"><h3>abstract class</h3><p>未完成のクラス。抽象メソッドを持てますが、直接newできません。</p></article>
-          <article class="article-card"><h3>interface</h3><p>外から見た操作契約。抽象メソッドはpublic abstract扱いです。</p></article>
-        </div>
-      </section>
-
-      <section class="article-section">
-        <h2>オーバーライドとオーバーロード</h2>
-        <p>オーバーライドは親のメソッドを子で再定義すること。オーバーロードは同じ名前で引数リストが違うメソッドを複数用意することです。</p>
-        <pre class="article-code"><code>class A {
-    void test(int n) { }
-    void test(String s) { } // overload
-}
-
-class B extends A {
-    @Override
-    void test(int n) { }    // override
-}</code></pre>
-        <div class="article-card-grid">
-          <article class="article-card"><h3>override判定</h3><p>同じシグネチャか。戻り値は同じか共変戻り値か。アクセスを狭めていないか。</p></article>
-          <article class="article-card"><h3>overload判定</h3><p>引数リストが違うか。戻り値だけ違うものは不可。</p></article>
-          <article class="article-card"><h3>@Override</h3><p>付けなくてもオーバーライドは成立しますが、付けておくと誤りをコンパイラが検出します。</p></article>
-          <article class="article-card"><h3>static</h3><p>staticメソッドはオーバーライドではなく隠蔽です。</p></article>
-        </div>
-      </section>
-
-      <section class="article-section">
-        <h2>record</h2>
-        <p>recordは値の組を表すクラスを短く書く構文です。アクセサは <code>getName()</code> ではなく <code>name()</code> です。継承不可、追加インスタンスフィールド不可、interface実装可、という制限を押さえます。</p>
-        <pre class="article-code"><code>record Person(String name, int age) {}
-
-Person p1 = new Person(&quot;A&quot;, 10);
-Person p2 = new Person(&quot;A&quot;, 10);
-
-System.out.println(p1.name());     // A
-System.out.println(p1 == p2);      // false
-System.out.println(p1.equals(p2)); // true</code></pre>
-      </section>
-
-      <section class="article-section">
-        <h2>sealed class / sealed interface</h2>
-        <p>sealedは継承先・実装先を限定する仕組みです。親の <code>permits</code> で許可された直接サブタイプだけが継承・実装できます。子側は <code>final</code>、<code>sealed</code>、<code>non-sealed</code> のどれかを必ず示します。</p>
-        <pre class="article-code"><code>sealed interface Service permits FileService {}
-
-final class FileService implements Service { }
-// class NetService implements Service { } // NG。permitsされていない</code></pre>
-        <div class="article-callout warn">sealedは「newできない」ではありません。newできないのはabstractです。ここを混同すると選択肢で落ちます。</div>
-      </section>
-
-      <section class="article-section">
-        <h2>try-catch-finally の流れ</h2>
-        <p>try内で例外が発生した時点で、それ以降のtry内処理はスキップされ、対応するcatchへ移ります。finallyは例外の有無に関係なく基本的に実行されます。</p>
-        <pre class="article-code"><code>try {
-    System.out.println(&quot;A&quot;);
-    int[] x = new int[0];
-    x[0] = 10;
-    System.out.println(&quot;B&quot;); // 実行されない
-} catch (ArrayIndexOutOfBoundsException e) {
-    System.out.println(&quot;C&quot;);
-} finally {
-    System.out.println(&quot;D&quot;);
-}
-// A C D</code></pre>
-      </section>
-
-      <section class="article-section">
-        <h2>try-with-resources と close()</h2>
-        <p>try-with-resourcesは、<code>AutoCloseable</code> を実装したリソースを自動的に閉じます。closeは宣言した順番の逆順に呼ばれ、finallyはその後です。</p>
-        <pre class="article-code"><code>try (A a = new A(&quot;A&quot;); A b = new A(&quot;B&quot;)) {
-    System.out.println(&quot;body&quot;);
-} finally {
-    System.out.println(&quot;finally&quot;);
-}
-// body B A finally</code></pre>
-      </section>
-
-      <section class="article-section">
-        <h2>RuntimeException</h2>
-        <p><code>RuntimeException</code> 系は非チェック例外です。catchやthrowsをコンパイラに強制されませんが、実行時に発生すれば通常の例外として制御が移ります。</p>
-        <div class="article-card-grid">
-          <article class="article-card"><h3>NullPointerException</h3><p>null参照に対してメソッドやフィールドへアクセス。</p></article>
-          <article class="article-card"><h3>ArrayIndexOutOfBoundsException</h3><p>配列の範囲外アクセス。</p></article>
-          <article class="article-card"><h3>NumberFormatException</h3><p>数値変換できない文字列をparse。</p></article>
-          <article class="article-card"><h3>ClassCastException</h3><p>実体と互換性のない型へのキャスト。</p></article>
-        </div>
-      </section>
-
-      <section class="article-section">
-        <h2>トップレベルクラス・サブクラス・インナークラス</h2>
-        <p>トップレベルクラスはファイル直下に書くクラスです。トップレベルに使えるアクセス修飾子はpublicかデフォルトだけです。サブクラスは継承関係にある子クラスです。インナークラスはクラスの中に定義されたクラスです。</p>
-        <pre class="article-code"><code>public class Outer {          // トップレベルクラス
-    class Inner { }           // インナークラス
-    static class Nested { }    // staticネストクラス
-}
-
-class Child extends Outer { }  // サブクラス</code></pre>
-      </section>
-
+<h2>継承・アクセス</h2>
+<details class="article-card"><summary><strong>Q. 継承でアクセス修飾子は緩くできる？</strong></summary><p>オーバーライドでは、アクセス修飾子を同じか広くすることはできます。狭くすることはできません。例: protected → public はOK、public → protected はNGです。</p></details><details class="article-card"><summary><strong>Q. A型の変数にBインスタンスを入れるとどうなる？</strong></summary><p><code>A a = new B();</code> は、BインスタンスをA型として扱います。呼べるメンバはA型にあるものです。overrideされたメソッドはB側が動きます。</p></details>
+</section>
+<section class="article-section">
+<h2>例外</h2>
+<details class="article-card"><summary><strong>Q. tryで例外が起きたら、その下の行へ行く？</strong></summary><p>行きません。対応するcatchへ移動します。ただしfinallyは最後に通ります。</p></details><details class="article-card"><summary><strong>Q. RuntimeExceptionはcatch必須？</strong></summary><p>必須ではありません。非チェック例外です。</p></details>
+</section>
+<section class="article-section">
+<h2>配列・interface</h2>
+<details class="article-card"><summary><strong>Q. <code>int[] a;</code> の時点で要素数は？</strong></summary><p>まだ配列インスタンスを作っていないので要素数はありません。<code>new int[3]</code> して初めて長さ3の配列になります。</p></details><details class="article-card"><summary><strong>Q. interfaceの <code>void work();</code> はどういう状態？</strong></summary><p>暗黙的に <code>public abstract</code> な抽象メソッドです。実装クラスが具象クラスならpublicで実装する必要があります。</p></details>
+</section>
     </main>
   </div>
   <script src="data/questions.js"></script>

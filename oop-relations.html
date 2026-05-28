@@ -18,107 +18,90 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>継承・interface・override</h1>
-        <p>extends、implements、abstract、interface、default/privateメソッド、override、sealedをまとめて整理します。</p>
+        <p>extends、implements、abstract、defaultメソッド、override、interfaceの基本を整理します。</p>
       </section>
+      <section class="article-section">
+<h2>継承の基本</h2>
+<p>サブクラスのインスタンスは、スーパークラス部分とサブクラス部分を持ちます。サブクラスに書かれていないメンバでも、継承されたものは使えます。ただしコンストラクタとprivateメンバは引き継ぎません。</p><pre class="article-code"><code>class Parent {
+    String name;
+}
+class Child extends Parent {
+    void hello() {
+        System.out.println(name); // Parentのフィールドを利用
+    }
+}</code></pre>
+</section>
+<section class="article-section">
+<h2>コンストラクタは継承されない</h2>
+<p>スーパークラスに引数ありコンストラクタしかない場合、サブクラスのコンストラクタは明示的に <code>super(...)</code> を呼ぶ必要があります。</p><pre class="article-code"><code>class A {
+    A(String name) { }
+}
+class B extends A {
+    B() {
+        super(&quot;B&quot;);
+    }
+}</code></pre>
+</section>
+<section class="article-section">
+<h2>overrideの条件</h2>
+<table class="ref-table"><thead><tr><th>条件</th><th>説明</th></tr></thead><tbody><tr><td>メソッド名・引数</td><td>同じシグネチャ</td></tr><tr><td>戻り値型</td><td>同じか、より具体的な参照型</td></tr><tr><td>アクセス修飾子</td><td>同じか、より広い</td></tr><tr><td>例外</td><td>チェック例外は同じか、より狭い</td></tr><tr><td>static</td><td>インスタンスメソッドとstaticメソッドを相互にoverrideしない</td></tr></tbody></table><pre class="article-code"><code>class A {
+    protected Number test() { return 1; }
+}
+class B extends A {
+    @Override
+    public Integer test() { return 1; } // OK: アクセス広い、戻り値はサブクラス型
+}</code></pre>
+</section>
+<section class="article-section">
+<h2>interfaceの基本</h2>
+<p>interfaceの抽象メソッドは暗黙的に <code>public abstract</code> です。フィールドは暗黙的に <code>public static final</code> です。</p><pre class="article-code"><code>interface Worker {
+    void work(); // public abstract扱い
+    int MAX = 10; // public static final扱い
+}</code></pre><p>実装クラスで <code>work</code> を実装する場合、<code>public</code> を付ける必要があります。アクセスを狭くできないからです。</p>
+</section>
+<section class="article-section">
+<h2>default/static/privateメソッド</h2>
+<p>interfaceにはdefaultメソッド、staticメソッド、privateメソッドを定義できます。defaultは実装クラスに継承される実装付きメソッドです。privateはinterface内の補助用です。</p><pre class="article-code"><code>interface A {
+    default void test() {
+        log();
+    }
+    private void log() {
+        System.out.println(&quot;log&quot;);
+    }
+}</code></pre>
+</section>
+<section class="article-section">
+<h2>abstractクラスとinterface実装</h2>
+<p>抽象クラスは、interfaceの抽象メソッドをすべて実装しなくても構いません。具象クラスになるまでに実装すればよいからです。</p><pre class="article-code"><code>interface A { void test(); }
+abstract class B implements A { } // OK
+class C extends B {
+    public void test() { }
+}</code></pre>
+</section>
+<section class="article-section">
+<h2>ミニ演習</h2>
+<details class="article-card"><summary><strong>Q. interfaceのメソッドを実装するとき、publicを省略できる？</strong></summary><p>できません。interfaceの抽象メソッドはpublicなので、実装側でアクセスを狭くするとコンパイルエラーです。</p></details><details class="article-card"><summary><strong>Q. abstract classはinterfaceメソッド未実装でもよい？</strong></summary><p>よいです。ただし、そのクラス自体はabstractである必要があります。</p></details><p class="inline-note">関連: <a href="decision-flow.html">判定フロー</a> / <a href="compile-runtime.html">コンパイル・実行時例外</a> / <a href="exam-traps.html">ひっかけ集</a></p>
+</section>
+<section class="article-section deep-extra">
+<h2>overrideとoverloadの見分け</h2>
+<p>同名でも引数が違えばoverloadです。overrideしたつもりで引数型が違うと、親メソッドは残ったままになります。<code>@Override</code> があるとコンパイラが検出してくれます。</p><pre class="article-code"><code>class A { void test(Object o) {} }
+class B extends A {
+    // @Override を付けるとエラー。これはoverload。
+    void test(String s) {}
+}</code></pre>
+</section>
 
-      <section class="article-section">
-        <h2>extendsとimplements</h2>
-        <p><code>extends</code> はクラス継承またはインタフェース継承、<code>implements</code> はクラスがインタフェースを実装するときに使います。</p>
-        <table class="ref-table"><thead><tr><th>関係</th><th>書き方</th><th>複数可否</th></tr></thead><tbody>
-        <tr><td>クラスがクラスを継承</td><td><code>class B extends A</code></td><td>1つだけ</td></tr>
-        <tr><td>クラスがインタフェースを実装</td><td><code>class C implements I, J</code></td><td>複数可</td></tr>
-        <tr><td>インタフェースがインタフェースを継承</td><td><code>interface J extends I</code></td><td>複数可</td></tr>
-        </tbody></table>
-        <p>クラスの多重継承はできませんが、インタフェースは複数実装できます。</p>
-      </section>
-      <section class="article-section">
-        <h2>継承で引き継がないもの</h2>
-        <p>サブクラスはスーパークラスのメンバを利用できますが、何でも引き継ぐわけではありません。</p>
-        <ul class="article-list">
-          <li><strong>コンストラクタ</strong>: 継承されません。ただしサブクラスのコンストラクタから <code>super(...)</code> で呼びます。</li>
-          <li><strong>privateメンバ</strong>: サブクラスから直接アクセスできません。</li>
-          <li><strong>初期化の責任</strong>: スーパークラス部分はスーパークラスのコンストラクタで初期化されます。</li>
-        </ul>
-        <pre class="article-code"><code>class A {
-            private int x;
-            A(int x) { this.x = x; }
-        }
-        class B extends A {
-            B() { super(10); }
-        }</code></pre>
-      </section>
-      <section class="article-section">
-        <h2>abstractクラスと抽象メソッド</h2>
-        <p><code>abstract</code> メソッドは本体を持たないメソッドです。抽象メソッドを持つクラスは <code>abstract</code> クラスでなければなりません。</p>
-        <pre class="article-code"><code>abstract class Employee {
-            abstract void work();
-        }
-
-        class Engineer extends Employee {
-            @Override
-            void work() { System.out.println("code"); }
-        }</code></pre>
-        <p>具象クラスは、継承した抽象メソッドをすべて実装する必要があります。実装しないなら、そのクラスも <code>abstract</code> にします。</p>
-      </section>
-      <section class="article-section">
-        <h2>interfaceのメンバ</h2>
-        <p>インタフェースの抽象メソッドは暗黙に <code>public abstract</code> です。フィールドは暗黙に <code>public static final</code> です。</p>
-        <pre class="article-code"><code>interface Worker {
-            int MAX = 10;        // public static final
-            void work();         // public abstract
-            default void rest() {}
-            static void info() {}
-            private void helper() {}
-        }</code></pre>
-        <p><code>default</code> メソッドと <code>private</code> メソッドには本体が必要です。抽象メソッドに本体は書けません。</p>
-        <div class="article-callout warn">インタフェースの抽象メソッドはpublicです。実装クラスでアクセス修飾子を省略するとデフォルトアクセスになり、公開範囲を狭めるためコンパイルエラーです。</div>
-      </section>
-      <section class="article-section">
-        <h2>オーバーライドの条件</h2>
-        <p>オーバーライドは、スーパークラスまたはインタフェースのメソッドをサブクラス側で再定義することです。</p>
-        <table class="ref-table"><thead><tr><th>条件</th><th>内容</th></tr></thead><tbody>
-        <tr><td>シグネチャ</td><td>同じメソッド名・同じ引数リスト</td></tr>
-        <tr><td>戻り値</td><td>同じ型、または共変戻り値</td></tr>
-        <tr><td>アクセス</td><td>狭くできない</td></tr>
-        <tr><td>例外</td><td>チェック例外は広くできない</td></tr>
-        <tr><td>static</td><td>インスタンスメソッドとは相互にoverride不可</td></tr>
-        </tbody></table>
-        <pre class="article-code"><code>class A {
-            protected Number test() throws java.io.IOException { return 1; }
-        }
-        class B extends A {
-            @Override
-            public Integer test() { return 1; } // OK。アクセスは広い、戻り値はサブクラス、例外は減る
-        }</code></pre>
-      </section>
-      <section class="article-section">
-        <h2>defaultメソッドの衝突</h2>
-        <p>複数のインタフェースから同じシグネチャのdefaultメソッドを継承すると、クラス側で明示的に解決する必要があります。</p>
-        <pre class="article-code"><code>interface A { default void test() { System.out.println("A"); } }
-        interface B { default void test() { System.out.println("B"); } }
-
-        class C implements A, B {
-            @Override
-            public void test() {
-                A.super.test();
-            }
-        }</code></pre>
-        <p>クラスのメソッドとインタフェースのdefaultメソッドが競合する場合は、クラス側が優先されます。</p>
-      </section>
-      <section class="article-section">
-        <h2>sealed / non-sealed / permits</h2>
-        <p><code>sealed</code> は、継承・実装できる相手を制限する仕組みです。許可された直接サブクラスは、<code>final</code>、<code>sealed</code>、<code>non-sealed</code> のいずれかで方針を明示します。</p>
-        <pre class="article-code"><code>sealed class Animal permits Dog, Cat {}
-        final class Dog extends Animal {}
-        non-sealed class Cat extends Animal {}</code></pre>
-        <p><code>permits</code> にないクラスは直接継承できません。また、許可されたサブクラス側も継承方針を明示しないとコンパイルエラーです。</p>
-      </section>
-      <section class="article-section">
-        <h2>ミニ判定</h2>
-        <details class="article-card"><summary><strong>Q1.</strong> インタフェースのメソッドを実装するとき、<code>void work()</code> でよい？</summary><p>通常は不可です。インタフェースの抽象メソッドはpublicなので、実装側も <code>public void work()</code> が必要です。</p></details>
-        <details class="article-card"><summary><strong>Q2.</strong> コンストラクタは継承される？</summary><p>されません。サブクラスのコンストラクタから <code>super(...)</code> で呼び出すだけです。</p></details>
-        <details class="article-card"><summary><strong>Q3.</strong> sealedクラスの許可サブクラスは何か修飾が必要？</summary><p>必要です。<code>final</code>、<code>sealed</code>、<code>non-sealed</code> のいずれかで次の継承方針を示します。</p></details>
-      </section>
+<section class="article-section deep-extra">
+<h2>interface変数で呼べるもの</h2>
+<p>interface型の変数から呼べるのは、そのinterfaceに宣言されたメソッドです。実体クラスに独自メソッドがあっても、宣言型に存在しなければ呼べません。</p><pre class="article-code"><code>interface A { void test(); }
+class B implements A {
+    public void test() {}
+    void onlyB() {}
+}
+A a = new B();
+a.test();
+// a.onlyB(); // NG</code></pre>
+</section>
 
     </main>
   </div>

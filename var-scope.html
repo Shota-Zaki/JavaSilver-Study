@@ -18,49 +18,61 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>var・スコープ・初期化</h1>
-        <p>varの使用可能範囲、型推論の限界、ローカル変数のスコープと初期化を整理します。</p>
+        <p>varは動的型ではなく、ローカル変数の型推論です。禁止場所、初期化、スコープを整理します。</p>
       </section>
-
       <section class="article-section">
-        <h2>varはローカル変数の型推論</h2>
-        <p><code>var</code> は「型を書かない」構文ではなく、右辺からコンパイラが型を決める構文です。決まった後は普通の静的型付き変数です。</p>
-        <pre class="article-code"><code>var n = 10;       // int
-var s = &quot;abc&quot;;    // String
-// n = &quot;abc&quot;;     // NG。nはint</code></pre>
-      </section>
-
-      <section class="article-section">
-        <h2>varを使えない場所</h2>
-        <p>Java Silverでは、<code>var</code> の禁止場所がよく問われます。フィールド、引数、戻り値、配列要素型、catchパラメータなどに使えません。</p>
-        <pre class="article-code"><code>class Sample {
-    // private var value = 10;      // NG。フィールド
-
-    // void test(var x) { }         // NG。引数
-    // var method() { return 10; }  // NG。戻り値
-
-    void ok() {
-        var value = 10;             // OK。ローカル変数
-    }
-}</code></pre>
-        <div class="article-card-grid">
-          <article class="article-card"><h3>初期化式なし</h3><p><code>var a;</code> は不可。型を推論できません。</p></article>
-          <article class="article-card"><h3>null単独</h3><p><code>var a = null;</code> は不可。型を決められません。</p></article>
-          <article class="article-card"><h3>配列初期化子</h3><p><code>var a = {1,2,3};</code> は不可。<code>new int[]{...}</code> が必要です。</p></article>
-          <article class="article-card"><h3>ラムダ単独</h3><p><code>var f = () -> 1;</code> はターゲット型がないため不可です。</p></article>
-        </div>
-      </section>
-
-      <section class="article-section">
-        <h2>スコープと初期化</h2>
-        <p>ローカル変数は宣言されたブロック内でのみ有効です。また、使用前に確実に初期化されている必要があります。</p>
-        <pre class="article-code"><code>if (true) {
-    int x = 10;
+<h2>varの正体</h2>
+<p><code>var</code> はローカル変数の型を右辺から推論するための構文です。コンパイル時点で型は確定します。JavaScriptのvarのような動的型ではありません。</p><pre class="article-code"><code>var n = 10;      // int
+var s = &quot;abc&quot;;   // String
+// n = &quot;abc&quot;;    // NG: nはintとして確定済み</code></pre>
+</section>
+<section class="article-section">
+<h2>varが使える場所・使えない場所</h2>
+<table class="ref-table"><thead><tr><th>場所</th><th>可否</th><th>理由</th></tr></thead><tbody><tr><td>ローカル変数</td><td>可</td><td>初期化式から型を推論できる</td></tr><tr><td>拡張forの変数</td><td>可</td><td>要素型を推論できる</td></tr><tr><td>try-with-resourcesの変数</td><td>可</td><td>初期化式から型を推論できる</td></tr><tr><td>フィールド</td><td>不可</td><td>ローカル変数ではない</td></tr><tr><td>メソッド引数</td><td>不可</td><td>右辺がない</td></tr><tr><td>コンストラクタ引数</td><td>不可</td><td>右辺がない</td></tr><tr><td>戻り値型</td><td>不可</td><td>戻り値型推論ではない</td></tr><tr><td>catchパラメータ</td><td>不可</td><td>例外型を明示する必要がある</td></tr></tbody></table>
+</section>
+<section class="article-section">
+<h2>初期化式が必要</h2>
+<p><code>var</code> は右辺から型を決めるため、初期化式なし、<code>null</code> だけ、配列初期化子だけでは型を決められません。</p><pre class="article-code"><code>// var a;          // NG
+// var b = null;   // NG
+// var c = {1,2,3}; // NG
+var d = new int[]{1,2,3}; // OK
+var e = (String) null;    // OK: Stringと推論できる</code></pre>
+</section>
+<section class="article-section">
+<h2>スコープはブロックで決まる</h2>
+<p>ローカル変数は宣言されたブロック内でだけ使えます。ifやforの中で宣言した変数は、外側から見えません。</p><pre class="article-code"><code>if (true) {
+    var x = 10;
 }
-// System.out.println(x); // NG。スコープ外
+// System.out.println(x); // NG: スコープ外
 
-int y;
-// System.out.println(y); // NG。未初期化</code></pre>
-      </section>
+for (var i = 0; i &lt; 3; i++) {
+    System.out.println(i);
+}
+// System.out.println(i); // NG</code></pre>
+</section>
+<section class="article-section">
+<h2>varとダイヤモンド演算子</h2>
+<p><code>var list = new ArrayList&lt;String&gt;();</code> なら型は明確です。一方、右辺が <code>new ArrayList&lt;&gt;()</code> だけだと型引数の文脈が弱くなります。試験では「何型として扱われるか」よりも、varが使える場所かどうかが優先論点です。</p><pre class="article-code"><code>var list1 = new java.util.ArrayList&lt;String&gt;(); // ArrayList&lt;String&gt;
+var list2 = new java.util.ArrayList&lt;&gt;();       // 型推論は可能。ただし意図が読みづらい</code></pre>
+</section>
+<section class="article-section">
+<h2>ミニ演習</h2>
+<details class="article-card"><summary><strong>Q. <code>private var value;</code> は？</strong></summary><p>コンパイルエラーです。フィールドに <code>var</code> は使えません。</p></details><details class="article-card"><summary><strong>Q. <code>public void test(var x)</code> は？</strong></summary><p>コンパイルエラーです。メソッド引数に <code>var</code> は使えません。</p></details><p class="inline-note">関連: <a href="decision-flow.html">判定フロー</a> / <a href="compile-runtime.html">コンパイル・実行時例外</a> / <a href="exam-traps.html">ひっかけ集</a></p>
+</section>
+<section class="article-section deep-extra">
+<h2>varの推論結果を見抜く</h2>
+<p>varで宣言した変数の型は、右辺の式から決まります。以後、その型として固定されます。代入のたびに型が変わるわけではありません。</p><pre class="article-code"><code>var x = 10;       // int
+// x = 10L;       // NG: longをintへ暗黙変換できない
+
+var y = 10L;      // long
+y = 10;           // OK: intからlongへ拡大変換</code></pre>
+</section>
+
+<section class="article-section deep-extra">
+<h2>ラムダとvar</h2>
+<p>Java Silverでは深掘りされすぎる可能性は低いですが、<code>var</code> をラムダ引数に使う場合はすべての仮引数で統一する必要があります。混在はできません。</p><pre class="article-code"><code>// (var a, var b) -&gt; a + b  // OKな形
+// (var a, b) -&gt; a + b      // NG: varあり/なし混在</code></pre>
+</section>
 
     </main>
   </div>

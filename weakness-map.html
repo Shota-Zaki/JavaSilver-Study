@@ -18,13 +18,16 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>弱点別復習マップ</h1>
-        <p>間違い方から読む記事と復習行動を決め、復習を作業ではなく改善に変えるためのページです。</p>
+        <p>間違えた理由から、読むべき記事と復習方法を逆引きします。</p>
       </section>
-<section class="article-section"><h2>間違い方から読む記事を決める</h2><p>間違えた問題を「何となく復習」しても効率が悪いです。原因別に読むページと直す行動を固定してください。</p><table class="ref-table"><thead><tr><th>間違い方</th><th>原因</th><th>読むページ</th><th>やること</th></tr></thead><tbody><tr><td>出力を選んだが正解はコンパイルエラー</td><td>判定順ミス</td><td><a href="decision-flow.html">判定フロー</a></td><td>出力計算前のチェックリストを使う</td></tr><tr><td>型変換で落ちる</td><td>数値昇格・リテラル</td><td><a href="numeric-rules.html">数値・型昇格</a></td><td>byte/short/charと複合代入だけ10問解く</td></tr><tr><td>String比較を外す</td><td>同一性と同値の混同</td><td><a href="strings.html">文字列</a> / <a href="equality.html">比較</a></td><td>==とequalsとinternの表を書く</td></tr><tr><td>配列・Listの例外を外す</td><td>長さ・変更可否</td><td><a href="collections-arrays.html">配列・List</a></td><td>作成可否とアクセス可否を分ける</td></tr><tr><td>++/--で計算ミス</td><td>式に渡す値と現在値の混同</td><td><a href="output-tracing.html">出力追跡</a></td><td>2列表で追う</td></tr><tr><td>override/fieldで外す</td><td>宣言型と実体の混同</td><td><a href="polymorphism-cast.html">ポリモーフィズム</a></td><td>メソッドかフィールドかを先に書く</td></tr><tr><td>interface実装で外す</td><td>public・default・abstract</td><td><a href="oop-relations.html">継承/interface</a></td><td>interfaceメンバの暗黙修飾子を確認</td></tr><tr><td>例外処理で外す</td><td>checked/unchecked/catch順</td><td><a href="exceptions.html">例外処理</a> / <a href="error-catalog.html">例外カタログ</a></td><td>catch順とtry後続スキップを練習</td></tr><tr><td>record/sealedで外す</td><td>Java 17新しめ論点</td><td><a href="silver17-points.html">Java 17論点</a></td><td>recordアクセサとsealedサブクラス要件を暗記</td></tr></tbody></table></section><section class="article-section"><h2>復習の優先順位</h2><ol class="article-list priority-list"><li><strong>コンパイルエラー見落とし</strong>：最優先。全分野で失点する。</li><li><strong>型変換・数値昇格</strong>：短問で頻出。覚えれば安定する。</li><li><strong>宣言型と実体</strong>：継承・interface・キャスト・overrideすべてに効く。</li><li><strong>例外処理</strong>：catch順、finally、try-with-resourcesはパターン化しやすい。</li><li><strong>細かいメソッド仕様</strong>：最後に頻出メソッド表で補強する。</li></ol></section><section class="article-section"><h2>間違いメモの書き方</h2><p>「ケアレスミス」と書くのは意味がありません。次の形式で残してください。</p><pre class="article-code"><code>問題ID:
-間違えた分類: コンパイル可否 / 実行時例外 / 出力
-見落とした根拠:
-次回の判定ルール:
-関連ページ:</code></pre><p>このメモが書けない場合、その問題はまだ理解できていません。正解だけ覚えている状態です。</p></section>
+      <section class="article-section">
+<h2>間違い方で分類する</h2>
+<table class="ref-table"><thead><tr><th>間違い方</th><th>原因</th><th>読む記事</th></tr></thead><tbody><tr><td>出力は追えたが答えが違う</td><td>副作用・参照・例外の追跡漏れ</td><td><a href="output-tracing.html">出力追跡</a></td></tr><tr><td>コンパイルエラーを見落とす</td><td>型・初期化・override・catch順序</td><td><a href="compile-runtime.html">コンパイル/例外</a></td></tr><tr><td>型問題で迷う</td><td>int昇格、定数式、複合代入</td><td><a href="numeric-rules.html">数値・型昇格</a></td></tr><tr><td>String比較で落ちる</td><td>同一性と同値性の混同</td><td><a href="equality.html">同一性・同値性</a></td></tr><tr><td>継承で落ちる</td><td>宣言型と実体、override、フィールド隠蔽</td><td><a href="polymorphism-cast.html">ポリモーフィズム</a></td></tr></tbody></table>
+</section>
+<section class="article-section">
+<h2>復習のやり方</h2>
+<ol class="article-list priority-list"><li>間違えた問題をもう一度開き、正解だけでなく誤答選択肢の理由を言う。</li><li>該当記事のコード例を1つ写し、値や型を変えてみる。</li><li>翌日に間違い演習で再確認する。正解しても説明できなければ未習得です。</li></ol>
+</section>
     </main>
   </div>
   <script src="data/questions.js"></script>
