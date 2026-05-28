@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - 学習記事トップ</title>
+  <title>Java Silver Study - 学習記事</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -15,66 +15,31 @@
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
     <main class="main reference-main">
-      <section class="hero reference-hero">
+      <section class="hero reference-hero compact-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>学習記事トップ</h1>
-        <p>Java Silverの論点を、関係順に並べ直した入口です。</p>
+        <h1>学習記事</h1>
+        <p>Java Silverで問われる仕様と判定ルールを単元別に整理。</p>
       </section>
 
-      <section class="article-card important">
-        <h2>関係順ロードマップ</h2>
-        <p>重複していた内容は、各論点の主ページに寄せました。読む順番は「判定手順 → 基本文法 → 型 → 制御 → 文字列/コレクション → OOP → 例外 → 仕上げ」です。</p>
-        <div class="decision-flow relation-flow">
-          <div><span>0</span><strong>まず判定手順</strong><p>コード問題は、出力を見る前にコンパイル可否を判定する。</p></div>
-          <div><span>1</span><strong>実行単位</strong><p>main、ファイル名、package/import、起動引数を固定する。</p></div>
-          <div><span>2</span><strong>型と値</strong><p>型変換、初期化、var、スコープでコンパイルエラーを拾う。</p></div>
-          <div><span>3</span><strong>評価順と制御</strong><p>演算子、switch、ループ、break/continueで実行順を追う。</p></div>
-          <div><span>4</span><strong>参照とデータ構造</strong><p>String、配列、List、同一性/同値性をまとめて理解する。</p></div>
-          <div><span>5</span><strong>クラスの土台</strong><p>フィールド、メソッド、static、this/super、コンストラクタ。</p></div>
-          <div><span>6</span><strong>OOPの関係</strong><p>継承、interface、overload/override、ポリモーフィズム。</p></div>
-          <div><span>7</span><strong>例外</strong><p>コンパイル時に必要な処理と実行時に起きる例外を分ける。</p></div>
-          <div><span>8</span><strong>仕上げ</strong><p>頻出メソッド、エラー、ひっかけ、ミニ演習で確認する。</p></div>
-        </div>
-      </section>
-      <section class="reference-section-title"><h2>学習記事</h2><p>関係順に並べています。苦手な箇所だけ読んでもよいですが、OOPは「クラス → メソッド → 修飾子 → 継承/interface → ポリモーフィズム」の順が崩れると理解が曖昧になります。</p></section>
-      <section class="reference-grid large">
-<a class="reference-card" href="decision-flow.html"><span>0</span><strong>判定フロー</strong><small>コンパイル可否→実行時例外→出力結果</small></a>
-<a class="reference-card" href="syntax-basics.html"><span>1</span><strong>Java実行・package/import</strong><small>main・javac・java・package・import</small></a>
-<a class="reference-card" href="datatypes.html"><span>2</span><strong>データ型・リテラル・型変換</strong><small>primitive・参照型・数値表記・キャスト</small></a>
-<a class="reference-card" href="numeric-rules.html"><span>2</span><strong>数値・リテラル・型昇格</strong><small>byte/short/char・定数式・複合代入</small></a>
-<a class="reference-card" href="var-scope.html"><span>2</span><strong>var・スコープ・初期化</strong><small>varの使用範囲・初期値・ローカル変数</small></a>
-<a class="reference-card" href="operators-control.html"><span>3</span><strong>演算子・制御構造</strong><small>評価順・短絡評価・switch文/式</small></a>
-<a class="reference-card" href="loop-control.html"><span>3</span><strong>ループ・do-while・break/continue</strong><small>条件判定・更新式・ラベル</small></a>
-<a class="reference-card" href="fine-points.html"><span>3</span><strong>細かい挙動・境界ルール</strong><small>yield・戻り値・境界・評価順</small></a>
-<a class="reference-card" href="strings.html"><span>4</span><strong>String・StringBuilder</strong><small>不変性・可変性・戻り値・頻出メソッド</small></a>
-<a class="reference-card" href="equality.html"><span>4</span><strong>同一性・同値性比較</strong><small>==・equals・intern・record・配列/List</small></a>
-<a class="reference-card" href="collections-arrays.html"><span>4</span><strong>配列・ArrayList・List</strong><small>配列宣言・length・size・List.of</small></a>
-<a class="reference-card" href="object-oriented.html"><span>5</span><strong>クラス・インスタンス・static・参照</strong><small>参照・GC・フィールド/メソッド・record</small></a>
-<a class="reference-card" href="methods-constructors.html"><span>5</span><strong>メソッド・コンストラクタ</strong><small>引数・戻り値・this/super・オーバーロード</small></a>
-<a class="reference-card" href="modifiers-access.html"><span>5</span><strong>修飾子・アクセス制御</strong><small>private/default/protected/public・static/final/abstract</small></a>
-<a class="reference-card" href="inheritance-interface.html"><span>6</span><strong>継承・インタフェース・sealed</strong><small>extends・implements・abstract・default</small></a>
-<a class="reference-card" href="oop-relations.html"><span>6</span><strong>OOP関係整理</strong><small>継承・interface・overload/overrideの違い</small></a>
-<a class="reference-card" href="polymorphism-cast.html"><span>6</span><strong>ポリモーフィズム・キャスト</strong><small>宣言型/実体型・instanceof・ClassCastException</small></a>
-<a class="reference-card" href="exceptions.html"><span>7</span><strong>例外処理</strong><small>try/catch/finally・throws・try-with-resources</small></a>
-<a class="reference-card" href="compile-runtime.html"><span>8</span><strong>コンパイルエラーと実行時例外</strong><small>よくある失敗と切り分け</small></a>
-<a class="reference-card" href="error-catalog.html"><span>8</span><strong>エラー・例外カタログ</strong><small>原因・発生段階・見る場所</small></a>
-<a class="reference-card" href="method-list.html"><span>9</span><strong>頻出メソッド一覧</strong><small>String/List/Wrapper/Object</small></a>
-<a class="reference-card" href="cheatsheet.html"><span>9</span><strong>頻出ルール早見表</strong><small>直前確認用</small></a>
-<a class="reference-card" href="exam-traps.html"><span>9</span><strong>試験ひっかけ集</strong><small>典型ミスと回避手順</small></a>
-<a class="reference-card" href="java-qa-review.html"><span>9</span><strong>質問まとめ</strong><small>過去に質問した論点の整理</small></a>
-<a class="reference-card" href="glossary.html"><span>9</span><strong>単語集</strong><small>頻出語の短い定義</small></a>
-<a class="reference-card" href="mini-drills.html"><span>演習</span><strong>ミニ演習</strong><small>短いコードで確認</small></a>
-      </section>
-      <section class="article-card">
-        <h2>重複整理の方針</h2>
-        <ul class="check-list">
-          <li>型変換・数値昇格は「データ型」と「数値ルール」に集約。</li>
-          <li>switchの基本は「演算子・制御構造」、yieldや境界は「細かい挙動」に分離。</li>
-          <li>== / equals / intern は「同一性・同値性比較」に集約。</li>
-          <li>継承、interface、overload/overrideの関係は「OOP関係整理」に集約。</li>
-          <li>例外の基本は「例外処理」、失敗段階の分類は「コンパイル/例外判定」と「エラー・例外カタログ」に集約。</li>
-        </ul>
-      </section>
+<section class="reference-section-title"><h2>学習記事</h2><p>問題を解くために必要な仕様だけを、単元ごとにまとめています。重複しやすい内容は主ページへ集約しました。</p></section>
+<section class="reference-grid simple-grid"><a class="reference-card" href="syntax-basics.html"><strong>Java実行・宣言ルール</strong><small>main / ファイル名 / package / import / 起動引数</small></a>
+<a class="reference-card" href="datatypes.html"><strong>型・変数・リテラル</strong><small>primitive / 参照型 / var / スコープ / 数値昇格</small></a>
+<a class="reference-card" href="strings.html"><strong>文字列・比較</strong><small>String / StringBuilder / == / equals / intern</small></a>
+<a class="reference-card" href="collections-arrays.html"><strong>配列・ArrayList・List</strong><small>配列宣言 / length / size / add / set</small></a>
+<a class="reference-card" href="operators-control.html"><strong>演算子・分岐・ループ</strong><small>評価順 / ++ / switch / yield / do-while / break</small></a>
+<a class="reference-card" href="methods-constructors.html"><strong>メソッド・コンストラクタ</strong><small>戻り値 / 引数 / overload / this / super</small></a>
+<a class="reference-card" href="object-oriented.html"><strong>クラス・static・record</strong><small>インスタンス / static / final / record / GC</small></a>
+<a class="reference-card" href="oop-relations.html"><strong>継承・interface・override</strong><small>extends / implements / abstract / sealed / cast</small></a>
+<a class="reference-card" href="exceptions.html"><strong>例外処理・失敗段階</strong><small>try / catch / finally / throws / RuntimeException</small></a>
+<a class="reference-card" href="method-list.html"><strong>頻出メソッド・境界値</strong><small>戻り値 / 例外 / 変更有無</small></a>
+<a class="reference-card" href="cheatsheet.html"><strong>直前確認・ひっかけ</strong><small>試験で落ちやすいルール</small></a>
+<a class="reference-card" href="glossary.html"><strong>単語集</strong><small>用語の短い定義</small></a>
+<a class="reference-card" href="mini-drills.html"><strong>ミニ演習</strong><small>短いコードで確認</small></a></section>
+<section class="article-card ">
+<h2>単元の整理</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>単元</th><th>含めた内容</th><th>分けた理由</th></tr></thead><tbody><tr><td>型・変数・リテラル</td><td>primitive、参照型、数値表記、型変換、var、スコープ</td><td>型エラーは変数宣言・初期化・演算時にまとめて出るため。</td></tr><tr><td>文字列・比較</td><td>String、StringBuilder、==、equals、intern、recordのequals</td><td>比較問題は文字列だけでなく参照型全体に波及するため。</td></tr><tr><td>演算子・分岐・ループ</td><td>++、短絡評価、switch、yield、while、do-while、break/continue</td><td>出力問題は評価順と制御移動を同時に追うため。</td></tr><tr><td>メソッド・クラス・OOP</td><td>戻り値、引数、constructor、static、継承、interface、override</td><td>オーバーロード/オーバーライド/ポリモーフィズムは分離すると誤解しやすいため。</td></tr><tr><td>例外処理</td><td>コンパイルエラー、実行時例外、catch順序、finally、try-with-resources</td><td>失敗段階の判定が正解に直結するため。</td></tr></tbody></table></div>
+</section>
+
 
     </main>
   </div>

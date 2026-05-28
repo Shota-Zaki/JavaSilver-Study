@@ -15,22 +15,54 @@
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
     <main class="main reference-main">
-      <section class="hero reference-hero">
+      <section class="hero reference-hero compact-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>細かい挙動・境界ルール</h1>
-        <p>小さい差で正解が変わる境界ルールを集約します。</p>
+        <p>yield、戻り値、境界値、評価順の細部。</p>
       </section>
-<section class="article-card"><h2>戻り値を使う/使わない</h2><div class="table-wrap"><table class="ref-table"><thead><tr><th>呼び出し</th><th>戻り値</th><th>注意</th></tr></thead><tbody><tr><td><code>String.substring()</code></td><td>新しいString</td><td>元のStringは変わらない。代入しないと結果は捨てられる。</td></tr><tr><td><code>StringBuilder.append()</code></td><td>同じStringBuilder参照</td><td>自身を変更する。戻り値も自分。</td></tr><tr><td><code>ArrayList.add(E)</code></td><td>boolean</td><td>追加成功でtrue。</td></tr><tr><td><code>ArrayList.set(i,e)</code></td><td>置き換え前の要素</td><td>サイズは増えない。</td></tr><tr><td><code>System.out.println()</code></td><td>void</td><td>式として値を返さない。</td></tr></tbody></table></div></section><section class="article-card"><h2>境界値</h2><pre><code>"abc".charAt(2);      // 'c'
-// "abc".charAt(3);   // StringIndexOutOfBoundsException
-"abc".substring(1, 3); // "bc"。endは含まない
-// "abc".substring(3, 1); // 例外</code></pre></section><section class="article-card"><h2>length / length() / size()</h2><div class="table-wrap"><table class="ref-table"><thead><tr><th>対象</th><th>書き方</th><th>理由</th></tr></thead><tbody><tr><td>配列</td><td><code>array.length</code></td><td>フィールド。括弧なし。</td></tr><tr><td>String</td><td><code>str.length()</code></td><td>メソッド。括弧あり。</td></tr><tr><td>List</td><td><code>list.size()</code></td><td>メソッド。括弧あり。</td></tr></tbody></table></div></section><section class="article-card"><h2>finallyとreturn</h2><pre><code>static int test() {
-    try {
-        return 1;
-    } finally {
-        System.out.println("finally");
+<section class="article-card ">
+<h2>演算子の評価</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>論点</th><th>ルール</th><th>注意</th></tr></thead><tbody><tr><td>後置++</td><td>式では元の値を使い、その後増える</td><td>i++ < 3 は比較後にiが増える。</td></tr><tr><td>前置++</td><td>先に増やした値を使う</td><td>++i < 3。</td></tr><tr><td>&& / ||</td><td>短絡評価あり</td><td>左だけで結果が決まると右辺は実行しない。</td></tr><tr><td>& / |</td><td>booleanでも右辺を評価</td><td>副作用の有無が変わる。</td></tr><tr><td>三項演算子</td><td>条件 ? 値1 : 値2</td><td>2つの値の型から式全体の型が決まる。</td></tr><tr><td>代入式</td><td>代入した値を式の値として返す</td><td>int b = a += 5; はa更新後の値がbへ。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>switch文とswitch式</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>項目</th><th>switch文</th><th>switch式</th></tr></thead><tbody><tr><td>目的</td><td>処理を分岐する文</td><td>値を返す式</td></tr><tr><td>代入</td><td>直接は値にならない</td><td>int n = switch(x) { ... }; が可能</td></tr><tr><td>case -></td><td>使用可</td><td>使用可</td></tr><tr><td>yield</td><td>通常不要</td><td>ブロックから値を返すとき必要</td></tr><tr><td>末尾セミコロン</td><td>switch文自体には不要</td><td>代入式なら最後に ; が必要</td></tr><tr><td>網羅性</td><td>必須ではない</td><td>値を返すため原則defaultなどで網羅が必要</td></tr><tr><td>null</td><td>switch対象がnullならNullPointerException</td><td>同じ。case nullは通常範囲外。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>yieldの返り値</h2>
+<pre><code>int result = switch (score) {
+    case 1 -&gt; 10;
+    case 2 -&gt; {
+        int tmp = score * 10;
+        yield tmp;      // このブロックが返す値
     }
-}
-// return前にfinallyが実行される。</code></pre><p>finally内でさらにreturnすると戻り値を上書きするため危険です。試験では実行順の確認に使われます。</p></section>
+    default -&gt; 0;
+};
+System.out.println(result);</code></pre>
+</section>
+<section class="article-card ">
+<h2>ループの実行順</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>構文</th><th>実行順</th><th>抜ける基準</th></tr></thead><tbody><tr><td>while</td><td>条件 → 本体 → 条件</td><td>最初からfalseなら0回。</td></tr><tr><td>do-while</td><td>本体 → 条件 → 本体</td><td>最後に ; が必要。falseでも1回は本体実行。</td></tr><tr><td>for</td><td>初期化 → 条件 → 本体 → 更新 → 条件</td><td>breakなら更新式を実行せず抜ける。continueなら更新式へ進む。</td></tr><tr><td>拡張for</td><td>各要素を順に取り出す</td><td>インデックスは直接扱わない。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>break / continue / ラベル</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>命令</th><th>通常</th><th>ラベル付き</th></tr></thead><tbody><tr><td>break</td><td>一番内側のループ/switchを抜ける</td><td>指定ラベルのブロックを抜ける。</td></tr><tr><td>continue</td><td>一番内側のループの次回判定へ</td><td>指定ラベルのループの次回判定へ。ブロックラベルには不可。</td></tr><tr><td>finally</td><td>break/continue/return前にも実行</td><td>例外・制御移動より優先して挟まる。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>do-whileと++の例</h2>
+<pre><code>int i = 0;
+do {
+    System.out.print(i);
+} while (i++ &lt; 2);
+System.out.println(&quot;/&quot; + i);
+// 出力: 012/3
+// 条件判定で i++ が実行され、falseになった判定でも増加は残る。</code></pre>
+</section>
+<section class="article-card ">
+<h2>境界値</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>メソッド/操作</th><th>有効範囲</th><th>範囲外</th></tr></thead><tbody><tr><td>charAt(i)</td><td>0〜length-1</td><td>StringIndexOutOfBoundsException</td></tr><tr><td>substring(begin,end)</td><td>0 <= begin <= end <= length</td><td>StringIndexOutOfBoundsException</td></tr><tr><td>array[i]</td><td>0〜length-1</td><td>ArrayIndexOutOfBoundsException</td></tr><tr><td>list.get(i)</td><td>0〜size-1</td><td>IndexOutOfBoundsException</td></tr></tbody></table></div>
+</section>
+
     </main>
   </div>
   <script src="data/questions.js"></script>

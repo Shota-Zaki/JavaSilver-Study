@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - Java実行・package/import</title>
+  <title>Java Silver Study - Java実行・宣言ルール</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -15,19 +15,24 @@
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
     <main class="main reference-main">
-      <section class="hero reference-hero">
+      <section class="hero reference-hero compact-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>Java実行・package/import</h1>
-        <p>Javaファイル、main、package/import、javac/javaの最小ルールを整理します。</p>
+        <h1>Java実行・宣言ルール</h1>
+        <p>main、ファイル名、package/import、識別子をまとめて確認。</p>
       </section>
-<section class="article-card"><h2>mainメソッド</h2><div class="table-wrap"><table class="ref-table"><thead><tr><th>形式</th><th>可否</th><th>注意</th></tr></thead><tbody><tr><td><code>public static void main(String[] args)</code></td><td>OK</td><td>標準形。</td></tr><tr><td><code>public static void main(String... args)</code></td><td>OK</td><td>可変長引数。String[] と同等に扱える。</td></tr><tr><td><code>static public void main(String[] args)</code></td><td>OK</td><td>修飾子順は問わない。</td></tr><tr><td><code>public void main(String[] args)</code></td><td>NG</td><td>staticでないため起動用mainではない。</td></tr><tr><td><code>public static int main(String[] args)</code></td><td>NG</td><td>戻り値はvoidが必要。</td></tr></tbody></table></div></section><section class="article-card"><h2>package/importの順序</h2><pre><code>// 1. package宣言があるなら最初。コメントは前に書ける。
-package ex.sample;
+<section class="article-card ">
+<h2>実行可能なクラス</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>確認項目</th><th>正しい形</th><th>間違いやすい点</th></tr></thead><tbody><tr><td>mainメソッド</td><td>public static void main(String[] args) / public static void main(String... args)</td><td>String args[] も配列として成立するが、戻り値void、static、引数の型が崩れると起動対象にならない。</td></tr><tr><td>ファイル名</td><td>public class A は A.java に保存</td><td>publicでないトップレベルクラスは同一ファイルに複数書ける。publicは1つだけ。</td></tr><tr><td>javaコマンド</td><td>java Main a b</td><td>args[0] が a、args[1] が b。クラス名に .class は付けない。</td></tr><tr><td>javacコマンド</td><td>javac -d build src/ex/Main.java</td><td>-d は出力先。package宣言に従ってディレクトリが作られる。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>package / import</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>ルール</th><th>例</th><th>注意</th></tr></thead><tbody><tr><td>package宣言は先頭</td><td>package ex.sample;</td><td>コメント以外をpackageより前に書けない。importより前。</td></tr><tr><td>importは型名を省略するだけ</td><td>import java.util.ArrayList;</td><td>importしてもクラス自体が作られるわけではない。</td></tr><tr><td>* はそのパッケージ直下だけ</td><td>import java.util.*;</td><td>java.util.concurrent は含まない。サブパッケージは別。</td></tr><tr><td>java.langは自動import</td><td>String, System, Integer</td><td>java.util.Listなどは自動ではない。</td></tr><tr><td>同名クラス衝突</td><td>java.util.Date と java.sql.Date</td><td>両方を単純名で同時使用できない。片方は完全修飾名を使う。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>識別子・予約語・コメント</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>項目</th><th>OK</th><th>NG / 注意</th></tr></thead><tbody><tr><td>識別子の開始</td><td>$name, _name, name1</td><td>1name は不可。予約語も不可。</td></tr><tr><td>var</td><td>変数名として使える場面がある</td><td>ローカル変数型推論として使う場合は初期化必須。</td></tr><tr><td>コメント</td><td>//, /* */, /** */</td><td>文字列リテラル中の // はコメントではない。</td></tr></tbody></table></div>
+</section>
 
-// 2. import宣言
-import java.util.ArrayList;
-
-// 3. class/interface/recordなど
-public class Main { }</code></pre><ul><li>packageより前にimportを書くとコンパイルエラー。</li><li><code>java.lang</code> は自動importされる。</li><li><code>import ex.*;</code> はex直下の型だけ。サブパッケージまでは対象外。</li><li><code>import static</code> はクラスのstaticメンバ用。通常のクラスimportとは違う。</li></ul></section><section class="article-card"><h2>javac / java</h2><div class="table-wrap"><table class="ref-table"><thead><tr><th>目的</th><th>例</th><th>見る点</th></tr></thead><tbody><tr><td>コンパイル</td><td><code>javac -d build src/ex/Main.java</code></td><td>-dで出力先を指定できる。packageに応じたフォルダが作られる。</td></tr><tr><td>実行</td><td><code>java -cp build ex.Main</code></td><td>クラス名は完全修飾名。<code>.class</code>や<code>.java</code>は付けない。</td></tr><tr><td>起動引数</td><td><code>java Main A B</code></td><td>args[0]がA、args[1]がB。</td></tr></tbody></table></div></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

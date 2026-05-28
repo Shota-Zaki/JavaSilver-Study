@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - クラス・インスタンス・static・参照</title>
+  <title>Java Silver Study - クラス・static・record</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -15,21 +15,28 @@
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
     <main class="main reference-main">
-      <section class="hero reference-hero">
+      <section class="hero reference-hero compact-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>クラス・インスタンス・static・参照</h1>
-        <p>クラスからインスタンスを作り、参照型変数がその参照を保持します。</p>
+        <h1>クラス・static・record</h1>
+        <p>インスタンス、参照、static、修飾子、recordをまとめて確認。</p>
       </section>
-<section class="article-card"><h2>参照型変数はリンクを持つ</h2><pre><code>Item a = new Item();
-Item b = new Item();
-a = b; // aとbは同じインスタンスを参照する</code></pre><p>代入でコピーされるのはインスタンス本体ではなく参照です。ガベージコレクション対象は「どこからも参照されないインスタンス」です。</p></section><section class="article-card"><h2>staticとinstance</h2><div class="table-wrap"><table class="ref-table"><thead><tr><th>種類</th><th>所属</th><th>アクセス</th></tr></thead><tbody><tr><td>インスタンスフィールド</td><td>各インスタンス</td><td>参照変数から使う。</td></tr><tr><td>staticフィールド</td><td>クラス</td><td>全インスタンスで共有。クラス名アクセスが基本。</td></tr><tr><td>インスタンスメソッド</td><td>各インスタンス</td><td>staticメソッドから直接呼べない。</td></tr><tr><td>staticメソッド</td><td>クラス</td><td>thisは使えない。</td></tr></tbody></table></div></section><section class="article-card"><h2>フィールドとメソッドの解決差</h2><pre><code>class A { String name = "A"; String getName(){ return name; } }
-class B extends A { String name = "B"; String getName(){ return name; } }
-A obj = new B();
-System.out.println(obj.name);    // A: フィールドは宣言型
-System.out.println(obj.getName());// B: メソッドは実体型でoverride</code></pre></section><section class="article-card"><h2>record</h2><pre><code>record Item(String name, int price) {}
-Item i = new Item("apple", 100);
-System.out.println(i.name());
-System.out.println(i); // Item[name=apple, price=100]</code></pre><p>recordはコンストラクタ、アクセサ、equals、hashCode、toStringが自動生成されます。</p></section>
+<section class="article-card ">
+<h2>インスタンスと参照</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>項目</th><th>意味</th><th>注意</th></tr></thead><tbody><tr><td>new</td><td>ヒープにインスタンスを作る</td><td>変数にはインスタンスそのものではなく参照が入る。</td></tr><tr><td>参照代入</td><td>同じインスタンスを指すようになる</td><td>片方でフィールド変更すると同じ実体に反映。</td></tr><tr><td>null</td><td>参照先なし</td><td>println(null参照そのもの)はnull表示。メソッド呼び出しは例外。</td></tr><tr><td>GC対象</td><td>どこからも参照されないインスタンス</td><td>対象になるだけで即回収とは限らない。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>staticとインスタンス</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>項目</th><th>所属</th><th>注意</th></tr></thead><tbody><tr><td>インスタンスフィールド</td><td>各インスタンス</td><td>newごとに別。</td></tr><tr><td>staticフィールド</td><td>クラス</td><td>全インスタンスで共有。インスタンス経由でもアクセスできるが推奨されない。</td></tr><tr><td>staticメソッド</td><td>クラス</td><td>thisは使えない。直接インスタンスメンバへアクセスできない。</td></tr><tr><td>フィールド隠蔽</td><td>宣言型で解決</td><td>メソッドのような動的ディスパッチではない。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>修飾子</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>修飾子</th><th>使いどころ</th><th>注意</th></tr></thead><tbody><tr><td>public</td><td>どこからでも</td><td>トップレベルpublicクラスはファイル名一致。</td></tr><tr><td>protected</td><td>同一パッケージ + 継承先</td><td>別パッケージではサブクラス経由の扱いに注意。</td></tr><tr><td>default</td><td>同一パッケージ</td><td>修飾子を書かない。</td></tr><tr><td>private</td><td>同一クラス内</td><td>継承先からも直接アクセス不可。</td></tr><tr><td>final</td><td>再代入不可/継承不可/override不可</td><td>参照型finalは参照先変更不可であり、オブジェクトの中身変更とは別。</td></tr><tr><td>abstract</td><td>未実装を持てる</td><td>abstractメソッドは本体なし。abstractクラスはnew不可。</td></tr><tr><td>static</td><td>クラス所属</td><td>トップレベルクラスには使えない。ネストクラスでは可。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>record</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>項目</th><th>自動生成</th><th>注意</th></tr></thead><tbody><tr><td>コンポーネント</td><td>private finalフィールド、アクセサ、コンストラクタ</td><td>アクセサは name() 形式。getName()ではない。</td></tr><tr><td>equals/hashCode/toString</td><td>自動生成</td><td>内容比較になる。</td></tr><tr><td>追加コンストラクタ</td><td>compact constructor可能</td><td>フィールド代入のタイミングに注意。</td></tr><tr><td>制限</td><td>暗黙final</td><td>extends不可。interface実装は可。</td></tr></tbody></table></div>
+</section>
+
     </main>
   </div>
   <script src="data/questions.js"></script>

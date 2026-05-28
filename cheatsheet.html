@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - 頻出ルール早見表</title>
+  <title>Java Silver Study - 直前確認・ひっかけ</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -15,12 +15,20 @@
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
     <main class="main reference-main">
-      <section class="hero reference-hero">
+      <section class="hero reference-hero compact-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>頻出ルール早見表</h1>
-        <p>直前確認用に、落としやすい規則だけを圧縮しています。</p>
+        <h1>直前確認・ひっかけ</h1>
+        <p>試験直前に見るべきルールだけをまとめる。</p>
       </section>
-<section class="article-card"><h2>型・変数</h2><ul class="check-list"><li>ローカル変数は自動初期化されない。</li><li>整数リテラルは基本int。</li><li>floatにはFが必要。</li><li>byte/short/charの演算はintになりやすい。</li><li>varはローカル変数だけ。初期値必須。</li></ul></section><section class="article-card"><h2>制御・評価</h2><ul class="check-list"><li><code>&&</code> と <code>||</code> は短絡評価。</li><li><code>&</code> と <code>|</code> はbooleanでも右辺を評価する。</li><li>do-whileは最低1回。</li><li>forのcontinue後は更新式へ進む。</li><li>switch式は値を返し、末尾にセミコロンが必要。</li></ul></section><section class="article-card"><h2>OOP</h2><ul class="check-list"><li>コンストラクタは継承されない。</li><li>privateメンバはサブクラスから直接見えない。</li><li>フィールドは宣言型、overrideメソッドは実体型。</li><li>overloadはコンパイル時、overrideは実行時。</li><li>interfaceメソッド実装はpublicが必要。</li></ul></section><section class="article-card"><h2>例外</h2><ul class="check-list"><li>チェック例外はcatchまたはthrows。</li><li>catchはサブクラスを先に書く。</li><li>finallyは原則実行される。</li><li>try-with-resourcesのcloseは逆順。</li><li>RuntimeException配下は処理必須ではない。</li></ul></section>
+<section class="article-card ">
+<h2>直前チェック</h2>
+<ul class="check-list"><li>コード問題は、出力を考える前にコンパイル可否を確認する。</li><li>byte/short/charの演算結果は基本int。複合代入だけ暗黙キャストに注意する。</li><li>Stringは不変。StringBuilderは可変。戻り値を使うか、元が変わるかを見る。</li><li>==は参照比較。equalsは内容比較。ただし配列のequalsは内容比較ではない。</li><li>whileは0回あり得る。do-whileは最低1回。forのcontinueは更新式へ進む。</li><li>switch式は値を返す。ブロックではyieldが必要。代入式なら最後にセミコロン。</li><li>コンストラクタは戻り値を書かない。voidを書いたら通常メソッド。</li><li>オーバーロードはコンパイル時、オーバーライドは実行時の実体型。</li><li>interfaceのフィールドはpublic static final、抽象メソッドはpublic abstract。</li><li>チェック例外はcatchまたはthrowsが必要。RuntimeException系は不要。</li></ul>
+</section>
+<section class="article-card ">
+<h2>典型ひっかけ</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>ひっかけ</th><th>正しい見方</th></tr></thead><tbody><tr><td>return後の文</td><td>到達不能ならコンパイルエラー。</td></tr><tr><td>catchの順序</td><td>親Exceptionを先にすると子catchが到達不能。</td></tr><tr><td>staticからインスタンスメンバ</td><td>直接は不可。インスタンス経由が必要。</td></tr><tr><td>フィールドとメソッド</td><td>フィールドは宣言型、オーバーライドメソッドは実体型。</td></tr><tr><td>List.of</td><td>変更不可。add/set/remove不可。</td></tr><tr><td>null表示</td><td>参照自体をprintlnならnull。メソッド呼び出しは例外。</td></tr></tbody></table></div>
+</section>
+
     </main>
   </div>
   <script src="data/questions.js"></script>

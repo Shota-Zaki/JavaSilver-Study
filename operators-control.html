@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - 演算子・制御構造</title>
+  <title>Java Silver Study - 演算子・分岐・ループ</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -15,26 +15,50 @@
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
     <main class="main reference-main">
-      <section class="hero reference-hero">
+      <section class="hero reference-hero compact-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>演算子・制御構造</h1>
-        <p>演算子の評価順、短絡評価、switch文/式を整理します。</p>
+        <h1>演算子・分岐・ループ</h1>
+        <p>評価順、switch式、yield、do-while、break/continueを一か所に集約。</p>
       </section>
-<section class="article-card"><h2>インクリメント・デクリメント</h2><pre><code>int a = 5;
-int x = a++; // x=5, a=6
-int y = ++a; // a=7, y=7</code></pre><p>後置は「式に使う値を先に返し、その後で変数を更新」。前置は「更新してから式に使う」。同じ式に何度も同じ変数が出る問題は、左から値と副作用を表にして追うのが安全です。</p></section><section class="article-card"><h2>&& と &</h2><div class="table-wrap"><table class="ref-table"><thead><tr><th>演算子</th><th>短絡評価</th><th>右辺評価</th></tr></thead><tbody><tr><td><code>&&</code></td><td>あり</td><td>左辺がfalseなら右辺は評価しない。</td></tr><tr><td><code>&</code></td><td>なし</td><td>boolean同士なら必ず右辺も評価する。</td></tr><tr><td><code>||</code></td><td>あり</td><td>左辺がtrueなら右辺は評価しない。</td></tr><tr><td><code>|</code></td><td>なし</td><td>boolean同士なら必ず右辺も評価する。</td></tr></tbody></table></div></section><section class="article-card"><h2>switch文とswitch式</h2><div class="table-wrap"><table class="ref-table"><thead><tr><th>項目</th><th>switch文</th><th>switch式</th></tr></thead><tbody><tr><td>値を返すか</td><td>返さない</td><td>返す。代入やreturnに使える。</td></tr><tr><td>末尾セミコロン</td><td>不要</td><td>式なので代入文全体の末尾に必要。</td></tr><tr><td><code>yield</code></td><td>使わない</td><td>ブロック形式で値を返す。</td></tr><tr><td>網羅性</td><td>必須ではない</td><td>値を返すなら原則必要。defaultで補うことが多い。</td></tr></tbody></table></div></section><section class="article-card"><h2>yieldの返り値</h2><pre><code>int result = switch (n) {
+<section class="article-card ">
+<h2>演算子の評価</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>論点</th><th>ルール</th><th>注意</th></tr></thead><tbody><tr><td>後置++</td><td>式では元の値を使い、その後増える</td><td>i++ < 3 は比較後にiが増える。</td></tr><tr><td>前置++</td><td>先に増やした値を使う</td><td>++i < 3。</td></tr><tr><td>&& / ||</td><td>短絡評価あり</td><td>左だけで結果が決まると右辺は実行しない。</td></tr><tr><td>& / |</td><td>booleanでも右辺を評価</td><td>副作用の有無が変わる。</td></tr><tr><td>三項演算子</td><td>条件 ? 値1 : 値2</td><td>2つの値の型から式全体の型が決まる。</td></tr><tr><td>代入式</td><td>代入した値を式の値として返す</td><td>int b = a += 5; はa更新後の値がbへ。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>switch文とswitch式</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>項目</th><th>switch文</th><th>switch式</th></tr></thead><tbody><tr><td>目的</td><td>処理を分岐する文</td><td>値を返す式</td></tr><tr><td>代入</td><td>直接は値にならない</td><td>int n = switch(x) { ... }; が可能</td></tr><tr><td>case -></td><td>使用可</td><td>使用可</td></tr><tr><td>yield</td><td>通常不要</td><td>ブロックから値を返すとき必要</td></tr><tr><td>末尾セミコロン</td><td>switch文自体には不要</td><td>代入式なら最後に ; が必要</td></tr><tr><td>網羅性</td><td>必須ではない</td><td>値を返すため原則defaultなどで網羅が必要</td></tr><tr><td>null</td><td>switch対象がnullならNullPointerException</td><td>同じ。case nullは通常範囲外。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>yieldの返り値</h2>
+<pre><code>int result = switch (score) {
     case 1 -&gt; 10;
     case 2 -&gt; {
-        int tmp = n * 10;
-        yield tmp; // このcaseブロックの値になる
+        int tmp = score * 10;
+        yield tmp;      // このブロックが返す値
     }
     default -&gt; 0;
 };
-System.out.println(result);</code></pre><p><code>yield</code> はswitch式のcaseブロックから値を返します。メソッドから抜ける <code>return</code> とは別物です。</p></section><section class="article-card"><h2>switch(null)</h2><pre><code>String s = null;
-switch (s) {          // Java Silver範囲ではNullPointerExceptionに注意
-    case "A" -&gt; System.out.println("A");
-    default -&gt; System.out.println("default");
-}</code></pre></section>
+System.out.println(result);</code></pre>
+</section>
+<section class="article-card ">
+<h2>ループの実行順</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>構文</th><th>実行順</th><th>抜ける基準</th></tr></thead><tbody><tr><td>while</td><td>条件 → 本体 → 条件</td><td>最初からfalseなら0回。</td></tr><tr><td>do-while</td><td>本体 → 条件 → 本体</td><td>最後に ; が必要。falseでも1回は本体実行。</td></tr><tr><td>for</td><td>初期化 → 条件 → 本体 → 更新 → 条件</td><td>breakなら更新式を実行せず抜ける。continueなら更新式へ進む。</td></tr><tr><td>拡張for</td><td>各要素を順に取り出す</td><td>インデックスは直接扱わない。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>break / continue / ラベル</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>命令</th><th>通常</th><th>ラベル付き</th></tr></thead><tbody><tr><td>break</td><td>一番内側のループ/switchを抜ける</td><td>指定ラベルのブロックを抜ける。</td></tr><tr><td>continue</td><td>一番内側のループの次回判定へ</td><td>指定ラベルのループの次回判定へ。ブロックラベルには不可。</td></tr><tr><td>finally</td><td>break/continue/return前にも実行</td><td>例外・制御移動より優先して挟まる。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>do-whileと++の例</h2>
+<pre><code>int i = 0;
+do {
+    System.out.print(i);
+} while (i++ &lt; 2);
+System.out.println(&quot;/&quot; + i);
+// 出力: 012/3
+// 条件判定で i++ が実行され、falseになった判定でも増加は残る。</code></pre>
+</section>
+
     </main>
   </div>
   <script src="data/questions.js"></script>

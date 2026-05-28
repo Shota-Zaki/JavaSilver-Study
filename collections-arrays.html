@@ -15,23 +15,31 @@
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
     <main class="main reference-main">
-      <section class="hero reference-hero">
+      <section class="hero reference-hero compact-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>配列・ArrayList・List</h1>
-        <p>配列は固定長、ArrayListは可変長。宣言・生成・アクセス方法が違います。</p>
+        <p>配列宣言、初期化、List操作、拡張for文をまとめて確認。</p>
       </section>
-<section class="article-card"><h2>配列宣言と生成</h2><pre><code>int[] a;      // OK
-int b[];      // OK
-// int[3] c;  // NG: 宣言時に要素数は書かない
-int[] d = new int[3];
-int[] e = {1, 2, 3};</code></pre></section><section class="article-card"><h2>多次元配列</h2><pre><code>int[][] a = new int[2][];
-a[0] = new int[3];
-a[1] = new int[]{10, 20};</code></pre><p>2次元配列は「配列の配列」です。内側の長さは揃っていなくてもよいです。</p></section><section class="article-card"><h2>ArrayList</h2><pre><code>java.util.ArrayList&lt;String&gt; list = new java.util.ArrayList&lt;&gt;();
-list.add("A");
-list.add("B");
-String old = list.set(0, "X"); // oldは"A"
-String removed = list.remove(1); // removedは"B"</code></pre></section><section class="article-card"><h2>List.of</h2><p><code>List.of(...)</code> は変更不可のListを返します。<code>add</code> や <code>set</code> は実行時例外になります。null要素も不可です。</p><pre><code>java.util.List&lt;String&gt; list = java.util.List.of("A", "B");
-// list.add("C"); // UnsupportedOperationException</code></pre></section>
+<section class="article-card ">
+<h2>配列</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>項目</th><th>書き方</th><th>注意</th></tr></thead><tbody><tr><td>宣言</td><td>int[] a; / int a[];</td><td>要素数は宣言時に書かない。int[3] a は不可。</td></tr><tr><td>生成</td><td>new int[3]</td><td>要素は0で初期化。参照型配列ならnull。</td></tr><tr><td>初期化</td><td>int[] a = {1,2,3};</td><td>宣言と同時でない場合は new int[]{...} が必要。</td></tr><tr><td>length</td><td>a.length</td><td>フィールド。()は付けない。</td></tr><tr><td>範囲</td><td>0〜length-1</td><td>範囲外でArrayIndexOutOfBoundsException。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>多次元配列</h2>
+<pre><code>int[][] a = new int[2][];
+a[0] = new int[]{1, 2};
+a[1] = new int[]{3};
+System.out.println(a[1][0]); // 3</code></pre>
+</section>
+<section class="article-card ">
+<h2>ArrayList / List</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>操作</th><th>戻り値/挙動</th><th>注意</th></tr></thead><tbody><tr><td>add(E)</td><td>boolean</td><td>末尾追加。</td></tr><tr><td>add(index, E)</td><td>void</td><td>指定位置に挿入。既存要素は後ろへ。</td></tr><tr><td>set(index, E)</td><td>置き換え前の要素</td><td>indexが存在しないとIndexOutOfBoundsException。追加ではない。</td></tr><tr><td>remove(index)</td><td>削除した要素</td><td>Integerリストでremove(1)はインデックス削除。</td></tr><tr><td>remove(Object)</td><td>boolean</td><td>Integer.valueOf(1)なら値削除。</td></tr><tr><td>size()</td><td>要素数</td><td>配列はlength、Stringはlength()。</td></tr><tr><td>List.of</td><td>変更不可List</td><td>add/set/removeでUnsupportedOperationException。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>拡張for文</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>対象</th><th>ルール</th><th>注意</th></tr></thead><tbody><tr><td>primitive配列</td><td>取り出し変数へ代入しても元配列は変わらない</td><td>値のコピー。</td></tr><tr><td>参照型配列/List</td><td>参照先オブジェクトの中身変更は反映</td><td>取り出し変数に別インスタンスを代入しても元要素は差し替わらない。</td></tr><tr><td>ArrayListを走査中にremove</td><td>ConcurrentModificationExceptionの可能性</td><td>試験では実行時例外として問われる。</td></tr></tbody></table></div>
+</section>
+
     </main>
   </div>
   <script src="data/questions.js"></script>

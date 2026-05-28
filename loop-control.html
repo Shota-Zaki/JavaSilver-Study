@@ -15,36 +15,50 @@
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
     <main class="main reference-main">
-      <section class="hero reference-hero">
+      <section class="hero reference-hero compact-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>ループ・do-while・break/continue</h1>
-        <p>ループは条件判定の位置、更新式のタイミング、break/continue後の動作で決まります。</p>
+        <p>while、do-while、for、break/continue、ラベルの細かい挙動。</p>
       </section>
-<section class="article-card"><h2>while / do-while / forの違い</h2><div class="table-wrap"><table class="ref-table"><thead><tr><th>構文</th><th>条件判定</th><th>最低実行回数</th><th>注意</th></tr></thead><tbody><tr><td>while</td><td>本体前</td><td>0回</td><td>条件が最初からfalseなら本体なし。</td></tr><tr><td>do-while</td><td>本体後</td><td>1回</td><td>最後の<code>;</code>が必要。</td></tr><tr><td>for</td><td>本体前</td><td>0回</td><td>更新式は本体後。continue後にも更新式へ進む。</td></tr></tbody></table></div></section><section class="article-card"><h2>do-while と i++</h2><pre><code>int i = 0;
+<section class="article-card ">
+<h2>演算子の評価</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>論点</th><th>ルール</th><th>注意</th></tr></thead><tbody><tr><td>後置++</td><td>式では元の値を使い、その後増える</td><td>i++ < 3 は比較後にiが増える。</td></tr><tr><td>前置++</td><td>先に増やした値を使う</td><td>++i < 3。</td></tr><tr><td>&& / ||</td><td>短絡評価あり</td><td>左だけで結果が決まると右辺は実行しない。</td></tr><tr><td>& / |</td><td>booleanでも右辺を評価</td><td>副作用の有無が変わる。</td></tr><tr><td>三項演算子</td><td>条件 ? 値1 : 値2</td><td>2つの値の型から式全体の型が決まる。</td></tr><tr><td>代入式</td><td>代入した値を式の値として返す</td><td>int b = a += 5; はa更新後の値がbへ。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>switch文とswitch式</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>項目</th><th>switch文</th><th>switch式</th></tr></thead><tbody><tr><td>目的</td><td>処理を分岐する文</td><td>値を返す式</td></tr><tr><td>代入</td><td>直接は値にならない</td><td>int n = switch(x) { ... }; が可能</td></tr><tr><td>case -></td><td>使用可</td><td>使用可</td></tr><tr><td>yield</td><td>通常不要</td><td>ブロックから値を返すとき必要</td></tr><tr><td>末尾セミコロン</td><td>switch文自体には不要</td><td>代入式なら最後に ; が必要</td></tr><tr><td>網羅性</td><td>必須ではない</td><td>値を返すため原則defaultなどで網羅が必要</td></tr><tr><td>null</td><td>switch対象がnullならNullPointerException</td><td>同じ。case nullは通常範囲外。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>yieldの返り値</h2>
+<pre><code>int result = switch (score) {
+    case 1 -&gt; 10;
+    case 2 -&gt; {
+        int tmp = score * 10;
+        yield tmp;      // このブロックが返す値
+    }
+    default -&gt; 0;
+};
+System.out.println(result);</code></pre>
+</section>
+<section class="article-card ">
+<h2>ループの実行順</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>構文</th><th>実行順</th><th>抜ける基準</th></tr></thead><tbody><tr><td>while</td><td>条件 → 本体 → 条件</td><td>最初からfalseなら0回。</td></tr><tr><td>do-while</td><td>本体 → 条件 → 本体</td><td>最後に ; が必要。falseでも1回は本体実行。</td></tr><tr><td>for</td><td>初期化 → 条件 → 本体 → 更新 → 条件</td><td>breakなら更新式を実行せず抜ける。continueなら更新式へ進む。</td></tr><tr><td>拡張for</td><td>各要素を順に取り出す</td><td>インデックスは直接扱わない。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>break / continue / ラベル</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>命令</th><th>通常</th><th>ラベル付き</th></tr></thead><tbody><tr><td>break</td><td>一番内側のループ/switchを抜ける</td><td>指定ラベルのブロックを抜ける。</td></tr><tr><td>continue</td><td>一番内側のループの次回判定へ</td><td>指定ラベルのループの次回判定へ。ブロックラベルには不可。</td></tr><tr><td>finally</td><td>break/continue/return前にも実行</td><td>例外・制御移動より優先して挟まる。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>do-whileと++の例</h2>
+<pre><code>int i = 0;
 do {
     System.out.print(i);
-} while (i++ &lt; 3);
-System.out.println("/" + i);
-// 出力: 0123/4</code></pre><p>条件式の <code>i++</code> は、比較に使った後でiを増やします。条件がfalseになった最後の評価でも副作用は残ります。</p></section><section class="article-card"><h2>break と continue</h2><pre><code>for (int i = 0; i &lt; 5; i++) {
-    if (i == 2) break;
-    System.out.print(i);
-}
-// 01。breakするとforの更新式には進まない。
+} while (i++ &lt; 2);
+System.out.println(&quot;/&quot; + i);
+// 出力: 012/3
+// 条件判定で i++ が実行され、falseになった判定でも増加は残る。</code></pre>
+</section>
 
-for (int i = 0; i &lt; 5; i++) {
-    if (i == 2) continue;
-    System.out.print(i);
-}
-// 0134。continue後はforの更新式へ進む。</code></pre></section><section class="article-card"><h2>whileでcontinueを使う注意</h2><pre><code>int i = 0;
-while (i &lt; 3) {
-    if (i == 1) continue; // i++に到達せず無限ループ
-    i++;
-}</code></pre><p>whileでは更新処理を自分で書くため、continueで更新前に戻ると無限ループになりやすいです。</p></section><section class="article-card"><h2>ラベル付きbreak/continue</h2><pre><code>outer:
-for (int i = 0; i &lt; 3; i++) {
-    for (int j = 0; j &lt; 3; j++) {
-        if (j == 1) break outer; // 外側ループごと抜ける
-    }
-}</code></pre></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

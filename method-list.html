@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - 頻出メソッド一覧</title>
+  <title>Java Silver Study - 頻出メソッド・境界値</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -15,12 +15,28 @@
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
     <main class="main reference-main">
-      <section class="hero reference-hero">
+      <section class="hero reference-hero compact-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>頻出メソッド一覧</h1>
-        <p>戻り値と副作用を中心に頻出メソッドを整理します。</p>
+        <h1>頻出メソッド・境界値</h1>
+        <p>戻り値、変更有無、例外をメソッドごとに確認。</p>
       </section>
-<section class="article-card"><h2>String</h2><div class="table-wrap"><table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>注意</th></tr></thead><tbody><tr><td>charAt(int)</td><td>char</td><td>範囲外は例外。</td></tr><tr><td>substring(int,int)</td><td>String</td><td>endは含まない。元は変わらない。</td></tr><tr><td>indexOf(String)</td><td>int</td><td>見つからなければ-1。</td></tr><tr><td>replace(old,new)</td><td>String</td><td>元は変わらない。</td></tr><tr><td>equals(Object)</td><td>boolean</td><td>内容比較。呼び出し元nullは不可。</td></tr></tbody></table></div></section><section class="article-card"><h2>StringBuilder</h2><div class="table-wrap"><table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>注意</th></tr></thead><tbody><tr><td>append(x)</td><td>StringBuilder</td><td>自身を変更して自身を返す。</td></tr><tr><td>insert(i,x)</td><td>StringBuilder</td><td>位置に挿入。</td></tr><tr><td>delete(s,e)</td><td>StringBuilder</td><td>endは含まない。</td></tr><tr><td>reverse()</td><td>StringBuilder</td><td>自身を反転。</td></tr><tr><td>toString()</td><td>String</td><td>Stringへ変換。</td></tr></tbody></table></div></section><section class="article-card"><h2>ArrayList/List</h2><div class="table-wrap"><table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>注意</th></tr></thead><tbody><tr><td>add(E)</td><td>boolean</td><td>末尾追加。</td></tr><tr><td>add(int,E)</td><td>void</td><td>指定位置に挿入。</td></tr><tr><td>set(int,E)</td><td>置換前の要素</td><td>サイズは増えない。</td></tr><tr><td>remove(int)</td><td>削除した要素</td><td>添字指定。</td></tr><tr><td>remove(Object)</td><td>boolean</td><td>一致要素削除。</td></tr><tr><td>size()</td><td>int</td><td>配列のlengthとは違う。</td></tr></tbody></table></div></section>
+<section class="article-card ">
+<h2>String</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>例外/注意</th></tr></thead><tbody><tr><td>length()</td><td>int</td><td>配列はlengthフィールド。</td></tr><tr><td>charAt(int)</td><td>char</td><td>範囲外で例外。</td></tr><tr><td>substring(begin,end)</td><td>String</td><td>endは含まない。元Stringは変わらない。</td></tr><tr><td>indexOf(String)</td><td>int</td><td>なければ-1。</td></tr><tr><td>replace</td><td>String</td><td>戻り値を使わないと変更なし。</td></tr><tr><td>equals</td><td>boolean</td><td>null左辺に注意。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>StringBuilder</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>注意</th></tr></thead><tbody><tr><td>append</td><td>StringBuilder</td><td>自分を変更。</td></tr><tr><td>insert</td><td>StringBuilder</td><td>範囲に注意。</td></tr><tr><td>delete</td><td>StringBuilder</td><td>endは含まない。</td></tr><tr><td>reverse</td><td>StringBuilder</td><td>自分を変更。</td></tr><tr><td>toString</td><td>String</td><td>Stringへ変換。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>List / ArrayList</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>注意</th></tr></thead><tbody><tr><td>add(E)</td><td>boolean</td><td>末尾追加。</td></tr><tr><td>add(index,E)</td><td>void</td><td>挿入。</td></tr><tr><td>set</td><td>置換前の要素</td><td>追加ではない。</td></tr><tr><td>remove(index)</td><td>削除した要素</td><td>Integerリストで混同注意。</td></tr><tr><td>size()</td><td>int</td><td>配列はlength。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>ラッパー / Object / System</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>項目</th><th>戻り値</th><th>注意</th></tr></thead><tbody><tr><td>Integer.parseInt</td><td>int</td><td>変換不可でNumberFormatException。</td></tr><tr><td>Integer.valueOf</td><td>Integer</td><td>ラッパーを返す。</td></tr><tr><td>Object.toString</td><td>String</td><td>nullに対して呼べない。</td></tr><tr><td>System.out.println</td><td>void</td><td>代入できない。</td></tr></tbody></table></div>
+</section>
+
     </main>
   </div>
   <script src="data/questions.js"></script>

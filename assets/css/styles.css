@@ -2200,3 +2200,19 @@ pre {
 .reference-section-title { margin: 22px 0 10px; }
 .reference-section-title h2 { margin: 0 0 4px; }
 .reference-section-title p { margin: 0; color: var(--muted); }
+
+/* Dense reference article UI */
+.compact-hero { padding-bottom: 18px; }
+.simple-grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.rule-table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.rule-table th, .rule-table td { border: 1px solid var(--line); padding: 10px 12px; vertical-align: top; }
+.rule-table th { background: #eef2f7; text-align: left; font-weight: 800; white-space: nowrap; }
+.reference-main pre { margin: 10px 0 14px; }
+.reference-main .article-card { margin: 16px 0; }
+.reference-main .article-card h2 { margin-top: 0; }
+.reference-main .article-card p, .reference-main .article-card li, .rule-table td { line-height: 1.75; }
+.reference-main .term-card pre { margin-top: 8px; }
+@media (max-width: 640px) {
+  .rule-table th, .rule-table td { padding: 9px 10px; font-size: 13px; }
+  .rule-table th { white-space: normal; }
+}

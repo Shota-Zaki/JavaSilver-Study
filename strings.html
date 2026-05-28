@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - String・StringBuilder</title>
+  <title>Java Silver Study - 文字列・比較</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -15,22 +15,36 @@
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
     <main class="main reference-main">
-      <section class="hero reference-hero">
+      <section class="hero reference-hero compact-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>String・StringBuilder</h1>
-        <p>Stringは不変、StringBuilderは可変。この違いが出力問題の軸です。</p>
+        <h1>文字列・比較</h1>
+        <p>String、StringBuilder、同一性/同値性、internをまとめて確認。</p>
       </section>
-<section class="article-card"><h2>Stringは不変</h2><pre><code>String s = "abc";
-s.concat("d");
-System.out.println(s); // abc
-s = s.concat("d");
-System.out.println(s); // abcd</code></pre></section><section class="article-card"><h2>StringBuilderは可変</h2><pre><code>StringBuilder sb = new StringBuilder("abc");
-sb.append("d");
-System.out.println(sb); // abcd</code></pre></section><section class="article-card"><h2>よく出るメソッド</h2><div class="table-wrap"><table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値/挙動</th><th>注意</th></tr></thead><tbody><tr><td><code>charAt(index)</code></td><td>char</td><td>0始まり。範囲外は例外。</td></tr><tr><td><code>substring(begin,end)</code></td><td>String</td><td>endは含まない。</td></tr><tr><td><code>indexOf(str)</code></td><td>int</td><td>見つからないと-1。</td></tr><tr><td><code>equalsIgnoreCase(str)</code></td><td>boolean</td><td>呼び出し元がnullならNPE。</td></tr><tr><td><code>trim()</code></td><td>String</td><td>前後の空白を除いた新しい文字列。</td></tr></tbody></table></div></section><section class="article-card"><h2>StringBuilderの比較</h2><pre><code>StringBuilder a = new StringBuilder("x");
-StringBuilder b = new StringBuilder("x");
-System.out.println(a == b);      // false
-System.out.println(a.equals(b)); // false: StringBuilderは内容比較ではない
-System.out.println(a.toString().equals(b.toString())); // true</code></pre></section>
+<section class="article-card ">
+<h2>Stringの基本</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>操作</th><th>戻り値/副作用</th><th>注意</th></tr></thead><tbody><tr><td>concat / replace / substring / trim</td><td>新しいStringを返す</td><td>元のStringは変わらない。戻り値を代入しないと結果を失う。</td></tr><tr><td>charAt(index)</td><td>charを返す</td><td>範囲外でStringIndexOutOfBoundsException。</td></tr><tr><td>indexOf</td><td>見つかれば位置、なければ-1</td><td>0始まり。</td></tr><tr><td>equals</td><td>内容比較</td><td>null.equals(...) はNullPointerException。"abc".equals(s) は安全。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>StringBuilder</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>操作</th><th>戻り値/副作用</th><th>注意</th></tr></thead><tbody><tr><td>append / insert / delete / reverse</td><td>同じインスタンスを変更して自分を返す</td><td>Stringと違い可変。</td></tr><tr><td>toString</td><td>Stringを返す</td><td>StringBuilder同士のequalsは内容比較ではない。</td></tr><tr><td>capacity</td><td>容量</td><td>lengthとは別。試験ではlengthとの混同に注意。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>== と equals</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>宣言</th><th>==</th><th>equals</th></tr></thead><tbody><tr><td>String a = "java"; String b = "java";</td><td>true</td><td>true</td></tr><tr><td>String a = new String("java"); String b = "java";</td><td>false</td><td>true</td></tr><tr><td>String a = "ja" + "va"; String b = "java";</td><td>true</td><td>true</td></tr><tr><td>String p = "ja"; String a = p + "va"; String b = "java";</td><td>false</td><td>true</td></tr><tr><td>final String p = "ja"; String a = p + "va";</td><td>true</td><td>true</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>intern()</h2>
+<pre><code>String a = new String(&quot;java&quot;);
+String b = a.intern();
+String c = &quot;java&quot;;
+System.out.println(a == c); // false
+System.out.println(b == c); // true</code></pre>
+</section>
+<section class="article-card ">
+<h2>nullと比較</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>式</th><th>結果</th><th>理由</th></tr></thead><tbody><tr><td>s == null</td><td>OK</td><td>参照先がないかを比較。</td></tr><tr><td>s.equals("x")</td><td>sがnullなら例外</td><td>nullに対するメソッド呼び出し。</td></tr><tr><td>"x".equals(s)</td><td>OK</td><td>左辺が非nullリテラルなので安全。</td></tr></tbody></table></div>
+</section>
+
     </main>
   </div>
   <script src="data/questions.js"></script>

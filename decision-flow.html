@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - 判定フロー</title>
+  <title>Java Silver Study - 例外処理・失敗段階</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -15,26 +15,43 @@
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
     <main class="main reference-main">
-      <section class="hero reference-hero">
+      <section class="hero reference-hero compact-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>判定フロー</h1>
-        <p>コード問題は、必ず「コンパイル可否 → 実行時例外 → 出力結果」の順に判定します。</p>
+        <h1>例外処理・失敗段階</h1>
+        <p>コンパイルエラー、実行時例外、try/catch/finally、try-with-resourcesをまとめて確認。</p>
       </section>
-<section class="article-card important"><h2>基本フロー</h2><div class="decision-flow">
-<div><span>1</span><strong>構文・宣言</strong><p>クラス名、ファイル名、main、修飾子、戻り値、引数、セミコロンを確認。</p></div>
-<div><span>2</span><strong>型・スコープ</strong><p>代入可能性、初期化、var、ローカル変数、アクセス制御を確認。</p></div>
-<div><span>3</span><strong>呼び出し解決</strong><p>static/instance、overload、override、宣言型で見えるメンバを確認。</p></div>
-<div><span>4</span><strong>実行時例外</strong><p>null、配列範囲、キャスト、parse、0除算、switch(null)を確認。</p></div>
-<div><span>5</span><strong>出力</strong><p>副作用、参照先、文字列連結、finally、close順を最後まで追う。</p></div>
-</div></section><section class="article-card"><h2>コンパイルエラーを先に拾う理由</h2><p>実行結果を聞かれていても、コンパイルできなければ実行されません。出力候補がもっともらしくても、型・修飾子・到達不能コード・チェック例外未処理があれば、その時点でコンパイルエラーです。</p>
-<div class="table-wrap"><table class="ref-table"><thead><tr><th>見る場所</th><th>典型例</th><th>判定</th></tr></thead><tbody><tr><td>宣言</td><td><code>int num = num;</code></td><td>右辺のローカル変数numはまだ初期化されていない。</td></tr><tr><td>型</td><td><code>byte b = b + 1;</code></td><td><code>b + 1</code> はint。byteへ代入不可。</td></tr><tr><td>呼び出し</td><td><code>A a = new B(); a.bye();</code></td><td>宣言型Aにbyeがなければ呼べない。</td></tr><tr><td>例外</td><td><code>throw new IOException();</code></td><td>チェック例外はthrowsまたはcatchが必要。</td></tr><tr><td>到達不能</td><td><code>return; System.out.println();</code></td><td>return後に通常到達できる文は不可。</td></tr></tbody></table></div></section><section class="article-card"><h2>実行時例外の見分け方</h2><p>実行時例外は、コンパイルは通るが実行中の値や参照先で失敗するものです。参照型がnullか、添字が範囲外か、キャスト先の実体型が合うかを確認します。</p><pre><code>String s = null;
-System.out.println(s.length()); // NullPointerException
+<section class="article-card ">
+<h2>失敗段階の分類</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>段階</th><th>代表例</th><th>見るポイント</th></tr></thead><tbody><tr><td>コンパイルエラー</td><td>型不一致、未初期化ローカル変数、未処理チェック例外</td><td>実行されない。出力も例外も発生しない。</td></tr><tr><td>実行時例外</td><td>NullPointerException、ArrayIndexOutOfBoundsException、ClassCastException</td><td>コンパイルは通るが実行中に止まる。</td></tr><tr><td>正常出力</td><td>出力文まで到達</td><td>途中で例外やreturn/breakがないか確認。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>例外の種類</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>種類</th><th>例</th><th>処理必須か</th></tr></thead><tbody><tr><td>チェック例外</td><td>Exception, IOException</td><td>catchまたはthrowsが必要。</td></tr><tr><td>非チェック例外</td><td>RuntimeException系</td><td>コンパイル時処理は不要。</td></tr><tr><td>Error</td><td>OutOfMemoryErrorなど</td><td>通常アプリで捕まえる前提ではない。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>try / catch / finally</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>構文</th><th>実行順</th><th>注意</th></tr></thead><tbody><tr><td>tryのみ</td><td>不可</td><td>catchまたはfinallyが必要。</td></tr><tr><td>try-catch</td><td>例外発生で対応catchへ</td><td>try内の例外発生後の文は実行されない。</td></tr><tr><td>try-finally</td><td>finallyは原則実行</td><td>catchがないので例外は処理されず外へ。</td></tr><tr><td>try-catch-finally</td><td>try → catch → finally</td><td>例外なしならtry → finally。</td></tr><tr><td>catch順序</td><td>子 → 親</td><td>親を先に書くと子catchは到達不能。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>try-with-resources</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>項目</th><th>ルール</th><th>注意</th></tr></thead><tbody><tr><td>対象</td><td>AutoCloseable実装</td><td>close()が自動呼び出し。</td></tr><tr><td>close順</td><td>宣言と逆順</td><td>A; B なら B.close() → A.close()。</td></tr><tr><td>finally</td><td>close後に実行</td><td>tryブロック終了 → close → finally。</td></tr><tr><td>例外</td><td>closeがthrowsする可能性</td><td>mainでthrowsするかcatchが必要。</td></tr></tbody></table></div>
+</section>
+<section class="article-card ">
+<h2>finallyとreturn</h2>
+<pre><code>static int test() {
+    try {
+        return 1;
+    } finally {
+        System.out.println(&quot;finally&quot;);
+    }
+}
+// returnで抜ける前にfinallyは実行される。</code></pre>
+</section>
+<section class="article-card ">
+<h2>頻出実行時例外</h2>
+<div class="table-wrap"><table class="rule-table"><thead><tr><th>例外</th><th>原因</th><th>例</th></tr></thead><tbody><tr><td>NullPointerException</td><td>null参照に対するメソッド/フィールドアクセス</td><td>obj.toString()</td></tr><tr><td>ArrayIndexOutOfBoundsException</td><td>配列の範囲外</td><td>a[a.length]</td></tr><tr><td>IndexOutOfBoundsException</td><td>List/Stringの範囲外</td><td>list.get(size)</td></tr><tr><td>ClassCastException</td><td>実体に合わないキャスト</td><td>(B) new A()</td></tr><tr><td>NumberFormatException</td><td>数値変換不可</td><td>Integer.parseInt("A")</td></tr><tr><td>ArithmeticException</td><td>整数の0除算</td><td>10 / 0</td></tr></tbody></table></div>
+</section>
 
-Object obj = "text";
-Integer i = (Integer) obj;      // ClassCastException
-
-int[] a = new int[0];
-a[0] = 10;                      // ArrayIndexOutOfBoundsException</code></pre></section>
     </main>
   </div>
   <script src="data/questions.js"></script>
