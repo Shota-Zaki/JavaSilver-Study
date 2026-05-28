@@ -1280,27 +1280,22 @@ service cloud.firestore {
     }).join("");
     const path = (location.pathname || "").split("/").pop();
     const wrongSummaryActive = path === "wrong-summary.html";
-    const knowledgeActive = ["reference.html", "glossary.html", "syntax-basics.html", "decision-flow.html", "java-qa-review.html", "datatypes.html", "numeric-rules.html", "var-scope.html", "strings.html", "equality.html", "collections-arrays.html", "operators-control.html", "loop-control.html", "methods-constructors.html", "object-oriented.html", "modifiers-access.html", "inheritance-interface.html", "polymorphism-cast.html", "exceptions.html", "compile-runtime.html", "error-catalog.html", "method-list.html", "cheatsheet.html", "exam-traps.html", "fine-points.html", "java-qa-review.html", "oop-relations.html", "mini-drills.html"].includes(path);
+    const knowledgeActive = ["reference.html", "decision-flow.html", "syntax-basics.html", "datatypes.html", "numeric-rules.html", "var-scope.html", "operators-control.html", "loop-control.html", "fine-points.html", "strings.html", "equality.html", "collections-arrays.html", "object-oriented.html", "methods-constructors.html", "modifiers-access.html", "inheritance-interface.html", "oop-relations.html", "polymorphism-cast.html", "exceptions.html", "compile-runtime.html", "error-catalog.html", "method-list.html", "cheatsheet.html", "exam-traps.html", "java-qa-review.html", "glossary.html", "mini-drills.html"].includes(path);
     const knowledgeLinks = `<div class="nav-divider"></div>
-      <a class="nav-link${knowledgeActive && path === "reference.html" ? " active" : ""}" href="reference.html">学習記事トップ<span class="small">入口</span></a>
-      <a class="nav-link${knowledgeActive && path === "glossary.html" ? " active" : ""}" href="glossary.html">単語集<span class="small">頻出用語</span></a>
-      <a class="nav-link${knowledgeActive && path === "syntax-basics.html" ? " active" : ""}" href="syntax-basics.html">実行・package/import<span class="small">基礎</span></a>
-      <a class="nav-link${knowledgeActive && path === "java-qa-review.html" ? " active" : ""}" href="java-qa-review.html">質問まとめ<span class="small">復習</span></a>
-      <a class="nav-link${knowledgeActive && path === "datatypes.html" ? " active" : ""}" href="datatypes.html">データ型・型変換<span class="small">primitive</span></a>
-      <a class="nav-link${knowledgeActive && path === "strings.html" ? " active" : ""}" href="strings.html">String/StringBuilder<span class="small">文字列</span></a>
-      <a class="nav-link${knowledgeActive && path === "equality.html" ? " active" : ""}" href="equality.html">同一性・同値性比較<span class="small">==/equals</span></a>
-      <a class="nav-link${knowledgeActive && path === "collections-arrays.html" ? " active" : ""}" href="collections-arrays.html">配列・ArrayList<span class="small">List</span></a>
-      <a class="nav-link${knowledgeActive && path === "operators-control.html" ? " active" : ""}" href="operators-control.html">演算子・制御構造<span class="small">switch/loop</span></a>
-      <a class="nav-link${knowledgeActive && path === "loop-control.html" ? " active" : ""}" href="loop-control.html">ループ・do-while<span class="small">break/continue</span></a>
+      <a class="nav-link${knowledgeActive && path === "reference.html" ? " active" : ""}" href="reference.html">学習記事<span class="small">一覧</span></a>
+      <a class="nav-link${knowledgeActive && path === "syntax-basics.html" ? " active" : ""}" href="syntax-basics.html">実行・宣言<span class="small">main/import</span></a>
+      <a class="nav-link${knowledgeActive && path === "datatypes.html" ? " active" : ""}" href="datatypes.html">型・変数<span class="small">var/昇格</span></a>
+      <a class="nav-link${knowledgeActive && path === "strings.html" ? " active" : ""}" href="strings.html">文字列・比較<span class="small">String/equals</span></a>
+      <a class="nav-link${knowledgeActive && path === "collections-arrays.html" ? " active" : ""}" href="collections-arrays.html">配列・List<span class="small">ArrayList</span></a>
+      <a class="nav-link${knowledgeActive && path === "operators-control.html" ? " active" : ""}" href="operators-control.html">演算子・制御<span class="small">switch/loop</span></a>
       <a class="nav-link${knowledgeActive && path === "methods-constructors.html" ? " active" : ""}" href="methods-constructors.html">メソッド・コンストラクタ<span class="small">overload</span></a>
-      <a class="nav-link${knowledgeActive && path === "object-oriented.html" ? " active" : ""}" href="object-oriented.html">クラス・static・参照<span class="small">OOP</span></a>
-      <a class="nav-link${knowledgeActive && path === "inheritance-interface.html" ? " active" : ""}" href="inheritance-interface.html">継承・interface<span class="small">override/sealed</span></a>
-      <a class="nav-link${knowledgeActive && path === "oop-relations.html" ? " active" : ""}" href="oop-relations.html">OOP関係整理<span class="small">overload/override</span></a>
+      <a class="nav-link${knowledgeActive && path === "object-oriented.html" ? " active" : ""}" href="object-oriented.html">クラス・static<span class="small">record</span></a>
+      <a class="nav-link${knowledgeActive && path === "oop-relations.html" ? " active" : ""}" href="oop-relations.html">継承・interface<span class="small">override/cast</span></a>
       <a class="nav-link${knowledgeActive && path === "exceptions.html" ? " active" : ""}" href="exceptions.html">例外処理<span class="small">try/catch</span></a>
-      <a class="nav-link${knowledgeActive && path === "compile-runtime.html" ? " active" : ""}" href="compile-runtime.html">コンパイル/例外判定<span class="small">判定フロー</span></a>
-      <a class="nav-link${knowledgeActive && path === "cheatsheet.html" ? " active" : ""}" href="cheatsheet.html">頻出ルール早見表<span class="small">直前確認</span></a>
-      <a class="nav-link${knowledgeActive && path === "exam-traps.html" ? " active" : ""}" href="exam-traps.html">試験ひっかけ集<span class="small">落とし穴</span></a>
-      <a class="nav-link${knowledgeActive && path === "fine-points.html" ? " active" : ""}" href="fine-points.html">細かい挙動集<span class="small">yield/境界</span></a>`;
+      <a class="nav-link${knowledgeActive && path === "method-list.html" ? " active" : ""}" href="method-list.html">頻出メソッド<span class="small">戻り値</span></a>
+      <a class="nav-link${knowledgeActive && path === "cheatsheet.html" ? " active" : ""}" href="cheatsheet.html">直前確認<span class="small">ひっかけ</span></a>
+      <a class="nav-link${knowledgeActive && path === "glossary.html" ? " active" : ""}" href="glossary.html">単語集<span class="small">用語</span></a>
+      <a class="nav-link${knowledgeActive && path === "mini-drills.html" ? " active" : ""}" href="mini-drills.html">ミニ演習<span class="small">短問</span></a>`;
     const reviewLinks = `<div class="nav-divider"></div>
       <a class="nav-link${wrongSummaryActive ? " active" : ""}" href="wrong-summary.html">間違いまとめ<span class="small">一覧</span></a>
       <a class="nav-link${path === "wrong-practice.html" ? " active" : ""}" href="wrong-practice.html">間違い演習<span class="small">ランダム</span></a>`;

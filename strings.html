@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - String・StringBuilder</title>
+  <title>Java Silver Study - 文字列・比較</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -14,42 +14,50 @@
       <p class="brand"><a href="index.html">Java Silver Study</a></p>
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
-    <main class="main reference-main">
-      <section class="hero reference-hero">
+    <main class="main reference-main article-main">
+      <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>String・StringBuilder</h1>
-        <p>文字列の不変性、可変文字列、頻出メソッドを例題で確認します。</p>
+        <h1>文字列・比較</h1>
+        <p>String、StringBuilder、==、equals、intern、null比較、メソッド戻り値をまとめます。</p>
       </section>
-      <section class="article-card ">
-<h2>Stringは不変</h2>
-<pre><code>String s = &quot;java&quot;;
-s.concat(&quot;silver&quot;);
-System.out.println(s); // java
+      <section class="article-section"><h2>Stringは不変</h2><p>Stringのメソッドは、元の文字列を変更しません。変更されたように見える処理は、新しいStringを返しています。戻り値を受け取らなければ結果は捨てられます。</p><pre class="article-code"><code>String s = "abcdef";
+s.substring(2);
+System.out.println(s); // abcdef
 
-s = s.concat(&quot;silver&quot;);
-System.out.println(s); // javasilver</code></pre><p>Stringの操作メソッドは新しいStringを返します。戻り値を代入しなければ変数は変わりません。</p>
-</section><section class="article-card ">
-<h2>頻出メソッド</h2>
-<div class="table-scroll"><table class="ref-table"><thead><tr><th>メソッド</th><th>例</th><th>注意</th></tr></thead><tbody><tr><td><code>length()</code></td><td><code>"abc".length()</code> → 3</td><td>添字ではなく文字数。</td></tr><tr><td><code>charAt(int)</code></td><td><code>"abc".charAt(0)</code> → a</td><td>範囲外はStringIndexOutOfBoundsException。</td></tr><tr><td><code>substring</code></td><td><code>"abcd".substring(1,3)</code> → bc</td><td>開始含む、終了含まない。</td></tr><tr><td><code>indexOf</code></td><td>見つからないと -1</td><td>0始まり。</td></tr><tr><td><code>equals</code></td><td>内容比較</td><td>null側から呼ぶと例外。</td></tr><tr><td><code>replace</code></td><td>置換後の新しいString</td><td>元のStringは変わらない。</td></tr></tbody></table></div>
-</section><section class="article-card ">
-<h2>StringBuilderは可変</h2>
-<pre><code>StringBuilder sb = new StringBuilder(&quot;Java&quot;);
-sb.append(&quot; Silver&quot;);
-sb.insert(0, &quot;Oracle &quot;);
-sb.delete(0, 7);
-System.out.println(sb); // Java Silver</code></pre><p>StringBuilderは同じインスタンスの中身を変更します。文字列を何度も加工する問題で出ます。</p>
-</section><section class="article-card ">
-<h2>StringBuilderのcapacity</h2>
-<pre><code>StringBuilder sb = new StringBuilder();
-System.out.println(sb.length());   // 0
-System.out.println(sb.capacity()); // 16
+s = s.substring(2);
+System.out.println(s); // cdef</code></pre><div class="article-callout point">試験では <code>replace</code>、<code>substring</code>、<code>toUpperCase</code> などの戻り値未代入がよく出ます。Stringは変わりません。</div></section><section class="article-section"><h2>== と equals</h2><p>&lt;code&gt;==&lt;/code&gt; は同じオブジェクトを参照しているかを見る比較です。Stringの文字内容を比較したいなら &lt;code&gt;equals()&lt;/code&gt; を使います。</p><pre class="article-code"><code>String a = "java";
+String b = "java";
+String c = new String("java");
 
-StringBuilder sb2 = new StringBuilder(&quot;abc&quot;);
-System.out.println(sb2.capacity()); // 19</code></pre><p>capacityは現在の文字数ではなく内部バッファ容量です。lengthと混同しないこと。</p>
-</section><section class="article-card ">
-<h2>比較は専用ページで確認</h2>
-<p><code>==</code>、<code>equals</code>、<code>intern()</code>、<code>new String</code>、<code>final</code> の比較は <a href="equality.html">同一性・同値性比較</a> にまとめています。</p>
-</section>
+System.out.println(a == b);      // true
+System.out.println(a == c);      // false
+System.out.println(a.equals(c)); // true</code></pre><p>文字列リテラルは文字列プールに置かれます。同じリテラルは同じインスタンスを参照するため、&lt;code&gt;a == b&lt;/code&gt; がtrueになります。一方、&lt;code&gt;new String("java")&lt;/code&gt; は新しいインスタンスを作るので、参照は別です。</p><pre class="article-code"><code>String a = "ja" + "va";  // コンパイル時定数。"java" と同じプール参照
+String part = "ja";
+String b = part + "va";   // 実行時に作られる別インスタンス
+final String fixed = "ja";
+String c = fixed + "va";  // final定数なのでコンパイル時定数
+
+System.out.println(a == "java"); // true
+System.out.println(b == "java"); // false
+System.out.println(c == "java"); // true</code></pre></section><section class="article-section"><h2>intern()</h2><p>&lt;code&gt;intern()&lt;/code&gt; は、文字列プール上の同じ内容のStringへの参照を返します。newで作ったStringでも、intern後はプール側の参照と比較できます。</p><pre class="article-code"><code>String a = new String("java");
+String b = a.intern();
+String c = "java";
+
+System.out.println(a == c); // false
+System.out.println(b == c); // true</code></pre></section><section class="article-section"><h2>StringBuilder</h2><p>StringBuilderは可変です。appendやdeleteなどは同じインスタンスを変更し、そのインスタンス自身を返します。Stringとは逆です。</p><pre class="article-code"><code>StringBuilder sb = new StringBuilder("abc");
+StringBuilder ret = sb.append("def");
+
+System.out.println(sb);       // abcdef
+System.out.println(sb == ret); // true</code></pre><p>StringBuilderはequalsを内容比較用にオーバーライドしていません。内容が同じでも、別インスタンスならequalsはfalseです。</p><pre class="article-code"><code>StringBuilder a = new StringBuilder("x");
+StringBuilder b = new StringBuilder("x");
+
+System.out.println(a == b);      // false
+System.out.println(a.equals(b)); // false
+System.out.println(a.toString().equals(b.toString())); // true</code></pre></section><section class="article-section"><h2>nullとの比較</h2><p>nullかもしれない変数でメソッドを呼ぶとNullPointerExceptionになります。安全に比較するなら、リテラル側からequalsを呼ぶ書き方があります。</p><pre class="article-code"><code>String s = null;
+
+// s.equals("A");      // NullPointerException
+System.out.println("A".equals(s)); // false
+System.out.println(s == null);     // true</code></pre></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

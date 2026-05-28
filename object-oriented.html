@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - クラス・static・参照</title>
+  <title>Java Silver Study - クラス・static・record</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -14,54 +14,92 @@
       <p class="brand"><a href="index.html">Java Silver Study</a></p>
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
-    <main class="main reference-main">
-      <section class="hero reference-hero">
+    <main class="main reference-main article-main">
+      <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>クラス・static・参照</h1>
-        <p>インスタンス、参照、static、GC、recordの違いを整理します。</p>
+        <h1>クラス・static・record</h1>
+        <p>インスタンス、参照、static、final、record、GC、フィールド解決をまとめます。</p>
       </section>
-      <section class="article-card ">
-<h2>クラスとインスタンス</h2>
-<pre><code>class Item {
-  int price;
+      <section class="article-section"><h2>クラスとインスタンス</h2><p>クラスは設計図で、インスタンスはnewで作られる実体です。参照変数にはインスタンスそのものではなく、インスタンスへの参照が入ります。代入すると参照がコピーされるだけで、オブジェクトのコピーは作られません。</p><pre class="article-code"><code>class Item {
+    int price;
 }
+
 Item a = new Item();
-Item b = new Item();
-a.price = 100;
-b.price = 200;</code></pre><p>newするたびに別インスタンスができます。フィールド値はインスタンスごとに別です。</p>
-</section><section class="article-card ">
-<h2>参照のコピー</h2>
-<pre><code>Item a = new Item();
-a.price = 100;
 Item b = a;
-b.price = 200;
-System.out.println(a.price); // 200</code></pre><p>b=aは同じインスタンスを指す参照のコピーです。</p>
-</section><section class="article-card ">
-<h2>static</h2>
-<pre><code>class Counter {
-  static int count;
-  int id;
+b.price = 100;
+System.out.println(a.price); // 100</code></pre></section><section class="article-section"><h2>static</h2><p>staticメンバはインスタンスではなくクラスに属します。staticフィールドは全インスタンスで共有されます。インスタンス経由でもアクセスできてしまいますが、実体は1つです。</p><pre class="article-code"><code>class Counter {
+    static int count;
 }
+
 Counter a = new Counter();
 Counter b = new Counter();
-a.count++;
+a.count = 10;
 b.count++;
-System.out.println(Counter.count); // 2</code></pre><p>staticフィールドはインスタンスごとではなくクラス側に1つです。</p>
-</section><section class="article-card ">
-<h2>ガベージコレクション</h2>
-<pre><code>Object a = new Object();
+System.out.println(Counter.count); // 11</code></pre><p>staticメソッドはインスタンスなしで呼べます。その代わり、直接インスタンスフィールドやインスタンスメソッドにはアクセスできません。</p></section><section class="article-section"><h2>record</h2><p>Javaのrecordは、データを入れるだけのクラスを短く書くための仕組みです。Java 16以降で正式導入され、Java Silver 17では重要です。</p><p>普通のクラスで名前と年齢を持つデータクラスを書くと、フィールド、コンストラクタ、アクセサ、toString、equals、hashCodeなどを自分で書く必要があります。</p><pre class="article-code"><code>public class Person {
+    private final String name;
+    private final int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public int age() {
+        return age;
+    }
+}</code></pre><p>recordなら、これだけで同じようなデータ保持クラスを作れます。</p><pre class="article-code"><code>public record Person(String name, int age) {
+}</code></pre><div class="article-card-grid"><article class="article-card"><h3>自動生成されるフィールド</h3><div><code>private final String name;</code> と <code>private final int age;</code> に相当する状態を持ちます。</div></article><article class="article-card"><h3>正規コンストラクタ</h3><div><code>Person(String name, int age)</code> が作られます。</div></article><article class="article-card"><h3>アクセサ</h3><div><code>name()</code> と <code>age()</code>。<code>getName()</code> ではありません。</div></article><article class="article-card"><h3>toString / equals / hashCode</h3><div>中身に基づく実装が自動生成されます。</div></article></div><pre class="article-code"><code>record Person(String name, int age) {}
+
+public class Main {
+    public static void main(String[] args) {
+        Person p = new Person("Tanaka", 20);
+        System.out.println(p.name());
+        System.out.println(p.age());
+        System.out.println(p);
+    }
+}
+
+// Tanaka
+// 20
+// Person[name=Tanaka, age=20]</code></pre><div class="article-callout warn">recordのアクセサは <code>name()</code> です。<code>getName()</code> は自動生成されません。セッターも自動生成されません。</div><p>recordにもメソッドは書けます。データ保持用の形を簡潔にしつつ、関連する処理を追加できます。</p><pre class="article-code"><code>record Person(String name, int age) {
+    public boolean isAdult() {
+        return age &gt;= 20;
+    }
+}</code></pre><p>コンストラクタも書けます。recordでは、すべてのコンポーネントを初期化する正規コンストラクタと、代入をJavaに任せるコンパクトコンストラクタが重要です。</p><pre class="article-code"><code>record Person(String name, int age) {
+    public Person {
+        if (age &lt; 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+}</code></pre><p>recordは暗黙的にfinalです。recordを継承するクラスは作れません。また、recordは内部的にjava.lang.Recordを継承するため、他のクラスをextendsすることもできません。ただし、interfaceの実装はできます。</p><pre class="article-code"><code>interface Printable {
+    void print();
+}
+
+record Person(String name, int age) implements Printable {
+    public void print() {
+        System.out.println(name + ":" + age);
+    }
+}</code></pre><div class="article-card-grid"><article class="article-card"><h3>追加インスタンスフィールド</h3><div>不可。recordの状態はレコードヘッダーに書いたものだけです。</div></article><article class="article-card"><h3>staticフィールド</h3><div>可。インスタンスごとの状態ではなく、クラス共通だからです。</div></article><article class="article-card"><h3>extends</h3><div>不可。recordは他クラスを継承できず、record自身も継承されません。</div></article><article class="article-card"><h3>implements</h3><div>可。実装すべきメソッドは通常通り実装します。</div></article></div><pre class="article-code"><code>record Item(String name, int price) {
+    static int count = 0;     // OK
+    // private int stock;     // NG。追加インスタンスフィールド不可
+}</code></pre><p>record同士の比較では、&lt;code&gt;==&lt;/code&gt; は参照比較、&lt;code&gt;equals()&lt;/code&gt; は中身比較です。recordはequalsを自動生成するので、同じ値ならtrueになります。</p><pre class="article-code"><code>record Person(String name, int age) {}
+
+Person p1 = new Person("A", 10);
+Person p2 = new Person("A", 10);
+
+System.out.println(p1 == p2);      // false
+System.out.println(p1.equals(p2)); // true</code></pre></section><section class="article-section"><h2>ガベージコレクション</h2><p>Javaでは、どこからも参照されなくなったインスタンスがガベージコレクションの対象になります。対象になることと、すぐ回収されることは別です。</p><pre class="article-code"><code>Object a = new Object();
 Object b = new Object();
 Object c = a;
 a = null;
 b = null;
-// ここで参照されていないのは、元bのインスタンスだけ</code></pre><p>どの変数からも到達できないインスタンスがGC対象です。GCがいつ実行されるかは保証されません。</p>
-</section><section class="article-card ">
-<h2>record</h2>
-<pre><code>record User(String name, int age) {}
-User u = new User(&quot;A&quot;, 20);
-System.out.println(u.name());
-System.out.println(u);</code></pre><p>recordはコンパクトなデータ保持用クラスです。アクセサ、equals、hashCode、toStringが自動生成されます。</p>
-</section>
+
+// bが参照していたインスタンスは対象
+// aが参照していたインスタンスはcがまだ参照しているので対象外</code></pre></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

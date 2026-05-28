@@ -14,35 +14,13 @@
       <p class="brand"><a href="index.html">Java Silver Study</a></p>
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
-    <main class="main reference-main">
-      <section class="hero reference-hero">
+    <main class="main reference-main article-main">
+      <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>エラー・例外カタログ</h1>
-        <p>コンパイルエラーと実行時例外を、原因・例・試験で見る場所に分けて整理します。</p>
+        <p>よく出るコンパイルエラーと実行時例外を、原因別に整理します。</p>
       </section>
-
-<section class="article-card important">
-  <h2>コンパイルエラーと実行時例外の境界</h2>
-  <p>コンパイルエラーは「実行前に文法・型・宣言上の矛盾が見つかる」ものです。実行時例外は「文法上は正しいが、実行して初めて不正な状態になる」ものです。</p>
-</section>
-<section class="article-card">
-  <h2>コンパイルエラー</h2>
-  <div class="table-scroll"><table class="ref-table"><thead><tr><th>種類</th><th>例</th><th>見るポイント</th></tr></thead><tbody><tr><td>未初期化ローカル変数</td><td><code>int a; System.out.println(a);</code></td><td>ローカル変数にデフォルト値はない。</td></tr><tr><td>型不一致</td><td><code>byte b = 128;</code></td><td>範囲外、long/doubleを小さい型へ代入。</td></tr><tr><td>boolean以外を条件に使う</td><td><code>if (1) {}</code></td><td>Javaの条件式はbooleanのみ。</td></tr><tr><td>チェック例外未処理</td><td><code>throw new IOException();</code></td><td>catchまたはthrowsが必要。</td></tr><tr><td>catch順序不正</td><td>Exceptionを先にcatchし、その後にIOException</td><td>狭い例外から広い例外へ。</td></tr><tr><td>staticから非static参照</td><td><code>static void m(){ field; }</code></td><td>インスタンスなしでインスタンスメンバは使えない。</td></tr><tr><td>オーバーライド不正</td><td>アクセスを狭くする、戻り値が非互換</td><td>override条件を満たさない。</td></tr></tbody></table></div>
-</section>
-<section class="article-card">
-  <h2>実行時例外</h2>
-  <div class="table-scroll"><table class="ref-table"><thead><tr><th>例外</th><th>例</th><th>見るポイント</th></tr></thead><tbody><tr><td>NullPointerException</td><td><code>String s = null; s.length();</code></td><td>参照先がないのに操作する。</td></tr><tr><td>ArrayIndexOutOfBoundsException</td><td><code>new int[2][2]</code> に <code>[2]</code></td><td>添字は0からlength-1。</td></tr><tr><td>ClassCastException</td><td><code>Object o = "x"; Integer i = (Integer)o;</code></td><td>参照型の実体を見る。</td></tr><tr><td>NumberFormatException</td><td><code>Integer.parseInt("12A")</code></td><td>変換不能文字列。</td></tr><tr><td>ArithmeticException</td><td><code>10 / 0</code></td><td>整数除算のみ。doubleはInfinity等。</td></tr></tbody></table></div>
-</section>
-<section class="article-card">
-  <h2>例題比較</h2>
-  <div class="two-col">
-    <div><pre><code>int[] a = new int[0];
-System.out.println(a[0]);</code></pre><p><strong>実行時例外。</strong> 配列は作れる。実行時に範囲外アクセス。</p></div>
-    <div><pre><code>int a;
-System.out.println(a);</code></pre><p><strong>コンパイルエラー。</strong> ローカル変数が初期化されていない。</p></div>
-  </div>
-</section>
-
+      <section class="article-section"><h2>判定順</h2><p>コード問題は、まずコンパイルできるかを見ます。コンパイルできないコードは実行されないため、出力や実行時例外は考えません。コンパイルできる場合だけ、実行時例外が発生するかを見ます。最後に正常終了時の出力を追います。</p><div class="article-card-grid"><article class="article-card"><h3>1. コンパイル可否</h3><div>型、宣言、アクセス修飾子、到達不能文、checked例外、抽象メソッド未実装を見る。</div></article><article class="article-card"><h3>2. 実行時例外</h3><div>null参照、配列範囲外、数値変換失敗、キャスト失敗、0除算などを見る。</div></article><article class="article-card"><h3>3. 出力結果</h3><div>変数の値、参照先、副作用、ループ回数、catch/finallyの実行順を追う。</div></article></div></section><section class="article-section"><h2>コンパイルエラーになりやすいもの</h2><ul class="article-list"><li><code>byte b = 128;</code> のような範囲外代入。</li><li><code>byte c = a + b;</code> のようなint昇格後の代入。</li><li>ローカル変数を初期化前に読む。</li><li>checked例外をcatchもthrowsもしない。</li><li>interfaceメソッドの実装でpublicを弱める。</li><li>戻り値型だけ違う同名同引数メソッドを定義する。</li><li>抽象メソッドを持つのにクラスをabstractにしない。</li><li>宣言型に存在しないメソッドを呼ぶ。</li></ul></section><section class="article-section"><h2>実行時例外になりやすいもの</h2><ul class="article-list"><li><code>null.toString()</code> のようなnull参照。</li><li><code>args[0]</code> を引数なしで読む。</li><li>配列やListの範囲外アクセス。</li><li><code>Integer.parseInt("abc")</code>。</li><li>実体と合わないダウンキャスト。</li><li>整数の0除算。</li><li><code>List.of(...).add(...)</code> のような変更不可Listの変更。</li></ul></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

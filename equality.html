@@ -14,93 +14,50 @@
       <p class="brand"><a href="index.html">Java Silver Study</a></p>
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
-    <main class="main reference-main">
-      <section class="hero reference-hero">
+    <main class="main reference-main article-main">
+      <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>同一性比較・同値比較</h1>
-        <p>宣言の仕方で比較結果が変わる論点を、例題で丁寧に確認します。</p>
+        <p>==、equals、Stringプール、intern、record、配列、List、ラッパークラスの比較をまとめます。</p>
       </section>
-      <section class="article-card important">
-<h2>同一性と同値性の違い</h2>
-<div class="table-scroll"><table class="ref-table"><thead><tr><th>比較</th><th>見るもの</th><th>使うもの</th><th>例</th></tr></thead><tbody><tr><td>同一性</td><td>同じインスタンスを指しているか</td><td><code>==</code></td><td><code>a == b</code></td></tr><tr><td>同値性</td><td>値・内容が同じとみなせるか</td><td><code>equals()</code></td><td><code>a.equals(b)</code></td></tr><tr><td>プリミティブ</td><td>値そのもの</td><td><code>==</code></td><td><code>10 == 10</code></td></tr></tbody></table></div><p>参照型の <code>==</code> は原則として「同じ箱を見ているか」です。Stringの内容が同じかどうかは <code>equals</code> で判定します。</p>
-</section><section class="article-card ">
-<h2>Stringリテラル同士</h2>
-<pre><code>String a = &quot;java&quot;;
-String b = &quot;java&quot;;
-System.out.println(a == b);      // true
-System.out.println(a.equals(b)); // true</code></pre><p>同じ文字列リテラルは文字列プールの同じインスタンスを参照します。</p>
-</section><section class="article-card ">
-<h2>new Stringを使う場合</h2>
-<pre><code>String a = &quot;java&quot;;
-String b = new String(&quot;java&quot;);
-System.out.println(a == b);      // false
-System.out.println(a.equals(b)); // true</code></pre><p><code>new</code> は新しいインスタンスを作ります。内容が同じでも参照は別です。</p>
-</section><section class="article-card ">
-<h2>参照を代入する場合</h2>
-<pre><code>String a = new String(&quot;java&quot;);
-String b = a;
-System.out.println(a == b);      // true
-System.out.println(a.equals(b)); // true</code></pre><p><code>b = a</code> はオブジェクトのコピーではなく参照のコピーです。</p>
-</section><section class="article-card ">
-<h2>連結：リテラルだけか、変数を含むか</h2>
-<pre><code>String a = &quot;ja&quot; + &quot;va&quot;;
-String b = &quot;java&quot;;
-System.out.println(a == b); // true
+      <section class="article-section"><h2>Stringは不変</h2><p>Stringのメソッドは、元の文字列を変更しません。変更されたように見える処理は、新しいStringを返しています。戻り値を受け取らなければ結果は捨てられます。</p><pre class="article-code"><code>String s = "abcdef";
+s.substring(2);
+System.out.println(s); // abcdef
 
-String part = &quot;ja&quot;;
-String c = part + &quot;va&quot;;
-System.out.println(c == b); // false</code></pre><p>リテラル同士はコンパイル時に結合されます。通常変数を含むと実行時に新しいStringが作られます。</p>
-</section><section class="article-card ">
-<h2>final変数の罠</h2>
-<pre><code>final String part1 = &quot;ja&quot;;
-String a = part1 + &quot;va&quot;;
-System.out.println(a == &quot;java&quot;); // true
+s = s.substring(2);
+System.out.println(s); // cdef</code></pre><div class="article-callout point">試験では <code>replace</code>、<code>substring</code>、<code>toUpperCase</code> などの戻り値未代入がよく出ます。Stringは変わりません。</div></section><section class="article-section"><h2>== と equals</h2><p>&lt;code&gt;==&lt;/code&gt; は同じオブジェクトを参照しているかを見る比較です。Stringの文字内容を比較したいなら &lt;code&gt;equals()&lt;/code&gt; を使います。</p><pre class="article-code"><code>String a = "java";
+String b = "java";
+String c = new String("java");
 
-final String part2 = new String(&quot;ja&quot;);
-String b = part2 + &quot;va&quot;;
-System.out.println(b == &quot;java&quot;); // false</code></pre><p><code>final</code> でも、コンパイル時定数でなければリテラル結合扱いにはなりません。</p>
-</section><section class="article-card ">
-<h2>intern</h2>
-<pre><code>String a = new String(&quot;java&quot;);
+System.out.println(a == b);      // true
+System.out.println(a == c);      // false
+System.out.println(a.equals(c)); // true</code></pre><p>文字列リテラルは文字列プールに置かれます。同じリテラルは同じインスタンスを参照するため、&lt;code&gt;a == b&lt;/code&gt; がtrueになります。一方、&lt;code&gt;new String("java")&lt;/code&gt; は新しいインスタンスを作るので、参照は別です。</p><pre class="article-code"><code>String a = "ja" + "va";  // コンパイル時定数。"java" と同じプール参照
+String part = "ja";
+String b = part + "va";   // 実行時に作られる別インスタンス
+final String fixed = "ja";
+String c = fixed + "va";  // final定数なのでコンパイル時定数
+
+System.out.println(a == "java"); // true
+System.out.println(b == "java"); // false
+System.out.println(c == "java"); // true</code></pre></section><section class="article-section"><h2>intern()</h2><p>&lt;code&gt;intern()&lt;/code&gt; は、文字列プール上の同じ内容のStringへの参照を返します。newで作ったStringでも、intern後はプール側の参照と比較できます。</p><pre class="article-code"><code>String a = new String("java");
 String b = a.intern();
-String c = &quot;java&quot;;
+String c = "java";
+
 System.out.println(a == c); // false
-System.out.println(b == c); // true</code></pre><p><code>intern()</code> は文字列プール上の参照を返します。newで作ったa自体が同じ参照になるわけではありません。</p>
-</section><section class="article-card ">
-<h2>StringBuilder・配列・List</h2>
-<pre><code>StringBuilder sb1 = new StringBuilder(&quot;java&quot;);
-StringBuilder sb2 = new StringBuilder(&quot;java&quot;);
-System.out.println(sb1.equals(sb2)); // false
+System.out.println(b == c); // true</code></pre></section><section class="article-section"><h2>StringBuilder</h2><p>StringBuilderは可変です。appendやdeleteなどは同じインスタンスを変更し、そのインスタンス自身を返します。Stringとは逆です。</p><pre class="article-code"><code>StringBuilder sb = new StringBuilder("abc");
+StringBuilder ret = sb.append("def");
 
-int[] a = {1, 2};
-int[] b = {1, 2};
+System.out.println(sb);       // abcdef
+System.out.println(sb == ret); // true</code></pre><p>StringBuilderはequalsを内容比較用にオーバーライドしていません。内容が同じでも、別インスタンスならequalsはfalseです。</p><pre class="article-code"><code>StringBuilder a = new StringBuilder("x");
+StringBuilder b = new StringBuilder("x");
+
+System.out.println(a == b);      // false
 System.out.println(a.equals(b)); // false
+System.out.println(a.toString().equals(b.toString())); // true</code></pre></section><section class="article-section"><h2>nullとの比較</h2><p>nullかもしれない変数でメソッドを呼ぶとNullPointerExceptionになります。安全に比較するなら、リテラル側からequalsを呼ぶ書き方があります。</p><pre class="article-code"><code>String s = null;
 
-ArrayList&lt;String&gt; x = new ArrayList&lt;&gt;();
-x.add(&quot;java&quot;);
-ArrayList&lt;String&gt; y = new ArrayList&lt;&gt;();
-y.add(&quot;java&quot;);
-System.out.println(x.equals(y)); // true</code></pre><p>StringBuilderと配列は内容比較になりません。ArrayListは要素の内容で比較します。</p>
-</section><section class="article-card ">
-<h2>自作クラスとrecord</h2>
-<pre><code>class Item {
-  int id;
-  Item(int id) { this.id = id; }
-}
-System.out.println(new Item(1).equals(new Item(1))); // false
-
-record RecItem(int id) {}
-System.out.println(new RecItem(1).equals(new RecItem(1))); // true</code></pre><p>通常クラスはequalsを自分で実装しない限り同一性比較です。recordは成分に基づくequalsが自動生成されます。</p>
-</section><section class="article-card ">
-<h2>nullとequals</h2>
-<pre><code>String s = null;
-System.out.println(s == null);      // true
-System.out.println(s.equals(&quot;x&quot;));  // NullPointerException
-System.out.println(&quot;x&quot;.equals(s));  // false</code></pre><p><code>null</code> に対してメソッドは呼べません。定数側からequalsを呼ぶと安全です。</p>
-</section><section class="article-card ">
-<h2>判定手順</h2>
-<ol class="flow-list"><li>比較対象がプリミティブか参照型かを見る。</li><li><code>==</code> なら参照比較か値比較かを決める。</li><li><code>equals</code> なら、そのクラスが内容比較を実装しているかを見る。</li><li>Stringならリテラル、new、連結、final、internを分ける。</li><li>nullが絡む場合、メソッド呼び出し側がnullでないか確認する。</li></ol>
-</section>
+// s.equals("A");      // NullPointerException
+System.out.println("A".equals(s)); // false
+System.out.println(s == null);     // true</code></pre></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

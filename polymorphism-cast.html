@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - ポリモーフィズム・キャスト・instanceof</title>
+  <title>Java Silver Study - ポリモーフィズム・キャスト</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -14,44 +14,26 @@
       <p class="brand"><a href="index.html">Java Silver Study</a></p>
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
-    <main class="main reference-main">
-      <section class="hero reference-hero">
+    <main class="main reference-main article-main">
+      <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>ポリモーフィズム・キャスト・instanceof</h1>
-        <p>参照型と実体の違い、キャスト、オーバーライド呼び出しを整理します。</p>
+        <h1>ポリモーフィズム・キャスト</h1>
+        <p>宣言型と実体、キャスト、instanceof、フィールドとメソッドの解決差をまとめます。</p>
       </section>
+      <section class="article-section"><h2>宣言型と実体</h2><p>参照変数には型があります。実際に入っているインスタンスにも型があります。コンパイル時に呼び出せるかは宣言型、オーバーライドされたメソッドの実行結果は実体型で決まります。</p><pre class="article-code"><code>class A { void x() { System.out.println("A"); } }
+class B extends A { void x() { System.out.println("B"); } void y() {} }
 
-<section class="article-card important">
-  <h2>参照型と実体を分ける</h2>
-  <pre><code>Parent p = new Child();</code></pre>
-  <p>左辺の <code>Parent</code> は「使えるメンバを決める型」です。右辺の <code>Child</code> は「実際に動くインスタンス」です。</p>
-</section>
-<section class="article-card">
-  <h2>メソッドとフィールドの違い</h2>
-  <pre><code>class A { String name = &quot;A&quot;; String getName(){ return &quot;A&quot;; } }
-class B extends A { String name = &quot;B&quot;; String getName(){ return &quot;B&quot;; } }
+A a = new B();
+a.x();   // B
+// a.y(); // コンパイルエラー</code></pre></section><section class="article-section"><h2>キャスト</h2><p>キャストは、参照の見え方を変えるものです。実体そのものが変わるわけではありません。コンパイル時に型関係があり、実行時に実体がその型として扱える場合だけ成功します。</p><pre class="article-code"><code>A a = new B();
+B b = (B) a; // OK。実体はB
 
-A obj = new B();
-System.out.println(obj.name);      // A
-System.out.println(obj.getName()); // B</code></pre>
-  <p>メソッドは実体側のオーバーライドが効きます。フィールドは変数の型で決まります。</p>
-</section>
-<section class="article-card">
-  <h2>キャストの判定</h2>
-  <div class="table-scroll"><table class="ref-table"><thead><tr><th>段階</th><th>見るもの</th><th>例</th></tr></thead><tbody><tr><td>コンパイル時</td><td>型同士に継承・実装関係があり得るか</td><td>無関係なクラス同士はコンパイルエラーになりやすい。</td></tr><tr><td>実行時</td><td>実体がキャスト先として扱えるか</td><td>実体が違えばClassCastException。</td></tr></tbody></table></div>
-  <pre><code>Object o = &quot;java&quot;;
-String s = (String) o;   // OK
-// Integer i = (Integer) o; // 実行時ClassCastException</code></pre>
-</section>
-<section class="article-card">
-  <h2>instanceof パターンマッチング</h2>
-  <pre><code>Object obj = &quot;java&quot;;
+A onlyA = new A();
+// B bad = (B) onlyA; // 実行時にClassCastException</code></pre></section><section class="article-section"><h2>instanceof パターンマッチング</h2><p>instanceofは、実体がその型として扱えるかを判定します。Java 17では、判定と同時に変数へ束縛できます。</p><pre class="article-code"><code>Object obj = "java";
+
 if (obj instanceof String s) {
     System.out.println(s.length());
-}</code></pre>
-  <p>条件がtrueのブロック内で、パターン変数 <code>s</code> が使えます。nullに対する <code>instanceof</code> はfalseです。</p>
-</section>
-
+}</code></pre><p>パターン変数は、条件がtrueになる範囲でだけ使えます。スコープの問題として問われることがあります。</p></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

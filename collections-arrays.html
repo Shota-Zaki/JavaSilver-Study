@@ -14,50 +14,39 @@
       <p class="brand"><a href="index.html">Java Silver Study</a></p>
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
-    <main class="main reference-main">
-      <section class="hero reference-hero">
+    <main class="main reference-main article-main">
+      <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>配列・ArrayList・List</h1>
-        <p>固定長配列、可変長リスト、変更不可リストの違いを整理します。</p>
+        <p>配列、ArrayList、List.of、拡張for、length/size、境界例外をまとめます。</p>
       </section>
-      <section class="article-card ">
-<h2>配列の基本</h2>
-<pre><code>int[] a = new int[3];
-a[0] = 10;
-a[1] = 20;
-a[2] = 30;
+      <section class="article-section"><h2>配列の宣言と生成</h2><p>配列変数の宣言では、要素数を書きません。要素数は配列インスタンスを作るときに指定します。</p><pre class="article-code"><code>int[] a;      // OK
+int b[];      // OK
+// int[3] c;  // NG
+// int d[3];  // NG
+
+int[] nums = new int[3];
+int[] values = {1, 2, 3};</code></pre><p>配列はオブジェクトです。参照型なので、変数には配列インスタンスへの参照が入ります。</p><pre class="article-code"><code>int[] a = {1, 2, 3};
+int[] b = a;
+b[0] = 99;
+System.out.println(a[0]); // 99</code></pre></section><section class="article-section"><h2>length と範囲</h2><p>配列の長さはフィールドなので &lt;code&gt;length&lt;/code&gt; です。メソッドではありません。添字は0から始まり、最後は &lt;code&gt;length - 1&lt;/code&gt; です。</p><pre class="article-code"><code>int[] a = {10, 20, 30};
 System.out.println(a.length); // 3
-// System.out.println(a[3]);  // 実行時例外</code></pre><p>配列は固定長です。lengthはメソッドではなくフィールドです。</p>
-</section><section class="article-card ">
-<h2>多次元配列</h2>
-<pre><code>int[][] a = {{1, 2}, {3, 4, 5}};
-for (int[] row : a) {
-  for (int v : row) {
-    System.out.println(v);
-  }
-}</code></pre><p>int[][]から1つ取り出すとint[]です。行ごとの長さが違うジャグ配列も作れます。</p>
-</section><section class="article-card ">
-<h2>ArrayListの基本操作</h2>
-<pre><code>ArrayList&lt;String&gt; list = new ArrayList&lt;&gt;();
-list.add(&quot;A&quot;);
-list.add(&quot;C&quot;);
-list.add(1, &quot;B&quot;); // A, B, C
-list.set(0, &quot;X&quot;); // X, B, C
-list.remove(&quot;B&quot;); // X, C</code></pre><p>add(index, value)は挿入、set(index, value)は置換です。</p>
-</section><section class="article-card ">
-<h2>removeの罠</h2>
-<pre><code>ArrayList&lt;Integer&gt; list = new ArrayList&lt;&gt;();
-list.add(1);
-list.add(2);
-list.add(3);
-list.remove(1); // 添字1を削除 → [1, 3]
-list.remove(Integer.valueOf(3)); // 値3を削除 → [1]</code></pre><p>int引数なら添字削除、Object引数なら要素削除です。</p>
-</section><section class="article-card ">
-<h2>List.of</h2>
-<pre><code>List&lt;String&gt; list = List.of(&quot;A&quot;, &quot;B&quot;);
-// list.add(&quot;C&quot;); // UnsupportedOperationException
-// list.set(0, &quot;X&quot;); // UnsupportedOperationException</code></pre><p>List.ofの戻り値は変更不可です。null要素も不可です。</p>
-</section>
+System.out.println(a[0]);     // 10
+System.out.println(a[2]);     // 30
+// System.out.println(a[3]);  // ArrayIndexOutOfBoundsException</code></pre></section><section class="article-section"><h2>ArrayList</h2><p>ArrayListは可変長のリストです。配列と違って要素数を増減できます。&lt;code&gt;add&lt;/code&gt; は追加、&lt;code&gt;set&lt;/code&gt; は既存位置の置換です。</p><pre class="article-code"><code>ArrayList&lt;String&gt; list = new ArrayList&lt;&gt;();
+list.add("A");
+list.add("B");
+list.set(0, "X");
+
+System.out.println(list); // [X, B]
+System.out.println(list.size()); // 2</code></pre><div class="article-card-grid"><article class="article-card"><h3>add(E e)</h3><div>末尾に追加し、booleanを返します。</div></article><article class="article-card"><h3>add(int index, E e)</h3><div>指定位置に挿入します。既存要素は後ろへずれます。</div></article><article class="article-card"><h3>set(int index, E e)</h3><div>既存位置を置き換え、置き換え前の要素を返します。</div></article><article class="article-card"><h3>remove(int index)</h3><div>指定位置の要素を削除し、削除した要素を返します。</div></article><article class="article-card"><h3>remove(Object o)</h3><div>一致する要素を削除し、削除できたかbooleanで返します。</div></article></div><div class="article-callout warn">intのリストで <code>remove(1)</code> と書くと、値1の削除ではなくインデックス1の削除として解釈されやすい点に注意します。</div></section><section class="article-section"><h2>List.of</h2><p>&lt;code&gt;List.of&lt;/code&gt; は変更不可のListを返します。addやsetを呼ぶとコンパイルは通りますが、実行時にUnsupportedOperationExceptionです。</p><pre class="article-code"><code>List&lt;String&gt; list = List.of("A", "B");
+System.out.println(list.get(0));
+// list.add("C"); // 実行時例外
+// list.set(0, "X"); // 実行時例外</code></pre></section><section class="article-section"><h2>拡張for文</h2><p>拡張for文の変数は、各要素の値または参照を受け取る一時変数です。primitiveやStringのように代入しても、元の配列要素は変わりません。</p><pre class="article-code"><code>int[] nums = {1, 2, 3};
+for (int n : nums) {
+    n = 10;
+}
+System.out.println(nums[0]); // 1</code></pre><p>参照型の場合、一時変数が参照しているオブジェクトの中身を変更すれば、その変更は見えます。ただし、一時変数自体に別オブジェクトを代入しても元の格納先は変わりません。</p></section>
     </main>
   </div>
   <script src="data/questions.js"></script>
