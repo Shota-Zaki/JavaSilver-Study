@@ -18,38 +18,19 @@
       <section class="hero reference-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>String・StringBuilder</h1>
-        <p>文字列の不変性、可変文字列、頻出メソッドを例題で確認します。</p>
+        <p>Stringは不変、StringBuilderは可変。この違いが出力問題の軸です。</p>
       </section>
-      <section class="article-card ">
-<h2>Stringは不変</h2>
-<pre><code>String s = &quot;java&quot;;
-s.concat(&quot;silver&quot;);
-System.out.println(s); // java
-
-s = s.concat(&quot;silver&quot;);
-System.out.println(s); // javasilver</code></pre><p>Stringの操作メソッドは新しいStringを返します。戻り値を代入しなければ変数は変わりません。</p>
-</section><section class="article-card ">
-<h2>頻出メソッド</h2>
-<div class="table-scroll"><table class="ref-table"><thead><tr><th>メソッド</th><th>例</th><th>注意</th></tr></thead><tbody><tr><td><code>length()</code></td><td><code>"abc".length()</code> → 3</td><td>添字ではなく文字数。</td></tr><tr><td><code>charAt(int)</code></td><td><code>"abc".charAt(0)</code> → a</td><td>範囲外はStringIndexOutOfBoundsException。</td></tr><tr><td><code>substring</code></td><td><code>"abcd".substring(1,3)</code> → bc</td><td>開始含む、終了含まない。</td></tr><tr><td><code>indexOf</code></td><td>見つからないと -1</td><td>0始まり。</td></tr><tr><td><code>equals</code></td><td>内容比較</td><td>null側から呼ぶと例外。</td></tr><tr><td><code>replace</code></td><td>置換後の新しいString</td><td>元のStringは変わらない。</td></tr></tbody></table></div>
-</section><section class="article-card ">
-<h2>StringBuilderは可変</h2>
-<pre><code>StringBuilder sb = new StringBuilder(&quot;Java&quot;);
-sb.append(&quot; Silver&quot;);
-sb.insert(0, &quot;Oracle &quot;);
-sb.delete(0, 7);
-System.out.println(sb); // Java Silver</code></pre><p>StringBuilderは同じインスタンスの中身を変更します。文字列を何度も加工する問題で出ます。</p>
-</section><section class="article-card ">
-<h2>StringBuilderのcapacity</h2>
-<pre><code>StringBuilder sb = new StringBuilder();
-System.out.println(sb.length());   // 0
-System.out.println(sb.capacity()); // 16
-
-StringBuilder sb2 = new StringBuilder(&quot;abc&quot;);
-System.out.println(sb2.capacity()); // 19</code></pre><p>capacityは現在の文字数ではなく内部バッファ容量です。lengthと混同しないこと。</p>
-</section><section class="article-card ">
-<h2>比較は専用ページで確認</h2>
-<p><code>==</code>、<code>equals</code>、<code>intern()</code>、<code>new String</code>、<code>final</code> の比較は <a href="equality.html">同一性・同値性比較</a> にまとめています。</p>
-</section>
+<section class="article-card"><h2>Stringは不変</h2><pre><code>String s = "abc";
+s.concat("d");
+System.out.println(s); // abc
+s = s.concat("d");
+System.out.println(s); // abcd</code></pre></section><section class="article-card"><h2>StringBuilderは可変</h2><pre><code>StringBuilder sb = new StringBuilder("abc");
+sb.append("d");
+System.out.println(sb); // abcd</code></pre></section><section class="article-card"><h2>よく出るメソッド</h2><div class="table-wrap"><table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値/挙動</th><th>注意</th></tr></thead><tbody><tr><td><code>charAt(index)</code></td><td>char</td><td>0始まり。範囲外は例外。</td></tr><tr><td><code>substring(begin,end)</code></td><td>String</td><td>endは含まない。</td></tr><tr><td><code>indexOf(str)</code></td><td>int</td><td>見つからないと-1。</td></tr><tr><td><code>equalsIgnoreCase(str)</code></td><td>boolean</td><td>呼び出し元がnullならNPE。</td></tr><tr><td><code>trim()</code></td><td>String</td><td>前後の空白を除いた新しい文字列。</td></tr></tbody></table></div></section><section class="article-card"><h2>StringBuilderの比較</h2><pre><code>StringBuilder a = new StringBuilder("x");
+StringBuilder b = new StringBuilder("x");
+System.out.println(a == b);      // false
+System.out.println(a.equals(b)); // false: StringBuilderは内容比較ではない
+System.out.println(a.toString().equals(b.toString())); // true</code></pre></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

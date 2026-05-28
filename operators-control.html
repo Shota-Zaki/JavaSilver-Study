@@ -18,74 +18,23 @@
       <section class="hero reference-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>演算子・制御構造</h1>
-        <p>前置/後置、短絡評価、switch、ループ制御を例題で確認します。</p>
+        <p>演算子の評価順、短絡評価、switch文/式を整理します。</p>
       </section>
-      <section class="article-card ">
-<h2>前置++と後置++</h2>
-<pre><code>int a = 10;
-int b = a++ + ++a;
-// a++ は10を使ってから a=11
-// ++a は先に a=12 にして12を使う
-System.out.println(b); // 22
-System.out.println(a); // 12</code></pre><p>値を使うタイミングと変数が更新されるタイミングを分けます。</p>
-</section><section class="article-card ">
-<h2>短絡評価</h2>
-<pre><code>int a = 10;
-if (a &lt; 0 &amp;&amp; ++a &gt; 0) { }
-System.out.println(a); // 10
-
-if (a &lt; 0 &amp; ++a &gt; 0) { }
-System.out.println(a); // 11</code></pre><p><code>&&</code>は左辺がfalseなら右辺を評価しません。<code>&</code>はbooleanでも右辺を評価します。</p>
-</section><section class="article-card ">
-<h2>複合代入</h2>
-<pre><code>byte b = 10;
-b += 1;      // OK。暗黙キャストを含む
-// b = b + 1; // コンパイルエラー。b + 1 はint</code></pre><p>複合代入は単純な書き換えではなく、代入先型への暗黙変換が入ります。</p>
-</section><section class="article-card ">
-<h2>switch文とswitch式</h2>
-<pre><code>int n = 2;
-switch (n) {
-  case 1: System.out.println(&quot;A&quot;);
-  case 2: System.out.println(&quot;B&quot;);
-  default: System.out.println(&quot;C&quot;);
-}
-// B C
-
-String result = switch (n) {
-  case 1 -&gt; &quot;A&quot;;
-  case 2 -&gt; {
-    System.out.println(&quot;two&quot;);
-    yield &quot;B&quot;;
-  }
-  default -&gt; &quot;C&quot;;
+<section class="article-card"><h2>インクリメント・デクリメント</h2><pre><code>int a = 5;
+int x = a++; // x=5, a=6
+int y = ++a; // a=7, y=7</code></pre><p>後置は「式に使う値を先に返し、その後で変数を更新」。前置は「更新してから式に使う」。同じ式に何度も同じ変数が出る問題は、左から値と副作用を表にして追うのが安全です。</p></section><section class="article-card"><h2>&& と &</h2><div class="table-wrap"><table class="ref-table"><thead><tr><th>演算子</th><th>短絡評価</th><th>右辺評価</th></tr></thead><tbody><tr><td><code>&&</code></td><td>あり</td><td>左辺がfalseなら右辺は評価しない。</td></tr><tr><td><code>&</code></td><td>なし</td><td>boolean同士なら必ず右辺も評価する。</td></tr><tr><td><code>||</code></td><td>あり</td><td>左辺がtrueなら右辺は評価しない。</td></tr><tr><td><code>|</code></td><td>なし</td><td>boolean同士なら必ず右辺も評価する。</td></tr></tbody></table></div></section><section class="article-card"><h2>switch文とswitch式</h2><div class="table-wrap"><table class="ref-table"><thead><tr><th>項目</th><th>switch文</th><th>switch式</th></tr></thead><tbody><tr><td>値を返すか</td><td>返さない</td><td>返す。代入やreturnに使える。</td></tr><tr><td>末尾セミコロン</td><td>不要</td><td>式なので代入文全体の末尾に必要。</td></tr><tr><td><code>yield</code></td><td>使わない</td><td>ブロック形式で値を返す。</td></tr><tr><td>網羅性</td><td>必須ではない</td><td>値を返すなら原則必要。defaultで補うことが多い。</td></tr></tbody></table></div></section><section class="article-card"><h2>yieldの返り値</h2><pre><code>int result = switch (n) {
+    case 1 -&gt; 10;
+    case 2 -&gt; {
+        int tmp = n * 10;
+        yield tmp; // このcaseブロックの値になる
+    }
+    default -&gt; 0;
 };
-System.out.println(result);
-// two
-// B</code></pre>
-<p>switch文はbreakがないとフォールスルーします。switch式は値を返すため、式全体の末尾にセミコロンが必要です。</p>
-<ul>
-<li><code>yield</code> はswitch式全体の返り値を指定します。メソッドの <code>return</code> ではありません。</li>
-<li><code>-&gt; &quot;B&quot;</code> のように単一式を書く場合は <code>yield</code> 不要です。</li>
-<li><code>-&gt; { ... }</code> のようにブロックを書く場合、値を返すには <code>yield 値;</code> が必要です。</li>
-<li>switch式は全分岐で値が決まる必要があります。defaultの有無を確認します。</li>
-</ul>
-<p><a href="fine-points.html">yield・戻り値・境界値の詳しい例はこちら</a></p>
-</section><section class="article-card ">
-<h2>ループとbreak/continue</h2>
-<pre><code>for (int i = 0; i &lt; 5; i++) {
-  if (i == 1) continue;
-  if (i == 3) break;
-  System.out.println(i);
-}
-// 0, 2</code></pre><p>continueは次の繰り返しへ、breakはループを抜けます。ネスト時はどのループに効くかを確認します。</p>
-</section>
-    
-<section class="article-card important">
-<h2>ループ問題は専用ページで確認</h2>
-<p><code>do-while</code>、<code>while</code>、<code>for</code>、<code>break</code>、<code>continue</code>、条件式内の <code>++</code> は、出力問題で特に落とされやすい論点です。</p>
-<p><a class="btn primary" href="loop-control.html">ループ・do-while・break/continueを見る</a></p>
-</section>
-
+System.out.println(result);</code></pre><p><code>yield</code> はswitch式のcaseブロックから値を返します。メソッドから抜ける <code>return</code> とは別物です。</p></section><section class="article-card"><h2>switch(null)</h2><pre><code>String s = null;
+switch (s) {          // Java Silver範囲ではNullPointerExceptionに注意
+    case "A" -&gt; System.out.println("A");
+    default -&gt; System.out.println("default");
+}</code></pre></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

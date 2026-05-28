@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - クラス・static・参照</title>
+  <title>Java Silver Study - クラス・インスタンス・static・参照</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -17,51 +17,19 @@
     <main class="main reference-main">
       <section class="hero reference-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>クラス・static・参照</h1>
-        <p>インスタンス、参照、static、GC、recordの違いを整理します。</p>
+        <h1>クラス・インスタンス・static・参照</h1>
+        <p>クラスからインスタンスを作り、参照型変数がその参照を保持します。</p>
       </section>
-      <section class="article-card ">
-<h2>クラスとインスタンス</h2>
-<pre><code>class Item {
-  int price;
-}
-Item a = new Item();
+<section class="article-card"><h2>参照型変数はリンクを持つ</h2><pre><code>Item a = new Item();
 Item b = new Item();
-a.price = 100;
-b.price = 200;</code></pre><p>newするたびに別インスタンスができます。フィールド値はインスタンスごとに別です。</p>
-</section><section class="article-card ">
-<h2>参照のコピー</h2>
-<pre><code>Item a = new Item();
-a.price = 100;
-Item b = a;
-b.price = 200;
-System.out.println(a.price); // 200</code></pre><p>b=aは同じインスタンスを指す参照のコピーです。</p>
-</section><section class="article-card ">
-<h2>static</h2>
-<pre><code>class Counter {
-  static int count;
-  int id;
-}
-Counter a = new Counter();
-Counter b = new Counter();
-a.count++;
-b.count++;
-System.out.println(Counter.count); // 2</code></pre><p>staticフィールドはインスタンスごとではなくクラス側に1つです。</p>
-</section><section class="article-card ">
-<h2>ガベージコレクション</h2>
-<pre><code>Object a = new Object();
-Object b = new Object();
-Object c = a;
-a = null;
-b = null;
-// ここで参照されていないのは、元bのインスタンスだけ</code></pre><p>どの変数からも到達できないインスタンスがGC対象です。GCがいつ実行されるかは保証されません。</p>
-</section><section class="article-card ">
-<h2>record</h2>
-<pre><code>record User(String name, int age) {}
-User u = new User(&quot;A&quot;, 20);
-System.out.println(u.name());
-System.out.println(u);</code></pre><p>recordはコンパクトなデータ保持用クラスです。アクセサ、equals、hashCode、toStringが自動生成されます。</p>
-</section>
+a = b; // aとbは同じインスタンスを参照する</code></pre><p>代入でコピーされるのはインスタンス本体ではなく参照です。ガベージコレクション対象は「どこからも参照されないインスタンス」です。</p></section><section class="article-card"><h2>staticとinstance</h2><div class="table-wrap"><table class="ref-table"><thead><tr><th>種類</th><th>所属</th><th>アクセス</th></tr></thead><tbody><tr><td>インスタンスフィールド</td><td>各インスタンス</td><td>参照変数から使う。</td></tr><tr><td>staticフィールド</td><td>クラス</td><td>全インスタンスで共有。クラス名アクセスが基本。</td></tr><tr><td>インスタンスメソッド</td><td>各インスタンス</td><td>staticメソッドから直接呼べない。</td></tr><tr><td>staticメソッド</td><td>クラス</td><td>thisは使えない。</td></tr></tbody></table></div></section><section class="article-card"><h2>フィールドとメソッドの解決差</h2><pre><code>class A { String name = "A"; String getName(){ return name; } }
+class B extends A { String name = "B"; String getName(){ return name; } }
+A obj = new B();
+System.out.println(obj.name);    // A: フィールドは宣言型
+System.out.println(obj.getName());// B: メソッドは実体型でoverride</code></pre></section><section class="article-card"><h2>record</h2><pre><code>record Item(String name, int price) {}
+Item i = new Item("apple", 100);
+System.out.println(i.name());
+System.out.println(i); // Item[name=apple, price=100]</code></pre><p>recordはコンストラクタ、アクセサ、equals、hashCode、toStringが自動生成されます。</p></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

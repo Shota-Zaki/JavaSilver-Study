@@ -18,44 +18,21 @@
       <section class="hero reference-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>コンパイルエラーと実行時例外</h1>
-        <p>「いつ失敗するのか」を分けると、出力問題の誤答が減ります。</p>
+        <p>失敗が「実行前」か「実行中」かを分けます。</p>
       </section>
-      <section class="article-card important">
-<h2>最初に覚える結論</h2>
+<section class="article-card"><h2>失敗段階の違い</h2><div class="table-wrap"><table class="ref-table"><thead><tr><th>段階</th><th>意味</th><th>例</th></tr></thead><tbody><tr><td>コンパイルエラー</td><td>Javaとして実行可能なclassを作れない</td><td>型不一致、未初期化、到達不能、チェック例外未処理。</td></tr><tr><td>実行時例外</td><td>classは作れるが、実行中の値で失敗</td><td>NPE、配列範囲外、ClassCastException、NumberFormatException。</td></tr><tr><td>正常出力</td><td>コンパイルも実行も通る</td><td>副作用と参照先を最後まで追う。</td></tr></tbody></table></div></section><section class="article-card"><h2>コンパイルエラー例</h2><pre><code>int x;
+// System.out.println(x); // 未初期化
 
-<p>Java Silverの出力問題は、必ず <strong>コンパイルエラー → 実行時例外 → 正常出力</strong> の順で判定します。</p>
-<div class="decision-flow">
-<div><span>1</span><strong>コンパイルエラー</strong><p>実行前に止まる。出力も例外発生行も存在しない。</p></div>
-<div><span>2</span><strong>実行時例外</strong><p>コンパイル後、その行に到達して初めて発生する。</p></div>
-<div><span>3</span><strong>正常出力</strong><p>コンパイルも実行時例外も通過した場合だけ追う。</p></div>
-</div>
+byte b = 10;
+// b = b + 1; // intをbyteへ代入不可
 
-</section><section class="article-card ">
-<h2>コンパイルエラーになる代表例</h2>
-<div class="table-scroll"><table class="ref-table"><thead><tr><th>分類</th><th>例</th><th>理由</th></tr></thead><tbody><tr><td>構文</td><td><code>int a = 10</code></td><td>セミコロン不足。</td></tr><tr><td>型不一致</td><td><code>int a = 10L;</code></td><td>longをintへ暗黙代入できない。</td></tr><tr><td>未初期化ローカル変数</td><td><code>int a; System.out.println(a);</code></td><td>ローカル変数は自動初期化されない。</td></tr><tr><td>アクセス不可</td><td><code>private</code>メンバを別クラスから直接参照</td><td>アクセス修飾子違反。</td></tr><tr><td>チェック例外未処理</td><td><code>throw new IOException();</code></td><td>catchまたはthrowsが必要。</td></tr><tr><td>catch順序</td><td><code>catch(Exception)</code> の後に <code>catch(IOException)</code></td><td>後続catchが到達不能。</td></tr><tr><td>static文脈</td><td>staticメソッドから非staticフィールドを直接参照</td><td>thisが存在しない。</td></tr></tbody></table></div>
-</section><section class="article-card ">
-<h2>実行時例外になる代表例</h2>
-<div class="table-scroll"><table class="ref-table"><thead><tr><th>例外</th><th>例</th><th>判定ポイント</th></tr></thead><tbody><tr><td>NullPointerException</td><td><code>s.length()</code> で <code>s == null</code></td><td>参照先がないのにメソッド・フィールドへアクセス。</td></tr><tr><td>ArrayIndexOutOfBoundsException</td><td><code>array[array.length]</code></td><td>添字は0〜length-1。</td></tr><tr><td>ClassCastException</td><td>実体が違う型へのダウンキャスト</td><td>コンパイル時に通っても実体が合わない。</td></tr><tr><td>NumberFormatException</td><td><code>Integer.parseInt("A")</code></td><td>数値化できない文字列。</td></tr><tr><td>ArithmeticException</td><td><code>10 / 0</code></td><td>整数の0除算。小数ではInfinity等になる場合がある。</td></tr></tbody></table></div>
-</section><section class="article-card ">
-<h2>例題：未初期化はコンパイルエラー</h2>
-<pre><code>public class Main {
-  public static void main(String[] args) {
-    int x;
-    System.out.println(x);
-  }
-}</code></pre><p>ローカル変数 <code>x</code> は初期化されていないため、実行前にコンパイルエラーです。</p>
-</section><section class="article-card ">
-<h2>例題：nullは実行時例外</h2>
-<pre><code>public class Main {
-  public static void main(String[] args) {
-    String s = null;
-    System.out.println(s.length());
-  }
-}</code></pre><p>型としてはStringなのでコンパイルできます。ただし実行時に <code>s.length()</code> へ到達した時点でNullPointerExceptionです。</p>
-</section><section class="article-card ">
-<h2>試験での実用手順</h2>
-<ol class="flow-list"><li>全コードを見て、文法・型・アクセス・チェック例外を確認する。</li><li>コンパイルできる場合だけ、実行経路を上から追う。</li><li>例外が発生したら、対応するcatchがあるかを見る。</li><li>catchされたらその後のfinallyや後続処理へ進む。catchされなければ実行時例外として終了。</li></ol>
-</section>
+// return; System.out.println("x"); // 到達不能</code></pre></section><section class="article-card"><h2>実行時例外例</h2><pre><code>String s = null;
+// s.length();
+
+int[] a = new int[1];
+// a[1] = 10;
+
+Integer.parseInt("abc");</code></pre></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

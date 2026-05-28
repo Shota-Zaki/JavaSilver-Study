@@ -18,57 +18,26 @@
       <section class="hero reference-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>例外処理</h1>
-        <p>チェック例外、catch順序、finally、try-with-resourcesを整理します。</p>
+        <p>チェック例外、非チェック例外、catch順序、finally、try-with-resourcesを整理します。</p>
       </section>
-      <section class="article-card ">
-<h2>例外の分類</h2>
-<div class="table-scroll"><table class="ref-table"><thead><tr><th>分類</th><th>例</th><th>処理の必要</th></tr></thead><tbody><tr><td>チェック例外</td><td>IOException, Exception</td><td>catchまたはthrowsが必要。</td></tr><tr><td>非チェック例外</td><td>RuntimeException, NullPointerException</td><td>コンパイル時の処理強制なし。</td></tr><tr><td>Error</td><td>OutOfMemoryErrorなど</td><td>通常はアプリで処理対象にしない。</td></tr></tbody></table></div>
-</section><section class="article-card ">
-<h2>try-catch-finally</h2>
-<pre><code>try {
-  System.out.println(&quot;A&quot;);
-  int x = 10 / 0;
-  System.out.println(&quot;B&quot;);
-} catch (ArithmeticException e) {
-  System.out.println(&quot;C&quot;);
-} finally {
-  System.out.println(&quot;D&quot;);
-}
-// A C D</code></pre><p>例外発生後、try内の残りはスキップされます。finallyは原則実行されます。</p>
-</section><section class="article-card ">
-<h2>catch順序</h2>
-<pre><code>try {
-  throw new NullPointerException();
+<section class="article-card"><h2>例外の分類</h2><div class="table-wrap"><table class="ref-table"><thead><tr><th>分類</th><th>例</th><th>処理必須か</th></tr></thead><tbody><tr><td>チェック例外</td><td>IOException, Exception</td><td>原則としてcatchまたはthrowsが必要。</td></tr><tr><td>非チェック例外</td><td>RuntimeException配下</td><td>コンパイル時の処理必須ではない。</td></tr><tr><td>Error</td><td>OutOfMemoryErrorなど</td><td>通常のアプリで捕まえる対象ではない。</td></tr></tbody></table></div></section><section class="article-card"><h2>try-catch-finallyの順序</h2><pre><code>try {
+    System.out.println("A");
 } catch (RuntimeException e) {
-  System.out.println(&quot;R&quot;);
-} catch (Exception e) {
-  System.out.println(&quot;E&quot;);
-}</code></pre><p>子から親へ、または狭い例外から広い例外へ並べます。親を先に書くと子catchが到達不能になります。</p>
-</section><section class="article-card ">
-<h2>throwsとthrow</h2>
-<pre><code>void read() throws IOException {
-  throw new IOException();
+    System.out.println("B");
+} finally {
+    System.out.println("C");
+}</code></pre><p>例外がなければtry→finally。例外がcatchされればtry→catch→finally。catchされなくてもfinallyは原則実行され、その後に例外が伝播します。</p></section><section class="article-card"><h2>catch順序</h2><pre><code>try {
+    throw new java.io.FileNotFoundException();
+} catch (java.io.IOException e) {
+} // catch (java.io.FileNotFoundException e) { } // NG: すでに上位で捕まる</code></pre><p>サブクラス例外を先、スーパークラス例外を後に書きます。</p></section><section class="article-card"><h2>try-with-resources</h2><pre><code>class R implements AutoCloseable {
+    String name;
+    R(String name){ this.name = name; }
+    public void close(){ System.out.println(name); }
 }
-
-void test() {
-  try {
-    read();
-  } catch (IOException e) {
-    System.out.println(&quot;handled&quot;);
-  }
-}</code></pre><p><code>throw</code> は例外を投げる文、<code>throws</code> はメソッド宣言で呼び出し元へ伝える指定です。</p>
-</section><section class="article-card ">
-<h2>try-with-resources</h2>
-<pre><code>class R implements AutoCloseable {
-  String name;
-  R(String name) { this.name = name; }
-  public void close() { System.out.println(name); }
+try (R a = new R("A"); R b = new R("B")) {
+    System.out.println("try");
 }
-try (R a = new R(&quot;A&quot;); R b = new R(&quot;B&quot;)) {
-  System.out.println(&quot;try&quot;);
-}
-// try B A</code></pre><p>リソースは宣言と逆順にcloseされます。</p>
-</section>
+// try, B, A の順。closeは宣言と逆順。</code></pre></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

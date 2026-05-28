@@ -18,38 +18,9 @@
       <section class="hero reference-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>頻出メソッド一覧</h1>
-        <p>String、StringBuilder、List、ラッパークラスなど、出題されやすいメソッドを用途別に整理します。</p>
+        <p>戻り値と副作用を中心に頻出メソッドを整理します。</p>
       </section>
-
-<section class="article-card">
-  <h2>String</h2>
-  <div class="table-scroll"><table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>注意</th></tr></thead><tbody><tr><td><code>length()</code></td><td><code>int</code></td><td>配列は <code>length</code> フィールド。Stringは <code>length()</code> メソッド。</td></tr><tr><td><code>charAt(index)</code></td><td><code>char</code></td><td>添字は0始まり。範囲外は実行時例外。</td></tr><tr><td><code>substring(begin, end)</code></td><td><code>String</code></td><td>beginは含む、endは含まない。元のStringは変わらない。</td></tr><tr><td><code>indexOf(str)</code></td><td><code>int</code></td><td>見つからない場合は -1。</td></tr><tr><td><code>replace(old, new)</code></td><td><code>String</code></td><td>戻り値を受けないと変更結果は失われる。</td></tr><tr><td><code>equals(obj)</code></td><td><code>boolean</code></td><td>内容比較。nullに対して呼ぶと例外。</td></tr><tr><td><code>equalsIgnoreCase(str)</code></td><td><code>boolean</code></td><td>大文字小文字を無視。</td></tr><tr><td><code>trim()</code> / <code>strip()</code></td><td><code>String</code></td><td>空白除去。試験では戻り値を受けているかを見る。</td></tr></tbody></table></div>
-</section>
-<section class="article-card">
-  <h2>StringBuilder</h2>
-  <div class="table-scroll"><table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>注意</th></tr></thead><tbody><tr><td><code>append(x)</code></td><td><code>StringBuilder</code></td><td>自分自身を変更して返す。</td></tr><tr><td><code>insert(index, x)</code></td><td><code>StringBuilder</code></td><td>指定位置に挿入。範囲外は実行時例外。</td></tr><tr><td><code>delete(start, end)</code></td><td><code>StringBuilder</code></td><td>endは含まない。</td></tr><tr><td><code>reverse()</code></td><td><code>StringBuilder</code></td><td>自分自身を反転。</td></tr><tr><td><code>toString()</code></td><td><code>String</code></td><td>Stringへ変換。</td></tr><tr><td><code>equals()</code></td><td><code>boolean</code></td><td>内容比較ではない。Object由来の参照比較。</td></tr></tbody></table></div>
-</section>
-<section class="article-card">
-  <h2>ArrayList / List</h2>
-  <div class="table-scroll"><table class="ref-table"><thead><tr><th>メソッド</th><th>意味</th><th>注意</th></tr></thead><tbody><tr><td><code>add(e)</code></td><td>末尾追加</td><td>戻り値はboolean。</td></tr><tr><td><code>add(index, e)</code></td><td>指定位置に挿入</td><td>その位置以降が後ろへずれる。index == size はOK。</td></tr><tr><td><code>set(index, e)</code></td><td>置換</td><td>既存要素が必要。index == size はNG。</td></tr><tr><td><code>remove(index)</code></td><td>位置で削除</td><td>戻り値は削除した要素。</td></tr><tr><td><code>remove(obj)</code></td><td>値で削除</td><td>戻り値はboolean。Integerリストでは overload に注意。</td></tr><tr><td><code>size()</code></td><td>要素数</td><td>配列は <code>length</code>。</td></tr><tr><td><code>contains(obj)</code></td><td>含まれるか</td><td>内部でequalsを使う。</td></tr><tr><td><code>List.of(...)</code></td><td>固定的なList作成</td><td>要素変更不可。null不可。</td></tr></tbody></table></div>
-</section>
-<section class="article-card">
-  <h2>ラッパークラス・Object・System</h2>
-  <div class="table-scroll"><table class="ref-table"><thead><tr><th>対象</th><th>メソッド/機能</th><th>注意</th></tr></thead><tbody><tr><td>Integer</td><td><code>parseInt(String)</code></td><td>戻り値は <code>int</code>。不正文字列はNumberFormatException。</td></tr><tr><td>Integer</td><td><code>valueOf(...)</code></td><td>戻り値は <code>Integer</code>。</td></tr><tr><td>Object</td><td><code>toString()</code></td><td>出力時に呼ばれやすい。null参照では呼べない。</td></tr><tr><td>Object</td><td><code>equals(Object)</code></td><td>未オーバーライドなら参照比較。</td></tr><tr><td>System</td><td><code>System.out.println</code></td><td><code>System</code> と <code>out</code> の大文字小文字に注意。</td></tr></tbody></table></div>
-</section>
-<section class="article-card important">
-  <h2>戻り値を捨てると結果が変わるメソッド</h2>
-  <pre><code>String s = &quot; Java &quot;;
-s.trim();
-System.out.println(s); // &quot; Java &quot; のまま
-
-StringBuilder sb = new StringBuilder(&quot;A&quot;);
-sb.append(&quot;B&quot;);
-System.out.println(sb); // AB</code></pre>
-  <p><code>String</code> は不変なので戻り値を受ける。<code>StringBuilder</code> は自分自身を変更する。この違いは頻出です。</p>
-</section>
-
-    <section class="article-card important"><h2>細かい境界ルール</h2><p>yield、戻り値、境界値、評価順などの1文字差は <a href="fine-points.html">細かい挙動・境界ルール集</a> にまとめています。</p></section>
+<section class="article-card"><h2>String</h2><div class="table-wrap"><table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>注意</th></tr></thead><tbody><tr><td>charAt(int)</td><td>char</td><td>範囲外は例外。</td></tr><tr><td>substring(int,int)</td><td>String</td><td>endは含まない。元は変わらない。</td></tr><tr><td>indexOf(String)</td><td>int</td><td>見つからなければ-1。</td></tr><tr><td>replace(old,new)</td><td>String</td><td>元は変わらない。</td></tr><tr><td>equals(Object)</td><td>boolean</td><td>内容比較。呼び出し元nullは不可。</td></tr></tbody></table></div></section><section class="article-card"><h2>StringBuilder</h2><div class="table-wrap"><table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>注意</th></tr></thead><tbody><tr><td>append(x)</td><td>StringBuilder</td><td>自身を変更して自身を返す。</td></tr><tr><td>insert(i,x)</td><td>StringBuilder</td><td>位置に挿入。</td></tr><tr><td>delete(s,e)</td><td>StringBuilder</td><td>endは含まない。</td></tr><tr><td>reverse()</td><td>StringBuilder</td><td>自身を反転。</td></tr><tr><td>toString()</td><td>String</td><td>Stringへ変換。</td></tr></tbody></table></div></section><section class="article-card"><h2>ArrayList/List</h2><div class="table-wrap"><table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>注意</th></tr></thead><tbody><tr><td>add(E)</td><td>boolean</td><td>末尾追加。</td></tr><tr><td>add(int,E)</td><td>void</td><td>指定位置に挿入。</td></tr><tr><td>set(int,E)</td><td>置換前の要素</td><td>サイズは増えない。</td></tr><tr><td>remove(int)</td><td>削除した要素</td><td>添字指定。</td></tr><tr><td>remove(Object)</td><td>boolean</td><td>一致要素削除。</td></tr><tr><td>size()</td><td>int</td><td>配列のlengthとは違う。</td></tr></tbody></table></div></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

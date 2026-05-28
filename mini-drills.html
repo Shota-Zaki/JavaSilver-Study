@@ -18,35 +18,27 @@
       <section class="hero reference-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>ミニ演習</h1>
-        <p>学習記事で読んだルールを短いコードで確認します。答えは開閉式です。</p>
+        <p>短いコードで、間違えやすい判定だけ練習します。</p>
       </section>
-
-<section class="article-card important"><h2>使い方</h2><p>先にコードだけ読んで、コンパイル可否・実行時例外・出力を決めてから答えを開いてください。</p></section>
-<section class="drill-grid">
-  <article class="drill-card"><h2>1. Stringの比較</h2><pre><code>String a = &quot;ja&quot; + &quot;va&quot;;
-String b = &quot;java&quot;;
-System.out.println(a == b);</code></pre><details><summary>答え</summary><p><code>true</code>。定数式なのでコンパイル時に "java" になり、文字列プールの同じ参照。</p></details></article>
-  <article class="drill-card"><h2>2. 変数を含む連結</h2><pre><code>String x = &quot;ja&quot;;
-String a = x + &quot;va&quot;;
-String b = &quot;java&quot;;
-System.out.println(a == b);</code></pre><details><summary>答え</summary><p><code>false</code>。実行時連結で新しいStringが作られる。</p></details></article>
-  <article class="drill-card"><h2>3. byteの演算</h2><pre><code>byte a = 10;
-byte b = 20;
-byte c = a + b;</code></pre><details><summary>答え</summary><p>コンパイルエラー。<code>a + b</code> は <code>int</code>。</p></details></article>
-  <article class="drill-card"><h2>4. 複合代入</h2><pre><code>byte a = 10;
-a += 20;
-System.out.println(a);</code></pre><details><summary>答え</summary><p><code>30</code>。複合代入は暗黙キャストを含む。</p></details></article>
-  <article class="drill-card"><h2>5. static</h2><pre><code>class A {
-    int value = 10;
-    static void test(){ System.out.println(value); }
-}</code></pre><details><summary>答え</summary><p>コンパイルエラー。staticメソッドからインスタンスフィールドへ直接アクセスできない。</p></details></article>
-  <article class="drill-card"><h2>6. finally</h2><pre><code>try {
-    System.out.print(&quot;A&quot;);
+<section class="article-card"><h2>1. String比較</h2><pre><code>String a = "ja" + "va";
+String x = "ja";
+String b = x + "va";
+System.out.println(a == "java");
+System.out.println(b == "java");</code></pre><p>答え: true / false。変数を含む連結は実行時に新しいStringになりやすい。</p></section><section class="article-card"><h2>2. byte演算</h2><pre><code>byte b = 10;
+// b = b + 1;
+b += 1;
+System.out.println(b);</code></pre><p>答え: 11。代入文は不可だが、複合代入は暗黙キャストを含む。</p></section><section class="article-card"><h2>3. do-while</h2><pre><code>int i = 0;
+do {
+    System.out.print(i);
+} while (++i &lt; 3);
+System.out.println("/" + i);</code></pre><p>答え: 012/3。前置なので条件判定前に増える。</p></section><section class="article-card"><h2>4. override</h2><pre><code>class A { void test(){ System.out.println("A"); } }
+class B extends A { void test(){ System.out.println("B"); } }
+A a = new B();
+a.test();</code></pre><p>答え: B。overrideメソッドは実体型で実行。</p></section><section class="article-card"><h2>5. finally</h2><pre><code>try {
+    System.out.print("A");
 } finally {
-    System.out.print(&quot;B&quot;);
-}</code></pre><details><summary>答え</summary><p><code>AB</code>。例外がなくてもfinallyは実行される。</p></details></article>
-</section>
-
+    System.out.print("B");
+}</code></pre><p>答え: AB。例外がなくてもfinallyは実行される。</p></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

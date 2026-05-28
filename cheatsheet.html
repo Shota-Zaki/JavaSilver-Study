@@ -18,32 +18,9 @@
       <section class="hero reference-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>頻出ルール早見表</h1>
-        <p>試験直前に確認するための判定表です。</p>
+        <p>直前確認用に、落としやすい規則だけを圧縮しています。</p>
       </section>
-      <section class="article-card ">
-<h2>判定順早見表</h2>
-<div class="table-scroll"><table class="ref-table"><thead><tr><th>順番</th><th>見るもの</th><th>典型チェック</th></tr></thead><tbody><tr><td>1</td><td>構文</td><td>セミコロン、括弧、switch式の末尾、return。</td></tr><tr><td>2</td><td>型</td><td>代入、引数、戻り値、ジェネリクス、var。</td></tr><tr><td>3</td><td>アクセス</td><td>private/protected/default/public。</td></tr><tr><td>4</td><td>例外</td><td>チェック例外、catch順序、finally。</td></tr><tr><td>5</td><td>実行</td><td>null、配列範囲外、キャスト、0除算。</td></tr><tr><td>6</td><td>出力</td><td>演算順、参照、オーバーライド、文字列。</td></tr></tbody></table></div>
-</section><section class="article-card ">
-<h2>頻出ルール</h2>
-<div class="table-scroll"><table class="ref-table"><thead><tr><th>論点</th><th>即判定</th></tr></thead><tbody><tr><td>String</td><td>不変。変更系メソッドは戻り値を受け取る。</td></tr><tr><td>StringBuilder</td><td>可変。equalsは内容比較ではない。</td></tr><tr><td>byte/short/char</td><td>算術演算でintへ昇格。</td></tr><tr><td>var</td><td>ローカル変数のみ。null単独不可。</td></tr><tr><td>配列</td><td>lengthはフィールド、添字は0始まり。</td></tr><tr><td>ArrayList</td><td>size()はメソッド。setは置換。</td></tr><tr><td>static</td><td>staticから非staticへ直接アクセス不可。</td></tr><tr><td>override</td><td>アクセスを弱められない。</td></tr><tr><td>interface</td><td>抽象メソッドはpublic扱い。</td></tr><tr><td>catch</td><td>子から親へ並べる。</td></tr></tbody></table></div>
-</section><section class="article-card ">
-<h2>比較早見表</h2>
-<div class="table-scroll"><table class="ref-table"><thead><tr><th>コード</th><th>==</th><th>equals</th></tr></thead><tbody><tr><td><code>"A" と "A"</code></td><td>true</td><td>true</td></tr><tr><td><code>"A" と new String("A")</code></td><td>false</td><td>true</td></tr><tr><td><code>new StringBuilder("A") 同士</code></td><td>false</td><td>false</td></tr><tr><td><code>int[] {1} 同士</code></td><td>false</td><td>false</td></tr><tr><td><code>ArrayList 同士で同じ要素</code></td><td>false</td><td>true</td></tr></tbody></table></div>
-</section>
-    <section class="article-card important"><h2>細かい境界ルール</h2><p>yield、戻り値、境界値、評価順などの1文字差は <a href="fine-points.html">細かい挙動・境界ルール集</a> にまとめています。</p></section>
-    
-<section class="article-card">
-<h2>ループ早見表</h2>
-<table class="ref-table"><thead><tr><th>構文</th><th>条件判定</th><th>最低実行回数</th><th>注意点</th></tr></thead><tbody>
-<tr><td><code>while</code></td><td>本体前</td><td>0回</td><td>最初からfalseなら本体は実行しない</td></tr>
-<tr><td><code>do-while</code></td><td>本体後</td><td>1回</td><td>最後の <code>;</code> が必須</td></tr>
-<tr><td><code>for</code></td><td>本体前</td><td>0回</td><td>continue後は更新式へ進む</td></tr>
-<tr><td><code>break</code></td><td>-</td><td>-</td><td>即座に抜ける。for更新式は実行しない</td></tr>
-<tr><td><code>continue</code></td><td>-</td><td>-</td><td>次の反復へ進む。for更新式は実行する</td></tr>
-</tbody></table>
-<p><a class="btn" href="loop-control.html">ループ詳細を見る</a></p>
-</section>
-
+<section class="article-card"><h2>型・変数</h2><ul class="check-list"><li>ローカル変数は自動初期化されない。</li><li>整数リテラルは基本int。</li><li>floatにはFが必要。</li><li>byte/short/charの演算はintになりやすい。</li><li>varはローカル変数だけ。初期値必須。</li></ul></section><section class="article-card"><h2>制御・評価</h2><ul class="check-list"><li><code>&&</code> と <code>||</code> は短絡評価。</li><li><code>&</code> と <code>|</code> はbooleanでも右辺を評価する。</li><li>do-whileは最低1回。</li><li>forのcontinue後は更新式へ進む。</li><li>switch式は値を返し、末尾にセミコロンが必要。</li></ul></section><section class="article-card"><h2>OOP</h2><ul class="check-list"><li>コンストラクタは継承されない。</li><li>privateメンバはサブクラスから直接見えない。</li><li>フィールドは宣言型、overrideメソッドは実体型。</li><li>overloadはコンパイル時、overrideは実行時。</li><li>interfaceメソッド実装はpublicが必要。</li></ul></section><section class="article-card"><h2>例外</h2><ul class="check-list"><li>チェック例外はcatchまたはthrows。</li><li>catchはサブクラスを先に書く。</li><li>finallyは原則実行される。</li><li>try-with-resourcesのcloseは逆順。</li><li>RuntimeException配下は処理必須ではない。</li></ul></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

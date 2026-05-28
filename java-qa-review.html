@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - 他チャット質問まとめ</title>
+  <title>Java Silver Study - 質問まとめ</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -17,102 +17,12 @@
     <main class="main reference-main">
       <section class="hero reference-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>他チャット質問まとめ</h1>
-        <p>最近つまずいた論点を、Java Silverの判定基準として整理します。</p>
+        <h1>質問まとめ</h1>
+        <p>これまで質問していた論点を、学習記事の関係順に再配置しました。</p>
       </section>
-      
-<section class="article-card important">
-  <h2>このページの目的</h2>
-  <p>これまで質問が多かった論点を、問題を解くときの判断基準としてまとめます。暗記ではなく、コードを見た瞬間にどこを確認するかを固定するためのページです。</p>
-</section>
-<section class="article-card">
-  <h2>try-catch-finally：例外が出た後にtryの続きは実行されるか</h2>
-  <pre><code>try {
-  System.out.println("A");
-  int[] a = {};
-  a[0] = 10;
-  System.out.println("B");
-} catch (ArrayIndexOutOfBoundsException e) {
-  System.out.println("C");
-} finally {
-  System.out.println("D");
-}</code></pre>
-  <p>出力は <code>A C D</code> です。例外が発生した時点で、同じtryブロック内の残りは実行されません。対応するcatchへ移り、その後finallyが実行されます。</p>
-  <div class="table-scroll"><table class="ref-table"><thead><tr><th>場面</th><th>実行されるもの</th><th>実行されないもの</th></tr></thead><tbody><tr><td>try内で例外なし</td><td>tryの最後まで → finally</td><td>catch</td></tr><tr><td>try内でcatch可能な例外</td><td>例外発生前のtry → catch → finally</td><td>例外発生後のtry残り</td></tr><tr><td>catchできない例外</td><td>例外発生前のtry → finally</td><td>catch、例外発生後のtry残り</td></tr></tbody></table></div>
-</section>
-<section class="article-card">
-  <h2>interface Worker { void work(); } は何を意味するか</h2>
-  <pre><code>interface Worker {
-  void work();
-}</code></pre>
-  <p>これは「Worker型として扱うならwork()を呼べる」という契約です。インタフェース内の抽象メソッドは暗黙に <code>public abstract</code> です。</p>
-  <pre><code>class Engineer implements Worker {
-  @Override
-  public void work() {
-    System.out.println("develop");
-  }
-}
-
-Worker w = new Engineer();
-w.work();</code></pre>
-  <p><code>Worker</code> 型の変数では、Workerに定義されたメソッドだけを呼べます。実行時に動くのは、実体である <code>Engineer</code> の実装です。</p>
-</section>
-<section class="article-card">
-  <h2>抽象メソッドと抽象クラス</h2>
-  <pre><code>abstract class Employee {
-  abstract void work();
-}
-
-class Engineer extends Employee {
-  @Override
-  void work() {
-    System.out.println("engineer");
-  }
-}</code></pre>
-  <p>抽象メソッドは本体を持たないメソッドです。通常クラスが抽象メソッドを継承した場合、そのメソッドを実装しなければコンパイルエラーです。実装しないなら、そのクラス自身も <code>abstract</code> にします。</p>
-  <div class="table-scroll"><table class="ref-table"><thead><tr><th>クラス種別</th><th>抽象メソッドを持てるか</th><th>newできるか</th></tr></thead><tbody><tr><td>通常クラス</td><td>不可</td><td>可</td></tr><tr><td>抽象クラス</td><td>可</td><td>不可</td></tr><tr><td>インタフェース</td><td>可。通常は暗黙にpublic abstract</td><td>不可</td></tr></tbody></table></div>
-</section>
-<section class="article-card">
-  <h2>配列宣言と初期化</h2>
-  <pre><code>int[] a;          // OK。まだ配列インスタンスはない
-int b[];          // OK。ただしJavaではint[] aが読みやすい
-int[] c = new int[3];
-int[] d = {1, 2, 3};
-// int[3] e;      // NG。宣言時に要素数は書かない
-// int f[3];      // NG</code></pre>
-  <p><code>int[] a;</code> の時点では要素数はありません。変数が宣言されただけです。要素数は <code>new int[3]</code> のように配列インスタンス生成時に決まります。</p>
-</section>
-<section class="article-card">
-  <h2>intern() とString比較</h2>
-  <pre><code>String a = new String("java");
-String b = a.intern();
-String c = "java";
-
-System.out.println(a == b); // false
-System.out.println(b == c); // true
-System.out.println(a.equals(c)); // true</code></pre>
-  <p><code>intern()</code> は文字列プール上の同じ内容のString参照を返します。<code>==</code> は参照比較、<code>equals</code> は内容比較です。</p>
-</section>
-<section class="article-card">
-  <h2>ラベル、break、continue</h2>
-  <pre><code>outer:
-for (int i = 0; i < 3; i++) {
-  for (int j = 0; j < 3; j++) {
-    if (j == 1) break outer;
-    System.out.println(i + ":" + j);
-  }
-}</code></pre>
-  <p><code>break outer;</code> はouterラベルが付いた文全体を抜けます。<code>continue outer;</code> はouterラベルが付いたループの次の周回へ進みます。ラベルは「ループ専用」ではなく文に付けられますが、<code>continue</code> の飛び先はループでなければいけません。</p>
-</section>
-<section class="article-card">
-  <h2>コンパイルエラーと実行時例外の切り分け</h2>
-  <ol class="flow-list">
-    <li><strong>まず型・宣言・修飾子を見る。</strong>ここで不正なら実行されない。</li>
-    <li><strong>次に未初期化ローカル変数、到達不能コード、catch順序を見る。</strong>これもコンパイルエラー。</li>
-    <li><strong>コンパイルできる前提になってから実行時の値を追う。</strong>null、配列範囲外、キャスト失敗、0除算などを見る。</li>
-  </ol>
-</section>
-
+<section class="article-card"><h2>try-catch-finally</h2><p>try内で例外が発生したら、対応するcatchへ移ります。例外発生後のtry内の残りは実行されません。finallyは例外の有無にかかわらず原則実行されます。</p></section><section class="article-card"><h2>interface Worker { void work(); }</h2><p>これは「Workerとして扱うならwork()を呼べる」という契約です。interface内の抽象メソッドはpublic abstract扱いなので、実装クラスではpublicで実装します。</p></section><section class="article-card"><h2>抽象メソッド</h2><p>本体を持たないメソッドです。抽象クラスやinterfaceに定義し、具象クラスで実装します。抽象クラスは未実装のままでもよいですが、最終的な具象クラスでは実装が必要です。</p></section><section class="article-card"><h2>配列宣言と初期化</h2><pre><code>int[] a;              // 宣言だけ。要素数なし
+int[] b = new int[3]; // 生成時に要素数
+int[] c = {1,2,3};    // 宣言と同時なら初期化子OK</code></pre></section><section class="article-card"><h2>intern()</h2><p><code>intern()</code> は文字列定数プール上の同値文字列の参照を返します。<code>new String("x")</code> はヒープ上に別インスタンスを作るため、<code>==</code> では通常falseです。</p></section><section class="article-card"><h2>ラベル</h2><p>ラベルは文に付けられます。ループに付けると、<code>break label</code> や <code>continue label</code> で外側制御に使えます。変数宣言やメソッド宣言のラベルと混同しないこと。</p></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

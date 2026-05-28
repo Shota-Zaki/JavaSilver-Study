@@ -18,39 +18,15 @@
       <section class="hero reference-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>数値・リテラル・型昇格</h1>
-        <p>整数リテラル、浮動小数点、アンダースコア、byte/short/charの昇格をまとめます。</p>
+        <p>byte/short/charのint昇格、複合代入、定数式、アンダースコアをまとめます。</p>
       </section>
-
-<section class="article-card">
-  <h2>デフォルト型</h2>
-  <div class="table-scroll"><table class="ref-table"><thead><tr><th>リテラル</th><th>デフォルト型</th><th>例</th></tr></thead><tbody><tr><td>整数</td><td><code>int</code></td><td><code>10</code></td></tr><tr><td>long</td><td><code>long</code></td><td><code>10L</code></td></tr><tr><td>小数</td><td><code>double</code></td><td><code>1.0</code></td></tr><tr><td>float</td><td><code>float</code></td><td><code>1.0F</code></td></tr><tr><td>文字</td><td><code>char</code></td><td><code>'A'</code></td></tr></tbody></table></div>
-</section>
-<section class="article-card">
-  <h2>byte/short/charの昇格</h2>
-  <pre><code>byte a = 10;
-byte b = 20;
-// byte c = a + b; // コンパイルエラー
-int c = a + b;     // OK</code></pre>
-  <p><code>byte</code>、<code>short</code>、<code>char</code> は算術演算時に基本的に <code>int</code> へ昇格します。</p>
-</section>
-<section class="article-card">
-  <h2>定数なら代入できる場合</h2>
-  <pre><code>byte a = 10 + 20;      // OK。コンパイル時に30と分かる
-byte x = 10;
-byte y = 20;
-// byte z = x + y;     // NG。演算結果はint</code></pre>
-</section>
-<section class="article-card">
-  <h2>複合代入は暗黙キャストを含む</h2>
-  <pre><code>byte b = 10;
-b += 1;       // OK。b = (byte)(b + 1) 相当
-// b = b + 1; // NG。b + 1 はint</code></pre>
-</section>
-<section class="article-card">
-  <h2>アンダースコアのルール</h2>
-  <div class="table-scroll"><table class="ref-table"><thead><tr><th>OK/NG</th><th>例</th><th>理由</th></tr></thead><tbody><tr><td>OK</td><td><code>1_000_000</code></td><td>数字の間。</td></tr><tr><td>NG</td><td><code>_100</code></td><td>先頭不可。識別子として解釈される。</td></tr><tr><td>NG</td><td><code>100_</code></td><td>末尾不可。</td></tr><tr><td>NG</td><td><code>3_.14</code></td><td>小数点の隣不可。</td></tr><tr><td>NG</td><td><code>0x_FF</code></td><td>接頭辞の直後不可。</td></tr></tbody></table></div>
-</section>
-
+<section class="article-card"><h2>byte/short/charは演算でintになりやすい</h2><pre><code>byte b = 10;
+// byte x = b + 1; // NG: b + 1 はint
+byte y = 10 + 1;   // OK: 定数式で範囲内
+char c = 'A';
+int n = c + 1;     // OK: charは演算時にintへ昇格</code></pre></section><section class="article-card"><h2>複合代入は暗黙キャストを含む</h2><pre><code>byte b = 10;
+b += 1;      // OK: b = (byte)(b + 1) 相当
+// b = b + 1; // NG: b + 1 はint</code></pre></section><section class="article-card"><h2>アンダースコアの位置</h2><div class="table-wrap"><table class="ref-table"><thead><tr><th>例</th><th>可否</th><th>理由</th></tr></thead><tbody><tr><td><code>1_000</code></td><td>OK</td><td>数字の間。</td></tr><tr><td><code>_1000</code></td><td>NG</td><td>先頭不可。</td></tr><tr><td><code>1000_</code></td><td>NG</td><td>末尾不可。</td></tr><tr><td><code>3_.14</code></td><td>NG</td><td>小数点の隣不可。</td></tr><tr><td><code>0x_10</code></td><td>NG</td><td>接頭辞直後不可。</td></tr><tr><td><code>0b10_10</code></td><td>OK</td><td>数字の間。</td></tr></tbody></table></div></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

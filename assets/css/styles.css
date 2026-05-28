@@ -2188,3 +2188,15 @@ pre {
 .flow-cards strong { display: block; margin-bottom: 4px; }
 .flow-cards p { margin: 0; color: var(--muted); }
 .article-card .btn { text-decoration: none; }
+
+/* Reference relation-order refinements */
+.relation-flow { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 10px 0 14px; }
+.reference-main .article-card h2 { letter-spacing: .01em; }
+.reference-main .article-card h2 + p { margin-top: 0; }
+.term-card { border: 1px solid rgba(148,163,184,.36); border-radius: 14px; background: #fff; padding: 14px; }
+.term-card h3 { margin: 0 0 6px; font-size: 16px; }
+.term-card p { margin: 0; color: var(--muted); }
+.reference-section-title { margin: 22px 0 10px; }
+.reference-section-title h2 { margin: 0 0 4px; }
+.reference-section-title p { margin: 0; color: var(--muted); }
