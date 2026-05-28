@@ -1997,7 +1997,7 @@ pre {
 }
 
 
-/* Q17/PDF line-number fidelity: each logical source line remains one visual row. */
+/* Code block line-number fidelity: each logical source line remains one visual row. */
 .numbered-code .code-line {
   grid-template-columns: 3.25em max-content;
   min-width: max-content;
@@ -2012,7 +2012,7 @@ pre {
   grid-template-columns: 2.75em max-content;
 }
 
-/* PDF-aligned explanation layout */
+/* Explanation layout */
 .explanation-detail.source-aligned {
   border-color: rgba(37, 99, 235, .28);
   background: rgba(239, 246, 255, .72);
@@ -2029,7 +2029,7 @@ pre {
   margin-bottom: .45rem;
 }
 
-/* PDF-aligned explanation readability */
+/* Explanation readability */
 .explanation-detail.source-aligned {
   border-color: rgba(37, 99, 235, .28);
   background: rgba(239, 246, 255, .72);
