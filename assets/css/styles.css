@@ -2992,3 +2992,19 @@ details.article-card[open] summary { margin-bottom: 10px; }
 .ref-index-grid.clean-index {
   align-items: stretch;
 }
+
+
+/* 20260528-sidebar-v5: sidebar large groups */
+.nav-group-summary {
+  cursor: pointer;
+  user-select: none;
+}
+.nav-group-summary::after {
+  content: "＋";
+}
+.nav-group[open] .nav-group-summary::after {
+  content: "−";
+}
+.nav-group-body {
+  overflow: hidden;
+}

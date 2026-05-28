@@ -99,7 +99,7 @@
     const progress = storage[storageKey] || payload.progress || {};
     const exam = storage[examStorageKey] || payload.exam || {};
     if (!progress || typeof progress !== "object" || Array.isArray(progress)) throw new Error("学習履歴データが見つかりません。");
-    if (!exam || typeof exam !== "object" || Array.isArray(exam)) throw new Error("模試履歴データの形式が正しくありません。");
+    if (!exam || typeof exam !== "object" || Array.isArray(exam)) throw new Error("模擬問題履歴データの形式が正しくありません。");
     return { progress, exam, meta: payload };
   }
 
@@ -152,7 +152,7 @@
       writeExamStore(parsed.exam);
     } else {
       writeProgress(mergeProgress(readProgress(), parsed.progress));
-      // 模試タイマーは端末差で壊れやすいため、マージ時は現在端末の状態を優先する。
+      // 模擬問題タイマーは端末差で壊れやすいため、マージ時は現在端末の状態を優先する。
     }
     return true;
   }
@@ -1281,7 +1281,7 @@ service cloud.firestore {
         ${quickActionHtml("前回の続き", resume ? `${resume.chapter.title} / 問${resume.question.number}` : "第1章から開始", resume, "resume")}
         ${stats.wrong ? `<a class="quick-card" href="wrong-practice.html"><span>間違い復習</span><strong>${stats.wrong}問をランダム復習</strong></a>` : quickActionHtml("間違い復習", "対象なし", null, "wrong")}
         ${quickActionHtml("見直し復習", flagged ? `${stats.flagged}問を復習` : "対象なし", flagged, "flagged")}
-        <a class="quick-card" href="${escapeHtml(exam1 ? chapterHref(exam1, "all") : "#chapterGrid")}"><span>模試を開始</span><strong>模試① / 模試②</strong></a>
+        <a class="quick-card" href="${escapeHtml(exam1 ? chapterHref(exam1, "all") : "#chapterGrid")}"><span>模擬問題を開始</span><strong>模擬問題① / 模擬問題②</strong></a>
       </div>
       ${todayReviewHtml(stats)}
       <div class="stat-grid">
@@ -1306,7 +1306,7 @@ service cloud.firestore {
     const nav = document.getElementById("chapterNav");
     if (!nav) return;
     const path = (location.pathname || "").split("/").pop() || "index.html";
-    const navStateKey = "java-study-nav-groups-v4";
+    const navStateKey = "java-study-nav-groups-v5";
     const navState = readJson(navStateKey, {});
 
     const learningItems = [
@@ -1338,7 +1338,7 @@ service cloud.firestore {
       ["cheatsheet.html", "直前確認", "圧縮版"],
       ["method-list.html", "頻出メソッド", "戻り値"],
       ["fine-points.html", "細かい仕様", "境界"],
-      ["exam-traps.html", "ひっかけ集", "模試前"],
+      ["exam-traps.html", "ひっかけ集", "模擬問題前"],
       ["weakness-map.html", "弱点マップ", "復習順"],
       ["mini-drills.html", "ミニ演習", "短問"],
       ["glossary.html", "単語集", "用語"],
@@ -1353,7 +1353,7 @@ service cloud.firestore {
       const saved = Object.prototype.hasOwnProperty.call(navState, id) ? Boolean(navState[id]) : null;
       const open = saved === null ? Boolean(defaultOpen || active) : saved;
       return `<details class="nav-group${active ? " active" : ""}" data-nav-group="${escapeHtml(id)}"${open ? " open" : ""}>
-        <summary class="nav-group-summary"><span>${escapeHtml(title)}</span><small>${escapeHtml(hint || "")}</small></summary>
+        <summary class="nav-group-summary" aria-label="${escapeHtml(title)}を開閉"><span>${escapeHtml(title)}</span><small>${escapeHtml(hint || "")}</small></summary>
         <div class="nav-group-body">${itemsHtml}</div>
       </details>`;
     }
@@ -1373,7 +1373,7 @@ service cloud.firestore {
     const otherHtml = otherItems.map(([href, label, hint]) => linkHtml(href, label, hint, href === path)).join("");
 
     nav.innerHTML =
-      groupHtml("nav-practice", "問題演習", "1〜8章", chapterItems, practiceActive, practiceActive || path === "index.html") +
+      groupHtml("nav-practice", "演習", "1〜8章・模擬問題", chapterItems, practiceActive, practiceActive || path === "index.html") +
       groupHtml("nav-learning", "学習記事", "基礎〜Java 17", learningHtml, learningActive, learningActive) +
       groupHtml("nav-other", "その他", "直前確認・補助", otherHtml, otherActive, otherActive || path === "index.html");
 
@@ -1678,13 +1678,13 @@ service cloud.firestore {
     const unanswered = Math.max(s.total - s.answered, 0);
     panel.innerHTML = `<div class="exam-box ${active ? "active" : ""}">
       <div>
-        <h2>模試モード</h2>
+        <h2>模擬問題モード</h2>
         ${examSummaryHtml(state, s)}
       </div>
       <div class="exam-actions">
         <span class="timer" id="examTimer">${active ? formatSeconds(remainingSeconds(state)) : "90:00"}</span>
         <span class="exam-count">解答済み ${s.answered} / 未回答 ${unanswered} / 見直し ${s.flagged}</span>
-        ${active ? `<button class="btn primary" id="finishExam">模試を終了して採点</button>` : `<button class="btn primary" id="startExam">模試開始</button>`}
+        ${active ? `<button class="btn primary" id="finishExam">模擬問題を終了して採点</button>` : `<button class="btn primary" id="startExam">模擬問題開始</button>`}
       </div>
     </div>`;
     document.getElementById("startExam")?.addEventListener("click", startExam);

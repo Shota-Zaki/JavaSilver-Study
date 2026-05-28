@@ -1,6 +1,6 @@
 window.JAVA_STUDY_DATA = {
   "title": "Java Silver 勉強用ページ",
-  "version": "mock-explanations-expanded-2026-05-28-r4",
+  "version": "20260528-sidebar-v5",
   "chapters": [
     {
       "id": "ch01",
@@ -40,7 +40,7 @@ window.JAVA_STUDY_DATA = {
     },
     {
       "id": "ch07",
-      "title": "模擬試験",
+      "title": "模擬問題①",
       "status": "ready",
       "page": "ch07.html"
     },
