@@ -932,7 +932,7 @@ service cloud.firestore {
     const selectedText = selected.length ? selected.join("・") : "未選択";
     const summary = exp.summary || exp.correctReason || "解説未入力。";
     const mainParts = [];
-    [exp.pdfExplanation, exp.correctReason, exp.additionalExplanation].forEach(text => {
+    [exp.pdfExplanation, exp.additionalExplanation, exp.pdfExplanation ? "" : exp.correctReason].forEach(text => {
       if (!text) return;
       const cleaned = String(text).replace(/【追加解説】/g, "").replace(/【間違えやすい点】/g, "").trim();
       if (cleaned && !mainParts.includes(cleaned)) mainParts.push(cleaned);
@@ -1936,9 +1936,63 @@ service cloud.firestore {
     renderWrongPracticeQuestion({ focus: true });
   }
 
+
+  function articleSectionId(index) {
+    return `section-${index + 1}`;
+  }
+
+  function enhanceArticlePage() {
+    const main = document.querySelector(".reference-main.article-main");
+    if (!main) return;
+
+    const sections = Array.from(main.querySelectorAll(".article-section"));
+    sections.forEach((section, index) => {
+      if (!section.id) section.id = articleSectionId(index);
+    });
+
+    // Make reference tables readable on narrow screens without requiring each HTML file to wrap them manually.
+    main.querySelectorAll("table.ref-table, table.compact-table").forEach(table => {
+      if (table.closest(".table-scroll") || table.closest(".table-wrap")) return;
+      const wrap = document.createElement("div");
+      wrap.className = "table-scroll";
+      table.parentNode.insertBefore(wrap, table);
+      wrap.appendChild(table);
+    });
+
+    if (sections.length > 1 && !main.querySelector(".article-local-toc")) {
+      const links = sections.map((section, index) => {
+        const h2 = section.querySelector("h2");
+        const title = h2 ? h2.textContent.trim() : `項目${index + 1}`;
+        return `<a href="#${escapeHtml(section.id)}">${escapeHtml(title)}</a>`;
+      }).join("");
+      const toc = document.createElement("section");
+      toc.className = "article-local-toc";
+      toc.innerHTML = `<h2>このページの内容</h2><div class="toc-links">${links}</div>`;
+      const hero = main.querySelector(".article-hero, .hero");
+      if (hero && hero.nextSibling) hero.parentNode.insertBefore(toc, hero.nextSibling);
+      else main.insertBefore(toc, main.firstChild);
+    }
+
+    const nav = document.getElementById("chapterNav");
+    if (nav && sections.length > 1 && !nav.querySelector(".nav-subtoc")) {
+      const active = nav.querySelector(".nav-link.active");
+      if (active) {
+        const sub = document.createElement("div");
+        sub.className = "nav-subtoc";
+        sub.innerHTML = sections.slice(0, 8).map((section, index) => {
+          const h2 = section.querySelector("h2");
+          const title = h2 ? h2.textContent.trim() : `項目${index + 1}`;
+          return `<a href="#${escapeHtml(section.id)}">${escapeHtml(title)}</a>`;
+        }).join("");
+        active.insertAdjacentElement("afterend", sub);
+      }
+    }
+  }
+
   function renderAll() {
     setSingleFileVisibility();
     renderNav();
+    enhanceArticlePage();
     renderIndex();
     renderChapter();
     renderWrongSummary();

@@ -18,9 +18,114 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>質問整理まとめ</h1>
-        <p>これまで質問した論点を、試験で使える知識として整理します。</p>
+        <p>最近確認した論点を、試験で使える判断基準として整理します。用語の暗記ではなく、コードを読んだときにどこで落とされるかを判断できる状態を目標にします。</p>
       </section>
-      <section class="article-section"><h2>よく質問した論点のまとめ</h2><div class="qa-block"><h3>interface Worker { void work(); } は何を意味するか</h3><div><p>Worker型として扱われるものは、work()というメソッドを持つ必要がある、という契約です。実装クラスはpublicでwork()を実装します。</p></div></div><div class="qa-block"><h3>implements と extends の違い</h3><div><p>extendsは親から受け継ぐ、implementsはinterfaceのルールを満たす、という違いです。クラスがクラスを継承するならextends、クラスがinterfaceを実装するならimplementsです。</p></div></div><div class="qa-block"><h3>コンパイルエラーと実行時例外の違い</h3><div><p>コンパイルエラーは実行前にコードとして不正な状態です。実行時例外はコードとしては成立しているが、実行中の値や状態が原因で発生します。</p></div></div><div class="qa-block"><h3>recordの本質</h3><div><p>データをまとめて持つための、変更不可に近いデータ専用クラスです。アクセサはgetName()ではなくname()です。</p></div></div></section>
+
+      <section class="article-section">
+        <h2>record</h2>
+        <p>recordは「データを入れるだけのクラス」を短く書くための仕組みです。Java Silver 17では、通常クラスとの違い、生成されるメンバ、変更できる点とできない点が狙われます。</p>
+        <pre class="article-code"><code>public record Person(String name, int age) { }</code></pre>
+        <p>この1行で、<code>private final</code>相当のフィールド、コンストラクタ、<code>name()</code>、<code>age()</code>、<code>equals</code>、<code>hashCode</code>、<code>toString</code> が用意されます。アクセサ名は <code>getName()</code> ではなく <code>name()</code> です。ここを曖昧にすると選択肢で簡単に落ちます。</p>
+        <div class="article-card-grid">
+          <article class="article-card"><h3>本質</h3><p>recordはデータキャリアです。状態を持たせるための一般的なクラスではなく、決まった値の組を扱うための型です。</p></article>
+          <article class="article-card"><h3>継承</h3><p>recordは暗黙的に <code>java.lang.Record</code> を継承するため、他のクラスを <code>extends</code> できません。</p></article>
+          <article class="article-card"><h3>変更不可</h3><p>コンポーネント由来のフィールドは実質finalです。後から値を書き換えるsetterは基本的に作りません。</p></article>
+          <article class="article-card"><h3>追加可能</h3><p>メソッド、staticフィールド、コンパクトコンストラクタは定義できます。ただしインスタンスフィールドを自由に増やす発想は危険です。</p></article>
+        </div>
+        <div class="article-callout warn">recordを「getter/setterを自動生成するクラス」と覚えるのは弱いです。正しくは「コンポーネントから、値を表す型を作る構文」です。</div>
+      </section>
+
+      <section class="article-section">
+        <h2>interface / implements / abstract / extends</h2>
+        <p><code>extends</code> は既存の型を拡張する、<code>implements</code> はinterfaceの契約を満たす、という違いです。ここを言葉だけで覚えると、抽象クラス・interface・多重継承の問題で混乱します。</p>
+        <pre class="article-code"><code>interface Worker {
+    void work();
+}
+
+class Engineer implements Worker {
+    public void work() {
+        System.out.println("work");
+    }
+}</code></pre>
+        <p>interfaceの抽象メソッドは暗黙的に <code>public abstract</code> です。実装クラスで <code>public</code> を付け忘れると、アクセス修飾子を弱めたことになりコンパイルエラーです。</p>
+        <div class="article-card-grid">
+          <article class="article-card"><h3>class extends class</h3><p>クラスの継承。Javaではクラスの多重継承はできません。</p></article>
+          <article class="article-card"><h3>class implements interface</h3><p>interfaceの実装。複数のinterfaceを同時に実装できます。</p></article>
+          <article class="article-card"><h3>interface extends interface</h3><p>interface同士の継承。複数継承できます。</p></article>
+          <article class="article-card"><h3>abstract class</h3><p>未完成のクラス。抽象メソッドを残せますが、直接 <code>new</code> はできません。</p></article>
+        </div>
+        <p>未実装の抽象メソッドが残るクラスは、必ずabstractにする必要があります。逆に、具象クラスにするなら全抽象メソッドを実装しなければなりません。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>override と overload</h2>
+        <p>オーバーライドとオーバーロードは名前が似ていますが、判定基準が別物です。試験では、戻り値・アクセス修飾子・引数リストを混ぜて誤答を作ってきます。</p>
+        <div class="article-card-grid">
+          <article class="article-card"><h3>overload</h3><p>同じメソッド名で、引数リストが違うものを複数定義すること。呼び出し先はコンパイル時に決まります。</p></article>
+          <article class="article-card"><h3>override</h3><p>親のインスタンスメソッドを子で再定義すること。実行時の実体クラスで呼び出し先が決まります。</p></article>
+          <article class="article-card"><h3>戻り値</h3><p>overloadは戻り値だけ違っても不可。overrideは同じ型または共変戻り値が必要です。</p></article>
+          <article class="article-card"><h3>アクセス修飾子</h3><p>overrideでは親より狭くできません。<code>public</code> を package-private にするような変更は不可です。</p></article>
+        </div>
+        <pre class="article-code"><code>class A {
+    Number value() { return 1; }
+    void test(int n) { }
+    void test(String s) { } // overload
+}
+
+class B extends A {
+    @Override
+    Integer value() { return 1; } // covariant return OK
+
+    @Override
+    void test(int n) { }          // override
+}</code></pre>
+        <div class="article-callout">判定順は、まず「同じシグネチャか」を見る。同じならoverride候補、違うならoverload候補です。戻り値だけ見て判断するのは危険です。</div>
+      </section>
+
+      <section class="article-section">
+        <h2>sealed class / sealed interface</h2>
+        <p>sealedは、継承・実装できる直接のサブタイプを限定する仕組みです。<code>sealed</code> は「newできない」という意味ではありません。newできないのは <code>abstract</code> です。</p>
+        <pre class="article-code"><code>public sealed class Animal permits Dog, Cat { }
+public final class Dog extends Animal { }
+public non-sealed class Cat extends Animal { }</code></pre>
+        <p>sealedクラスを継承した直接の子クラスは、必ず <code>final</code>、<code>sealed</code>、<code>non-sealed</code> のどれかで方針を示します。</p>
+        <div class="article-card-grid">
+          <article class="article-card"><h3>final</h3><p>ここで継承を止めます。</p></article>
+          <article class="article-card"><h3>sealed</h3><p>さらに次の継承先を限定します。</p></article>
+          <article class="article-card"><h3>non-sealed</h3><p>ここから先の継承制限を解除します。</p></article>
+          <article class="article-card"><h3>permits</h3><p>直接の許可クラスを列挙します。許可されていないクラスは継承できません。</p></article>
+        </div>
+        <div class="article-callout warn">sealed問題では、親側の <code>permits</code> と子側の <code>final/sealed/non-sealed</code> の両方を見る。片方だけ見て正誤判断すると外します。</div>
+      </section>
+
+      <section class="article-section">
+        <h2>try-with-resources と close()</h2>
+        <p>try-with-resourcesは、リソースを自動で閉じる構文です。対象は <code>AutoCloseable</code> を実装しているオブジェクトです。</p>
+        <pre class="article-code"><code>try (A a = new A("A"); A b = new A("B")) {
+    System.out.println("body");
+} finally {
+    System.out.println("finally");
+}</code></pre>
+        <p>この場合、出力順は <code>body</code> → <code>B</code> → <code>A</code> → <code>finally</code> です。closeは宣言した順番の逆順に呼ばれます。finallyはその後です。</p>
+        <div class="article-card-grid">
+          <article class="article-card"><h3>宣言順</h3><p><code>A a</code>、次に <code>A b</code> の順で作られます。</p></article>
+          <article class="article-card"><h3>close順</h3><p>閉じるときは逆順。先に <code>b.close()</code>、次に <code>a.close()</code>。</p></article>
+          <article class="article-card"><h3>finally</h3><p>リソースのclose後に実行されます。</p></article>
+          <article class="article-card"><h3>例外</h3><p><code>close()</code> がチェック例外を投げる可能性があるなら、catchまたはthrowsが必要です。</p></article>
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>RuntimeException</h2>
+        <p><code>RuntimeException</code> とそのサブクラスは非チェック例外です。コンパイラはcatchやthrowsを強制しません。ただし、実行時に発生すれば当然プログラムの流れは変わります。</p>
+        <div class="article-card-grid">
+          <article class="article-card"><h3>NullPointerException</h3><p>null参照に対してメソッドやフィールドへアクセスしたとき。</p></article>
+          <article class="article-card"><h3>ArrayIndexOutOfBoundsException</h3><p>配列の範囲外インデックスへアクセスしたとき。</p></article>
+          <article class="article-card"><h3>NumberFormatException</h3><p><code>Integer.parseInt("abc")</code> のように数値変換できないとき。</p></article>
+          <article class="article-card"><h3>ClassCastException</h3><p>実体と互換性のない型へキャストしたとき。</p></article>
+        </div>
+        <p>例外問題は、出力順を追う前にコンパイル可否を確認します。コンパイルできないコードに「実行時例外」は発生しません。この順番を崩すと、実行結果系の問題で誤答します。</p>
+      </section>
     </main>
   </div>
   <script src="data/questions.js"></script>
