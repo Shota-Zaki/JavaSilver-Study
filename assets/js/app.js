@@ -607,11 +607,10 @@ service cloud.firestore {
     const normalized = source.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
     const lines = normalized.length ? normalized.split("\n") : [""];
     const classAttr = className ? ` ${className}` : "";
-    const rows = lines.map((line, i) => `
-      <div class="code-line">
-        <span class="line-no" aria-hidden="true">${i + 1}</span>
-        <code>${line ? escapeHtml(line) : "&nbsp;"}</code>
-      </div>`).join("");
+    // Keep each logical source line as exactly one visual row.
+    // Do not insert indentation/newline text nodes inside .code-line: CSS grid treats
+    // preserved whitespace as anonymous grid items and the code block becomes tall.
+    const rows = lines.map((line, i) => `<div class="code-line"><span class="line-no" aria-hidden="true">${i + 1}</span><code>${line ? escapeHtml(line) : "&nbsp;"}</code></div>`).join("");
     return `<div class="numbered-code${classAttr}">${rows}</div>`;
   }
 

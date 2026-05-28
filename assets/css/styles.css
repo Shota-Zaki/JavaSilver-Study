@@ -2699,3 +2699,77 @@ details.article-card[open] summary { margin-bottom: 10px; }
 .ref-index-card.emphasized { border-color: rgba(37, 99, 235, .42); background: linear-gradient(180deg, #eff6ff, #ffffff); }
 .article-section a:not(.ref-index-card) { color: var(--accent); font-weight: 850; }
 @media (max-width: 860px) { .decision-lane { grid-template-columns: 1fr; } }
+
+/* Definitive fix: compact one-row-per-source-line code rendering. */
+.numbered-code {
+  display: block !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  background: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 12px !important;
+  white-space: normal !important;
+  -webkit-overflow-scrolling: touch;
+}
+.numbered-code .code-line {
+  display: grid !important;
+  grid-template-columns: 3.25em max-content !important;
+  min-width: max-content !important;
+  white-space: normal !important;
+  line-height: 1.65 !important;
+}
+.option .numbered-code .code-line {
+  grid-template-columns: 2.75em max-content !important;
+}
+.numbered-code .line-no {
+  display: block !important;
+  padding: 0 10px !important;
+  border-right: 1px solid #cbd5e1 !important;
+  background: #eef2f7 !important;
+  color: #64748b !important;
+  font-family: var(--mono) !important;
+  font-size: 13px !important;
+  line-height: 1.65 !important;
+  text-align: right !important;
+  user-select: none !important;
+  white-space: normal !important;
+}
+.numbered-code .code-line code {
+  display: block !important;
+  min-width: max-content !important;
+  padding: 0 14px !important;
+  background: transparent !important;
+  color: #0f172a !important;
+  border-radius: 0 !important;
+  font-family: var(--mono) !important;
+  font-size: 14px !important;
+  line-height: 1.65 !important;
+  white-space: pre !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+}
+.numbered-code .code-line:first-child .line-no,
+.numbered-code .code-line:first-child code {
+  padding-top: 12px !important;
+}
+.numbered-code .code-line:last-child .line-no,
+.numbered-code .code-line:last-child code {
+  padding-bottom: 12px !important;
+}
+@media (max-width: 560px) {
+  .numbered-code .code-line {
+    grid-template-columns: 2.8em max-content !important;
+  }
+  .option .numbered-code .code-line {
+    grid-template-columns: 2.65em max-content !important;
+  }
+  .numbered-code .line-no,
+  .numbered-code .code-line code {
+    font-size: 12px !important;
+    line-height: 1.6 !important;
+  }
+  .numbered-code .code-line code {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+}
