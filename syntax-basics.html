@@ -18,68 +18,85 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>Java実行・宣言ルール</h1>
-        <p>ファイル名、package/import、mainメソッド、コマンド実行、起動引数を、試験で使う順番で整理します。</p>
+        <p>main、ソースファイル名、package/import、起動引数を、コンパイル可否と実行可否の順で判定するためのページです。</p>
       </section>
 
       <section class="article-section">
-        <h2>最初に見る判定順</h2>
-        <p>Java Silverのコード問題は、出力結果を追う前に「そのコードが実行できる状態か」を潰します。実行結果だけを先に考える癖があると、package宣言、publicクラス名、mainメソッド、static文脈で簡単に落ちます。</p>
-        <div class="article-card-grid">
-          <article class="article-card"><h3>1. ファイル単位</h3><p>publicなトップレベルクラスがあるなら、ソースファイル名はそのクラス名と一致します。複数の非publicクラスは1ファイルに書けます。</p></article>
-          <article class="article-card"><h3>2. 宣言順</h3><p><code>package</code> 宣言は先頭。コメントを除き、<code>import</code> より前です。<code>import</code> の後に <code>package</code> は書けません。</p></article>
-          <article class="article-card"><h3>3. エントリーポイント</h3><p><code>public static void main(String[] args)</code> または <code>public static void main(String... args)</code> が基本形です。</p></article>
-          <article class="article-card"><h3>4. 実行時引数</h3><p><code>java Main a b</code> なら <code>args[0]</code> は <code>"a"</code>。クラス名 <code>Main</code> は配列に入りません。</p></article>
-        </div>
-        <div class="article-callout warn">判断を急ぐな。<strong>コンパイルできないコードに実行結果は存在しません。</strong> まず宣言・修飾子・型・到達不能・例外処理を確認してから、出力順を追います。</div>
+        <h2>まず見る順番</h2>
+        <p>この分野は暗記で押し切るより、チェック順を固定した方が速いです。問題文に複数のファイル・パッケージ・コマンドが出る場合、次の順で潰してください。</p>
+        <ol class="article-list">
+          <li><strong>ソースファイル名</strong>: <code>public</code> トップレベルクラス名と一致しているか。</li>
+          <li><strong>package宣言</strong>: あるならコメントを除いた先頭にあるか。</li>
+          <li><strong>import宣言</strong>: <code>package</code> の後、クラス宣言の前にあるか。</li>
+          <li><strong>mainメソッド</strong>: 起動対象クラスに正しい形式の <code>main</code> があるか。</li>
+          <li><strong>javaコマンドの引数</strong>: クラス名と起動引数を取り違えていないか。</li>
+        </ol>
+        <div class="article-callout warn"><strong>最初から出力を追うのは遅いです。</strong> 先にコンパイル不可・起動不可を潰してください。出力計算は最後です。</div>
       </section>
-
       <section class="article-section">
-        <h2>package / import</h2>
-        <p>packageはクラスの所属を決めます。importは別パッケージの型名を短く書くための宣言です。importしてもクラスが読み込まれるわけではなく、単に名前解決を補助します。</p>
-        <pre class="article-code"><code>package app.sample;     // 先頭に書く
-
-import java.util.ArrayList;
-import java.util.*;       // java.util直下の型だけ。サブパッケージは対象外
-
-public class Main { }</code></pre>
+        <h2>ソースファイル名とトップレベルクラス</h2>
+        <p>1つのソースファイルには複数のトップレベルクラスを書けます。ただし、<code>public</code> なトップレベルクラスは最大1つで、ファイル名はそのクラス名と一致する必要があります。</p>
+        <pre class="article-code"><code>// A.java
+        public class A {}
+        class B {}</code></pre>
+        <p>この場合、<code>javac A.java</code> で <code>A.class</code> と <code>B.class</code> が生成されます。<code>B</code> に正しい <code>main</code> があれば <code>java B</code> で起動できます。<code>public class B</code> を同じファイルに追加するとコンパイルエラーです。</p>
         <div class="article-card-grid">
-          <article class="article-card"><h3>java.lang</h3><p><code>String</code>、<code>System</code>、<code>Integer</code> など <code>java.lang</code> の型は自動インポートされます。</p></article>
-          <article class="article-card"><h3>同じパッケージ</h3><p>同じパッケージ内のクラスはimport不要です。別パッケージならimportまたは完全修飾名が必要です。</p></article>
-          <article class="article-card"><h3>ワイルドカード</h3><p><code>import java.util.*;</code> は <code>java.util.ArrayList</code> などに効きますが、<code>java.util.stream.*</code> までは含みません。</p></article>
-          <article class="article-card"><h3>static import</h3><p><code>import static</code> は型ではなく、staticメンバを短く書くためのものです。通常のクラスimportと混同しないこと。</p></article>
+          <article class="article-card"><h3>OK</h3><p><code>A.java</code> に <code>public class A</code> と非publicの <code>class B</code>。</p></article>
+          <article class="article-card"><h3>NG</h3><p><code>Sample.java</code> に <code>public class Main</code>。名前不一致。</p></article>
+          <article class="article-card"><h3>NG</h3><p>1ファイルに <code>public class A</code> と <code>public class B</code>。</p></article>
         </div>
       </section>
-
       <section class="article-section">
-        <h2>mainメソッドの形</h2>
-        <p>Javaコマンドから起動されるmainは、外部から呼ばれるため <code>public</code>、インスタンス生成なしで呼ばれるため <code>static</code>、戻り値を受け取らないため <code>void</code> です。引数は <code>String[]</code> または <code>String...</code> です。</p>
-        <pre class="article-code"><code>public class Main {
-    public static void main(String[] args) {
-        System.out.println(args.length);
-    }
-}
+        <h2>package / importの位置</h2>
+        <p><code>package</code> 宣言は、コメントを除いてソースファイルの先頭に1回だけ書けます。<code>import</code> は <code>package</code> の後、クラス宣言の前です。</p>
+        <pre class="article-code"><code>package ex.sample;
 
-class SubMain {
-    public static void main(String... args) {
-        System.out.println(&quot;OK&quot;);
-    }
-}</code></pre>
-        <p>1つのソースファイルに複数のクラスを書き、それぞれが正しいmainを持つ場合、コンパイル後は各クラスを指定して実行できます。ただしpublicクラス名とファイル名の一致条件は別問題です。</p>
+        import java.util.ArrayList;
+        import java.util.*;
+
+        public class Main {}</code></pre>
+        <p><code>import</code> より前に <code>package</code> が必要です。<code>import</code> が先に出てきたら、それだけでコンパイルエラー候補です。</p>
+        <div class="article-callout warn"><code>java.lang</code> と同一パッケージのクラスは自動的に見えますが、<strong>サブパッケージは自動では見えません</strong>。<code>java.util.*</code> で見えるのは <code>java.util</code> 直下のクラスだけです。</div>
       </section>
-
       <section class="article-section">
-        <h2>コマンド実行で落とされる点</h2>
-        <p><code>javac</code> はソースファイルをコンパイルし、<code>java</code> はクラス名を指定して実行します。実行時に <code>.class</code> や <code>.java</code> を付ける選択肢は基本的に誤りです。</p>
-        <pre class="article-code"><code>javac Main.java
-java Main one two
+        <h2>importのワイルドカードとstatic import</h2>
+        <p>通常の <code>import</code> はクラス名を省略するためのものです。ワイルドカード <code>*</code> はパッケージ直下のクラスにだけ効き、パッケージ階層の途中には使えません。</p>
+        <pre class="article-code"><code>import java.util.*;        // OK。java.util直下
+        // import java.*;          // java.util.ArrayListまでは届かない
+        // import ex.*.Sample;     // NG。途中に*は置けない</code></pre>
+        <p><code>import static</code> は、クラスの <code>static</code> メンバを省略して使うための宣言です。クラスそのものを読み込む宣言ではありません。</p>
+        <pre class="article-code"><code>import static java.lang.Math.PI;
+        import static java.lang.Math.*;
 
-// args[0] == &quot;one&quot;
-// args[1] == &quot;two&quot;</code></pre>
-        <ul class="article-list">
-          <li><code>java Main java one two</code> なら <code>args[0]</code> は <code>"java"</code>。</li>
-          <li>起動引数が0個でも <code>args</code> は通常 <code>null</code> ではなく、長さ0の配列です。</li>
-          <li><code>args[0]</code> を参照した時点で、長さ0なら <code>ArrayIndexOutOfBoundsException</code> です。</li>
-        </ul>
+        class Main {
+            double area(double r) { return PI * r * r; }
+        }</code></pre>
+      </section>
+      <section class="article-section">
+        <h2>mainメソッドの成立条件</h2>
+        <p>アプリケーションのエントリーポイントになる <code>main</code> は、次の条件を満たします。</p>
+        <table class="ref-table"><thead><tr><th>条件</th><th>必要な形</th><th>よくある誤り</th></tr></thead><tbody>
+        <tr><td>アクセス修飾子</td><td><code>public</code></td><td><code>private static void main</code></td></tr>
+        <tr><td>クラスメソッド</td><td><code>static</code></td><td>インスタンスメソッドにする</td></tr>
+        <tr><td>戻り値</td><td><code>void</code></td><td><code>int main</code></td></tr>
+        <tr><td>引数</td><td><code>String[] args</code> または <code>String... args</code></td><td><code>String args</code>、<code>int[] args</code></td></tr>
+        </tbody></table>
+        <pre class="article-code"><code>public static void main(String[] args) {}
+        public static void main(String... args) {}</code></pre>
+        <p><code>args</code> という名前は変更できます。重要なのは型です。</p>
+      </section>
+      <section class="article-section">
+        <h2>起動引数の見方</h2>
+        <p><code>java Main java one two</code> の <code>Main</code> は起動対象クラス名であり、<code>args</code> には入りません。<code>args[0]</code> は <code>java</code>、<code>args[1]</code> は <code>one</code> です。</p>
+        <pre class="article-code"><code>// command: java Main java one two
+        System.out.println(args[0] + " " + args[1]); // java one</code></pre>
+        <div class="article-callout warn">起動引数なしなら <code>args</code> は <code>null</code> ではなく、要素数0の配列です。<code>args.length</code> は0、<code>args[0]</code> は実行時例外です。</div>
+      </section>
+      <section class="article-section">
+        <h2>ミニ判定</h2>
+        <details class="article-card"><summary><strong>Q1.</strong> <code>public static int main(String[] args)</code> は起動用mainになる？</summary><p>なりません。戻り値が <code>void</code> ではないためです。普通のstaticメソッドとしては定義できますが、エントリーポイントではありません。</p></details>
+        <details class="article-card"><summary><strong>Q2.</strong> <code>package</code> より前に書けるものは？</summary><p>コメントだけです。<code>import</code>、変数宣言、クラス宣言などは不可です。</p></details>
+        <details class="article-card"><summary><strong>Q3.</strong> <code>java Sample 5 2</code> の <code>args.length</code> は？</summary><p>2です。<code>Sample</code> は起動対象クラス名で、引数には含まれません。</p></details>
       </section>
 
     </main>

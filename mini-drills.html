@@ -18,47 +18,38 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>ミニ演習</h1>
-        <p>短いコードで、Java Silverの判定順を確認します。答えだけでなく、なぜそうなるかを1つずつ潰します。</p>
+        <p>短いコードで、コンパイル可否・実行時例外・出力を即判定する練習ページです。</p>
       </section>
 
       <section class="article-section">
-        <h2>演習1: var</h2>
-        <pre class="article-code"><code>class Sample {
-    private var value = 10;
-}</code></pre>
-        <p>フィールドに <code>var</code> は使えないためコンパイルエラーです。varはローカル変数限定です。</p>
+        <h2>型変換</h2>
+        <details class="article-card"><summary><code>byte b = 10; b = b + 1;</code></summary><p>コンパイルエラー。<code>b + 1</code> は <code>int</code>。</p></details>
+        <details class="article-card"><summary><code>byte b = 10; b += 1;</code></summary><p>OK。複合代入は暗黙キャストを含みます。</p></details>
+        <details class="article-card"><summary><code>float f = 1.0;</code></summary><p>コンパイルエラー。<code>1.0</code> は <code>double</code>。</p></details>
       </section>
       <section class="article-section">
-        <h2>演習2: String</h2>
-        <pre class="article-code"><code>String s = &quot;abc&quot;;
-s.concat(&quot;d&quot;);
-System.out.println(s);</code></pre>
-        <p><code>abc</code> が出力されます。Stringは不変で、<code>concat</code> の戻り値を受け取っていません。</p>
+        <h2>String</h2>
+        <details class="article-card"><summary><code>String s = "A"; s.concat("B"); System.out.println(s);</code></summary><p><code>A</code>。Stringは不変で、戻り値を受け取っていません。</p></details>
+        <details class="article-card"><summary><code>String s = null; System.out.println(s);</code></summary><p><code>null</code> と表示。メソッド呼び出しではありません。</p></details>
+        <details class="article-card"><summary><code>String s = null; System.out.println(s.length());</code></summary><p><code>NullPointerException</code>。</p></details>
       </section>
       <section class="article-section">
-        <h2>演習3: オーバーライド</h2>
-        <pre class="article-code"><code>interface A {
-    void test();
-}
-class B implements A {
-    void test() { }
-}</code></pre>
-        <p>コンパイルエラーです。interfaceの抽象メソッドはpublicなので、実装メソッドもpublicが必要です。</p>
+        <h2>配列・List</h2>
+        <details class="article-card"><summary><code>int[] a = new int[0]; System.out.println(a.length);</code></summary><p><code>0</code>。要素数0の配列は作れます。</p></details>
+        <details class="article-card"><summary><code>int[] a = new int[0]; System.out.println(a[0]);</code></summary><p><code>ArrayIndexOutOfBoundsException</code>。</p></details>
+        <details class="article-card"><summary><code>List.of("A").add("B");</code></summary><p>コンパイルは可能ですが、実行時に <code>UnsupportedOperationException</code>。</p></details>
       </section>
       <section class="article-section">
-        <h2>演習4: try-with-resources</h2>
-        <pre class="article-code"><code>try (A a = new A(&quot;A&quot;); A b = new A(&quot;B&quot;)) {
-    System.out.println(&quot;C&quot;);
-}
-// closeは名前を出力するものとする</code></pre>
-        <p>出力順は <code>C B A</code> です。リソースは宣言と逆順にcloseされます。</p>
+        <h2>継承</h2>
+        <details class="article-card"><summary><code>Parent p = new Child(); p.childOnly();</code></summary><p><code>Parent</code> に <code>childOnly</code> がなければコンパイルエラー。宣言型で判定します。</p></details>
+        <details class="article-card"><summary>interfaceの <code>void work();</code> を <code>void work(){}</code> で実装</summary><p>コンパイルエラー。実装側は <code>public</code> が必要です。</p></details>
+        <details class="article-card"><summary>sealedクラスの許可サブクラスに修飾子なし</summary><p>コンパイルエラー。<code>final</code>/<code>sealed</code>/<code>non-sealed</code> のいずれかが必要です。</p></details>
       </section>
       <section class="article-section">
-        <h2>演習5: キャスト</h2>
-        <pre class="article-code"><code>Object obj = &quot;abc&quot;;
-Integer n = (Integer) obj;
-System.out.println(n);</code></pre>
-        <p>コンパイルは通りますが、実行時に <code>ClassCastException</code> です。実体はStringでありIntegerではありません。</p>
+        <h2>例外</h2>
+        <details class="article-card"><summary><code>catch(Exception)</code> の後に <code>catch(IOException)</code></summary><p>コンパイルエラー。後者が到達不能です。</p></details>
+        <details class="article-card"><summary>try-with-resourcesで <code>A a; B b;</code> のclose順</summary><p><code>b.close()</code> → <code>a.close()</code>。宣言の逆順です。</p></details>
+        <details class="article-card"><summary><code>Integer.parseInt("12a")</code></summary><p><code>NumberFormatException</code>。</p></details>
       </section>
 
     </main>

@@ -2676,3 +2676,10 @@ pre,
 .toc-links { display: flex; flex-wrap: wrap; gap: 8px; }
 .toc-links a { display: inline-flex; padding: 7px 10px; border-radius: 999px; background: #f1f5f9; color: var(--ink); text-decoration: none; font-weight: 700; font-size: 13px; }
 .toc-links a:hover { background: #e0e7ff; }
+
+/* deep article enhancement */
+details.article-card summary { cursor: pointer; font-weight: 650; line-height: 1.7; }
+details.article-card[open] summary { margin-bottom: 10px; }
+.article-section details.article-card { background: rgba(255,255,255,.95); }
+.article-section ol.article-list { padding-left: 1.35rem; }
+.article-section .ref-table code { white-space: nowrap; }

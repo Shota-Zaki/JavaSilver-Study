@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - 頻出メソッド</title>
+  <title>Java Silver Study - 頻出メソッド一覧</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -17,54 +17,60 @@
     <main class="main reference-main article-main">
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>頻出メソッド</h1>
-        <p>String、StringBuilder、ArrayList、ラッパークラスの頻出メソッドを、戻り値と副作用に注目して整理します。</p>
+        <h1>頻出メソッド一覧</h1>
+        <p>戻り値・副作用・例外の有無を中心に、Java Silverで間違えやすいメソッドをまとめます。</p>
       </section>
 
       <section class="article-section">
         <h2>String</h2>
-        <p>Stringメソッドは元の文字列を変更しません。結果を使うなら戻り値を受け取ります。</p>
-        <div class="article-card-grid">
-          <article class="article-card"><h3>length()</h3><p>文字数を返します。配列の <code>length</code> とは違いメソッドです。</p></article>
-          <article class="article-card"><h3>charAt(int)</h3><p>指定位置のcharを返します。範囲外なら例外。</p></article>
-          <article class="article-card"><h3>substring(begin, end)</h3><p>beginを含み、endを含まない部分文字列を返します。</p></article>
-          <article class="article-card"><h3>equals / equalsIgnoreCase</h3><p>内容比較。呼び出し元がnullならNPE。</p></article>
-          <article class="article-card"><h3>indexOf</h3><p>見つからなければ -1。</p></article>
-          <article class="article-card"><h3>replace</h3><p>置換後の新しいStringを返します。</p></article>
-        </div>
+        <table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>副作用</th><th>注意</th></tr></thead><tbody>
+        <tr><td><code>length()</code></td><td><code>int</code></td><td>なし</td><td>配列は <code>length</code> フィールド</td></tr>
+        <tr><td><code>charAt(int)</code></td><td><code>char</code></td><td>なし</td><td>範囲外で例外</td></tr>
+        <tr><td><code>substring(int,int)</code></td><td><code>String</code></td><td>なし</td><td>終了位置は含まない</td></tr>
+        <tr><td><code>replace</code></td><td><code>String</code></td><td>なし</td><td>元のStringは変わらない</td></tr>
+        <tr><td><code>concat</code></td><td><code>String</code></td><td>なし</td><td>戻り値を受け取る</td></tr>
+        <tr><td><code>intern</code></td><td><code>String</code></td><td>なし</td><td>文字列プールの参照を返す</td></tr>
+        </tbody></table>
       </section>
-
       <section class="article-section">
         <h2>StringBuilder</h2>
-        <p>StringBuilderは可変です。多くの操作が自分自身を返します。</p>
-        <div class="article-card-grid">
-          <article class="article-card"><h3>append</h3><p>末尾追加。戻り値は同じStringBuilder。</p></article>
-          <article class="article-card"><h3>insert</h3><p>指定位置に挿入。位置が範囲外なら例外。</p></article>
-          <article class="article-card"><h3>delete(begin,end)</h3><p>beginを含み、endを含まない範囲を削除。</p></article>
-          <article class="article-card"><h3>reverse</h3><p>自身を反転します。</p></article>
-        </div>
+        <table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>副作用</th><th>注意</th></tr></thead><tbody>
+        <tr><td><code>append</code></td><td><code>StringBuilder</code></td><td>あり</td><td>同じインスタンスを返す</td></tr>
+        <tr><td><code>insert</code></td><td><code>StringBuilder</code></td><td>あり</td><td>位置指定に注意</td></tr>
+        <tr><td><code>delete</code></td><td><code>StringBuilder</code></td><td>あり</td><td>endは含まない</td></tr>
+        <tr><td><code>reverse</code></td><td><code>StringBuilder</code></td><td>あり</td><td>元が逆順になる</td></tr>
+        <tr><td><code>substring</code></td><td><code>String</code></td><td>なし</td><td>Builder本体は変わらない</td></tr>
+        </tbody></table>
       </section>
-
       <section class="article-section">
         <h2>ArrayList / List</h2>
-        <div class="article-card-grid">
-          <article class="article-card"><h3>size()</h3><p>要素数。配列の <code>length</code> とは違います。</p></article>
-          <article class="article-card"><h3>get(index)</h3><p>指定位置の要素を返します。範囲外なら例外。</p></article>
-          <article class="article-card"><h3>set(index, value)</h3><p>指定位置を置換し、古い要素を返します。サイズは変わりません。</p></article>
-          <article class="article-card"><h3>add(value)</h3><p>末尾に追加します。</p></article>
-          <article class="article-card"><h3>remove(index/object)</h3><p>オーバーロードに注意。<code>remove(1)</code> はindex指定です。</p></article>
-          <article class="article-card"><h3>contains</h3><p><code>equals</code> による同値判定です。</p></article>
-        </div>
+        <table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>副作用</th><th>注意</th></tr></thead><tbody>
+        <tr><td><code>size()</code></td><td><code>int</code></td><td>なし</td><td>配列は <code>length</code></td></tr>
+        <tr><td><code>add(E)</code></td><td><code>boolean</code></td><td>あり</td><td>末尾追加</td></tr>
+        <tr><td><code>add(int,E)</code></td><td><code>void</code></td><td>あり</td><td>挿入</td></tr>
+        <tr><td><code>remove(int)</code></td><td>削除した要素</td><td>あり</td><td>インデックス指定</td></tr>
+        <tr><td><code>remove(Object)</code></td><td><code>boolean</code></td><td>あり</td><td>値指定</td></tr>
+        <tr><td><code>set(int,E)</code></td><td>置換前の要素</td><td>あり</td><td>要素数は変わらない</td></tr>
+        </tbody></table>
       </section>
-
       <section class="article-section">
-        <h2>Integer / ラッパークラス</h2>
-        <div class="article-card-grid">
-          <article class="article-card"><h3>parseInt(String)</h3><p>文字列をintへ変換。変換不能なら <code>NumberFormatException</code>。</p></article>
-          <article class="article-card"><h3>valueOf</h3><p>ラッパー型インスタンスを返します。</p></article>
-          <article class="article-card"><h3>xxxValue</h3><p><code>intValue()</code> などでプリミティブ値を取り出します。</p></article>
-          <article class="article-card"><h3>オートボクシング</h3><p>プリミティブとラッパーの自動変換。ただしnullのアンボクシングはNPE。</p></article>
-        </div>
+        <h2>Wrapper / parse</h2>
+        <table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>注意</th></tr></thead><tbody>
+        <tr><td><code>Integer.parseInt(String)</code></td><td><code>int</code></td><td>変換不可なら <code>NumberFormatException</code></td></tr>
+        <tr><td><code>Integer.valueOf(String)</code></td><td><code>Integer</code></td><td>戻り値はラッパー</td></tr>
+        <tr><td><code>String.valueOf(Object)</code></td><td><code>String</code></td><td>nullなら文字列 <code>"null"</code></td></tr>
+        <tr><td><code>Objects.equals(a,b)</code></td><td><code>boolean</code></td><td>null安全な比較</td></tr>
+        </tbody></table>
+      </section>
+      <section class="article-section">
+        <h2>覚える基準</h2>
+        <p>丸暗記ではなく、次の基準で分類してください。</p>
+        <ul class="article-list">
+          <li><strong>戻り値を受け取らないと意味がない</strong>: <code>String</code> 系。</li>
+          <li><strong>本体を変える</strong>: <code>StringBuilder</code> の編集系、<code>ArrayList</code> の追加削除。</li>
+          <li><strong>境界で例外</strong>: <code>charAt</code>、<code>substring</code>、<code>get</code>。</li>
+          <li><strong>見つからなくても例外ではない</strong>: <code>indexOf</code> は <code>-1</code>。</li>
+        </ul>
       </section>
 
     </main>

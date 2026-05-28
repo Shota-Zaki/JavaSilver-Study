@@ -18,27 +18,56 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>ひっかけ集</h1>
-        <p>Java Silverで落とされやすい誤認ポイントを、問題形式の裏側から整理します。</p>
+        <p>Java Silverで選択肢を誤らせる典型パターンを、短く確認します。</p>
       </section>
 
       <section class="article-section">
-        <h2>ひっかけの本質</h2>
-        <p>Java Silverのひっかけは、難しいアルゴリズムではなく、仕様の境界を曖昧に覚えている箇所を突いてきます。自分の感覚ではなく、コンパイラと実行時のルールで判断します。</p>
+        <h2>型とリテラル</h2>
+        <ul class="article-list">
+          <li><code>float f = 1.0;</code> は不可。<code>1.0</code> はdouble。</li>
+          <li><code>int i = 10L;</code> は不可。longからintへ暗黙変換不可。</li>
+          <li><code>byte b = b + 1;</code> は不可。演算結果はint。</li>
+          <li><code>b += 1;</code> は可。複合代入には暗黙キャストがある。</li>
+          <li><code>boolean</code> と数値は互換性なし。</li>
+        </ul>
       </section>
       <section class="article-section">
-        <h2>頻出ひっかけ</h2>
-        <div class="article-card-grid">
-          <article class="article-card"><h3>コンパイル前提崩し</h3><p>出力を追わせておいて、実は型不一致・アクセス違反・未初期化でコンパイルエラー。</p></article>
-          <article class="article-card"><h3>戻り値未使用</h3><p>Stringメソッドやreplace結果を受け取っていない。</p></article>
-          <article class="article-card"><h3>参照コピー</h3><p>代入でオブジェクトがコピーされたと誤認させる。</p></article>
-          <article class="article-card"><h3>短絡評価</h3><p>右辺の++が実行されるかどうか。</p></article>
-          <article class="article-card"><h3>catch順</h3><p>親例外を先に書いて子catchが到達不能。</p></article>
-          <article class="article-card"><h3>override風overload</h3><p>引数が違うためオーバーライドではない。</p></article>
-        </div>
+        <h2>Stringと参照</h2>
+        <ul class="article-list">
+          <li><code>new String("x") == "x"</code> はfalse。</li>
+          <li><code>intern()</code> はプール上の参照を返す。</li>
+          <li><code>String.concat</code> の戻り値を捨てると元は変わらない。</li>
+          <li><code>println(null参照)</code> は文字列 <code>null</code> 表示。ただし <code>null参照.メソッド()</code> はNPE。</li>
+        </ul>
       </section>
       <section class="article-section">
-        <h2>解くときの型</h2>
-        <p>選択肢を見る前に、自分で「コンパイル可否」「実行時例外」「出力」を確定させます。選択肢を先に見ると、もっともらしい誤答に引っ張られます。</p>
+        <h2>継承・interface</h2>
+        <ul class="article-list">
+          <li>コンストラクタは継承されない。</li>
+          <li>privateメンバはサブクラスから直接アクセス不可。</li>
+          <li>interfaceの抽象メソッド実装は <code>public</code>。</li>
+          <li>フィールドはoverrideされない。</li>
+          <li>宣言型にないメソッドは、実体にあっても呼べない。</li>
+        </ul>
+      </section>
+      <section class="article-section">
+        <h2>例外</h2>
+        <ul class="article-list">
+          <li>try内で例外が出たら、その後のtry内処理は実行されない。</li>
+          <li>finallyはcatch後にも実行される。</li>
+          <li>catchは子から親へ。</li>
+          <li>try-with-resourcesはcloseが逆順。</li>
+          <li>RuntimeExceptionは非チェック例外。</li>
+        </ul>
+      </section>
+      <section class="article-section">
+        <h2>出力問題</h2>
+        <ul class="article-list">
+          <li>短絡評価で右辺が実行されないことがある。</li>
+          <li>後置 <code>a++</code> は元の値を式に渡してから増やす。</li>
+          <li>switch文の <code>break</code> 忘れはフォールスルー。</li>
+          <li>拡張forのループ変数代入では元配列・元リストは差し替わらない。</li>
+        </ul>
       </section>
 
     </main>

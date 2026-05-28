@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - ポリモーフィズム・キャスト</title>
+  <title>Java Silver Study - ポリモーフィズム・キャスト・instanceof</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -17,69 +17,66 @@
     <main class="main reference-main article-main">
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>ポリモーフィズム・キャスト</h1>
-        <p>宣言型、実体、動的ディスパッチ、フィールド解決、キャスト、instanceofを整理します。</p>
+        <h1>ポリモーフィズム・キャスト・instanceof</h1>
+        <p>宣言型と実体、メソッド呼び出し、フィールド参照、キャスト、instanceofパターンを整理します。</p>
       </section>
 
       <section class="article-section">
-        <h2>宣言型と実体</h2>
-        <p>参照変数には宣言型と実体があります。コンパイル時に見えるメンバは宣言型で決まり、オーバーライドされたインスタンスメソッドの実行先は実体で決まります。</p>
-        <pre class="article-code"><code>class Animal {
-    void sound() { System.out.println(&quot;animal&quot;); }
-}
-class Dog extends Animal {
-    void sound() { System.out.println(&quot;dog&quot;); }
-    void run() { System.out.println(&quot;run&quot;); }
-}
-
-Animal a = new Dog();
-a.sound(); // dog
-// a.run(); // NG。宣言型Animalにはrunがない</code></pre>
-        <div class="article-callout warn">「実体がDogだからDogの全メソッドを呼べる」は誤りです。呼び出せるかはまず宣言型で判定します。</div>
-      </section>
-
-      <section class="article-section">
-        <h2>フィールドは多態的に解決されない</h2>
-        <p>インスタンスメソッドはオーバーライドにより実体で解決されますが、フィールドは宣言型で解決されます。同名フィールドをサブクラスで定義すると、メソッドとフィールドで見え方が変わります。</p>
-        <pre class="article-code"><code>class A {
-    String name = &quot;A&quot;;
-    String getName() { return name; }
-}
-class B extends A {
-    String name = &quot;B&quot;;
-    String getName() { return name; }
-}
-
-A obj = new B();
-System.out.println(obj.name);      // A
-System.out.println(obj.getName()); // B</code></pre>
-      </section>
-
-      <section class="article-section">
-        <h2>キャスト</h2>
-        <p>キャストは、参照の見え方を変える構文です。実体が変わるわけではありません。互換性のない実体へダウンキャストすると <code>ClassCastException</code> です。</p>
+        <h2>宣言型と実体を分ける</h2>
+        <p>参照型変数には、宣言型と実体があります。コンパイル時に見えるメンバは宣言型で決まり、オーバーライドされたインスタンスメソッドの実行内容は実体で決まります。</p>
         <pre class="article-code"><code>Animal a = new Dog();
-Dog d = (Dog) a;  // OK。実体がDog
-
-a = new Animal();
-// Dog bad = (Dog) a; // 実行時ClassCastException</code></pre>
-        <div class="article-card-grid">
-          <article class="article-card"><h3>アップキャスト</h3><p>サブクラス参照をスーパークラス型へ。通常は明示キャスト不要です。</p></article>
-          <article class="article-card"><h3>ダウンキャスト</h3><p>スーパークラス型の参照をサブクラス型へ。明示キャストが必要です。</p></article>
-          <article class="article-card"><h3>コンパイル可否</h3><p>継承関係など、型として変換可能性がなければコンパイルエラーです。</p></article>
-          <article class="article-card"><h3>実行時可否</h3><p>実体がその型として扱えるかで <code>ClassCastException</code> の有無が決まります。</p></article>
-        </div>
+        a.eat();      // 呼べるかはAnimal型にeatがあるかで決まる
+                      // 実行される内容はDogのoverride実装</code></pre>
+        <div class="article-callout warn">まず「そのメソッド名が宣言型に存在するか」を見ます。存在しないなら、実体にあってもコンパイルエラーです。</div>
       </section>
-
       <section class="article-section">
-        <h2>instanceof とパターンマッチング</h2>
-        <p><code>instanceof</code> は実体が指定型として扱えるかを判定します。Java 17ではパターン変数を同時に宣言できます。</p>
-        <pre class="article-code"><code>Object obj = &quot;hello&quot;;
-
-if (obj instanceof String s) {
-    System.out.println(s.length());
-}</code></pre>
-        <p>パターン変数は、判定がtrueだと分かる範囲でだけ使えます。スコープを雑に扱うとコンパイルエラーになります。</p>
+        <h2>メソッドは実体、フィールドは宣言型</h2>
+        <p>オーバーライドされたメソッドは実体側で決まります。一方、フィールドはオーバーライドされません。参照変数の宣言型で決まります。</p>
+        <pre class="article-code"><code>class A {
+            String name = "A";
+            String getName() { return name; }
+        }
+        class B extends A {
+            String name = "B";
+            @Override String getName() { return name; }
+        }
+        A obj = new B();
+        System.out.println(obj.name);     // A
+        System.out.println(obj.getName()); // B</code></pre>
+        <p>同名フィールドは隠蔽されるだけで、ポリモーフィズムの対象ではありません。</p>
+      </section>
+      <section class="article-section">
+        <h2>アップキャストとダウンキャスト</h2>
+        <p>サブクラスからスーパークラスへの代入はアップキャストで、暗黙にできます。スーパークラス型の参照をサブクラス型へ戻すにはダウンキャストが必要です。</p>
+        <pre class="article-code"><code>Dog d = new Dog();
+        Animal a = d;       // OK。アップキャスト
+        Dog d2 = (Dog) a;   // OK。実体がDogなら成功</code></pre>
+        <p>コンパイルできるキャストでも、実体が合わなければ <code>ClassCastException</code> です。</p>
+        <pre class="article-code"><code>Animal a = new Cat();
+        // Dog d = (Dog) a; // 実行時例外</code></pre>
+      </section>
+      <section class="article-section">
+        <h2>instanceofとパターンマッチング</h2>
+        <p><code>instanceof</code> は、実体が指定型として扱えるかを判定します。Java 17ではパターン変数も使えます。</p>
+        <pre class="article-code"><code>Object obj = "java";
+        if (obj instanceof String s) {
+            System.out.println(s.length());
+        }</code></pre>
+        <p>パターン変数 <code>s</code> は、条件がtrueの範囲でだけ使えます。<code>obj</code> が <code>null</code> の場合、<code>instanceof</code> はfalseです。</p>
+      </section>
+      <section class="article-section">
+        <h2>キャスト式の優先順位</h2>
+        <p>キャストしてからメソッドを呼びたい場合、カッコの位置が重要です。</p>
+        <pre class="article-code"><code>Object obj = "abc";
+        // (String)obj.length(); // NG。lengthを先に探してしまう
+        System.out.println(((String)obj).length()); // OK</code></pre>
+        <p>メソッド呼び出しの対象をどの型として解釈させるかを、カッコで明確にします。</p>
+      </section>
+      <section class="article-section">
+        <h2>ミニ判定</h2>
+        <details class="article-card"><summary><strong>Q1.</strong> <code>Parent p = new Child(); p.childOnly();</code> は？</summary><p><code>childOnly</code> が <code>Parent</code> にないならコンパイルエラーです。実体が <code>Child</code> でも、宣言型で見えません。</p></details>
+        <details class="article-card"><summary><strong>Q2.</strong> <code>obj instanceof String s</code> で <code>obj</code> がnullなら？</summary><p>falseです。例外は発生しません。</p></details>
+        <details class="article-card"><summary><strong>Q3.</strong> フィールドはオーバーライドされる？</summary><p>されません。同名フィールドは隠蔽され、参照変数の宣言型で参照先が決まります。</p></details>
       </section>
 
     </main>

@@ -18,53 +18,85 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>数値・リテラル・型昇格</h1>
-        <p>数値型の代入、演算、リテラル表記、複合代入の罠を、コンパイル判定のために整理します。</p>
+        <p>byte/short/char、定数式、数値昇格、複合代入、アンダースコアの置き方を、コンパイル判定用に整理します。</p>
       </section>
 
       <section class="article-section">
-        <h2>数値変換の基本</h2>
-        <p>数値型の問題は、代入時の変換と演算時の変換を分けて考えます。代入では左辺の型に収まるか、演算ではオペランドがどの型に昇格するかを見ます。</p>
-        <div class="article-card-grid">
-          <article class="article-card"><h3>拡大変換</h3><p><code>int</code> から <code>long</code> など、値域が広い型へは基本的に暗黙変換できます。</p></article>
-          <article class="article-card"><h3>縮小変換</h3><p><code>long</code> から <code>int</code> など、値域が狭い型へは明示キャストが必要です。</p></article>
-          <article class="article-card"><h3>整数演算</h3><p><code>byte</code>、<code>short</code>、<code>char</code> は演算時に原則 <code>int</code> になります。</p></article>
-          <article class="article-card"><h3>小数演算</h3><p><code>double</code> が混ざると結果は <code>double</code> 寄りに広がります。小数リテラルも基本 <code>double</code>。</p></article>
-        </div>
+        <h2>数値問題の判定フロー</h2>
+        <ol class="article-list">
+          <li>リテラルの型を決める。整数は基本 <code>int</code>、小数は基本 <code>double</code>。</li>
+          <li>代入先の型に暗黙変換できるかを見る。</li>
+          <li>式に変数が含まれるなら、<code>byte</code>/<code>short</code>/<code>char</code> は基本 <code>int</code> に昇格すると考える。</li>
+          <li><code>+=</code> などの複合代入だけは暗黙キャストが入る点を別扱いする。</li>
+        </ol>
+        <div class="article-callout warn">数値問題は「値が入るか」ではなく「式の型が代入先に合うか」です。ここを混同すると落ちます。</div>
       </section>
-
       <section class="article-section">
-        <h2>byte / short / char の演算</h2>
-        <p>狭い整数型は、演算すると <code>int</code> になります。ここを覚えていないと、見た目では範囲内なのにコンパイルエラーになる問題を落とします。</p>
-        <pre class="article-code"><code>byte a = 10;
-byte b = 20;
-// byte c = a + b;      // NG。a + b はint
-byte c = (byte)(a + b); // OK
+        <h2>定数式なら狭い型へ代入できる</h2>
+        <p><code>byte</code> や <code>short</code> へ <code>int</code> リテラルを代入する場合、値が範囲内ならコンパイルできます。定数式も同じです。</p>
+        <pre class="article-code"><code>byte a = 127;         // OK
+        // byte b = 128;      // NG
+        short c = 128 + 128;  // OK。定数式で256
 
-char ch = &#x27;A&#x27;;
-int code = ch + 1;      // OK。charは演算でintへ</code></pre>
-        <p>ただし、リテラルだけで構成された定数式なら例外的に狭い型へ入ることがあります。</p>
-        <pre class="article-code"><code>byte x = 10 + 20;     // OK。定数式で範囲内
-short y = 128 + 128;  // OK
-// byte z = 100 + 100; // NG。byte範囲外</code></pre>
+        byte x = 10;
+        byte y = 20;
+        // byte z = x + y;    // NG。変数を含む演算結果はint</code></pre>
+        <p>見た目の値が小さくても、式の型が <code>int</code> なら <code>byte</code> にそのまま代入できません。</p>
       </section>
-
       <section class="article-section">
-        <h2>複合代入演算子の罠</h2>
-        <p><code>+=</code>、<code>-=</code> などの複合代入は、内部的にキャストを含むように扱われます。そのため、通常の代入ではエラーになるものが通ることがあります。</p>
+        <h2>二項数値昇格</h2>
+        <p>算術演算では、<code>byte</code>、<code>short</code>、<code>char</code> は <code>int</code> に昇格します。片方が <code>long</code> なら結果は <code>long</code>、片方が <code>double</code> なら結果は <code>double</code> です。</p>
+        <table class="ref-table"><thead><tr><th>式</th><th>結果の型</th><th>注意</th></tr></thead><tbody>
+        <tr><td><code>byte + byte</code></td><td><code>int</code></td><td><code>byte</code> ではない</td></tr>
+        <tr><td><code>short + int</code></td><td><code>int</code></td><td>小さい方が昇格</td></tr>
+        <tr><td><code>int + long</code></td><td><code>long</code></td><td><code>int</code> へ戻すにはキャスト</td></tr>
+        <tr><td><code>float + double</code></td><td><code>double</code></td><td><code>float</code> に代入不可</td></tr>
+        </tbody></table>
+        <pre class="article-code"><code>short s1 = 10;
+        short s2 = 20;
+        // short s3 = s1 + s2; // NG。結果はint
+        short s4 = (short)(s1 + s2); // OK</code></pre>
+      </section>
+      <section class="article-section">
+        <h2>複合代入は暗黙キャストを含む</h2>
+        <p><code>+=</code>、<code>-=</code>、<code>*=</code>、<code>/=</code> などの複合代入は、通常の代入と違って暗黙のキャストを含みます。</p>
         <pre class="article-code"><code>byte b = 10;
-// b = b + 1; // NG。b + 1 はint
-b += 1;       // OK。暗黙のキャスト相当が入る</code></pre>
-        <div class="article-callout warn">複合代入を <code>b = b + 1</code> と完全に同じと覚えるのは弱いです。意味は近いですが、型変換の扱いが違います。</div>
+        // b = b + 1; // NG。b + 1 はint
+        b += 1;       // OK。b = (byte)(b + 1) 相当</code></pre>
+        <p>ただし、値があふれれば桁あふれした値になります。複合代入は「安全」という意味ではありません。</p>
+        <pre class="article-code"><code>byte b = 127;
+        b += 1;
+        System.out.println(b); // -128</code></pre>
       </section>
-
       <section class="article-section">
-        <h2>charは文字でもあり数値でもある</h2>
-        <p><code>char</code> は16ビットの文字型ですが、数値的な扱いも受けます。<code>'A'</code> は文字リテラルで、<code>"A"</code> はStringです。ここを混同しないこと。</p>
-        <pre class="article-code"><code>char c1 = &#x27;A&#x27;;
-int n = c1;       // OK。65
-char c2 = 65;     // OK。定数式でchar範囲内
-// char c3 = -1;  // NG。charは負数不可
-// String s = &#x27;A&#x27;; // NG。charとStringは別物</code></pre>
+        <h2>charの扱い</h2>
+        <p><code>char</code> は文字を表しますが、内部的には16ビットの数値として扱われる場面があります。算術演算に入ると <code>int</code> になります。</p>
+        <pre class="article-code"><code>char c = 'A';      // OK
+        int n = c;         // OK。65
+        // char d = c + 1; // NG。結果はint
+        char e = (char)(c + 1); // OK</code></pre>
+        <p><code>String</code> の <code>"A"</code> と <code>char</code> の <code>'A'</code> は別物です。単一引用符は1文字だけです。</p>
+      </section>
+      <section class="article-section">
+        <h2>数値リテラルの表記とアンダースコア</h2>
+        <p><code>0b</code> は2進数、先頭 <code>0</code> は8進数、<code>0x</code> は16進数です。8進数に <code>8</code> や <code>9</code> は使えません。</p>
+        <pre class="article-code"><code>int a = 0b1010; // 10
+        int b = 012;    // 10
+        int c = 0xA;    // 10
+        // int d = 089; // NG</code></pre>
+        <p>アンダースコアは数字の間にだけ置く、と考えると安全です。</p>
+        <pre class="article-code"><code>int ok = 1_000_000;
+        int alsoOk = 0b1010_0101;
+        // int ng1 = _100;
+        // int ng2 = 100_;
+        // int ng3 = 0x_FF;
+        // double ng4 = 3_.14;</code></pre>
+      </section>
+      <section class="article-section">
+        <h2>ミニ判定</h2>
+        <details class="article-card"><summary><strong>Q1.</strong> <code>short s = 128 + 128;</code> は？</summary><p>OKです。定数式で値が <code>short</code> の範囲内です。</p></details>
+        <details class="article-card"><summary><strong>Q2.</strong> <code>int i = 2 * 3L;</code> は？</summary><p>コンパイルエラーです。<code>3L</code> により式全体が <code>long</code> になり、<code>int</code> に暗黙代入できません。</p></details>
+        <details class="article-card"><summary><strong>Q3.</strong> <code>float f = 10.0;</code> は？</summary><p>コンパイルエラーです。<code>10.0</code> は <code>double</code> リテラルです。<code>10.0F</code> にします。</p></details>
       </section>
 
     </main>

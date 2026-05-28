@@ -18,57 +18,75 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>コンパイルエラーと実行時例外</h1>
-        <p>コンパイル可否、実行時例外、正常出力を分離して判定するためのページです。</p>
+        <p>問題を解くときの最重要フローである「コンパイル可否 → 実行時例外 → 出力」を固定します。</p>
       </section>
 
       <section class="article-section">
-        <h2>失敗段階を分ける</h2>
-        <p>Java Silverの選択肢では、「コンパイルエラー」「実行時例外」「正常出力」が混ざります。ここを段階で分けないと、実行結果を追ってからコンパイルエラーに気づく無駄が発生します。</p>
+        <h2>絶対にこの順で判定する</h2>
+        <p>Java Silverの出力問題は、最初に出力を計算し始めるとミスが増えます。必ず次の順にしてください。</p>
         <ol class="article-list">
-          <li>文法・宣言・修飾子が正しいか。</li>
-          <li>型変換、メソッド呼び出し、アクセス修飾子が正しいか。</li>
-          <li>チェック例外が処理されているか。</li>
-          <li>ここまで通って初めて、実行時の値・例外・出力順を追う。</li>
+          <li><strong>コンパイルエラーがないか</strong>: 型、アクセス、宣言位置、override、例外処理。</li>
+          <li><strong>起動できるか</strong>: main形式、ファイル名、javaコマンド。</li>
+          <li><strong>実行時例外が起きるか</strong>: null、配列範囲外、キャスト失敗、数値変換。</li>
+          <li><strong>出力を追う</strong>: 評価順、参照、メソッド動的束縛。</li>
         </ol>
-        <div class="article-callout warn">出力候補がそれっぽくても、コンパイルできないなら出力はありません。試験ではこの順番を守るだけで失点が減ります。</div>
+        <div class="article-callout warn">出力が選択肢にあっても、コンパイルエラーがあれば出力は存在しません。</div>
       </section>
-
       <section class="article-section">
         <h2>コンパイルエラーの典型</h2>
-        <div class="article-card-grid">
-          <article class="article-card"><h3>型不一致</h3><p><code>int</code> に <code>long</code>、<code>float</code> に <code>double</code>、<code>String</code> に <code>char</code> など。</p></article>
-          <article class="article-card"><h3>未初期化ローカル変数</h3><p>ローカル変数はデフォルト値を持ちません。使用前の初期化が必須です。</p></article>
-          <article class="article-card"><h3>static文脈</h3><p>staticメソッドからインスタンスメンバへ直接アクセスできません。</p></article>
-          <article class="article-card"><h3>アクセス不可</h3><p>private、package-private、protectedの条件を満たさないアクセス。</p></article>
-          <article class="article-card"><h3>オーバーライド違反</h3><p>アクセスを狭める、戻り値が不適切、throwsが広すぎるなど。</p></article>
-          <article class="article-card"><h3>到達不能catch</h3><p>親例外catchを先に書いて、子例外catchが到達不能になる。</p></article>
-        </div>
+        <table class="ref-table"><thead><tr><th>分類</th><th>例</th><th>見る場所</th></tr></thead><tbody>
+        <tr><td>型不一致</td><td><code>int x = 10L;</code></td><td>リテラル、演算結果、代入先</td></tr>
+        <tr><td>未初期化</td><td>ローカル変数の使用前代入なし</td><td>すべての分岐経路</td></tr>
+        <tr><td>アクセス不可</td><td><code>private</code> メンバ参照</td><td>クラス・パッケージ・継承関係</td></tr>
+        <tr><td>override不正</td><td>アクセスを狭める、戻り値不一致</td><td>親子メソッド</td></tr>
+        <tr><td>例外処理漏れ</td><td>チェック例外をcatch/throwsしない</td><td>メソッド呼び出し・throw</td></tr>
+        <tr><td>到達不能catch</td><td>親例外catchが先</td><td>catch順</td></tr>
+        </tbody></table>
       </section>
-
       <section class="article-section">
         <h2>実行時例外の典型</h2>
-        <p>コンパイルが通っても、実行時の値によって例外が発生します。例外が発生したら、その行以降のtry内処理は実行されず、対応するcatchへ移ります。</p>
-        <pre class="article-code"><code>String s = null;
-// s.length();               // NullPointerException
-
-int[] a = new int[0];
-// a[0] = 10;                // ArrayIndexOutOfBoundsException
-
-// Integer.parseInt(&quot;A&quot;);    // NumberFormatException
-
-Object obj = &quot;abc&quot;;
-// Integer n = (Integer) obj; // ClassCastException</code></pre>
+        <table class="ref-table"><thead><tr><th>例外</th><th>典型例</th><th>判定ポイント</th></tr></thead><tbody>
+        <tr><td><code>NullPointerException</code></td><td><code>s.length()</code> で <code>s == null</code></td><td>メソッド呼び出しの左側</td></tr>
+        <tr><td><code>ArrayIndexOutOfBoundsException</code></td><td><code>a[0]</code> で要素数0</td><td>配列長とインデックス</td></tr>
+        <tr><td><code>StringIndexOutOfBoundsException</code></td><td><code>charAt</code>, <code>substring</code></td><td>開始・終了位置</td></tr>
+        <tr><td><code>ClassCastException</code></td><td>実体に合わないダウンキャスト</td><td>参照先の実体</td></tr>
+        <tr><td><code>NumberFormatException</code></td><td><code>Integer.parseInt("A")</code></td><td>文字列が数値形式か</td></tr>
+        <tr><td><code>UnsupportedOperationException</code></td><td><code>List.of(...).add(...)</code></td><td>変更不可リスト</td></tr>
+        </tbody></table>
       </section>
-
       <section class="article-section">
-        <h2>正常実行の追跡</h2>
-        <p>コンパイル可否と例外可能性を潰したら、最後に出力順を追います。追跡対象は、代入、インクリメント、短絡評価、メソッドの戻り値、副作用、参照の付け替えです。</p>
+        <h2>出力計算に入る条件</h2>
+        <p>出力計算は、コンパイル・起動・実行時例外の可能性を潰してからです。出力を追う場合も、式の評価順・参照・動的束縛のどれを見ているか分けます。</p>
         <div class="article-card-grid">
-          <article class="article-card"><h3>代入</h3><p>右辺評価後に左辺へ代入。複合代入は型変換の扱いに注意。</p></article>
-          <article class="article-card"><h3>短絡評価</h3><p><code>&&</code> と <code>||</code> は右辺が実行されないことがあります。</p></article>
-          <article class="article-card"><h3>参照代入</h3><p>オブジェクトのコピーではなく、参照のコピーです。</p></article>
-          <article class="article-card"><h3>戻り値</h3><p>String系メソッドなど、戻り値を受け取らないと変化が残らないものがあります。</p></article>
+          <article class="article-card"><h3>式の評価順</h3><p><code>++</code>、<code>--</code>、短絡評価、代入式。</p></article>
+          <article class="article-card"><h3>参照</h3><p><code>a = b</code> 後にどのインスタンスを見ているか。</p></article>
+          <article class="article-card"><h3>動的束縛</h3><p>オーバーライドメソッドは実体で決まる。</p></article>
+          <article class="article-card"><h3>例外処理</h3><p>try/catch/finally、close順。</p></article>
         </div>
+      </section>
+      <section class="article-section">
+        <h2>判定サンプル</h2>
+        <pre class="article-code"><code>class A { void test() { System.out.println("A"); } }
+        class B extends A { void test() { System.out.println("B"); } }
+
+        public class Main {
+            public static void main(String[] args) {
+                A a = new B();
+                a.test();
+            }
+        }</code></pre>
+        <ol class="article-list">
+          <li>コンパイル可。<code>A</code> に <code>test</code> がある。</li>
+          <li>実行時例外なし。</li>
+          <li>オーバーライドメソッドなので実体 <code>B</code> の <code>test</code> が実行。</li>
+          <li>出力は <code>B</code>。</li>
+        </ol>
+      </section>
+      <section class="article-section">
+        <h2>ミニ判定</h2>
+        <details class="article-card"><summary><strong>Q1.</strong> <code>Object o = "abc"; System.out.println(o.length());</code> は？</summary><p>コンパイルエラーです。実体はStringでも、宣言型 <code>Object</code> に <code>length()</code> はありません。</p></details>
+        <details class="article-card"><summary><strong>Q2.</strong> <code>String s = null; System.out.println(s);</code> は？</summary><p><code>null</code> と表示されます。<code>println</code> に参照を渡しているだけで、<code>s</code> のメソッドを呼んでいません。</p></details>
+        <details class="article-card"><summary><strong>Q3.</strong> <code>String s = null; s.equals("x")</code> は？</summary><p>実行時に <code>NullPointerException</code> です。null参照に対してメソッドを呼んでいます。</p></details>
       </section>
 
     </main>

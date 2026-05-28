@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - 文字列・比較</title>
+  <title>Java Silver Study - 文字列・StringBuilder・null</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -17,76 +17,85 @@
     <main class="main reference-main article-main">
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>文字列・比較</h1>
-        <p>String、StringBuilder、文字列プール、intern、==、equals、nullの扱いを、出力結果の追跡に使える形で整理します。</p>
+        <h1>文字列・StringBuilder・null</h1>
+        <p>Stringの不変性、文字列プール、intern、StringBuilderの破壊的操作、nullで起きる例外を整理します。</p>
       </section>
 
       <section class="article-section">
         <h2>Stringは不変</h2>
-        <p><code>String</code> は不変です。メソッドを呼んでも元の文字列は変わりません。戻り値を受け取っていないコードは、見た目ほど何も起きていないことがあります。</p>
-        <pre class="article-code"><code>String s = &quot;java&quot;;
-s.toUpperCase();
-System.out.println(s); // java
+        <p><code>String</code> は不変です。連結や置換のように見える操作も、元の文字列を変えるのではなく、新しい文字列を返します。</p>
+        <pre class="article-code"><code>String s = "java";
+        s.concat("17");
+        System.out.println(s); // java
 
-s = s.toUpperCase();
-System.out.println(s); // JAVA</code></pre>
-        <div class="article-card-grid">
-          <article class="article-card"><h3>concat / replace</h3><p>新しいStringを返します。元のStringは変更されません。</p></article>
-          <article class="article-card"><h3>substring</h3><p>指定範囲の新しいStringを返します。開始は含み、終了は含みません。</p></article>
-          <article class="article-card"><h3>trim / strip</h3><p>空白処理の結果を返します。元の参照先は変わりません。</p></article>
-          <article class="article-card"><h3>文字列結合</h3><p><code>+</code> でStringが絡むと文字列結合になります。左から評価される点も重要です。</p></article>
-        </div>
+        s = s.concat("17");
+        System.out.println(s); // java17</code></pre>
+        <div class="article-callout warn">戻り値を受け取っていない <code>String</code> メソッド呼び出しは、たいてい結果に影響しません。</div>
       </section>
-
       <section class="article-section">
-        <h2>== と equals</h2>
-        <p><code>==</code> は同じオブジェクトを参照しているかを見ます。<code>equals</code> は内容の同値性を見ます。String問題の多くは、ここが中心です。</p>
-        <pre class="article-code"><code>String a = new String(&quot;sample&quot;);
-String b = a;
-String c = &quot;sample&quot;;
-String d = &quot;sample&quot;;
+        <h2>文字列プールとnew String</h2>
+        <p>文字列リテラルは文字列プール上のインスタンスを参照します。一方、<code>new String("x")</code> は明示的に新しいインスタンスを作ります。</p>
+        <pre class="article-code"><code>String a = "sample";
+        String b = "sample";
+        String c = new String("sample");
 
-System.out.println(a == b);      // true
-System.out.println(a == c);      // false
-System.out.println(c == d);      // true
-System.out.println(a.equals(c)); // true</code></pre>
-        <div class="article-callout warn"><code>new String("sample")</code> はヒープ上に別インスタンスを作ります。文字列リテラル <code>"sample"</code> は文字列プールの参照です。</div>
+        System.out.println(a == b); // true
+        System.out.println(a == c); // false
+        System.out.println(a.equals(c)); // true</code></pre>
+        <p><code>==</code> は参照の同一性、<code>equals</code> は内容比較です。出力問題ではまずここを分けてください。</p>
       </section>
-
       <section class="article-section">
-        <h2>intern()</h2>
-        <p><code>intern()</code> は、文字列プール上の同じ内容のString参照を返します。戻り値を受け取らなければ、元の変数の参照は変わりません。</p>
-        <pre class="article-code"><code>String a = new String(&quot;sample&quot;);
-String b = a.intern();
-String c = &quot;sample&quot;;
+        <h2>internの見方</h2>
+        <p><code>intern()</code> は、文字列プール上の同じ内容の文字列への参照を返します。呼び出し元のインスタンス自体をプール上のものに変えるわけではありません。</p>
+        <pre class="article-code"><code>String a = new String("sample");
+        String b = a;
+        String c = a.intern();
+        String d = "sample";
 
-System.out.println(a == b); // false
-System.out.println(b == c); // true</code></pre>
-        <p>試験では <code>a.intern();</code> とだけ書いて、<code>a</code> 自体がプール参照に変わったように見せる選択肢が出ます。変わるのは戻り値を代入した変数です。</p>
+        System.out.println(a == b); // true
+        System.out.println(a == c); // false
+        System.out.println(c == d); // true</code></pre>
+        <p><code>a</code> と <code>b</code> はヒープ上の同じ <code>new String</code> を参照します。<code>c</code> と <code>d</code> は文字列プール上の同じインスタンスを参照します。</p>
       </section>
-
       <section class="article-section">
         <h2>StringBuilderは可変</h2>
-        <p><code>StringBuilder</code> は可変です。<code>append</code>、<code>insert</code>、<code>delete</code>、<code>reverse</code> などは、同じインスタンスの中身を変えます。</p>
-        <pre class="article-code"><code>StringBuilder sb = new StringBuilder(&quot;abc&quot;);
-StringBuilder same = sb.append(&quot;de&quot;);
-
-System.out.println(sb);        // abcde
-System.out.println(sb == same); // true</code></pre>
-        <div class="article-card-grid">
-          <article class="article-card"><h3>append</h3><p>末尾に追加し、自分自身を返します。</p></article>
-          <article class="article-card"><h3>insert</h3><p>指定位置に挿入します。位置は0始まりです。</p></article>
-          <article class="article-card"><h3>delete</h3><p>開始位置を含み、終了位置を含みません。</p></article>
-          <article class="article-card"><h3>toString</h3><p>StringBuilderからStringを得ます。StringBuilderとStringは別型です。</p></article>
-        </div>
+        <p><code>StringBuilder</code> は可変です。<code>append</code>、<code>delete</code>、<code>insert</code>、<code>reverse</code> は対象インスタンスを変更します。</p>
+        <pre class="article-code"><code>StringBuilder sb = new StringBuilder("abc");
+        StringBuilder ret = sb.append("de");
+        System.out.println(sb);       // abcde
+        System.out.println(sb == ret); // true</code></pre>
+        <p>一方、<code>substring</code> は <code>String</code> を返し、<code>StringBuilder</code> 本体は変わりません。</p>
+        <pre class="article-code"><code>StringBuilder sb = new StringBuilder("abcdef");
+        String s = sb.substring(1, 4); // bcd
+        System.out.println(sb);       // abcdef</code></pre>
       </section>
-
+      <section class="article-section">
+        <h2>主なメソッドの境界</h2>
+        <table class="ref-table"><thead><tr><th>メソッド</th><th>要点</th><th>注意</th></tr></thead><tbody>
+        <tr><td><code>charAt(i)</code></td><td>i番目の文字</td><td>範囲外は <code>StringIndexOutOfBoundsException</code></td></tr>
+        <tr><td><code>substring(begin,end)</code></td><td>begin以上end未満</td><td>endは含まない</td></tr>
+        <tr><td><code>indexOf(x)</code></td><td>見つからなければ -1</td><td>例外ではない</td></tr>
+        <tr><td><code>replace</code></td><td>置換結果を返す</td><td><code>String</code>本体は変わらない</td></tr>
+        <tr><td><code>trim</code></td><td>前後の空白除去</td><td>結果を返す</td></tr>
+        <tr><td><code>equalsIgnoreCase</code></td><td>大文字小文字を無視</td><td>呼び出し元がnullならNPE</td></tr>
+        </tbody></table>
+      </section>
       <section class="article-section">
         <h2>nullと文字列</h2>
-        <p>参照型変数は <code>null</code> を持てます。<code>null</code> に対してインスタンスメソッドを呼ぶと <code>NullPointerException</code> です。一方、文字列結合では <code>null</code> は文字列 <code>"null"</code> として扱われます。</p>
+        <p><code>null</code> は文字列ではなく、参照がない状態です。メソッド呼び出しの左側が <code>null</code> だと <code>NullPointerException</code> です。</p>
         <pre class="article-code"><code>String s = null;
-System.out.println(&quot;value=&quot; + s); // value=null
-// System.out.println(s.length()); // NullPointerException</code></pre>
+        System.out.println(s);        // null と表示
+        // System.out.println(s.length()); // 実行時例外
+
+        System.out.println("x".equals(s)); // false。安全
+        // System.out.println(s.equals("x")); // NPE</code></pre>
+        <p>比較では、定数文字列を左に置くとNPEを避けられます。</p>
+      </section>
+      <section class="article-section">
+        <h2>ミニ判定</h2>
+        <details class="article-card"><summary><strong>Q1.</strong> <code>"abc".substring(1, 1)</code> は？</summary><p>空文字列です。開始位置と終了位置が同じで、範囲としては0文字です。</p></details>
+        <details class="article-card"><summary><strong>Q2.</strong> <code>new String("x").intern() == "x"</code> は？</summary><p>通常は <code>true</code> です。<code>intern()</code> が文字列プール上の参照を返すためです。</p></details>
+        <details class="article-card"><summary><strong>Q3.</strong> <code>StringBuilder.reverse()</code> は元を変える？</summary><p>変えます。<code>StringBuilder</code> の主要な編集メソッドは破壊的操作です。</p></details>
       </section>
 
     </main>

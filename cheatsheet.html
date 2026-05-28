@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - 直前確認</title>
+  <title>Java Silver Study - 直前確認チートシート</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -17,28 +17,53 @@
     <main class="main reference-main article-main">
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>直前確認</h1>
-        <p>試験直前に見るための短縮版です。細かい説明より、失点しやすい判定軸だけを並べます。</p>
+        <h1>直前確認チートシート</h1>
+        <p>試験直前に見る前提で、頻出の判断基準だけを圧縮しています。</p>
       </section>
 
       <section class="article-section">
-        <h2>直前に見る順番</h2>
-        <ol class="article-list">
-          <li>コンパイルできるか。package/import、修飾子、型、未初期化、到達不能catchを見る。</li>
-          <li>実行時例外が起きるか。null、配列範囲外、parse、キャスト、List.of変更を確認する。</li>
-          <li>正常実行なら出力順を追う。代入、++/--、短絡評価、参照、Stringの戻り値を見る。</li>
-        </ol>
+        <h2>コンパイル判定</h2>
+        <ul class="article-list">
+          <li>ローカル変数は使用前に必ず初期化。</li>
+          <li><code>var</code> はローカル変数のみ。フィールド・引数・戻り値不可。</li>
+          <li>整数リテラルは基本 <code>int</code>、小数は基本 <code>double</code>。</li>
+          <li><code>byte</code>/<code>short</code>/<code>char</code> の演算結果は基本 <code>int</code>。</li>
+          <li>interface実装メソッドは <code>public</code> が必要。</li>
+          <li>overrideでアクセスを狭めない。</li>
+          <li>親例外catchを子例外catchより先に書かない。</li>
+        </ul>
       </section>
       <section class="article-section">
-        <h2>落とされやすい一行</h2>
-        <div class="article-card-grid">
-          <article class="article-card"><h3>String</h3><p><code>s.concat("x");</code> だけでは <code>s</code> は変わりません。</p></article>
-          <article class="article-card"><h3>配列</h3><p><code>array.length</code> はフィールド。<code>array.length()</code> は不可。</p></article>
-          <article class="article-card"><h3>List</h3><p><code>list.size()</code> はメソッド。<code>list.length</code> ではありません。</p></article>
-          <article class="article-card"><h3>interface</h3><p>実装メソッドはpublicが必要です。</p></article>
-          <article class="article-card"><h3>var</h3><p>フィールド、引数、戻り値には使えません。</p></article>
-          <article class="article-card"><h3>sealed</h3><p>子側にfinal/sealed/non-sealedが必要です。</p></article>
-        </div>
+        <h2>実行時例外</h2>
+        <ul class="article-list">
+          <li>null参照でメソッド呼び出し: <code>NullPointerException</code>。</li>
+          <li>配列範囲外: <code>ArrayIndexOutOfBoundsException</code>。</li>
+          <li>文字列範囲外: <code>StringIndexOutOfBoundsException</code>。</li>
+          <li>不正キャスト: <code>ClassCastException</code>。</li>
+          <li>数値変換失敗: <code>NumberFormatException</code>。</li>
+          <li><code>List.of</code> の変更: <code>UnsupportedOperationException</code>。</li>
+        </ul>
+      </section>
+      <section class="article-section">
+        <h2>出力判定</h2>
+        <ul class="article-list">
+          <li><code>String</code> は不変。戻り値を捨てたら変わらない。</li>
+          <li><code>StringBuilder</code> は可変。<code>append</code>/<code>reverse</code> は本体を変える。</li>
+          <li><code>==</code> は参照比較、<code>equals</code> は内容比較。</li>
+          <li>オーバーライドメソッドは実体で決まる。</li>
+          <li>フィールドは宣言型で決まる。</li>
+          <li><code>&amp;&amp;</code>/<code>||</code> は短絡評価。<code>&amp;</code>/<code>|</code> は短絡しない。</li>
+          <li>try-with-resourcesのcloseは宣言の逆順、finallyより前。</li>
+        </ul>
+      </section>
+      <section class="article-section">
+        <h2>Java 17固有寄り</h2>
+        <ul class="article-list">
+          <li>recordは暗黙にfinal。アクセサ名は <code>name()</code> 形式。</li>
+          <li>sealedの許可サブクラスは <code>final</code>/<code>sealed</code>/<code>non-sealed</code> を明示。</li>
+          <li><code>instanceof String s</code> の <code>s</code> はtrue側で使える。</li>
+          <li>switch式は値を返す。すべての経路で値が必要。</li>
+        </ul>
       </section>
 
     </main>
