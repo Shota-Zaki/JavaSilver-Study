@@ -18,9 +18,55 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>頻出メソッド</h1>
-        <p>String、StringBuilder、ArrayList、List、Object、Integerの戻り値・副作用・境界例外をまとめます。</p>
+        <p>String、StringBuilder、ArrayList、ラッパークラスの頻出メソッドを、戻り値と副作用に注目して整理します。</p>
       </section>
-      <section class="article-section"><h2>String</h2><div class="article-card-grid"><article class="article-card"><h3>length()</h3><div>文字数をintで返します。配列のlengthとは違いメソッドです。</div></article><article class="article-card"><h3>charAt(index)</h3><div>指定位置のcharを返します。範囲外はStringIndexOutOfBoundsException。</div></article><article class="article-card"><h3>substring(begin, end)</h3><div>begin以上end未満の部分文字列を返します。元のStringは変わりません。</div></article><article class="article-card"><h3>indexOf(str)</h3><div>見つかれば開始位置、見つからなければ-1。</div></article><article class="article-card"><h3>equals(obj)</h3><div>内容比較。nullに対して呼ぶとNPE。</div></article><article class="article-card"><h3>equalsIgnoreCase(str)</h3><div>大文字小文字を無視して比較。呼び出し元がnullならNPE。</div></article></div></section><section class="article-section"><h2>StringBuilder</h2><div class="article-card-grid"><article class="article-card"><h3>append(value)</h3><div>自分自身を変更し、自分自身を返します。</div></article><article class="article-card"><h3>insert(index, value)</h3><div>指定位置に挿入します。</div></article><article class="article-card"><h3>delete(begin, end)</h3><div>begin以上end未満を削除します。</div></article><article class="article-card"><h3>replace(begin, end, str)</h3><div>範囲を置き換えます。</div></article><article class="article-card"><h3>reverse()</h3><div>文字順を反転します。</div></article><article class="article-card"><h3>toString()</h3><div>Stringへ変換します。</div></article></div></section><section class="article-section"><h2>ArrayList / List</h2><div class="article-card-grid"><article class="article-card"><h3>size()</h3><div>要素数を返します。</div></article><article class="article-card"><h3>get(index)</h3><div>指定位置の要素を返します。</div></article><article class="article-card"><h3>add(e)</h3><div>末尾に追加し、booleanを返します。</div></article><article class="article-card"><h3>add(index, e)</h3><div>指定位置に挿入します。</div></article><article class="article-card"><h3>set(index, e)</h3><div>指定位置を置換し、古い要素を返します。</div></article><article class="article-card"><h3>remove(index)</h3><div>指定位置を削除し、削除した要素を返します。</div></article><article class="article-card"><h3>remove(object)</h3><div>一致する要素を削除し、booleanを返します。</div></article></div></section><section class="article-section"><h2>Object / Integer / System</h2><div class="article-card-grid"><article class="article-card"><h3>toString()</h3><div>文字列表現を返します。recordでは自動生成されます。</div></article><article class="article-card"><h3>equals(Object)</h3><div>Objectの標準実装は参照比較。Stringやrecordは内容比較へオーバーライド。</div></article><article class="article-card"><h3>hashCode()</h3><div>equalsと整合するハッシュ値。recordでは自動生成。</div></article><article class="article-card"><h3>Integer.parseInt(String)</h3><div>文字列をintへ変換。変換不能ならNumberFormatException。</div></article><article class="article-card"><h3>System.out.println(...)</h3><div>表示して改行します。戻り値はvoidなので代入不可。</div></article></div></section>
+
+      <section class="article-section">
+        <h2>String</h2>
+        <p>Stringメソッドは元の文字列を変更しません。結果を使うなら戻り値を受け取ります。</p>
+        <div class="article-card-grid">
+          <article class="article-card"><h3>length()</h3><p>文字数を返します。配列の <code>length</code> とは違いメソッドです。</p></article>
+          <article class="article-card"><h3>charAt(int)</h3><p>指定位置のcharを返します。範囲外なら例外。</p></article>
+          <article class="article-card"><h3>substring(begin, end)</h3><p>beginを含み、endを含まない部分文字列を返します。</p></article>
+          <article class="article-card"><h3>equals / equalsIgnoreCase</h3><p>内容比較。呼び出し元がnullならNPE。</p></article>
+          <article class="article-card"><h3>indexOf</h3><p>見つからなければ -1。</p></article>
+          <article class="article-card"><h3>replace</h3><p>置換後の新しいStringを返します。</p></article>
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>StringBuilder</h2>
+        <p>StringBuilderは可変です。多くの操作が自分自身を返します。</p>
+        <div class="article-card-grid">
+          <article class="article-card"><h3>append</h3><p>末尾追加。戻り値は同じStringBuilder。</p></article>
+          <article class="article-card"><h3>insert</h3><p>指定位置に挿入。位置が範囲外なら例外。</p></article>
+          <article class="article-card"><h3>delete(begin,end)</h3><p>beginを含み、endを含まない範囲を削除。</p></article>
+          <article class="article-card"><h3>reverse</h3><p>自身を反転します。</p></article>
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>ArrayList / List</h2>
+        <div class="article-card-grid">
+          <article class="article-card"><h3>size()</h3><p>要素数。配列の <code>length</code> とは違います。</p></article>
+          <article class="article-card"><h3>get(index)</h3><p>指定位置の要素を返します。範囲外なら例外。</p></article>
+          <article class="article-card"><h3>set(index, value)</h3><p>指定位置を置換し、古い要素を返します。サイズは変わりません。</p></article>
+          <article class="article-card"><h3>add(value)</h3><p>末尾に追加します。</p></article>
+          <article class="article-card"><h3>remove(index/object)</h3><p>オーバーロードに注意。<code>remove(1)</code> はindex指定です。</p></article>
+          <article class="article-card"><h3>contains</h3><p><code>equals</code> による同値判定です。</p></article>
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>Integer / ラッパークラス</h2>
+        <div class="article-card-grid">
+          <article class="article-card"><h3>parseInt(String)</h3><p>文字列をintへ変換。変換不能なら <code>NumberFormatException</code>。</p></article>
+          <article class="article-card"><h3>valueOf</h3><p>ラッパー型インスタンスを返します。</p></article>
+          <article class="article-card"><h3>xxxValue</h3><p><code>intValue()</code> などでプリミティブ値を取り出します。</p></article>
+          <article class="article-card"><h3>オートボクシング</h3><p>プリミティブとラッパーの自動変換。ただしnullのアンボクシングはNPE。</p></article>
+        </div>
+      </section>
+
     </main>
   </div>
   <script src="data/questions.js"></script>

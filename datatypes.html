@@ -18,40 +18,84 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>型・変数・リテラル</h1>
-        <p>primitive型、参照型、初期値、未初期化、数値リテラル、型変換、var、スコープをまとめます。</p>
+        <p>プリミティブ型、参照型、リテラル、初期化、型変換、varを、コンパイル可否の判断に使える形で整理します。</p>
       </section>
-      <section class="article-section"><h2>primitive型と参照型</h2><p>Javaの型は大きくprimitive型と参照型に分かれます。primitive型は値そのものを持ち、参照型はオブジェクトへの参照を持ちます。この違いは、代入、比較、null、初期値、例外で何度も問われます。</p><div class="article-card-grid"><article class="article-card"><h3>primitive型</h3><div><code>byte short int long float double char boolean</code>。値そのものを保持します。<code>null</code> は代入できません。</div></article><article class="article-card"><h3>参照型</h3><div>クラス、配列、interface、recordなど。参照先がない状態を <code>null</code> で表せます。</div></article><article class="article-card"><h3>ローカル変数</h3><div>自動初期化されません。代入前に読むとコンパイルエラーです。</div></article><article class="article-card"><h3>フィールド・配列要素</h3><div>型ごとの初期値で初期化されます。参照型はnull、数値は0系、booleanはfalseです。</div></article></div><pre class="article-code"><code>class Sample {
-    int field;        // 0
-    String text;      // null
+
+      <section class="article-section">
+        <h2>プリミティブ型と参照型</h2>
+        <p>Javaの型は大きくプリミティブ型と参照型に分かれます。プリミティブ型の変数は値そのものを持ち、参照型の変数はオブジェクトへの参照を持ちます。この違いは、代入、比較、null、メソッド呼び出しのすべてに効きます。</p>
+        <div class="article-card-grid">
+          <article class="article-card"><h3>整数型</h3><p><code>byte</code>、<code>short</code>、<code>int</code>、<code>long</code>。整数リテラルは基本 <code>int</code>、末尾 <code>L</code> で <code>long</code>。</p></article>
+          <article class="article-card"><h3>浮動小数点型</h3><p><code>float</code>、<code>double</code>。小数リテラルは基本 <code>double</code>、末尾 <code>F</code> で <code>float</code>。</p></article>
+          <article class="article-card"><h3>boolean</h3><p><code>true</code> / <code>false</code> のみ。数値の0/1とは互換性がありません。</p></article>
+          <article class="article-card"><h3>char</h3><p>16ビットのUnicode文字。文字リテラルは単一引用符、文字列は二重引用符です。</p></article>
+        </div>
+        <div class="article-callout warn"><code>boolean</code> と数値型を混ぜられる言語の感覚をJavaに持ち込むと失敗します。<code>if (1)</code> も <code>boolean b = 1;</code> も不可です。</div>
+      </section>
+
+      <section class="article-section">
+        <h2>リテラルの型と代入</h2>
+        <p>整数リテラルは基本的に <code>int</code> ですが、定数式で値が範囲内なら <code>byte</code> や <code>short</code> へ代入できます。変数を含む式になると、もう単なる定数ではないため扱いが変わります。</p>
+        <pre class="article-code"><code>byte a = 127;        // OK
+// byte b = 128;     // NG。byteの範囲外
+short c = 128 + 128; // OK。定数式でshort範囲内
+
+byte x = 10;
+byte y = 20;
+// byte z = x + y;   // NG。演算結果はint</code></pre>
+        <p>小数リテラルは基本 <code>double</code> です。<code>float f = 1.0;</code> は不可で、<code>1.0F</code> またはキャストが必要です。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>表記: 2進数・8進数・16進数・アンダースコア</h2>
+        <p>数値リテラルは表記が違っても、値として扱われます。<code>0b</code> は2進数、先頭 <code>0</code> は8進数、<code>0x</code> は16進数です。</p>
+        <pre class="article-code"><code>int a = 267;        // 10進数
+int b = 0413;       // 8進数
+int c = 0x10B;      // 16進数
+int d = 0b100001011;// 2進数
+// int e = 0827;    // NG。8進数に8は使えない</code></pre>
+        <p>アンダースコアは桁区切りに使えますが、先頭・末尾・小数点や接頭辞の直後などには置けません。</p>
+        <pre class="article-code"><code>int ok1 = 123_456;
+int ok2 = 0b10_10;
+// int ng1 = _123;
+// int ng2 = 123_;
+// float ng3 = 3_.14F;
+// int ng4 = 0x_52;</code></pre>
+      </section>
+
+      <section class="article-section">
+        <h2>ローカル変数・フィールド・初期値</h2>
+        <p>フィールドにはデフォルト値がありますが、ローカル変数にはありません。ローカル変数は、使用前に確実に初期化されている必要があります。</p>
+        <pre class="article-code"><code>class Sample {
+    int field;       // 0で初期化される
+    String name;     // nullで初期化される
 
     void test() {
         int local;
-        // System.out.println(local); // コンパイルエラー
-        System.out.println(field);    // OK
+        // System.out.println(local); // NG。初期化前
     }
-}</code></pre></section><section class="article-section"><h2>整数リテラルと表記</h2><p>整数リテラルは基本的にint型です。longとして扱いたい場合は末尾にLまたはlを付けます。小文字lは数字1と紛らわしいため、試験でも実務でも大文字Lで覚える方が安全です。</p><pre class="article-code"><code>int a = 10;
-long b = 10L;
-int bin = 0b1010;
-int oct = 012;    // 8進数。10進数では10
-int hex = 0xA;    // 16進数。10進数では10</code></pre><div class="article-card-grid"><article class="article-card"><h3>2進数</h3><div><code>0b</code> または <code>0B</code>。使える数字は0と1だけ。</div></article><article class="article-card"><h3>8進数</h3><div>先頭が <code>0</code>。<code>08</code> は8が使えないのでコンパイルエラー。</div></article><article class="article-card"><h3>16進数</h3><div><code>0x</code> または <code>0X</code>。A〜Fも使えます。</div></article><article class="article-card"><h3>アンダースコア</h3><div>数字の間だけ。先頭、末尾、小数点や接尾辞の隣は不可。</div></article></div><pre class="article-code"><code>int ok1 = 1_000_000;
-int ok2 = 0b1010_0101;
+}</code></pre>
+        <div class="article-card-grid">
+          <article class="article-card"><h3>フィールド</h3><p>インスタンス生成時にデフォルト値が入ります。数値は0、booleanはfalse、参照型はnull。</p></article>
+          <article class="article-card"><h3>ローカル変数</h3><p>メソッド内の変数。デフォルト値はなく、使用前に明示的な初期化が必要です。</p></article>
+          <article class="article-card"><h3>ブロックスコープ</h3><p><code>{}</code> 内で宣言した変数は、そのブロックの外では使えません。</p></article>
+          <article class="article-card"><h3>同名変数</h3><p>近いスコープの変数が優先されます。フィールドに明示的に触るなら <code>this.field</code>。</p></article>
+        </div>
+      </section>
 
-// int ng1 = _100;   // 先頭は不可
-// int ng2 = 100_;   // 末尾は不可
-// float ng3 = 3_.14F; // 小数点の隣は不可
-// long ng4 = 100_L;   // 接尾辞の直前は不可</code></pre></section><section class="article-section"><h2>型変換と数値昇格</h2><p>byte、short、charは演算時にintへ昇格します。byte同士の足し算でも結果はintです。ここを落とすと、代入可否の問題で間違えます。</p><pre class="article-code"><code>byte a = 10;
-byte b = 20;
-// byte c = a + b; // コンパイルエラー。a + b は int
-byte d = (byte)(a + b); // OK</code></pre><p>ただし、リテラルや定数式が代入先の範囲に収まる場合は、byteやshortへ代入できます。</p><pre class="article-code"><code>byte a = 127;       // OK
-// byte b = 128;    // コンパイルエラー
-short s = 100 + 20; // OK。コンパイル時に120と分かる</code></pre><p>複合代入は暗黙のキャストを含みます。&lt;code&gt;a += 1&lt;/code&gt; は単純に &lt;code&gt;a = a + 1&lt;/code&gt; と同じではありません。</p><pre class="article-code"><code>byte a = 10;
-a += 1;      // OK。内部的に(byte)(a + 1)に近い
-// a = a + 1; // コンパイルエラー。a + 1 は int</code></pre></section><section class="article-section"><h2>var</h2><p>varは型ではなく、ローカル変数の型推論に使う予約された型名です。初期値から型を決めるため、初期値がない場所や型が決められない場所では使えません。</p><div class="article-card-grid"><article class="article-card"><h3>使える場所</h3><div>ローカル変数。初期値が必要。</div></article><article class="article-card"><h3>使えない場所</h3><div>フィールド、メソッド引数、戻り値型、コンストラクタ引数、catchパラメータ、配列要素型。</div></article><article class="article-card"><h3>null単独</h3><div><code>var a = null;</code> は型が決められないため不可。</div></article><article class="article-card"><h3>ラムダ単独</h3><div><code>var f = () -> {}</code> はターゲット型がないため不可。</div></article></div><pre class="article-code"><code>var name = "Java"; // String
+      <section class="article-section">
+        <h2>varの正しい位置</h2>
+        <p><code>var</code> は型推論であって、型がなくなるわけではありません。コンパイル時に右辺から型を決めるだけです。使える場所はローカル変数に限定されます。</p>
+        <pre class="article-code"><code>var s = &quot;abc&quot;;       // String
 var list = new java.util.ArrayList&lt;String&gt;();
 
-// var x;          // 初期値なしは不可
-// var y = null;   // 型を決められない
-// private var n;  // フィールドでは不可</code></pre></section>
+// var a;           // NG。初期化式がない
+// var b = null;    // NG。型を決められない
+// private var x;   // NG。フィールドには使えない
+// void test(var x) {} // NG。引数には使えない</code></pre>
+        <div class="article-callout warn"><code>var</code> を「何でも入る型」と考えるのは誤りです。<code>var n = 10;</code> の <code>n</code> は <code>int</code> です。後から <code>"abc"</code> は入りません。</div>
+      </section>
+
     </main>
   </div>
   <script src="data/questions.js"></script>

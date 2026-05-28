@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - ループ・do-while・break/continue</title>
+  <title>Java Silver Study - ループ制御</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -17,59 +17,46 @@
     <main class="main reference-main article-main">
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>ループ・do-while・break/continue</h1>
-        <p>while、do-while、for、拡張for、break、continue、ラベル、更新式の実行有無をまとめます。</p>
+        <h1>ループ制御</h1>
+        <p>while、do-while、for、break、continue、ラベル付き制御を、出力順の追跡に絞って整理します。</p>
       </section>
-      <section class="article-section"><h2>++ / -- の前置と後置</h2><p>前置は値を変更してから式に使います。後置は元の値を式に使ってから変更します。式の評価が終わったあとも、副作用として変数の値は変わっています。</p><pre class="article-code"><code>int i = 1;
-System.out.println(++i); // 2。先に増える
-System.out.println(i++); // 2。表示後に増える
-System.out.println(i);   // 3</code></pre><p>条件式の中にある後置インクリメントも、条件がtrueでもfalseでも評価された時点で副作用は残ります。</p><pre class="article-code"><code>int i = 0;
-while (i++ &lt; 3) {
-    System.out.print(i);
-}
-System.out.println("/" + i);
-// 123/4</code></pre></section><section class="article-section"><h2>短絡評価と非短絡評価</h2><p>&lt;code&gt;&amp;&amp;&lt;/code&gt; と &lt;code&gt;||&lt;/code&gt; は短絡評価です。左辺だけで結果が確定する場合、右辺は評価されません。&lt;code&gt;&amp;&lt;/code&gt; と &lt;code&gt;|&lt;/code&gt; はbooleanにも使えますが、右辺も必ず評価します。</p><pre class="article-code"><code>int a = 0;
-if (false &amp;&amp; ++a &gt; 0) {
-}
-System.out.println(a); // 0
 
-if (false &amp; ++a &gt; 0) {
-}
-System.out.println(a); // 1</code></pre></section><section class="article-section"><h2>switch文とswitch式</h2><p>switch文は処理を実行する構文です。switch式は値を返す構文です。Java Silver 17では、switch式の &lt;code&gt;yield&lt;/code&gt; が重要です。</p><pre class="article-code"><code>int n = 2;
-String result = switch (n) {
-    case 1 -&gt; "one";
-    case 2 -&gt; "two";
-    default -&gt; "other";
-};
-System.out.println(result); // two</code></pre><p>switch式でブロックを使う場合、ブロック内で返す値を &lt;code&gt;yield&lt;/code&gt; で指定します。yieldはswitch式の値を返すためのキーワードで、メソッドから抜けるreturnとは違います。</p><pre class="article-code"><code>int n = 2;
-String result = switch (n) {
-    case 1 -&gt; "one";
-    case 2 -&gt; {
-        System.out.println("case 2");
-        yield "two";
-    }
-    default -&gt; "other";
-};</code></pre><div class="article-card-grid"><article class="article-card"><h3>yield</h3><div>switch式の結果値を返します。メソッド全体から戻るわけではありません。</div></article><article class="article-card"><h3>return</h3><div>メソッドから戻ります。switch式のブロック内で値を返す用途には通常使いません。</div></article><article class="article-card"><h3>switch式末尾のセミコロン</h3><div>代入文の一部なので <code>};</code> が必要です。</div></article><article class="article-card"><h3>網羅性</h3><div>switch式は値を返すため、すべてのケースを網羅する必要があります。通常はdefaultが必要です。</div></article></div><div class="article-callout warn">switch対象がnullの場合、通常は実行時にNullPointerExceptionです。コンパイルエラーではありません。</div></section><section class="article-section"><h2>while と do-while</h2><p>whileは最初に条件判定します。条件が最初からfalseなら本体は0回です。do-whileは本体を実行してから条件判定するため、条件がfalseでも最低1回は実行されます。</p><pre class="article-code"><code>int a = 0;
-while (a &gt; 0) {
-    System.out.println("while");
-}
-
-int b = 0;
+      <section class="article-section">
+        <h2>ループの基本判定</h2>
+        <p>ループ問題は、初期化、条件判定、本文、更新式の順に追います。<code>while</code> は最初に条件を見ますが、<code>do-while</code> は本文を1回実行してから条件を見ます。</p>
+        <pre class="article-code"><code>int n = 0;
 do {
-    System.out.println("do");
-} while (b &gt; 0);</code></pre><p>do-whileの最後にはセミコロンが必要です。ここは問題文の記号1つで正解が変わります。</p><pre class="article-code"><code>do {
-    System.out.println("A");
-} while (false); // この ; が必要</code></pre></section><section class="article-section"><h2>for、break、continue</h2><p>通常のfor文は、初期化 → 条件判定 → 本体 → 更新式 → 条件判定、の順に進みます。breakとcontinueでは、更新式が実行されるかが違います。</p><pre class="article-code"><code>for (int i = 0; i &lt; 3; i++) {
-    if (i == 1) break;
+    System.out.println(n);
+    n++;
+} while (n &lt; 0);
+// 0 は1回出力される</code></pre>
+      </section>
+
+      <section class="article-section">
+        <h2>breakとcontinue</h2>
+        <p><code>break</code> は現在のループを終了します。<code>continue</code> は現在の反復を終了し、次の反復へ進みます。for文ではcontinue後に更新式が実行される点も忘れないこと。</p>
+        <pre class="article-code"><code>for (int i = 0; i &lt; 5; i++) {
+    if (i == 2) continue;
+    if (i == 4) break;
     System.out.print(i);
 }
-// 0
-// breakすると、その回の残り処理も更新式も実行しない</code></pre><pre class="article-code"><code>for (int i = 0; i &lt; 3; i++) {
-    if (i == 1) continue;
-    System.out.print(i);
+// 013</code></pre>
+      </section>
+
+      <section class="article-section">
+        <h2>ラベル付き制御</h2>
+        <p>ネストしたループでは、ラベル付き <code>break</code> / <code>continue</code> で外側のループを対象にできます。試験では、どのループが終了・継続されるかを問われます。</p>
+        <pre class="article-code"><code>outer:
+for (int i = 0; i &lt; 2; i++) {
+    for (int j = 0; j &lt; 3; j++) {
+        if (j == 1) break outer;
+        System.out.println(i + &quot;:&quot; + j);
+    }
 }
-// 02
-// continueすると、forの更新式へ進む</code></pre><p>while文でcontinueする場合は注意が必要です。continueすると下の更新処理を飛ばすため、更新前にcontinueすると無限ループになりやすいです。</p></section>
+// 0:0 のみ</code></pre>
+        <div class="article-callout warn">ラベル付き <code>continue outer;</code> は、外側ループの次の反復へ進みます。外側ループ自体を完全に抜けるのは <code>break outer;</code> です。</div>
+      </section>
+
     </main>
   </div>
   <script src="data/questions.js"></script>

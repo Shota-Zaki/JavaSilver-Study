@@ -18,20 +18,29 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>直前確認</h1>
-        <p>試験直前に確認する細かい仕様、引っかけ、判定順をまとめます。</p>
+        <p>試験直前に見るための短縮版です。細かい説明より、失点しやすい判定軸だけを並べます。</p>
       </section>
-      <section class="article-section"><h2>直前に見るべき仕様</h2><ul class="article-list"><li><code>String</code> は不変。戻り値を受け取らないと結果は捨てられる。</li><li><code>StringBuilder</code> は可変。appendなどは自分自身を返す。</li><li><code>==</code> は参照比較。<code>equals</code> はクラス実装による内容比較。</li><li><code>byte/short/char</code> は演算時にintへ昇格。</li><li><code>+=</code> は暗黙キャストを含む。</li><li><code>var</code> はローカル変数だけ。フィールドや引数では不可。</li><li><code>do-while</code> は最低1回実行し、最後にセミコロンが必要。</li><li><code>break</code> はfor更新式へ行かない。<code>continue</code> はfor更新式へ行く。</li><li><code>switch式</code> は値を返す。ブロック内では <code>yield</code>。</li><li>interfaceの抽象メソッドはpublic。実装側もpublic。</li><li>recordのアクセサは <code>name()</code>。<code>getName()</code> ではない。</li><li>sealedの子は final / sealed / non-sealed が必要。</li></ul></section><section class="article-section"><h2>よくあるミス</h2><pre class="article-code"><code>String s = "abc";
-s.replace("a", "x");
-System.out.println(s); // abc
 
-byte b = 1;
-// b = b + 1; // NG
-b += 1;       // OK
+      <section class="article-section">
+        <h2>直前に見る順番</h2>
+        <ol class="article-list">
+          <li>コンパイルできるか。package/import、修飾子、型、未初期化、到達不能catchを見る。</li>
+          <li>実行時例外が起きるか。null、配列範囲外、parse、キャスト、List.of変更を確認する。</li>
+          <li>正常実行なら出力順を追う。代入、++/--、短絡評価、参照、Stringの戻り値を見る。</li>
+        </ol>
+      </section>
+      <section class="article-section">
+        <h2>落とされやすい一行</h2>
+        <div class="article-card-grid">
+          <article class="article-card"><h3>String</h3><p><code>s.concat("x");</code> だけでは <code>s</code> は変わりません。</p></article>
+          <article class="article-card"><h3>配列</h3><p><code>array.length</code> はフィールド。<code>array.length()</code> は不可。</p></article>
+          <article class="article-card"><h3>List</h3><p><code>list.size()</code> はメソッド。<code>list.length</code> ではありません。</p></article>
+          <article class="article-card"><h3>interface</h3><p>実装メソッドはpublicが必要です。</p></article>
+          <article class="article-card"><h3>var</h3><p>フィールド、引数、戻り値には使えません。</p></article>
+          <article class="article-card"><h3>sealed</h3><p>子側にfinal/sealed/non-sealedが必要です。</p></article>
+        </div>
+      </section>
 
-record Person(String name) {}
-Person p = new Person("A");
-// p.getName(); // NG
-p.name();       // OK</code></pre></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

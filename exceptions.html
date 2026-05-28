@@ -18,31 +18,86 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>例外処理</h1>
-        <p>try-catch-finally、checked/unchecked、throw/throws、try-with-resourcesをまとめます。</p>
+        <p>try/catch/finally、チェック例外、RuntimeException、try-with-resources、throw/throwsを整理します。</p>
       </section>
-      <section class="article-section"><h2>例外の種類</h2><p>例外は、コンパイル時に処理を強制されるchecked例外と、強制されないunchecked例外に分かれます。RuntimeExceptionとそのサブクラスはunchecked例外です。</p><div class="article-card-grid"><article class="article-card"><h3>checked例外</h3><div><code>Exception</code> のサブクラスだが <code>RuntimeException</code> ではないもの。例: IOException。</div></article><article class="article-card"><h3>unchecked例外</h3><div><code>RuntimeException</code> とそのサブクラス。例: NullPointerException、NumberFormatException。</div></article><article class="article-card"><h3>Error</h3><div>通常アプリ側で処理する対象ではありません。</div></article><article class="article-card"><h3>throws</h3><div>メソッドが例外を外へ投げる可能性を宣言します。</div></article></div></section><section class="article-section"><h2>try-catch-finally</h2><p>try内で例外が発生すると、その後のtry内の文は実行されず、対応するcatchへ移ります。finallyは例外の有無にかかわらず基本的に実行されます。</p><pre class="article-code"><code>try {
-    System.out.println("A");
-    int n = 10 / 0;
-    System.out.println("B");
-} catch (ArithmeticException e) {
-    System.out.println("C");
+
+      <section class="article-section">
+        <h2>例外処理の判定順</h2>
+        <p>例外問題は、まずコンパイル可否、次にtry内でどこまで実行されるか、最後にcatch/finally/closeの順番を追います。</p>
+        <div class="article-card-grid">
+          <article class="article-card"><h3>try</h3><p>例外が発生する可能性がある処理を書きます。例外発生後、try内の残りは実行されません。</p></article>
+          <article class="article-card"><h3>catch</h3><p>対応する例外型を受け取ります。上から順番に判定されます。</p></article>
+          <article class="article-card"><h3>finally</h3><p>例外の有無に関係なく基本的に実行されます。</p></article>
+          <article class="article-card"><h3>throw / throws</h3><p><code>throw</code> は例外を投げる文、<code>throws</code> はメソッド宣言で例外送出可能性を示します。</p></article>
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>チェック例外・非チェック例外</h2>
+        <p>チェック例外はcatchまたはthrowsが必要です。<code>RuntimeException</code> とそのサブクラスは非チェック例外で、catchやthrowsを強制されません。</p>
+        <div class="article-card-grid">
+          <article class="article-card"><h3>チェック例外</h3><p><code>Exception</code> のサブクラスのうち、<code>RuntimeException</code> 系ではないもの。例: <code>IOException</code>。</p></article>
+          <article class="article-card"><h3>非チェック例外</h3><p><code>RuntimeException</code> とそのサブクラス。例: <code>NullPointerException</code>、<code>NumberFormatException</code>。</p></article>
+          <article class="article-card"><h3>Error</h3><p><code>OutOfMemoryError</code> など。通常のアプリで回復処理の対象にしません。</p></article>
+          <article class="article-card"><h3>Exception</h3><p>広く受け取れますが、先に書くとサブクラスcatchが到達不能になります。</p></article>
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>catchの順番</h2>
+        <p>catchは上から判定されます。親クラスのcatchを先に書くと、子クラスのcatchは到達不能になりコンパイルエラーです。</p>
+        <pre class="article-code"><code>try {
+    throw new java.io.FileNotFoundException();
+} catch (java.io.IOException e) {
+    System.out.println(&quot;IO&quot;);
+// } catch (java.io.FileNotFoundException e) { // NG。到達不能
+}</code></pre>
+        <div class="article-callout warn">catch順は「具体的な例外 → 抽象的な例外」です。親を先に置く選択肢は、実行時ではなくコンパイル段階で落ちます。</div>
+      </section>
+
+      <section class="article-section">
+        <h2>finally</h2>
+        <p><code>finally</code> は、例外が発生しても発生しなくても実行されます。catchが実行されない場合でもfinallyは実行されます。</p>
+        <pre class="article-code"><code>try {
+    System.out.println(&quot;A&quot;);
+} catch (NullPointerException e) {
+    System.out.println(&quot;B&quot;);
 } finally {
-    System.out.println("D");
+    System.out.println(&quot;C&quot;);
+}
+// A C</code></pre>
+        <p>構文上、<code>try</code> の後に <code>finally</code> を書き、その後に <code>catch</code> を書くことはできません。<code>catch</code> は <code>finally</code> より前です。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>try-with-resources</h2>
+        <p>try-with-resourcesで宣言されたリソースは、tryブロックを抜けると自動的に <code>close()</code> されます。close順は宣言と逆順です。</p>
+        <pre class="article-code"><code>class A implements AutoCloseable {
+    private final String name;
+    A(String name) { this.name = name; }
+    public void close() {
+        System.out.println(name);
+    }
 }
 
-// A
-// C
-// D</code></pre><p>catchは上から順に判定されます。親例外を先に書くと、子例外のcatchへ到達できなくなりコンパイルエラーです。</p><pre class="article-code"><code>try {
-} catch (Exception e) {
-// } catch (IOException e) { // NG。すでにExceptionで捕まる
-}</code></pre></section><section class="article-section"><h2>throw と throws</h2><p>&lt;code&gt;throw&lt;/code&gt; は実際に例外を投げる文です。&lt;code&gt;throws&lt;/code&gt; はメソッド宣言に書き、呼び出し元へ例外処理を要求または通知します。</p><pre class="article-code"><code>void read() throws IOException {
-    throw new IOException();
-}</code></pre></section><section class="article-section"><h2>try-with-resources</h2><p>try-with-resourcesでは、tryの括弧内で宣言したリソースが自動でcloseされます。closeは宣言した順番とは逆順に呼ばれます。</p><pre class="article-code"><code>try (A a = new A("A"); A b = new A("B")) {
-    System.out.println("body");
+try (A a = new A(&quot;A&quot;); A b = new A(&quot;B&quot;)) {
+    System.out.println(&quot;body&quot;);
+} finally {
+    System.out.println(&quot;finally&quot;);
 }
-// body
-// B
-// A</code></pre><p>finallyを書く場合、リソースのcloseが呼ばれた後にfinallyが実行されます。</p></section>
+// body B A finally</code></pre>
+      </section>
+
+      <section class="article-section">
+        <h2>RuntimeExceptionの頻出</h2>
+        <div class="article-card-grid">
+          <article class="article-card"><h3>NullPointerException</h3><p><code>null</code> に対してメソッドやフィールドへアクセスしたとき。</p></article>
+          <article class="article-card"><h3>ArrayIndexOutOfBoundsException</h3><p>配列の有効範囲外にアクセスしたとき。</p></article>
+          <article class="article-card"><h3>NumberFormatException</h3><p><code>Integer.parseInt("abc")</code> のような変換失敗。</p></article>
+          <article class="article-card"><h3>ClassCastException</h3><p>実体と互換性のない型へダウンキャストしたとき。</p></article>
+        </div>
+      </section>
+
     </main>
   </div>
   <script src="data/questions.js"></script>

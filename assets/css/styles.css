@@ -2665,3 +2665,14 @@ pre,
   }
 }
 
+
+
+/* 2026-05-28 article content expansion */
+.article-section strong { color: var(--ink); }
+.article-section code, .article-card code, .article-callout code { font-family: var(--mono); background: #eef2f7; padding: 1px 5px; border-radius: 6px; }
+.article-section .article-code code { background: transparent; padding: 0; border-radius: 0; }
+.article-local-toc { margin: 18px 0; padding: 18px; border: 1px solid rgba(148,163,184,.32); border-radius: 18px; background: rgba(255,255,255,.92); }
+.article-local-toc h2 { margin: 0 0 12px; font-size: 18px; }
+.toc-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.toc-links a { display: inline-flex; padding: 7px 10px; border-radius: 999px; background: #f1f5f9; color: var(--ink); text-decoration: none; font-weight: 700; font-size: 13px; }
+.toc-links a:hover { background: #e0e7ff; }

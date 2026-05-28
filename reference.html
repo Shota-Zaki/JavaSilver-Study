@@ -20,7 +20,36 @@
         <h1>学習記事</h1>
         <p>仕様・境界条件・例外・試験で狙われるポイントを確認するためのページです。</p>
       </section>
-      <section class="ref-index-grid clean-index"><a class="ref-index-card" href="syntax-basics.html"><strong>Java実行・宣言ルール</strong><small>main、ファイル名、package/import、classpath、起動引数</small></a><a class="ref-index-card" href="datatypes.html"><strong>型・変数・リテラル</strong><small>primitive、参照型、初期値、型変換、var、スコープ</small></a><a class="ref-index-card" href="strings.html"><strong>文字列・比較</strong><small>String、StringBuilder、==、equals、intern、null</small></a><a class="ref-index-card" href="collections-arrays.html"><strong>配列・ArrayList・List</strong><small>配列、ArrayList、List.of、拡張for、境界例外</small></a><a class="ref-index-card" href="operators-control.html"><strong>演算子・分岐・ループ</strong><small>評価順、++/--、短絡評価、switch、yield、do-while</small></a><a class="ref-index-card" href="methods-constructors.html"><strong>メソッド・コンストラクタ</strong><small>戻り値、引数、可変長引数、overload、this/super</small></a><a class="ref-index-card" href="object-oriented.html"><strong>クラス・static・record</strong><small>参照、static、final、record、GC、フィールド解決</small></a><a class="ref-index-card" href="oop-relations.html"><strong>継承・interface・override</strong><small>extends、implements、abstract、override、sealed</small></a><a class="ref-index-card" href="polymorphism-cast.html"><strong>ポリモーフィズム・キャスト</strong><small>宣言型、実体、キャスト、instanceof、解決タイミング</small></a><a class="ref-index-card" href="exceptions.html"><strong>例外処理</strong><small>try/catch/finally、throw/throws、try-with-resources</small></a><a class="ref-index-card" href="compile-runtime.html"><strong>コンパイルエラーと実行時例外</strong><small>失敗段階、例外カタログ、判定順</small></a><a class="ref-index-card" href="method-list.html"><strong>頻出メソッド</strong><small>戻り値、副作用、境界例外、比較メソッド</small></a><a class="ref-index-card" href="cheatsheet.html"><strong>直前確認</strong><small>試験で落とされやすい仕様の短縮版</small></a><a class="ref-index-card" href="mini-drills.html"><strong>ミニ演習</strong><small>短いコードで確認する仕様問題</small></a><a class="ref-index-card" href="glossary.html"><strong>単語集</strong><small>用語、意味、試験での注意点</small></a></section>
+
+      <section class="article-section">
+        <h2>使い方</h2>
+        <p>問題で間違えたら、すぐ解説だけを読まず、該当する学習記事で「判定基準」を確認してください。暗記ではなく、次に同じ型の問題を見たときに自力で判断できる状態にするためです。</p>
+      </section>
+      <section class="ref-index-grid clean-index">
+        <a class="ref-index-card" href="syntax-basics.html"><strong>Java実行・宣言ルール</strong><small>main、ファイル名、package/import、起動引数</small></a>
+        <a class="ref-index-card" href="datatypes.html"><strong>型・変数・リテラル</strong><small>primitive、参照型、初期値、型変換、var</small></a>
+        <a class="ref-index-card" href="numeric-rules.html"><strong>数値・リテラル・型昇格</strong><small>byte/short/char、複合代入、定数式</small></a>
+        <a class="ref-index-card" href="var-scope.html"><strong>var・スコープ・初期化</strong><small>var禁止場所、ローカル変数、ブロックスコープ</small></a>
+        <a class="ref-index-card" href="strings.html"><strong>文字列・比較</strong><small>String、StringBuilder、intern、null</small></a>
+        <a class="ref-index-card" href="equality.html"><strong>同一性比較・同値比較</strong><small>==、equals、record equals、null</small></a>
+        <a class="ref-index-card" href="collections-arrays.html"><strong>配列・ArrayList・List</strong><small>配列、ArrayList、List.of、拡張for</small></a>
+        <a class="ref-index-card" href="operators-control.html"><strong>演算子・分岐・ループ</strong><small>評価順、++/--、短絡評価、switch</small></a>
+        <a class="ref-index-card" href="loop-control.html"><strong>ループ制御</strong><small>while、do-while、break、continue、ラベル</small></a>
+        <a class="ref-index-card" href="methods-constructors.html"><strong>メソッド・コンストラクタ</strong><small>overload、varargs、this/super、引数渡し</small></a>
+        <a class="ref-index-card" href="object-oriented.html"><strong>クラス・static・record</strong><small>参照、static、final、record、GC</small></a>
+        <a class="ref-index-card" href="modifiers-access.html"><strong>修飾子・アクセス制御</strong><small>public/protected/default/private、sealed</small></a>
+        <a class="ref-index-card" href="oop-relations.html"><strong>継承・interface・override</strong><small>extends、implements、abstract、default、sealed</small></a>
+        <a class="ref-index-card" href="polymorphism-cast.html"><strong>ポリモーフィズム・キャスト</strong><small>宣言型、実体、キャスト、instanceof</small></a>
+        <a class="ref-index-card" href="exceptions.html"><strong>例外処理</strong><small>try/catch/finally、throw/throws、try-with-resources</small></a>
+        <a class="ref-index-card" href="compile-runtime.html"><strong>コンパイルエラーと実行時例外</strong><small>失敗段階、判定順、例外カタログ</small></a>
+        <a class="ref-index-card" href="method-list.html"><strong>頻出メソッド</strong><small>戻り値、副作用、境界例外</small></a>
+        <a class="ref-index-card" href="exam-traps.html"><strong>ひっかけ集</strong><small>落とし穴、誤答パターン</small></a>
+        <a class="ref-index-card" href="fine-points.html"><strong>細かい仕様メモ</strong><small>case、char/String、配列初期化子、protected</small></a>
+        <a class="ref-index-card" href="mini-drills.html"><strong>ミニ演習</strong><small>短いコードで仕様を確認</small></a>
+        <a class="ref-index-card" href="java-qa-review.html"><strong>質問整理まとめ</strong><small>最近確認した論点の復習</small></a>
+        <a class="ref-index-card" href="glossary.html"><strong>単語集</strong><small>用語、意味、試験での注意点</small></a>
+      </section>
+
     </main>
   </div>
   <script src="data/questions.js"></script>

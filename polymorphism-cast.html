@@ -18,22 +18,70 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>ポリモーフィズム・キャスト</h1>
-        <p>宣言型と実体、キャスト、instanceof、フィールドとメソッドの解決差をまとめます。</p>
+        <p>宣言型、実体、動的ディスパッチ、フィールド解決、キャスト、instanceofを整理します。</p>
       </section>
-      <section class="article-section"><h2>宣言型と実体</h2><p>参照変数には型があります。実際に入っているインスタンスにも型があります。コンパイル時に呼び出せるかは宣言型、オーバーライドされたメソッドの実行結果は実体型で決まります。</p><pre class="article-code"><code>class A { void x() { System.out.println("A"); } }
-class B extends A { void x() { System.out.println("B"); } void y() {} }
 
-A a = new B();
-a.x();   // B
-// a.y(); // コンパイルエラー</code></pre></section><section class="article-section"><h2>キャスト</h2><p>キャストは、参照の見え方を変えるものです。実体そのものが変わるわけではありません。コンパイル時に型関係があり、実行時に実体がその型として扱える場合だけ成功します。</p><pre class="article-code"><code>A a = new B();
-B b = (B) a; // OK。実体はB
+      <section class="article-section">
+        <h2>宣言型と実体</h2>
+        <p>参照変数には宣言型と実体があります。コンパイル時に見えるメンバは宣言型で決まり、オーバーライドされたインスタンスメソッドの実行先は実体で決まります。</p>
+        <pre class="article-code"><code>class Animal {
+    void sound() { System.out.println(&quot;animal&quot;); }
+}
+class Dog extends Animal {
+    void sound() { System.out.println(&quot;dog&quot;); }
+    void run() { System.out.println(&quot;run&quot;); }
+}
 
-A onlyA = new A();
-// B bad = (B) onlyA; // 実行時にClassCastException</code></pre></section><section class="article-section"><h2>instanceof パターンマッチング</h2><p>instanceofは、実体がその型として扱えるかを判定します。Java 17では、判定と同時に変数へ束縛できます。</p><pre class="article-code"><code>Object obj = "java";
+Animal a = new Dog();
+a.sound(); // dog
+// a.run(); // NG。宣言型Animalにはrunがない</code></pre>
+        <div class="article-callout warn">「実体がDogだからDogの全メソッドを呼べる」は誤りです。呼び出せるかはまず宣言型で判定します。</div>
+      </section>
+
+      <section class="article-section">
+        <h2>フィールドは多態的に解決されない</h2>
+        <p>インスタンスメソッドはオーバーライドにより実体で解決されますが、フィールドは宣言型で解決されます。同名フィールドをサブクラスで定義すると、メソッドとフィールドで見え方が変わります。</p>
+        <pre class="article-code"><code>class A {
+    String name = &quot;A&quot;;
+    String getName() { return name; }
+}
+class B extends A {
+    String name = &quot;B&quot;;
+    String getName() { return name; }
+}
+
+A obj = new B();
+System.out.println(obj.name);      // A
+System.out.println(obj.getName()); // B</code></pre>
+      </section>
+
+      <section class="article-section">
+        <h2>キャスト</h2>
+        <p>キャストは、参照の見え方を変える構文です。実体が変わるわけではありません。互換性のない実体へダウンキャストすると <code>ClassCastException</code> です。</p>
+        <pre class="article-code"><code>Animal a = new Dog();
+Dog d = (Dog) a;  // OK。実体がDog
+
+a = new Animal();
+// Dog bad = (Dog) a; // 実行時ClassCastException</code></pre>
+        <div class="article-card-grid">
+          <article class="article-card"><h3>アップキャスト</h3><p>サブクラス参照をスーパークラス型へ。通常は明示キャスト不要です。</p></article>
+          <article class="article-card"><h3>ダウンキャスト</h3><p>スーパークラス型の参照をサブクラス型へ。明示キャストが必要です。</p></article>
+          <article class="article-card"><h3>コンパイル可否</h3><p>継承関係など、型として変換可能性がなければコンパイルエラーです。</p></article>
+          <article class="article-card"><h3>実行時可否</h3><p>実体がその型として扱えるかで <code>ClassCastException</code> の有無が決まります。</p></article>
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>instanceof とパターンマッチング</h2>
+        <p><code>instanceof</code> は実体が指定型として扱えるかを判定します。Java 17ではパターン変数を同時に宣言できます。</p>
+        <pre class="article-code"><code>Object obj = &quot;hello&quot;;
 
 if (obj instanceof String s) {
     System.out.println(s.length());
-}</code></pre><p>パターン変数は、条件がtrueになる範囲でだけ使えます。スコープの問題として問われることがあります。</p></section>
+}</code></pre>
+        <p>パターン変数は、判定がtrueだと分かる範囲でだけ使えます。スコープを雑に扱うとコンパイルエラーになります。</p>
+      </section>
+
     </main>
   </div>
   <script src="data/questions.js"></script>

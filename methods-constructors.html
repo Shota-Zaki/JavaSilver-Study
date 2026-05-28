@@ -18,43 +18,90 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>メソッド・コンストラクタ</h1>
-        <p>戻り値、引数、可変長引数、オーバーロード、コンストラクタ、this/superをまとめます。</p>
+        <p>シグネチャ、オーバーロード、可変長引数、コンストラクタ、this/super、引数渡しを整理します。</p>
       </section>
-      <section class="article-section"><h2>メソッドの戻り値</h2><p>戻り値型がvoidなら値を返しません。戻り値を変数へ代入することもできません。戻り値型がvoid以外なら、すべての実行経路で値を返す必要があります。</p><pre class="article-code"><code>void print() {
-    System.out.println("A");
+
+      <section class="article-section">
+        <h2>メソッドシグネチャ</h2>
+        <p>メソッドの識別に使われるのは、メソッド名と引数リストです。戻り値だけが違うメソッドはオーバーロードになりません。</p>
+        <pre class="article-code"><code>class Sample {
+    void test(int n) {}
+    void test(String s) {}  // OK。引数が違う
+
+    // int test(int n) { return n; } // NG。戻り値だけ違う
+}</code></pre>
+        <div class="article-card-grid">
+          <article class="article-card"><h3>引数の数</h3><p>違えばオーバーロード可能です。</p></article>
+          <article class="article-card"><h3>引数の型</h3><p>違えばオーバーロード可能です。</p></article>
+          <article class="article-card"><h3>引数の順番</h3><p><code>(int, String)</code> と <code>(String, int)</code> は別シグネチャです。</p></article>
+          <article class="article-card"><h3>戻り値</h3><p>シグネチャに含まれません。戻り値だけで区別できません。</p></article>
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>オーバーロード解決</h2>
+        <p>呼び出すメソッドはコンパイル時に決まります。完全一致、拡大変換、ボクシング、可変長引数などの候補から、より具体的なものが選ばれます。</p>
+        <pre class="article-code"><code>void test(int n) { System.out.println(&quot;int&quot;); }
+void test(long n) { System.out.println(&quot;long&quot;); }
+void test(Integer n) { System.out.println(&quot;Integer&quot;); }
+
+short s = 10;
+test(s); // int。shortはintへ拡大される</code></pre>
+        <div class="article-callout warn">オーバーロードは「実体クラスで動的に選ばれる」わけではありません。それはオーバーライドの話です。</div>
+      </section>
+
+      <section class="article-section">
+        <h2>可変長引数</h2>
+        <p>可変長引数は配列として受け取られます。1つのメソッドに書ける可変長引数は1つだけで、必ず最後の引数に置きます。</p>
+        <pre class="article-code"><code>void print(String label, int... nums) {
+    System.out.println(nums.length);
 }
 
-int get() {
-    return 10;
-}
+print(&quot;A&quot;);        // 0
+print(&quot;B&quot;, 1, 2);  // 2
+print(&quot;C&quot;, new int[]{1, 2, 3}); // 3</code></pre>
+      </section>
 
-// int x = print(); // コンパイルエラー
-int y = get();      // OK</code></pre><p>&lt;code&gt;return;&lt;/code&gt; はvoidメソッドで使えます。値を返すメソッドでは、戻り値型に代入可能な値を返す必要があります。</p></section><section class="article-section"><h2>引数と可変長引数</h2><p>引数は呼び出し時に個数と型が合う必要があります。可変長引数は配列として扱われますが、宣言できるのは引数リストの最後だけです。</p><pre class="article-code"><code>void test(String... values) {
-    System.out.println(values.length);
-}
+      <section class="article-section">
+        <h2>コンストラクタ</h2>
+        <p>コンストラクタはインスタンス生成時の初期化処理です。戻り値型を書きません。戻り値型を書いたら、それはコンストラクタではなくメソッドです。</p>
+        <pre class="article-code"><code>class Item {
+    String name;
 
-test();
-test("A");
-test("A", "B");</code></pre><pre class="article-code"><code>// void ng(String... values, int n) {} // NG。可変長引数は最後だけ
-void ok(int n, String... values) {}    // OK</code></pre></section><section class="article-section"><h2>オーバーロード</h2><p>オーバーロードは、同じ名前で引数リストが違うメソッドを複数定義することです。戻り値型やアクセス修飾子だけを変えてもオーバーロードにはなりません。</p><pre class="article-code"><code>void test(int a) {}
-void test(String a) {}
-void test(int a, int b) {}
+    Item(String name) {      // コンストラクタ
+        this.name = name;
+    }
 
-// int test(int a) { return a; } // 戻り値だけ違うのでNG</code></pre><p>呼び出すメソッドはコンパイル時に、引数の型から選ばれます。完全一致、拡大変換、ボクシング、可変長引数などの優先順位があります。曖昧になるとコンパイルエラーです。</p><pre class="article-code"><code>void test(long n) { System.out.println("long"); }
-void test(Integer n) { System.out.println("Integer"); }
-
-test(10); // long。intからlongへの拡大変換が使われる</code></pre></section><section class="article-section"><h2>コンストラクタ</h2><p>コンストラクタはクラス名と同じ名前で、戻り値型を書きません。戻り値型を書いた時点で、それはコンストラクタではなく通常メソッドです。</p><pre class="article-code"><code>class Sample {
-    Sample() { }
-
-    void Sample() { } // コンストラクタではなく、戻り値voidのメソッド
-}</code></pre><p>コンストラクタの先頭では、同じクラスの別コンストラクタを呼ぶ &lt;code&gt;this(...)&lt;/code&gt; か、親クラスのコンストラクタを呼ぶ &lt;code&gt;super(...)&lt;/code&gt; を使えます。書くなら必ず最初の文です。同時には書けません。</p><pre class="article-code"><code>class A {
+    void Item() {            // メソッド。コンストラクタではない
+    }
+}</code></pre>
+        <p><code>this(...)</code> は同じクラスの別コンストラクタ呼び出し、<code>super(...)</code> は親クラスのコンストラクタ呼び出しです。どちらも書くならコンストラクタの先頭文でなければなりません。</p>
+        <pre class="article-code"><code>class A {
     A(int n) {}
 }
 class B extends A {
     B() {
         super(10); // 先頭文
     }
-}</code></pre></section>
+}</code></pre>
+      </section>
+
+      <section class="article-section">
+        <h2>引数渡し</h2>
+        <p>Javaは常に値渡しです。ただし、参照型変数の値は「参照」です。メソッドにオブジェクト参照のコピーが渡るため、参照先オブジェクトの状態変更は呼び出し元にも見えますが、仮引数への再代入は呼び出し元の変数を変えません。</p>
+        <pre class="article-code"><code>class Box { int value; }
+
+static void change(Box b) {
+    b.value = 10;      // 参照先の状態変更
+    b = new Box();     // 仮引数の参照を付け替えるだけ
+    b.value = 20;
+}
+
+Box box = new Box();
+change(box);
+System.out.println(box.value); // 10</code></pre>
+      </section>
+
     </main>
   </div>
   <script src="data/questions.js"></script>

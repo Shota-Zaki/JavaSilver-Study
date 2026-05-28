@@ -18,9 +18,59 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>コンパイルエラーと実行時例外</h1>
-        <p>コンパイル段階で落ちるものと、実行中に例外になるものを分けて整理します。</p>
+        <p>コンパイル可否、実行時例外、正常出力を分離して判定するためのページです。</p>
       </section>
-      <section class="article-section"><h2>判定順</h2><p>コード問題は、まずコンパイルできるかを見ます。コンパイルできないコードは実行されないため、出力や実行時例外は考えません。コンパイルできる場合だけ、実行時例外が発生するかを見ます。最後に正常終了時の出力を追います。</p><div class="article-card-grid"><article class="article-card"><h3>1. コンパイル可否</h3><div>型、宣言、アクセス修飾子、到達不能文、checked例外、抽象メソッド未実装を見る。</div></article><article class="article-card"><h3>2. 実行時例外</h3><div>null参照、配列範囲外、数値変換失敗、キャスト失敗、0除算などを見る。</div></article><article class="article-card"><h3>3. 出力結果</h3><div>変数の値、参照先、副作用、ループ回数、catch/finallyの実行順を追う。</div></article></div></section><section class="article-section"><h2>コンパイルエラーになりやすいもの</h2><ul class="article-list"><li><code>byte b = 128;</code> のような範囲外代入。</li><li><code>byte c = a + b;</code> のようなint昇格後の代入。</li><li>ローカル変数を初期化前に読む。</li><li>checked例外をcatchもthrowsもしない。</li><li>interfaceメソッドの実装でpublicを弱める。</li><li>戻り値型だけ違う同名同引数メソッドを定義する。</li><li>抽象メソッドを持つのにクラスをabstractにしない。</li><li>宣言型に存在しないメソッドを呼ぶ。</li></ul></section><section class="article-section"><h2>実行時例外になりやすいもの</h2><ul class="article-list"><li><code>null.toString()</code> のようなnull参照。</li><li><code>args[0]</code> を引数なしで読む。</li><li>配列やListの範囲外アクセス。</li><li><code>Integer.parseInt("abc")</code>。</li><li>実体と合わないダウンキャスト。</li><li>整数の0除算。</li><li><code>List.of(...).add(...)</code> のような変更不可Listの変更。</li></ul></section>
+
+      <section class="article-section">
+        <h2>失敗段階を分ける</h2>
+        <p>Java Silverの選択肢では、「コンパイルエラー」「実行時例外」「正常出力」が混ざります。ここを段階で分けないと、実行結果を追ってからコンパイルエラーに気づく無駄が発生します。</p>
+        <ol class="article-list">
+          <li>文法・宣言・修飾子が正しいか。</li>
+          <li>型変換、メソッド呼び出し、アクセス修飾子が正しいか。</li>
+          <li>チェック例外が処理されているか。</li>
+          <li>ここまで通って初めて、実行時の値・例外・出力順を追う。</li>
+        </ol>
+        <div class="article-callout warn">出力候補がそれっぽくても、コンパイルできないなら出力はありません。試験ではこの順番を守るだけで失点が減ります。</div>
+      </section>
+
+      <section class="article-section">
+        <h2>コンパイルエラーの典型</h2>
+        <div class="article-card-grid">
+          <article class="article-card"><h3>型不一致</h3><p><code>int</code> に <code>long</code>、<code>float</code> に <code>double</code>、<code>String</code> に <code>char</code> など。</p></article>
+          <article class="article-card"><h3>未初期化ローカル変数</h3><p>ローカル変数はデフォルト値を持ちません。使用前の初期化が必須です。</p></article>
+          <article class="article-card"><h3>static文脈</h3><p>staticメソッドからインスタンスメンバへ直接アクセスできません。</p></article>
+          <article class="article-card"><h3>アクセス不可</h3><p>private、package-private、protectedの条件を満たさないアクセス。</p></article>
+          <article class="article-card"><h3>オーバーライド違反</h3><p>アクセスを狭める、戻り値が不適切、throwsが広すぎるなど。</p></article>
+          <article class="article-card"><h3>到達不能catch</h3><p>親例外catchを先に書いて、子例外catchが到達不能になる。</p></article>
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>実行時例外の典型</h2>
+        <p>コンパイルが通っても、実行時の値によって例外が発生します。例外が発生したら、その行以降のtry内処理は実行されず、対応するcatchへ移ります。</p>
+        <pre class="article-code"><code>String s = null;
+// s.length();               // NullPointerException
+
+int[] a = new int[0];
+// a[0] = 10;                // ArrayIndexOutOfBoundsException
+
+// Integer.parseInt(&quot;A&quot;);    // NumberFormatException
+
+Object obj = &quot;abc&quot;;
+// Integer n = (Integer) obj; // ClassCastException</code></pre>
+      </section>
+
+      <section class="article-section">
+        <h2>正常実行の追跡</h2>
+        <p>コンパイル可否と例外可能性を潰したら、最後に出力順を追います。追跡対象は、代入、インクリメント、短絡評価、メソッドの戻り値、副作用、参照の付け替えです。</p>
+        <div class="article-card-grid">
+          <article class="article-card"><h3>代入</h3><p>右辺評価後に左辺へ代入。複合代入は型変換の扱いに注意。</p></article>
+          <article class="article-card"><h3>短絡評価</h3><p><code>&&</code> と <code>||</code> は右辺が実行されないことがあります。</p></article>
+          <article class="article-card"><h3>参照代入</h3><p>オブジェクトのコピーではなく、参照のコピーです。</p></article>
+          <article class="article-card"><h3>戻り値</h3><p>String系メソッドなど、戻り値を受け取らないと変化が残らないものがあります。</p></article>
+        </div>
+      </section>
+
     </main>
   </div>
   <script src="data/questions.js"></script>

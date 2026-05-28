@@ -18,46 +18,77 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>文字列・比較</h1>
-        <p>String、StringBuilder、==、equals、intern、null比較、メソッド戻り値をまとめます。</p>
+        <p>String、StringBuilder、文字列プール、intern、==、equals、nullの扱いを、出力結果の追跡に使える形で整理します。</p>
       </section>
-      <section class="article-section"><h2>Stringは不変</h2><p>Stringのメソッドは、元の文字列を変更しません。変更されたように見える処理は、新しいStringを返しています。戻り値を受け取らなければ結果は捨てられます。</p><pre class="article-code"><code>String s = "abcdef";
-s.substring(2);
-System.out.println(s); // abcdef
 
-s = s.substring(2);
-System.out.println(s); // cdef</code></pre><div class="article-callout point">試験では <code>replace</code>、<code>substring</code>、<code>toUpperCase</code> などの戻り値未代入がよく出ます。Stringは変わりません。</div></section><section class="article-section"><h2>== と equals</h2><p>&lt;code&gt;==&lt;/code&gt; は同じオブジェクトを参照しているかを見る比較です。Stringの文字内容を比較したいなら &lt;code&gt;equals()&lt;/code&gt; を使います。</p><pre class="article-code"><code>String a = "java";
-String b = "java";
-String c = new String("java");
+      <section class="article-section">
+        <h2>Stringは不変</h2>
+        <p><code>String</code> は不変です。メソッドを呼んでも元の文字列は変わりません。戻り値を受け取っていないコードは、見た目ほど何も起きていないことがあります。</p>
+        <pre class="article-code"><code>String s = &quot;java&quot;;
+s.toUpperCase();
+System.out.println(s); // java
+
+s = s.toUpperCase();
+System.out.println(s); // JAVA</code></pre>
+        <div class="article-card-grid">
+          <article class="article-card"><h3>concat / replace</h3><p>新しいStringを返します。元のStringは変更されません。</p></article>
+          <article class="article-card"><h3>substring</h3><p>指定範囲の新しいStringを返します。開始は含み、終了は含みません。</p></article>
+          <article class="article-card"><h3>trim / strip</h3><p>空白処理の結果を返します。元の参照先は変わりません。</p></article>
+          <article class="article-card"><h3>文字列結合</h3><p><code>+</code> でStringが絡むと文字列結合になります。左から評価される点も重要です。</p></article>
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>== と equals</h2>
+        <p><code>==</code> は同じオブジェクトを参照しているかを見ます。<code>equals</code> は内容の同値性を見ます。String問題の多くは、ここが中心です。</p>
+        <pre class="article-code"><code>String a = new String(&quot;sample&quot;);
+String b = a;
+String c = &quot;sample&quot;;
+String d = &quot;sample&quot;;
 
 System.out.println(a == b);      // true
 System.out.println(a == c);      // false
-System.out.println(a.equals(c)); // true</code></pre><p>文字列リテラルは文字列プールに置かれます。同じリテラルは同じインスタンスを参照するため、&lt;code&gt;a == b&lt;/code&gt; がtrueになります。一方、&lt;code&gt;new String("java")&lt;/code&gt; は新しいインスタンスを作るので、参照は別です。</p><pre class="article-code"><code>String a = "ja" + "va";  // コンパイル時定数。"java" と同じプール参照
-String part = "ja";
-String b = part + "va";   // 実行時に作られる別インスタンス
-final String fixed = "ja";
-String c = fixed + "va";  // final定数なのでコンパイル時定数
+System.out.println(c == d);      // true
+System.out.println(a.equals(c)); // true</code></pre>
+        <div class="article-callout warn"><code>new String("sample")</code> はヒープ上に別インスタンスを作ります。文字列リテラル <code>"sample"</code> は文字列プールの参照です。</div>
+      </section>
 
-System.out.println(a == "java"); // true
-System.out.println(b == "java"); // false
-System.out.println(c == "java"); // true</code></pre></section><section class="article-section"><h2>intern()</h2><p>&lt;code&gt;intern()&lt;/code&gt; は、文字列プール上の同じ内容のStringへの参照を返します。newで作ったStringでも、intern後はプール側の参照と比較できます。</p><pre class="article-code"><code>String a = new String("java");
+      <section class="article-section">
+        <h2>intern()</h2>
+        <p><code>intern()</code> は、文字列プール上の同じ内容のString参照を返します。戻り値を受け取らなければ、元の変数の参照は変わりません。</p>
+        <pre class="article-code"><code>String a = new String(&quot;sample&quot;);
 String b = a.intern();
-String c = "java";
+String c = &quot;sample&quot;;
 
-System.out.println(a == c); // false
-System.out.println(b == c); // true</code></pre></section><section class="article-section"><h2>StringBuilder</h2><p>StringBuilderは可変です。appendやdeleteなどは同じインスタンスを変更し、そのインスタンス自身を返します。Stringとは逆です。</p><pre class="article-code"><code>StringBuilder sb = new StringBuilder("abc");
-StringBuilder ret = sb.append("def");
+System.out.println(a == b); // false
+System.out.println(b == c); // true</code></pre>
+        <p>試験では <code>a.intern();</code> とだけ書いて、<code>a</code> 自体がプール参照に変わったように見せる選択肢が出ます。変わるのは戻り値を代入した変数です。</p>
+      </section>
 
-System.out.println(sb);       // abcdef
-System.out.println(sb == ret); // true</code></pre><p>StringBuilderはequalsを内容比較用にオーバーライドしていません。内容が同じでも、別インスタンスならequalsはfalseです。</p><pre class="article-code"><code>StringBuilder a = new StringBuilder("x");
-StringBuilder b = new StringBuilder("x");
+      <section class="article-section">
+        <h2>StringBuilderは可変</h2>
+        <p><code>StringBuilder</code> は可変です。<code>append</code>、<code>insert</code>、<code>delete</code>、<code>reverse</code> などは、同じインスタンスの中身を変えます。</p>
+        <pre class="article-code"><code>StringBuilder sb = new StringBuilder(&quot;abc&quot;);
+StringBuilder same = sb.append(&quot;de&quot;);
 
-System.out.println(a == b);      // false
-System.out.println(a.equals(b)); // false
-System.out.println(a.toString().equals(b.toString())); // true</code></pre></section><section class="article-section"><h2>nullとの比較</h2><p>nullかもしれない変数でメソッドを呼ぶとNullPointerExceptionになります。安全に比較するなら、リテラル側からequalsを呼ぶ書き方があります。</p><pre class="article-code"><code>String s = null;
+System.out.println(sb);        // abcde
+System.out.println(sb == same); // true</code></pre>
+        <div class="article-card-grid">
+          <article class="article-card"><h3>append</h3><p>末尾に追加し、自分自身を返します。</p></article>
+          <article class="article-card"><h3>insert</h3><p>指定位置に挿入します。位置は0始まりです。</p></article>
+          <article class="article-card"><h3>delete</h3><p>開始位置を含み、終了位置を含みません。</p></article>
+          <article class="article-card"><h3>toString</h3><p>StringBuilderからStringを得ます。StringBuilderとStringは別型です。</p></article>
+        </div>
+      </section>
 
-// s.equals("A");      // NullPointerException
-System.out.println("A".equals(s)); // false
-System.out.println(s == null);     // true</code></pre></section>
+      <section class="article-section">
+        <h2>nullと文字列</h2>
+        <p>参照型変数は <code>null</code> を持てます。<code>null</code> に対してインスタンスメソッドを呼ぶと <code>NullPointerException</code> です。一方、文字列結合では <code>null</code> は文字列 <code>"null"</code> として扱われます。</p>
+        <pre class="article-code"><code>String s = null;
+System.out.println(&quot;value=&quot; + s); // value=null
+// System.out.println(s.length()); // NullPointerException</code></pre>
+      </section>
+
     </main>
   </div>
   <script src="data/questions.js"></script>

@@ -18,96 +18,55 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>修飾子・アクセス制御</h1>
-        <p>public/protected/default/private、static、final、abstract、sealed、recordの修飾子をまとめます。</p>
+        <p>public/protected/default/private、static/final/abstract/sealed、トップレベルクラスの制限を整理します。</p>
       </section>
-      <section class="article-section"><h2>extends / implements / abstract / interface</h2><p>interfaceは、クラスに対して「このメソッドを持っているべき」という契約を定義する型です。処理の中身を持たない抽象メソッドを中心に、実装するクラスへルールを要求します。</p><pre class="article-code"><code>interface Worker {
-    void work();
-}
 
-class Engineer implements Worker {
-    public void work() {
-        System.out.println("設計する");
-    }
-}</code></pre><p>interfaceの抽象メソッドは暗黙的にpublic abstractです。そのため、実装クラスではpublicを付ける必要があります。アクセス修飾子を弱めるとコンパイルエラーです。</p><pre class="article-code"><code>interface A {
-    void test(); // public abstract void test(); と同じ
+      <section class="article-section">
+        <h2>アクセス修飾子</h2>
+        <p>アクセス修飾子は「どこから見えるか」を決めます。継承しているか、同じパッケージか、同じクラスかを分けて判定します。</p>
+        <div class="article-card-grid">
+          <article class="article-card"><h3>public</h3><p>どこからでもアクセス可能です。</p></article>
+          <article class="article-card"><h3>protected</h3><p>同じパッケージ、または別パッケージのサブクラスからアクセス可能です。</p></article>
+          <article class="article-card"><h3>デフォルト</h3><p>修飾子なし。package-private。同じパッケージ内からだけアクセス可能です。</p></article>
+          <article class="article-card"><h3>private</h3><p>同じトップレベルクラス内からだけアクセス可能です。サブクラスだから見える、ではありません。</p></article>
+        </div>
+        <div class="article-callout warn"><code>protected</code> を「同じパッケージのサブクラスだけ」と覚えるのは誤りです。同じパッケージなら継承関係がなくてもアクセスできます。</div>
+      </section>
+
+      <section class="article-section">
+        <h2>トップレベルクラスに使える修飾子</h2>
+        <p>トップレベルクラスに使えるアクセス修飾子は <code>public</code> かデフォルトです。<code>private</code> や <code>protected</code> はトップレベルクラスには使えません。</p>
+        <pre class="article-code"><code>public class A { }
+class B { }
+
+// private class C { }    // NG。トップレベルでは不可
+// protected class D { }  // NG。トップレベルでは不可</code></pre>
+      </section>
+
+      <section class="article-section">
+        <h2>その他の修飾子</h2>
+        <p>修飾子は対象によって使える・使えないが変わります。選択肢問題では「その修飾子がその場所で使えるか」だけで落とされます。</p>
+        <div class="article-card-grid">
+          <article class="article-card"><h3>static</h3><p>トップレベルクラスには使えません。ネストしたクラスやメンバに使います。</p></article>
+          <article class="article-card"><h3>abstract</h3><p>クラスやメソッドに使用。abstractメソッドは本体を持ちません。</p></article>
+          <article class="article-card"><h3>final</h3><p>クラスなら継承不可、メソッドならオーバーライド不可、変数なら再代入不可。</p></article>
+          <article class="article-card"><h3>sealed / non-sealed</h3><p>sealed階層で使用。non-sealedはsealedな親を持つ直接サブタイプで使います。</p></article>
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>override時のアクセス</h2>
+        <p>オーバーライドでは、親メソッドよりアクセス範囲を狭くできません。interfaceの抽象メソッドはpublicなので、実装メソッドもpublicが必要です。</p>
+        <pre class="article-code"><code>interface A {
+    void test(); // public abstract
 }
 
 class B implements A {
     public void test() { } // OK
-}
+    // void test() { }     // NG。publicより狭い
+}</code></pre>
+      </section>
 
-// class C implements A {
-//     void test() { } // NG。publicより弱い
-// }</code></pre><p>未実装メソッドが残るクラスはabstractにする必要があります。abstractクラスは未完成なので、直接newできません。</p><pre class="article-code"><code>interface A {
-    void test();
-}
-
-abstract class B implements A {
-    // test() を未実装のままにできる
-}
-
-class C extends B {
-    public void test() { }
-}</code></pre><div class="article-card-grid"><article class="article-card"><h3>class → class</h3><div><code>extends</code>。Javaではクラスの多重継承は不可。</div></article><article class="article-card"><h3>class → interface</h3><div><code>implements</code>。複数実装可能。</div></article><article class="article-card"><h3>interface → interface</h3><div><code>extends</code>。複数継承可能。</div></article><article class="article-card"><h3>abstract</h3><div>未完成を許す。抽象メソッドを持つクラスはabstract必須。</div></article></div></section><section class="article-section"><h2>継承で引き継がれるもの</h2><p>子クラスは親クラスのメンバを利用できます。ただし、何でも直接使えるわけではありません。privateメンバは継承関係にあっても直接アクセスできません。コンストラクタも継承されません。</p><div class="article-card-grid"><article class="article-card"><h3>引き継がれるもの</h3><div>アクセス可能なフィールド、メソッド。protectedやpublicは子クラスから扱いやすい。</div></article><article class="article-card"><h3>直接アクセスできないもの</h3><div>privateフィールド、privateメソッド。親の内部実装として隠れます。</div></article><article class="article-card"><h3>継承されないもの</h3><div>コンストラクタ。子クラスの生成時には親コンストラクタが呼ばれるが、子のコンストラクタとして使えるわけではありません。</div></article><article class="article-card"><h3>staticメンバ</h3><div>継承されたように見えるが、インスタンスの多態性とは別。staticメソッドはオーバーライドではなく隠蔽です。</div></article></div><pre class="article-code"><code>class Parent {
-    private int secret;
-    protected int value;
-
-    Parent() { }
-
-    void show() { }
-}
-
-class Child extends Parent {
-    void test() {
-        value = 10;   // OK
-        show();       // OK
-        // secret = 1; // NG。privateは直接アクセス不可
-    }
-}</code></pre></section><section class="article-section"><h2>オーバーロードとオーバーライド</h2><p>オーバーロードは同じクラス内または継承関係の中で、同じ名前・違う引数リストのメソッドを複数持つことです。オーバーライドは、親クラスのメソッドを子クラスで再定義することです。目的も判定タイミングも違います。</p><div class="article-card-grid"><article class="article-card"><h3>オーバーロード</h3><div>引数リストが違う。呼び出し先はコンパイル時に決まる。戻り値だけ違うのは不可。</div></article><article class="article-card"><h3>オーバーライド</h3><div>シグネチャが同じ。実行時の実体クラスに応じて呼ばれる。</div></article><article class="article-card"><h3>戻り値</h3><div>オーバーライドでは同じ型または共変戻り値。</div></article><article class="article-card"><h3>アクセス修飾子</h3><div>オーバーライドでは親より狭くできない。</div></article></div><pre class="article-code"><code>class A {
-    void test(int n) { System.out.println("A int"); }
-    void test(String s) { System.out.println("A String"); } // overload
-}
-
-class B extends A {
-    @Override
-    void test(int n) { System.out.println("B int"); } // override
-}
-
-A obj = new B();
-obj.test(10);   // B int
-obj.test("x"); // A String</code></pre></section><section class="article-section"><h2>ポリモーフィズム</h2><p>ポリモーフィズムでは、親型の変数で子クラスのインスタンスを扱えます。メソッド呼び出しは実体クラス側のオーバーライドが動きます。ただし、呼び出せるメソッドは宣言型に存在するものだけです。</p><pre class="article-code"><code>class A {
-    void hello() { System.out.println("A"); }
-}
-class B extends A {
-    void hello() { System.out.println("B"); }
-    void bye() { System.out.println("bye"); }
-}
-
-A a = new B();
-a.hello(); // B
-// a.bye(); // コンパイルエラー。宣言型Aにbyeがない</code></pre><p>フィールドはメソッドと違い、宣言型で解決されます。親と子に同名フィールドがある場合、変数の型でどちらを見るかが決まります。</p></section><section class="article-section"><h2>sealed class / sealed interface</h2><p>sealedは、継承や実装できる直接のサブクラスを制限する仕組みです。sealedは「インスタンス化できない」という意味ではありません。インスタンス化できないのはabstractです。</p><pre class="article-code"><code>public sealed class Animal permits Dog, Cat {
-}
-
-public final class Dog extends Animal {
-}
-
-public final class Cat extends Animal {
-}</code></pre><p>sealedクラスを継承したクラスは、必ず &lt;code&gt;final&lt;/code&gt;、&lt;code&gt;sealed&lt;/code&gt;、&lt;code&gt;non-sealed&lt;/code&gt; のどれかを付けます。</p><div class="article-card-grid"><article class="article-card"><h3>final</h3><div>これ以上継承させません。</div></article><article class="article-card"><h3>sealed</h3><div>さらに継承先を制限します。子側にもpermitsが必要です。</div></article><article class="article-card"><h3>non-sealed</h3><div>そのクラスから先は自由に継承できます。</div></article><article class="article-card"><h3>permits</h3><div>直接の許可クラスを書きます。許可されていないクラスは継承不可。</div></article></div><pre class="article-code"><code>sealed class Animal permits Dog, Bird {}
-
-final class Dog extends Animal {}
-
-non-sealed class Bird extends Animal {}
-class Sparrow extends Bird {} // OK。Birdがnon-sealedだから</code></pre><p>interfaceもsealedにできます。実装できるクラスを限定できます。</p><pre class="article-code"><code>sealed interface Worker permits Engineer, Designer {
-    void work();
-}
-
-final class Engineer implements Worker {
-    public void work() { }
-}
-
-final class Designer implements Worker {
-    public void work() { }
-}</code></pre><div class="article-callout warn">sealedの子クラスに <code>final / sealed / non-sealed</code> がない場合はコンパイルエラーです。</div></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

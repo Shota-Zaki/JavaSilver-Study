@@ -18,22 +18,49 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>ミニ演習</h1>
-        <p>短いコードで、仕様理解を確認するための演習です。</p>
+        <p>短いコードで、Java Silverの判定順を確認します。答えだけでなく、なぜそうなるかを1つずつ潰します。</p>
       </section>
-      <section class="article-section"><h2>ミニ演習</h2><div class="qa-block"><h3>Stringの戻り値</h3><div><pre class="article-code"><code>String s = "abc";
-s.toUpperCase();
-System.out.println(s);
-// 答え: abc</code></pre><p>Stringは不変です。戻り値を受け取っていないため変化しません。</p></div></div><div class="qa-block"><h3>do-while</h3><div><pre class="article-code"><code>int i = 0;
-do {
-    System.out.print(i++);
-} while (i &lt; 0);
-System.out.println(i);
-// 答え: 01</code></pre><p>do-whileは条件判定前に本体を1回実行します。</p></div></div><div class="qa-block"><h3>record比較</h3><div><pre class="article-code"><code>record P(String name) {}
-P a = new P("A");
-P b = new P("A");
-System.out.println(a == b);
-System.out.println(a.equals(b));
-// false / true</code></pre><p>==は参照比較、recordのequalsは値比較です。</p></div></div></section>
+
+      <section class="article-section">
+        <h2>演習1: var</h2>
+        <pre class="article-code"><code>class Sample {
+    private var value = 10;
+}</code></pre>
+        <p>フィールドに <code>var</code> は使えないためコンパイルエラーです。varはローカル変数限定です。</p>
+      </section>
+      <section class="article-section">
+        <h2>演習2: String</h2>
+        <pre class="article-code"><code>String s = &quot;abc&quot;;
+s.concat(&quot;d&quot;);
+System.out.println(s);</code></pre>
+        <p><code>abc</code> が出力されます。Stringは不変で、<code>concat</code> の戻り値を受け取っていません。</p>
+      </section>
+      <section class="article-section">
+        <h2>演習3: オーバーライド</h2>
+        <pre class="article-code"><code>interface A {
+    void test();
+}
+class B implements A {
+    void test() { }
+}</code></pre>
+        <p>コンパイルエラーです。interfaceの抽象メソッドはpublicなので、実装メソッドもpublicが必要です。</p>
+      </section>
+      <section class="article-section">
+        <h2>演習4: try-with-resources</h2>
+        <pre class="article-code"><code>try (A a = new A(&quot;A&quot;); A b = new A(&quot;B&quot;)) {
+    System.out.println(&quot;C&quot;);
+}
+// closeは名前を出力するものとする</code></pre>
+        <p>出力順は <code>C B A</code> です。リソースは宣言と逆順にcloseされます。</p>
+      </section>
+      <section class="article-section">
+        <h2>演習5: キャスト</h2>
+        <pre class="article-code"><code>Object obj = &quot;abc&quot;;
+Integer n = (Integer) obj;
+System.out.println(n);</code></pre>
+        <p>コンパイルは通りますが、実行時に <code>ClassCastException</code> です。実体はStringでありIntegerではありません。</p>
+      </section>
+
     </main>
   </div>
   <script src="data/questions.js"></script>
