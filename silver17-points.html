@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - Java 17 Silver新しめ論点</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main article-main">
+      <section class="hero reference-hero compact-hero article-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>Java 17 Silver新しめ論点</h1>
+        <p>record、sealed、switch式、instanceofパターンなど、Java 17 Silverで混ざりやすい論点を整理します。</p>
+      </section>
+<section class="article-section"><h2>Silver 17で特に崩れやすい論点</h2><p>Java 17 Silverでは、従来の基本文法に加えて、record、sealed、switch式、instanceofのパターンマッチングなどが混ざります。新機能そのものより、「既存ルールと組み合わさったとき」に落とされます。</p></section><section class="article-section"><h2>record：データ保持用クラスを短く書く構文</h2><pre class="article-code"><code>public record Person(String name, int age) {}</code></pre><p>recordでは、private finalなフィールド相当、正準コンストラクタ、<code>name()</code>、<code>age()</code>、<code>equals</code>、<code>hashCode</code>、<code>toString</code>が主に用意されます。</p><div class="article-callout warn"><strong>ひっかけ：</strong>アクセサ名は <code>getName()</code> ではなく <code>name()</code>。recordは暗黙的にfinalなので、通常クラスで継承できません。</div></section><section class="article-section"><h2>sealed：継承できる相手を制限する</h2><pre class="article-code"><code>public sealed class Animal permits Dog, Cat {}
+public final class Dog extends Animal {}
+public non-sealed class Cat extends Animal {}</code></pre><ul class="article-list"><li><code>permits</code> に書かれたクラスだけが継承できる。</li><li>sealedを継承したクラスは、<code>final</code> / <code>sealed</code> / <code>non-sealed</code> のいずれかが必要。</li><li><code>non-sealed</code> は「ここから先は制限を外す」という意味。</li></ul></section><section class="article-section"><h2>instanceof パターンマッチング</h2><pre class="article-code"><code>Object obj = "java";
+if (obj instanceof String s) {
+    System.out.println(s.length());
+}</code></pre><p><code>obj instanceof String s</code> は、objがStringとして扱える場合だけ、変数 <code>s</code> をそのブロック内で使えます。条件がfalseになりうる場所では使えません。</p></section><section class="article-section"><h2>switch式：値を返せるswitch</h2><pre class="article-code"><code>int result = switch (rank) {
+    case 1 -&gt; 100;
+    case 2 -&gt; 80;
+    default -&gt; 0;
+};</code></pre><ul class="article-list"><li>switch式は値を返すので、全分岐で値を返す必要がある。</li><li><code>-></code> 形式では基本的にフォールスルーしない。</li><li>ブロックで複数文を書く場合は <code>yield</code> で値を返す。</li></ul><pre class="article-code"><code>String text = switch (n) {
+    case 1 -&gt; "one";
+    default -&gt; {
+        String s = "other";
+        yield s;
+    }
+};</code></pre></section><section class="article-section"><h2>private interface method</h2><p>interfaceには、defaultメソッドやstaticメソッドから使う補助用としてprivateメソッドを定義できます。ただし、外部から呼ぶためのものではありません。</p><pre class="article-code"><code>interface A {
+    default void run() {
+        helper();
+    }
+    private void helper() {
+        System.out.println("help");
+    }
+}</code></pre><p>privateメソッドは実装クラスから直接呼べません。interface内の処理を共通化するための部品です。</p></section>
+    </main>
+  </div>
+  <script src="data/questions.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

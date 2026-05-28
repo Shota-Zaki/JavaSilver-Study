@@ -1280,9 +1280,13 @@ service cloud.firestore {
     }).join("");
     const path = (location.pathname || "").split("/").pop();
     const wrongSummaryActive = path === "wrong-summary.html";
-    const knowledgeActive = ["reference.html", "decision-flow.html", "syntax-basics.html", "datatypes.html", "numeric-rules.html", "var-scope.html", "operators-control.html", "loop-control.html", "fine-points.html", "strings.html", "equality.html", "collections-arrays.html", "object-oriented.html", "methods-constructors.html", "modifiers-access.html", "inheritance-interface.html", "oop-relations.html", "polymorphism-cast.html", "exceptions.html", "compile-runtime.html", "error-catalog.html", "method-list.html", "cheatsheet.html", "exam-traps.html", "java-qa-review.html", "glossary.html", "mini-drills.html"].includes(path);
+    const knowledgeActive = ["reference.html", "decision-flow.html", "weakness-map.html", "output-tracing.html", "silver17-points.html", "syntax-basics.html", "datatypes.html", "numeric-rules.html", "var-scope.html", "operators-control.html", "loop-control.html", "fine-points.html", "strings.html", "equality.html", "collections-arrays.html", "object-oriented.html", "methods-constructors.html", "modifiers-access.html", "inheritance-interface.html", "oop-relations.html", "polymorphism-cast.html", "exceptions.html", "compile-runtime.html", "error-catalog.html", "method-list.html", "cheatsheet.html", "exam-traps.html", "java-qa-review.html", "glossary.html", "mini-drills.html"].includes(path);
     const knowledgeLinks = `<div class="nav-divider"></div>
       <a class="nav-link${knowledgeActive && path === "reference.html" ? " active" : ""}" href="reference.html">学習記事<span class="small">一覧</span></a>
+      <a class="nav-link${knowledgeActive && path === "decision-flow.html" ? " active" : ""}" href="decision-flow.html">判定フロー<span class="small">3段階</span></a>
+      <a class="nav-link${knowledgeActive && path === "weakness-map.html" ? " active" : ""}" href="weakness-map.html">弱点マップ<span class="small">復習順</span></a>
+      <a class="nav-link${knowledgeActive && path === "output-tracing.html" ? " active" : ""}" href="output-tracing.html">出力追跡<span class="small">表で追う</span></a>
+      <a class="nav-link${knowledgeActive && path === "silver17-points.html" ? " active" : ""}" href="silver17-points.html">Java17論点<span class="small">record/sealed</span></a>
       <a class="nav-link${knowledgeActive && path === "syntax-basics.html" ? " active" : ""}" href="syntax-basics.html">実行・宣言<span class="small">main/import</span></a>
       <a class="nav-link${knowledgeActive && path === "datatypes.html" ? " active" : ""}" href="datatypes.html">型・変数<span class="small">var/昇格</span></a>
       <a class="nav-link${knowledgeActive && path === "strings.html" ? " active" : ""}" href="strings.html">文字列・比較<span class="small">String/equals</span></a>

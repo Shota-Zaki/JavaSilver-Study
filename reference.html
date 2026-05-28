@@ -18,32 +18,12 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>学習記事</h1>
-        <p>問題を解くための判定基準をまとめたページです。解説を読むだけで終わらせず、同じ論点を自力で判定できる状態に戻すために使います。</p>
+        <p>問題を解くための判定基準をまとめたページです。間違い方から読む記事を選び、同じ論点を自力で判定できる状態に戻します。</p>
       </section>
 
-      <section class="article-section">
-        <h2>使い方</h2>
-        <p>間違えた問題は、答えを覚えるだけでは次に崩れます。該当記事で「どの順番で判定するか」を確認し、最後にミニ演習で同じ判断を再現してください。</p>
-        <div class="article-card-grid">
-          <article class="article-card"><h3>1. 失敗段階を見る</h3><p>コンパイルエラー、実行時例外、出力ミスのどれかを先に分けます。</p></article>
-          <article class="article-card"><h3>2. 該当記事へ移動</h3><p>型、文字列、継承、例外など、原因に対応する記事を読みます。</p></article>
-          <article class="article-card"><h3>3. ミニ演習で確認</h3><p>似た短問を即答できるなら、その論点は戻っています。</p></article>
-        </div>
-      </section>
-
-      <section class="article-section">
-        <h2>最初に読むページ</h2>
-        <div class="ref-index-grid clean-index">
-          <a class="ref-index-card" href="compile-runtime.html"><strong>コンパイルエラーと実行時例外</strong><small>最重要の判定順</small></a>
-          <a class="ref-index-card" href="cheatsheet.html"><strong>直前確認チートシート</strong><small>頻出基準の圧縮版</small></a>
-          <a class="ref-index-card" href="exam-traps.html"><strong>ひっかけ集</strong><small>典型誤答パターン</small></a>
-          <a class="ref-index-card" href="mini-drills.html"><strong>ミニ演習</strong><small>短いコードで即判定</small></a>
-        </div>
-      </section>
-
-      <section class="article-section">
-        <h2>分野別記事</h2>
-        <div class="ref-index-grid clean-index">
+      <section class="article-section"><h2>まず読む3ページ</h2><div class="ref-index-grid clean-index"><a class="ref-index-card emphasized" href="decision-flow.html"><strong>判定フロー完全版</strong><small>コンパイル可否 → 実行時例外 → 出力</small></a><a class="ref-index-card emphasized" href="weakness-map.html"><strong>弱点別復習マップ</strong><small>間違い方から読む記事を決める</small></a><a class="ref-index-card emphasized" href="mini-drills.html"><strong>ミニ演習 強化版</strong><small>短問で判定速度を上げる</small></a></div></section>
+      <section class="article-section"><h2>出力問題・エラー判定</h2><div class="ref-index-grid clean-index"><a class="ref-index-card" href="compile-runtime.html"><strong>コンパイルエラーと実行時例外</strong><small>基本の判定順</small></a><a class="ref-index-card" href="error-catalog.html"><strong>エラー・例外カタログ完全版</strong><small>原因、コード形、見分け方</small></a><a class="ref-index-card" href="output-tracing.html"><strong>出力追跡トレーニング</strong><small>++/--、参照、例外の表追跡</small></a><a class="ref-index-card" href="exam-traps.html"><strong>ひっかけ集 完全版</strong><small>頻出ひっかけ50</small></a><a class="ref-index-card" href="cheatsheet.html"><strong>直前確認チートシート</strong><small>試験前の圧縮版</small></a></div></section>
+      <section class="article-section"><h2>分野別記事</h2><div class="ref-index-grid clean-index">
           <a class="ref-index-card" href="syntax-basics.html"><strong>Java実行・宣言ルール</strong><small>main、ファイル名、package/import、起動引数</small></a>
           <a class="ref-index-card" href="datatypes.html"><strong>型・変数・リテラル</strong><small>primitive、参照型、初期値、var</small></a>
           <a class="ref-index-card" href="numeric-rules.html"><strong>数値・リテラル・型昇格</strong><small>byte/short/char、複合代入、定数式</small></a>
@@ -60,12 +40,12 @@
           <a class="ref-index-card" href="inheritance-interface.html"><strong>継承とインタフェース詳細</strong><small>PDF問題と対応しやすい補助記事</small></a>
           <a class="ref-index-card" href="polymorphism-cast.html"><strong>ポリモーフィズム・キャスト</strong><small>宣言型、実体、キャスト、instanceof</small></a>
           <a class="ref-index-card" href="exceptions.html"><strong>例外処理</strong><small>try/catch/finally、throw/throws、try-with-resources</small></a>
+          <a class="ref-index-card" href="silver17-points.html"><strong>Java 17 Silver新しめ論点</strong><small>record、sealed、switch式、pattern matching</small></a>
           <a class="ref-index-card" href="method-list.html"><strong>頻出メソッド</strong><small>戻り値、副作用、境界例外</small></a>
           <a class="ref-index-card" href="fine-points.html"><strong>細かい仕様メモ</strong><small>case、char/String、配列初期化子、protected</small></a>
           <a class="ref-index-card" href="java-qa-review.html"><strong>質問整理まとめ</strong><small>最近確認した論点の復習</small></a>
-          <a class="ref-index-card" href="glossary.html"><strong>単語集</strong><small>用語、意味、試験での注意点</small></a>
-        </div>
-      </section>
+          <a class="ref-index-card" href="glossary.html"><strong>単語集</strong><small>用語、意味、試験での注意点</small></a></div></section>
+      <section class="article-section"><h2>使い方</h2><div class="article-card-grid"><article class="article-card"><h3>問題で間違えた直後</h3><p><a href="weakness-map.html">弱点別復習マップ</a>で原因を分類し、対応記事を読む。</p></article><article class="article-card"><h3>模試前</h3><p><a href="cheatsheet.html">チートシート</a>と<a href="exam-traps.html">ひっかけ集</a>だけを見る。</p></article><article class="article-card"><h3>理解確認</h3><p><a href="mini-drills.html">ミニ演習</a>で20秒以内に分類できるか確認する。</p></article></div></section>
 
     </main>
   </div>

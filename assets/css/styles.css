@@ -2683,3 +2683,19 @@ details.article-card[open] summary { margin-bottom: 10px; }
 .article-section details.article-card { background: rgba(255,255,255,.95); }
 .article-section ol.article-list { padding-left: 1.35rem; }
 .article-section .ref-table code { white-space: nowrap; }
+
+
+/* Deepened article UX additions */
+.decision-lane { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 18px 0; }
+.decision-lane > div { padding: 18px; border: 1px solid rgba(37, 99, 235, .20); border-radius: 18px; background: linear-gradient(180deg, #ffffff, #f8fbff); box-shadow: 0 8px 20px rgba(31,41,55,.05); }
+.decision-lane span { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; margin-bottom: 10px; border-radius: 999px; color: #fff; background: var(--accent); font-weight: 900; }
+.decision-lane strong { display: block; font-size: 17px; }
+.decision-lane p { margin: 6px 0 0; color: var(--muted); }
+.decision-lane.compact > div { padding: 14px; }
+.dense-list li { margin-bottom: 6px; }
+.priority-list li { padding: 6px 0; }
+.drill-card summary { cursor: pointer; font-weight: 850; line-height: 1.7; }
+.drill-card[open] { border-color: rgba(37, 99, 235, .30); background: linear-gradient(180deg, #eff6ff, #ffffff 58%); }
+.ref-index-card.emphasized { border-color: rgba(37, 99, 235, .42); background: linear-gradient(180deg, #eff6ff, #ffffff); }
+.article-section a:not(.ref-index-card) { color: var(--accent); font-weight: 850; }
+@media (max-width: 860px) { .decision-lane { grid-template-columns: 1fr; } }

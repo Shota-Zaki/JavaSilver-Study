@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - ひっかけ集</title>
+  <title>Java Silver Study - ひっかけ集 完全版</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -17,59 +17,10 @@
     <main class="main reference-main article-main">
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>ひっかけ集</h1>
-        <p>Java Silverで選択肢を誤らせる典型パターンを、短く確認します。</p>
+        <h1>ひっかけ集 完全版</h1>
+        <p>Java Silverで選択肢を誤らせる典型パターンを、論点別に整理した確認ページです。</p>
       </section>
-
-      <section class="article-section">
-        <h2>型とリテラル</h2>
-        <ul class="article-list">
-          <li><code>float f = 1.0;</code> は不可。<code>1.0</code> はdouble。</li>
-          <li><code>int i = 10L;</code> は不可。longからintへ暗黙変換不可。</li>
-          <li><code>byte b = b + 1;</code> は不可。演算結果はint。</li>
-          <li><code>b += 1;</code> は可。複合代入には暗黙キャストがある。</li>
-          <li><code>boolean</code> と数値は互換性なし。</li>
-        </ul>
-      </section>
-      <section class="article-section">
-        <h2>Stringと参照</h2>
-        <ul class="article-list">
-          <li><code>new String("x") == "x"</code> はfalse。</li>
-          <li><code>intern()</code> はプール上の参照を返す。</li>
-          <li><code>String.concat</code> の戻り値を捨てると元は変わらない。</li>
-          <li><code>println(null参照)</code> は文字列 <code>null</code> 表示。ただし <code>null参照.メソッド()</code> はNPE。</li>
-        </ul>
-      </section>
-      <section class="article-section">
-        <h2>継承・interface</h2>
-        <ul class="article-list">
-          <li>コンストラクタは継承されない。</li>
-          <li>privateメンバはサブクラスから直接アクセス不可。</li>
-          <li>interfaceの抽象メソッド実装は <code>public</code>。</li>
-          <li>フィールドはoverrideされない。</li>
-          <li>宣言型にないメソッドは、実体にあっても呼べない。</li>
-        </ul>
-      </section>
-      <section class="article-section">
-        <h2>例外</h2>
-        <ul class="article-list">
-          <li>try内で例外が出たら、その後のtry内処理は実行されない。</li>
-          <li>finallyはcatch後にも実行される。</li>
-          <li>catchは子から親へ。</li>
-          <li>try-with-resourcesはcloseが逆順。</li>
-          <li>RuntimeExceptionは非チェック例外。</li>
-        </ul>
-      </section>
-      <section class="article-section">
-        <h2>出力問題</h2>
-        <ul class="article-list">
-          <li>短絡評価で右辺が実行されないことがある。</li>
-          <li>後置 <code>a++</code> は元の値を式に渡してから増やす。</li>
-          <li>switch文の <code>break</code> 忘れはフォールスルー。</li>
-          <li>拡張forのループ変数代入では元配列・元リストは差し替わらない。</li>
-        </ul>
-      </section>
-
+<section class="article-section"><h2>ひっかけは「知識不足」より「判定順ミス」で起きる</h2><p>このページは暗記用ではなく、選択肢を切るためのチェックリストです。間違えた問題のタグと照合し、該当項目を3回読んでください。</p></section><section class="article-section"><h2>頻出ひっかけ50</h2><table class="ref-table"><thead><tr><th>論点</th><th>落とし穴</th></tr></thead><tbody><tr><td><code>package/import</code></td><td>package宣言はコメントを除いて先頭。importが先にあるとコンパイルエラー。</td></tr><tr><td><code>main引数</code></td><td>起動クラス名はargsに入らない。args[0]はコマンドで渡した1個目。</td></tr><tr><td><code>publicクラス名</code></td><td>publicトップレベルクラスがある場合、ファイル名と一致が必要。</td></tr><tr><td><code>var</code></td><td>varはローカル変数の型推論。フィールド、引数、戻り値型には使えない。</td></tr><tr><td><code>var = null</code></td><td>var b = null; は型を推論できないため不可。</td></tr><tr><td><code>整数リテラル</code></td><td>0始まりは8進数。0827のように8を含むと不可。</td></tr><tr><td><code>アンダースコア</code></td><td>数値リテラルの先頭・末尾・小数点前後・接尾辞直前は不可。</td></tr><tr><td><code>float</code></td><td>1.0はdouble。floatには1.0Fが必要。</td></tr><tr><td><code>byte演算</code></td><td>byte/short/charは演算時にintへ昇格する。</td></tr><tr><td><code>複合代入</code></td><td>b += 1 は暗黙キャストを含むが、b = b + 1 は不可。</td></tr><tr><td><code>boolean</code></td><td>booleanと数値に互換性はない。if(1)は不可。</td></tr><tr><td><code>String不変</code></td><td>concat/replace/toUpperCaseなどは戻り値を受けないと元は変わらない。</td></tr><tr><td><code>StringBuilder</code></td><td>append/delete/reverseなどは自身を変更する。Stringと逆。</td></tr><tr><td><code>==</code></td><td>参照型の==は同一参照。内容比較ではない。</td></tr><tr><td><code>intern</code></td><td>internは文字列プール上の参照を返す。new Stringとは別参照。</td></tr><tr><td><code>null println</code></td><td>println(null参照)はnull表示。ただしnull参照のメソッド呼び出しはNPE。</td></tr><tr><td><code>配列長</code></td><td>配列のlengthはフィールド。Stringのlength()はメソッド。</td></tr><tr><td><code>配列0要素</code></td><td>new int[0]は作れる。a[0]に触った時点で例外。</td></tr><tr><td><code>ArrayList remove</code></td><td>remove(int)とremove(Object)のオーバーロードに注意。</td></tr><tr><td><code>List.of</code></td><td>変更不可。add/remove/setで実行時例外。</td></tr><tr><td><code>拡張for</code></td><td>ループ変数に代入しても元の要素は差し替わらない。</td></tr><tr><td><code>短絡評価</code></td><td>&amp;&amp;は左falseで右を評価しない。||は左trueで右を評価しない。</td></tr><tr><td><code>&amp; と |</code></td><td>booleanでも&amp;と|は使えるが短絡しない。右辺も評価される。</td></tr><tr><td><code>後置++</code></td><td>式には元の値を渡し、その後増える。</td></tr><tr><td><code>switch文</code></td><td>breakがなければフォールスルー。</td></tr><tr><td><code>switch式</code></td><td>値を返す。ブロックではyieldが必要。</td></tr><tr><td><code>ラベル</code></td><td>ラベルは文に付ける。変数宣言だけをbreak先のように扱えない。</td></tr><tr><td><code>コンストラクタ</code></td><td>戻り値型を書いたらコンストラクタではなくメソッド。</td></tr><tr><td><code>this()</code></td><td>コンストラクタ内のthis()/super()は最初の文でなければならない。</td></tr><tr><td><code>super()</code></td><td>明示しなくても先頭にsuper()が暗黙挿入される。親に無引数がないと注意。</td></tr><tr><td><code>overload</code></td><td>戻り値型だけ違う同名同引数は不可。</td></tr><tr><td><code>varargs</code></td><td>可変長引数は引数リストの最後に1つだけ。</td></tr><tr><td><code>static</code></td><td>staticメソッドからインスタンスメンバを直接参照できない。</td></tr><tr><td><code>private</code></td><td>privateメンバは継承関係でも直接アクセス不可。</td></tr><tr><td><code>protected</code></td><td>同一パッケージ、または継承関係でアクセス可能。別パッケージでは条件がやや厳しい。</td></tr><tr><td><code>field hiding</code></td><td>フィールドはoverrideされない。宣言型で解決される。</td></tr><tr><td><code>method override</code></td><td>インスタンスメソッドは実体で動的束縛される。</td></tr><tr><td><code>interface method</code></td><td>interfaceの抽象メソッドはpublic abstract扱い。実装側もpublic。</td></tr><tr><td><code>default method</code></td><td>interfaceのdefaultは実装を持てる。Object由来メソッドの扱いに注意。</td></tr><tr><td><code>abstract class</code></td><td>抽象メソッドを持つクラスはabstract必須。abstractクラスは未実装でもよい。</td></tr><tr><td><code>sealed</code></td><td>許可サブクラスだけが継承可能。サブクラス側もfinal/sealed/non-sealedが必要。</td></tr><tr><td><code>record</code></td><td>アクセサはgetXではなくx()。recordは暗黙的にfinal。</td></tr><tr><td><code>宣言型</code></td><td>呼べるメソッドは宣言型で決まる。実体にだけあるメソッドは呼べない。</td></tr><tr><td><code>cast</code></td><td>キャストでコンパイルは通っても、実体が合わなければClassCastException。</td></tr><tr><td><code>instanceof</code></td><td>null instanceof 型 はfalse。例外にはならない。</td></tr><tr><td><code>checked例外</code></td><td>catchまたはthrowsしないとコンパイルエラー。</td></tr><tr><td><code>RuntimeException</code></td><td>非チェック例外。処理しなくてもコンパイル可。</td></tr><tr><td><code>catch順</code></td><td>子例外から親例外へ。親が先だと子catchは到達不能。</td></tr><tr><td><code>finally</code></td><td>例外の有無に関わらず基本的に実行される。</td></tr><tr><td><code>try-with-resources</code></td><td>closeは宣言の逆順。finallyより先にcloseされる。</td></tr></tbody></table></section><section class="article-section"><h2>特に優先して潰すべき10個</h2><ol class="article-list priority-list"><li><strong>コンパイル可否を先に見る。</strong> 出力を追うのは最後。</li><li><strong>宣言型で呼べるかを見る。</strong> 実体にメソッドがあっても宣言型になければ不可。</li><li><strong>byte/short/charの演算結果はint。</strong> Silverの定番。</li><li><strong>Stringは不変、StringBuilderは可変。</strong> 戻り値を受けたかを見る。</li><li><strong>nullは表示とメソッド呼び出しで違う。</strong> printlnだけなら表示、呼び出しならNPE。</li><li><strong>catchは子から親。</strong> 到達不能catchはコンパイルエラー。</li><li><strong>interface実装はpublic。</strong> 書き忘れが多い。</li><li><strong>recordアクセサは部品名と同じ。</strong> getXではない。</li><li><strong>sealedサブクラス側の修飾子。</strong> permitsだけ見ても足りない。</li><li><strong>List.ofは変更不可。</strong> コンパイルではなく実行時例外。</li></ol></section>
     </main>
   </div>
   <script src="data/questions.js"></script>
