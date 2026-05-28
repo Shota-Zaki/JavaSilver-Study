@@ -1,6 +1,6 @@
 window.JAVA_STUDY_DATA = {
   "title": "Java Silver 勉強用ページ",
-  "version": "code-indent-layout-fixed-2026-05-28",
+  "version": "code-rendering-rechecked-2026-05-28",
   "chapters": [
     {
       "id": "ch01",
@@ -171,7 +171,7 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "key": "D",
-            "code": "import java.io.*;\npackage aaa (\npublic class Sample {}\n);"
+            "code": "import java.io.*;\npackage aaa (\n    public class Sample {}\n);"
           }
         ],
         "answer": [
@@ -18966,7 +18966,7 @@ window.JAVA_STUDY_DATA = {
         "codeBlocks": [
           {
             "title": "コード",
-            "code": "public interface A {\n    boolean search(int[] data, int target);\n}\n\npublic interface B extends A {\n    @Override\n    default boolean search(int[] data, int target) {\n        int cnt = 0;\n        for (int i : data) {\n            if (i == target) {\n                cnt++;\n            }\n        }\n        return cnt > 0;\n    }\n}\n\npublic class C implements B {\n}\n\npublic class Sample {\n    public static void main(String... args) {\n        if (new C().search(\n        new int[]{1, 2, 3, 7, 9},\n        Integer.parseInt(args[0]))) {\n            System.out.println(\"A\");\n        } else {\n            System.out.println(\"B\");\n        }\n    }\n}\n\n> java Sample 5 2"
+            "code": "public interface A {\n    boolean search(int[] data, int target);\n}\n\npublic interface B extends A {\n    @Override\n    default boolean search(int[] data, int target) {\n        int cnt = 0;\n        for (int i : data) {\n            if (i == target) {\n                cnt++;\n            }\n        }\n        return cnt > 0;\n    }\n}\n\npublic class C implements B {\n}\n\npublic class Sample {\n    public static void main(String... args) {\n        if (new C().search(\n            new int[]{1, 2, 3, 7, 9},\n            Integer.parseInt(args[0]))) {\n            System.out.println(\"A\");\n        } else {\n            System.out.println(\"B\");\n        }\n    }\n}\n\n> java Sample 5 2"
           }
         ],
         "tags": [
@@ -19172,7 +19172,7 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "title": "Sample.java",
-            "code": "public class Sample {\n    public static void main(String[] args) throws Exception {\n        try (A a = new A(\"A\");\n        A b = new A(\"B\")) {\n        } finally {\n            System.out.println(\"C\");\n        }\n    }\n}"
+            "code": "public class Sample {\n    public static void main(String[] args) throws Exception {\n        try (A a = new A(\"A\");\n            A b = new A(\"B\")) {\n        } finally {\n            System.out.println(\"C\");\n        }\n    }\n}"
           }
         ],
         "tags": [
