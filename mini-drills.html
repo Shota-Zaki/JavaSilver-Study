@@ -14,24 +14,26 @@
       <p class="brand"><a href="index.html">Java Silver Study</a></p>
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
-    <main class="main reference-main">
-      <section class="hero reference-hero compact-hero">
+    <main class="main reference-main article-main">
+      <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>ミニ演習</h1>
-        <p>短いコードで仕様を確認。</p>
+        <p>短いコードで、仕様理解を確認するための演習です。</p>
       </section>
-<section class="article-card ">
-<h2>ミニ演習</h2>
-<article class="term-card"><h3>1. 後置++</h3><pre><code>int i = 0;
-System.out.println(i++ + i);</code></pre><p>答え: 1。左のi++は0を使い、その後iが1になる。</p></article><article class="term-card"><h3>2. 複合代入</h3><pre><code>byte b = 1;
-b += 1;
-b = b + 1;</code></pre><p>3行目がコンパイルエラー。b + 1はint。</p></article><article class="term-card"><h3>3. String比較</h3><pre><code>String a = &quot;ja&quot;;
-String b = a + &quot;va&quot;;
-System.out.println(b == &quot;java&quot;);</code></pre><p>false。変数を含む連結は実行時生成。</p></article><article class="term-card"><h3>4. override</h3><pre><code>A a = new B();
-a.test();
-a.onlyB();</code></pre><p>testはBが動くが、onlyBは宣言型Aにないのでコンパイルエラー。</p></article><article class="term-card"><h3>5. finally</h3><pre><code>try { return; } finally { System.out.println(&quot;F&quot;); }</code></pre><p>return前にfinallyが実行される。</p></article>
-</section>
-
+      <section class="article-section"><h2>ミニ演習</h2><div class="qa-block"><h3>Stringの戻り値</h3><div><pre class="article-code"><code>String s = "abc";
+s.toUpperCase();
+System.out.println(s);
+// 答え: abc</code></pre><p>Stringは不変です。戻り値を受け取っていないため変化しません。</p></div></div><div class="qa-block"><h3>do-while</h3><div><pre class="article-code"><code>int i = 0;
+do {
+    System.out.print(i++);
+} while (i &lt; 0);
+System.out.println(i);
+// 答え: 01</code></pre><p>do-whileは条件判定前に本体を1回実行します。</p></div></div><div class="qa-block"><h3>record比較</h3><div><pre class="article-code"><code>record P(String name) {}
+P a = new P("A");
+P b = new P("A");
+System.out.println(a == b);
+System.out.println(a.equals(b));
+// false / true</code></pre><p>==は参照比較、recordのequalsは値比較です。</p></div></div></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

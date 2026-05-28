@@ -14,32 +14,39 @@
       <p class="brand"><a href="index.html">Java Silver Study</a></p>
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
-    <main class="main reference-main">
-      <section class="hero reference-hero compact-hero">
+    <main class="main reference-main article-main">
+      <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>配列・ArrayList・List</h1>
-        <p>配列宣言、初期化、List操作、拡張for文をまとめて確認。</p>
+        <p>配列、ArrayList、List.of、拡張for、length/size、境界例外をまとめます。</p>
       </section>
-<section class="article-card ">
-<h2>配列</h2>
-<div class="table-wrap"><table class="rule-table"><thead><tr><th>項目</th><th>書き方</th><th>注意</th></tr></thead><tbody><tr><td>宣言</td><td>int[] a; / int a[];</td><td>要素数は宣言時に書かない。int[3] a は不可。</td></tr><tr><td>生成</td><td>new int[3]</td><td>要素は0で初期化。参照型配列ならnull。</td></tr><tr><td>初期化</td><td>int[] a = {1,2,3};</td><td>宣言と同時でない場合は new int[]{...} が必要。</td></tr><tr><td>length</td><td>a.length</td><td>フィールド。()は付けない。</td></tr><tr><td>範囲</td><td>0〜length-1</td><td>範囲外でArrayIndexOutOfBoundsException。</td></tr></tbody></table></div>
-</section>
-<section class="article-card ">
-<h2>多次元配列</h2>
-<pre><code>int[][] a = new int[2][];
-a[0] = new int[]{1, 2};
-a[1] = new int[]{3};
-System.out.println(a[1][0]); // 3</code></pre>
-</section>
-<section class="article-card ">
-<h2>ArrayList / List</h2>
-<div class="table-wrap"><table class="rule-table"><thead><tr><th>操作</th><th>戻り値/挙動</th><th>注意</th></tr></thead><tbody><tr><td>add(E)</td><td>boolean</td><td>末尾追加。</td></tr><tr><td>add(index, E)</td><td>void</td><td>指定位置に挿入。既存要素は後ろへ。</td></tr><tr><td>set(index, E)</td><td>置き換え前の要素</td><td>indexが存在しないとIndexOutOfBoundsException。追加ではない。</td></tr><tr><td>remove(index)</td><td>削除した要素</td><td>Integerリストでremove(1)はインデックス削除。</td></tr><tr><td>remove(Object)</td><td>boolean</td><td>Integer.valueOf(1)なら値削除。</td></tr><tr><td>size()</td><td>要素数</td><td>配列はlength、Stringはlength()。</td></tr><tr><td>List.of</td><td>変更不可List</td><td>add/set/removeでUnsupportedOperationException。</td></tr></tbody></table></div>
-</section>
-<section class="article-card ">
-<h2>拡張for文</h2>
-<div class="table-wrap"><table class="rule-table"><thead><tr><th>対象</th><th>ルール</th><th>注意</th></tr></thead><tbody><tr><td>primitive配列</td><td>取り出し変数へ代入しても元配列は変わらない</td><td>値のコピー。</td></tr><tr><td>参照型配列/List</td><td>参照先オブジェクトの中身変更は反映</td><td>取り出し変数に別インスタンスを代入しても元要素は差し替わらない。</td></tr><tr><td>ArrayListを走査中にremove</td><td>ConcurrentModificationExceptionの可能性</td><td>試験では実行時例外として問われる。</td></tr></tbody></table></div>
-</section>
+      <section class="article-section"><h2>配列の宣言と生成</h2><p>配列変数の宣言では、要素数を書きません。要素数は配列インスタンスを作るときに指定します。</p><pre class="article-code"><code>int[] a;      // OK
+int b[];      // OK
+// int[3] c;  // NG
+// int d[3];  // NG
 
+int[] nums = new int[3];
+int[] values = {1, 2, 3};</code></pre><p>配列はオブジェクトです。参照型なので、変数には配列インスタンスへの参照が入ります。</p><pre class="article-code"><code>int[] a = {1, 2, 3};
+int[] b = a;
+b[0] = 99;
+System.out.println(a[0]); // 99</code></pre></section><section class="article-section"><h2>length と範囲</h2><p>配列の長さはフィールドなので &lt;code&gt;length&lt;/code&gt; です。メソッドではありません。添字は0から始まり、最後は &lt;code&gt;length - 1&lt;/code&gt; です。</p><pre class="article-code"><code>int[] a = {10, 20, 30};
+System.out.println(a.length); // 3
+System.out.println(a[0]);     // 10
+System.out.println(a[2]);     // 30
+// System.out.println(a[3]);  // ArrayIndexOutOfBoundsException</code></pre></section><section class="article-section"><h2>ArrayList</h2><p>ArrayListは可変長のリストです。配列と違って要素数を増減できます。&lt;code&gt;add&lt;/code&gt; は追加、&lt;code&gt;set&lt;/code&gt; は既存位置の置換です。</p><pre class="article-code"><code>ArrayList&lt;String&gt; list = new ArrayList&lt;&gt;();
+list.add("A");
+list.add("B");
+list.set(0, "X");
+
+System.out.println(list); // [X, B]
+System.out.println(list.size()); // 2</code></pre><div class="article-card-grid"><article class="article-card"><h3>add(E e)</h3><div>末尾に追加し、booleanを返します。</div></article><article class="article-card"><h3>add(int index, E e)</h3><div>指定位置に挿入します。既存要素は後ろへずれます。</div></article><article class="article-card"><h3>set(int index, E e)</h3><div>既存位置を置き換え、置き換え前の要素を返します。</div></article><article class="article-card"><h3>remove(int index)</h3><div>指定位置の要素を削除し、削除した要素を返します。</div></article><article class="article-card"><h3>remove(Object o)</h3><div>一致する要素を削除し、削除できたかbooleanで返します。</div></article></div><div class="article-callout warn">intのリストで <code>remove(1)</code> と書くと、値1の削除ではなくインデックス1の削除として解釈されやすい点に注意します。</div></section><section class="article-section"><h2>List.of</h2><p>&lt;code&gt;List.of&lt;/code&gt; は変更不可のListを返します。addやsetを呼ぶとコンパイルは通りますが、実行時にUnsupportedOperationExceptionです。</p><pre class="article-code"><code>List&lt;String&gt; list = List.of("A", "B");
+System.out.println(list.get(0));
+// list.add("C"); // 実行時例外
+// list.set(0, "X"); // 実行時例外</code></pre></section><section class="article-section"><h2>拡張for文</h2><p>拡張for文の変数は、各要素の値または参照を受け取る一時変数です。primitiveやStringのように代入しても、元の配列要素は変わりません。</p><pre class="article-code"><code>int[] nums = {1, 2, 3};
+for (int n : nums) {
+    n = 10;
+}
+System.out.println(nums[0]); // 1</code></pre><p>参照型の場合、一時変数が参照しているオブジェクトの中身を変更すれば、その変更は見えます。ただし、一時変数自体に別オブジェクトを代入しても元の格納先は変わりません。</p></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

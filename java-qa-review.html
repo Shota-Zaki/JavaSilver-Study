@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - 質問まとめ</title>
+  <title>Java Silver Study - 質問整理まとめ</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -14,17 +14,13 @@
       <p class="brand"><a href="index.html">Java Silver Study</a></p>
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
-    <main class="main reference-main">
-      <section class="hero reference-hero compact-hero">
+    <main class="main reference-main article-main">
+      <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>質問まとめ</h1>
-        <p>これまで質問した論点を仕様として整理。</p>
+        <h1>質問整理まとめ</h1>
+        <p>これまで質問した論点を、試験で使える知識として整理します。</p>
       </section>
-<section class="article-card ">
-<h2>質問していた論点まとめ</h2>
-<div class="table-wrap"><table class="rule-table"><thead><tr><th>質問の論点</th><th>結論</th></tr></thead><tbody><tr><td>try内で例外が出たら下の文に行くか</td><td>対応するcatchへ移動する。try内の残りは実行されない。finallyは原則実行。</td></tr><tr><td>interface Worker { void work(); }</td><td>workを持つ型の契約。実装クラスはpublic void work()を実装する。</td></tr><tr><td>抽象メソッド</td><td>本体なし。具象クラスは実装必須。抽象クラスは未実装のまま持てる。</td></tr><tr><td>配列宣言</td><td>int[] a; / int a[]; はOK。要素数はnew時に指定。</td></tr><tr><td>intern()</td><td>文字列プール上のインスタンス参照を返す。==判定に影響。</td></tr><tr><td>ラベル</td><td>break/continueの対象を指定。continueはループラベルに対して使う。</td></tr></tbody></table></div>
-</section>
-
+      <section class="article-section"><h2>よく質問した論点のまとめ</h2><div class="qa-block"><h3>interface Worker { void work(); } は何を意味するか</h3><div><p>Worker型として扱われるものは、work()というメソッドを持つ必要がある、という契約です。実装クラスはpublicでwork()を実装します。</p></div></div><div class="qa-block"><h3>implements と extends の違い</h3><div><p>extendsは親から受け継ぐ、implementsはinterfaceのルールを満たす、という違いです。クラスがクラスを継承するならextends、クラスがinterfaceを実装するならimplementsです。</p></div></div><div class="qa-block"><h3>コンパイルエラーと実行時例外の違い</h3><div><p>コンパイルエラーは実行前にコードとして不正な状態です。実行時例外はコードとしては成立しているが、実行中の値や状態が原因で発生します。</p></div></div><div class="qa-block"><h3>recordの本質</h3><div><p>データをまとめて持つための、変更不可に近いデータ専用クラスです。アクセサはgetName()ではなくname()です。</p></div></div></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

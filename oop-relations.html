@@ -14,46 +14,100 @@
       <p class="brand"><a href="index.html">Java Silver Study</a></p>
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
-    <main class="main reference-main">
-      <section class="hero reference-hero compact-hero">
+    <main class="main reference-main article-main">
+      <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>継承・interface・override</h1>
-        <p>extends、implements、abstract、overload/override、ポリモーフィズムをまとめて確認。</p>
+        <p>extends、implements、abstract、interface、overload、override、polymorphism、sealedをまとめます。</p>
       </section>
-<section class="article-card ">
-<h2>継承で引き継がれるもの</h2>
-<div class="table-wrap"><table class="rule-table"><thead><tr><th>対象</th><th>扱い</th><th>注意</th></tr></thead><tbody><tr><td>フィールド/メソッド</td><td>アクセス可能なものは利用できる</td><td>privateはサブクラスから直接使えない。</td></tr><tr><td>コンストラクタ</td><td>引き継がれない</td><td>サブクラスのコンストラクタからsuper(...)で呼ぶ。</td></tr><tr><td>staticメンバ</td><td>継承したように見える</td><td>実体はクラス所属。overrideではなく隠蔽。</td></tr><tr><td>finalメソッド</td><td>継承はされるがoverride不可</td><td>finalクラスは継承不可。</td></tr></tbody></table></div>
-</section>
-<section class="article-card ">
-<h2>extends / implements / abstract</h2>
-<div class="table-wrap"><table class="rule-table"><thead><tr><th>形</th><th>意味</th><th>必要なこと</th></tr></thead><tbody><tr><td>class B extends A</td><td>クラス継承</td><td>Aのコンストラクタ呼び出しが必要。</td></tr><tr><td>class C implements I</td><td>interface実装</td><td>抽象メソッドをすべて実装する。</td></tr><tr><td>interface B extends A</td><td>interface継承</td><td>抽象メソッドの契約を引き継ぐ。</td></tr><tr><td>abstract class C implements I</td><td>抽象クラスによる実装</td><td>未実装メソッドを残せる。具象サブクラスが実装。</td></tr></tbody></table></div>
-</section>
-<section class="article-card ">
-<h2>interfaceの暗黙修飾</h2>
-<div class="table-wrap"><table class="rule-table"><thead><tr><th>メンバ</th><th>暗黙の扱い</th><th>注意</th></tr></thead><tbody><tr><td>フィールド</td><td>public static final</td><td>初期化必須。インスタンスフィールドではない。</td></tr><tr><td>抽象メソッド</td><td>public abstract</td><td>private/protected不可。実装時はpublic必須。</td></tr><tr><td>defaultメソッド</td><td>public</td><td>本体あり。実装クラスが継承できる。</td></tr><tr><td>staticメソッド</td><td>public</td><td>インタフェース名で呼ぶ。実装クラスへ継承されるわけではない。</td></tr><tr><td>privateメソッド</td><td>Java 9以降可</td><td>default/static内の共通処理用。</td></tr></tbody></table></div>
-</section>
-<section class="article-card ">
-<h2>オーバーロードとオーバーライド</h2>
-<div class="table-wrap"><table class="rule-table"><thead><tr><th>項目</th><th>オーバーロード</th><th>オーバーライド</th></tr></thead><tbody><tr><td>関係</td><td>同じクラス内でも継承関係でも可</td><td>継承関係が必要</td></tr><tr><td>引数</td><td>変える</td><td>同じ</td></tr><tr><td>戻り値</td><td>判定材料ではない</td><td>同じか共変戻り値</td></tr><tr><td>アクセス</td><td>判定材料ではない</td><td>親より狭くできない</td></tr><tr><td>例外</td><td>関係薄い</td><td>チェック例外は親より広げられない</td></tr><tr><td>決定時期</td><td>コンパイル時</td><td>実行時に実体型で決まる</td></tr></tbody></table></div>
-</section>
-<section class="article-card ">
-<h2>ポリモーフィズム</h2>
-<pre><code>class A { void test() { System.out.println(&quot;A&quot;); } }
-class B extends A { @Override void test() { System.out.println(&quot;B&quot;); } void onlyB() {} }
+      <section class="article-section"><h2>extends / implements / abstract / interface</h2><p>interfaceは、クラスに対して「このメソッドを持っているべき」という契約を定義する型です。処理の中身を持たない抽象メソッドを中心に、実装するクラスへルールを要求します。</p><pre class="article-code"><code>interface Worker {
+    void work();
+}
+
+class Engineer implements Worker {
+    public void work() {
+        System.out.println("設計する");
+    }
+}</code></pre><p>interfaceの抽象メソッドは暗黙的にpublic abstractです。そのため、実装クラスではpublicを付ける必要があります。アクセス修飾子を弱めるとコンパイルエラーです。</p><pre class="article-code"><code>interface A {
+    void test(); // public abstract void test(); と同じ
+}
+
+class B implements A {
+    public void test() { } // OK
+}
+
+// class C implements A {
+//     void test() { } // NG。publicより弱い
+// }</code></pre><p>未実装メソッドが残るクラスはabstractにする必要があります。abstractクラスは未完成なので、直接newできません。</p><pre class="article-code"><code>interface A {
+    void test();
+}
+
+abstract class B implements A {
+    // test() を未実装のままにできる
+}
+
+class C extends B {
+    public void test() { }
+}</code></pre><div class="article-card-grid"><article class="article-card"><h3>class → class</h3><div><code>extends</code>。Javaではクラスの多重継承は不可。</div></article><article class="article-card"><h3>class → interface</h3><div><code>implements</code>。複数実装可能。</div></article><article class="article-card"><h3>interface → interface</h3><div><code>extends</code>。複数継承可能。</div></article><article class="article-card"><h3>abstract</h3><div>未完成を許す。抽象メソッドを持つクラスはabstract必須。</div></article></div></section><section class="article-section"><h2>継承で引き継がれるもの</h2><p>子クラスは親クラスのメンバを利用できます。ただし、何でも直接使えるわけではありません。privateメンバは継承関係にあっても直接アクセスできません。コンストラクタも継承されません。</p><div class="article-card-grid"><article class="article-card"><h3>引き継がれるもの</h3><div>アクセス可能なフィールド、メソッド。protectedやpublicは子クラスから扱いやすい。</div></article><article class="article-card"><h3>直接アクセスできないもの</h3><div>privateフィールド、privateメソッド。親の内部実装として隠れます。</div></article><article class="article-card"><h3>継承されないもの</h3><div>コンストラクタ。子クラスの生成時には親コンストラクタが呼ばれるが、子のコンストラクタとして使えるわけではありません。</div></article><article class="article-card"><h3>staticメンバ</h3><div>継承されたように見えるが、インスタンスの多態性とは別。staticメソッドはオーバーライドではなく隠蔽です。</div></article></div><pre class="article-code"><code>class Parent {
+    private int secret;
+    protected int value;
+
+    Parent() { }
+
+    void show() { }
+}
+
+class Child extends Parent {
+    void test() {
+        value = 10;   // OK
+        show();       // OK
+        // secret = 1; // NG。privateは直接アクセス不可
+    }
+}</code></pre></section><section class="article-section"><h2>オーバーロードとオーバーライド</h2><p>オーバーロードは同じクラス内または継承関係の中で、同じ名前・違う引数リストのメソッドを複数持つことです。オーバーライドは、親クラスのメソッドを子クラスで再定義することです。目的も判定タイミングも違います。</p><div class="article-card-grid"><article class="article-card"><h3>オーバーロード</h3><div>引数リストが違う。呼び出し先はコンパイル時に決まる。戻り値だけ違うのは不可。</div></article><article class="article-card"><h3>オーバーライド</h3><div>シグネチャが同じ。実行時の実体クラスに応じて呼ばれる。</div></article><article class="article-card"><h3>戻り値</h3><div>オーバーライドでは同じ型または共変戻り値。</div></article><article class="article-card"><h3>アクセス修飾子</h3><div>オーバーライドでは親より狭くできない。</div></article></div><pre class="article-code"><code>class A {
+    void test(int n) { System.out.println("A int"); }
+    void test(String s) { System.out.println("A String"); } // overload
+}
+
+class B extends A {
+    @Override
+    void test(int n) { System.out.println("B int"); } // override
+}
+
+A obj = new B();
+obj.test(10);   // B int
+obj.test("x"); // A String</code></pre></section><section class="article-section"><h2>ポリモーフィズム</h2><p>ポリモーフィズムでは、親型の変数で子クラスのインスタンスを扱えます。メソッド呼び出しは実体クラス側のオーバーライドが動きます。ただし、呼び出せるメソッドは宣言型に存在するものだけです。</p><pre class="article-code"><code>class A {
+    void hello() { System.out.println("A"); }
+}
+class B extends A {
+    void hello() { System.out.println("B"); }
+    void bye() { System.out.println("bye"); }
+}
 
 A a = new B();
-a.test();  // B。overrideメソッドは実体型で決まる
-a.onlyB(); // コンパイルエラー。宣言型AにonlyBがない</code></pre>
-</section>
-<section class="article-card ">
-<h2>キャストとinstanceof</h2>
-<div class="table-wrap"><table class="rule-table"><thead><tr><th>場面</th><th>コンパイル時</th><th>実行時</th></tr></thead><tbody><tr><td>A a = new B();</td><td>OK。上位型へ代入</td><td>実体はB。</td></tr><tr><td>B b = (B) a;</td><td>AとBに継承関係があればコンパイル可</td><td>実体がBでなければClassCastException。</td></tr><tr><td>if (a instanceof B b)</td><td>型確認と変数宣言</td><td>trueブロック内でbをBとして使える。</td></tr></tbody></table></div>
-</section>
-<section class="article-card ">
-<h2>sealed</h2>
-<div class="table-wrap"><table class="rule-table"><thead><tr><th>修飾子</th><th>意味</th><th>注意</th></tr></thead><tbody><tr><td>sealed</td><td>継承/実装できる相手をpermitsで限定</td><td>直接の子を列挙。</td></tr><tr><td>final</td><td>それ以上継承不可</td><td>sealedの子で使える。</td></tr><tr><td>non-sealed</td><td>以降は制限解除</td><td>sealedの子で使える。</td></tr><tr><td>sealed</td><td>子もまた限定</td><td>継承階層を続けて制限。</td></tr></tbody></table></div>
-</section>
+a.hello(); // B
+// a.bye(); // コンパイルエラー。宣言型Aにbyeがない</code></pre><p>フィールドはメソッドと違い、宣言型で解決されます。親と子に同名フィールドがある場合、変数の型でどちらを見るかが決まります。</p></section><section class="article-section"><h2>sealed class / sealed interface</h2><p>sealedは、継承や実装できる直接のサブクラスを制限する仕組みです。sealedは「インスタンス化できない」という意味ではありません。インスタンス化できないのはabstractです。</p><pre class="article-code"><code>public sealed class Animal permits Dog, Cat {
+}
 
+public final class Dog extends Animal {
+}
+
+public final class Cat extends Animal {
+}</code></pre><p>sealedクラスを継承したクラスは、必ず &lt;code&gt;final&lt;/code&gt;、&lt;code&gt;sealed&lt;/code&gt;、&lt;code&gt;non-sealed&lt;/code&gt; のどれかを付けます。</p><div class="article-card-grid"><article class="article-card"><h3>final</h3><div>これ以上継承させません。</div></article><article class="article-card"><h3>sealed</h3><div>さらに継承先を制限します。子側にもpermitsが必要です。</div></article><article class="article-card"><h3>non-sealed</h3><div>そのクラスから先は自由に継承できます。</div></article><article class="article-card"><h3>permits</h3><div>直接の許可クラスを書きます。許可されていないクラスは継承不可。</div></article></div><pre class="article-code"><code>sealed class Animal permits Dog, Bird {}
+
+final class Dog extends Animal {}
+
+non-sealed class Bird extends Animal {}
+class Sparrow extends Bird {} // OK。Birdがnon-sealedだから</code></pre><p>interfaceもsealedにできます。実装できるクラスを限定できます。</p><pre class="article-code"><code>sealed interface Worker permits Engineer, Designer {
+    void work();
+}
+
+final class Engineer implements Worker {
+    public void work() { }
+}
+
+final class Designer implements Worker {
+    public void work() { }
+}</code></pre><div class="article-callout warn">sealedの子クラスに <code>final / sealed / non-sealed</code> がない場合はコンパイルエラーです。</div></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

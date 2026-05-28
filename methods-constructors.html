@@ -14,43 +14,47 @@
       <p class="brand"><a href="index.html">Java Silver Study</a></p>
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
-    <main class="main reference-main">
-      <section class="hero reference-hero compact-hero">
+    <main class="main reference-main article-main">
+      <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>メソッド・コンストラクタ</h1>
-        <p>戻り値、引数、オーバーロード、this/superをまとめて確認。</p>
+        <p>戻り値、引数、可変長引数、オーバーロード、コンストラクタ、this/superをまとめます。</p>
       </section>
-<section class="article-card ">
-<h2>メソッド宣言</h2>
-<div class="table-wrap"><table class="rule-table"><thead><tr><th>項目</th><th>ルール</th><th>注意</th></tr></thead><tbody><tr><td>戻り値void</td><td>値を返さない</td><td>return; は可。return 値; は不可。voidメソッド呼び出しを変数に代入できない。</td></tr><tr><td>戻り値あり</td><td>すべての経路で値を返す</td><td>ifだけreturnしてelseなしはコンパイルエラーになり得る。</td></tr><tr><td>引数</td><td>呼び出し時に個数・型が合う必要</td><td>型変換可能なら候補になる。</td></tr><tr><td>可変長引数</td><td>型... name</td><td>引数リストの最後だけ。1メソッドに1つだけ。</td></tr><tr><td>throws</td><td>呼び出し元に例外処理を要求</td><td>チェック例外で重要。</td></tr></tbody></table></div>
-</section>
-<section class="article-card ">
-<h2>オーバーロード</h2>
-<div class="table-wrap"><table class="rule-table"><thead><tr><th>判定材料</th><th>使う</th><th>使わない</th></tr></thead><tbody><tr><td>メソッド名</td><td>同じ名前</td><td>-</td></tr><tr><td>引数リスト</td><td>個数・型・順序が違えば別メソッド</td><td>引数名は関係ない。</td></tr><tr><td>戻り値型</td><td>判定に使わない</td><td>戻り値だけ違う同名同引数は不可。</td></tr><tr><td>アクセス修飾子</td><td>判定に使わない</td><td>private/publicだけ違うのは不可。</td></tr><tr><td>選択タイミング</td><td>コンパイル時</td><td>宣言型と引数のコンパイル時型で決まる。</td></tr></tbody></table></div>
-</section>
-<section class="article-card ">
-<h2>オーバーロード解決</h2>
-<div class="table-wrap"><table class="rule-table"><thead><tr><th>優先</th><th>例</th><th>注意</th></tr></thead><tbody><tr><td>完全一致</td><td>test(int)</td><td>最優先。</td></tr><tr><td>拡大変換</td><td>int → long → float → double</td><td>小さい整数型はintへ上がりやすい。</td></tr><tr><td>ボクシング</td><td>int → Integer</td><td>拡大変換より後に見られる。</td></tr><tr><td>可変長引数</td><td>int...</td><td>最後の候補。</td></tr><tr><td>曖昧</td><td>test(long,float) と test(float,long)</td><td>どちらも同程度ならコンパイルエラー。</td></tr></tbody></table></div>
-</section>
-<section class="article-card ">
-<h2>コンストラクタ</h2>
-<div class="table-wrap"><table class="rule-table"><thead><tr><th>項目</th><th>ルール</th><th>注意</th></tr></thead><tbody><tr><td>名前</td><td>クラス名と同じ、戻り値なし</td><td>void Sample() はコンストラクタではなくメソッド。</td></tr><tr><td>暗黙super()</td><td>明示しなければ先頭に入る</td><td>親に引数なしコンストラクタがないとエラー。</td></tr><tr><td>this() / super()</td><td>コンストラクタの先頭1文だけ</td><td>両方同時には書けない。</td></tr><tr><td>アクセス修飾子</td><td>public/private等を付けられる</td><td>privateコンストラクタは外部new不可。</td></tr></tbody></table></div>
-</section>
-<section class="article-card ">
-<h2>例題</h2>
-<pre><code>class A {
+      <section class="article-section"><h2>メソッドの戻り値</h2><p>戻り値型がvoidなら値を返しません。戻り値を変数へ代入することもできません。戻り値型がvoid以外なら、すべての実行経路で値を返す必要があります。</p><pre class="article-code"><code>void print() {
+    System.out.println("A");
+}
+
+int get() {
+    return 10;
+}
+
+// int x = print(); // コンパイルエラー
+int y = get();      // OK</code></pre><p>&lt;code&gt;return;&lt;/code&gt; はvoidメソッドで使えます。値を返すメソッドでは、戻り値型に代入可能な値を返す必要があります。</p></section><section class="article-section"><h2>引数と可変長引数</h2><p>引数は呼び出し時に個数と型が合う必要があります。可変長引数は配列として扱われますが、宣言できるのは引数リストの最後だけです。</p><pre class="article-code"><code>void test(String... values) {
+    System.out.println(values.length);
+}
+
+test();
+test("A");
+test("A", "B");</code></pre><pre class="article-code"><code>// void ng(String... values, int n) {} // NG。可変長引数は最後だけ
+void ok(int n, String... values) {}    // OK</code></pre></section><section class="article-section"><h2>オーバーロード</h2><p>オーバーロードは、同じ名前で引数リストが違うメソッドを複数定義することです。戻り値型やアクセス修飾子だけを変えてもオーバーロードにはなりません。</p><pre class="article-code"><code>void test(int a) {}
+void test(String a) {}
+void test(int a, int b) {}
+
+// int test(int a) { return a; } // 戻り値だけ違うのでNG</code></pre><p>呼び出すメソッドはコンパイル時に、引数の型から選ばれます。完全一致、拡大変換、ボクシング、可変長引数などの優先順位があります。曖昧になるとコンパイルエラーです。</p><pre class="article-code"><code>void test(long n) { System.out.println("long"); }
+void test(Integer n) { System.out.println("Integer"); }
+
+test(10); // long。intからlongへの拡大変換が使われる</code></pre></section><section class="article-section"><h2>コンストラクタ</h2><p>コンストラクタはクラス名と同じ名前で、戻り値型を書きません。戻り値型を書いた時点で、それはコンストラクタではなく通常メソッドです。</p><pre class="article-code"><code>class Sample {
+    Sample() { }
+
+    void Sample() { } // コンストラクタではなく、戻り値voidのメソッド
+}</code></pre><p>コンストラクタの先頭では、同じクラスの別コンストラクタを呼ぶ &lt;code&gt;this(...)&lt;/code&gt; か、親クラスのコンストラクタを呼ぶ &lt;code&gt;super(...)&lt;/code&gt; を使えます。書くなら必ず最初の文です。同時には書けません。</p><pre class="article-code"><code>class A {
     A(int n) {}
 }
 class B extends A {
-    B() { } // コンパイルエラー。暗黙 super() が呼ばれるが A() がない
-}
-
-class C {
-    C() { this(10); }
-    C(int n) { }
-}</code></pre>
-</section>
-
+    B() {
+        super(10); // 先頭文
+    }
+}</code></pre></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

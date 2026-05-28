@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - 単語集</title>
+  <title>Java Silver Study - Java Silver単語集</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -14,13 +14,13 @@
       <p class="brand"><a href="index.html">Java Silver Study</a></p>
       <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
     </aside>
-    <main class="main reference-main">
-      <section class="hero reference-hero compact-hero">
+    <main class="main reference-main article-main">
+      <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>単語集</h1>
-        <p>Java Silverで頻出する用語の短い定義。</p>
+        <h1>Java Silver単語集</h1>
+        <p>試験で出る用語を、意味・注意点・関連ルール付きで整理します。</p>
       </section>
-<section class="term-grid"><article class="term-card"><h3>JDK</h3><p>Java開発キット。javacなど開発に必要なものを含む。</p></article><article class="term-card"><h3>JRE</h3><p>実行環境。現在はJDK配布形態との関係で単独意識は薄い。</p></article><article class="term-card"><h3>JVM</h3><p>classファイルを実行する仮想マシン。</p></article><article class="term-card"><h3>コンパイルエラー</h3><p>javac段階で失敗。実行されない。</p></article><article class="term-card"><h3>実行時例外</h3><p>コンパイル後、実行中に発生。</p></article><article class="term-card"><h3>primitive</h3><p>値そのものを保持する型。</p></article><article class="term-card"><h3>参照型</h3><p>オブジェクトへの参照を保持する型。</p></article><article class="term-card"><h3>ローカル変数</h3><p>メソッドやブロック内の変数。自動初期化なし。</p></article><article class="term-card"><h3>フィールド</h3><p>クラスに属する変数。インスタンス/ static がある。</p></article><article class="term-card"><h3>オーバーロード</h3><p>同名メソッドを引数違いで複数定義。</p></article><article class="term-card"><h3>オーバーライド</h3><p>継承先で同じシグネチャのメソッドを再定義。</p></article><article class="term-card"><h3>ポリモーフィズム</h3><p>宣言型は親でも実体型のオーバーライドメソッドが動く性質。</p></article><article class="term-card"><h3>抽象メソッド</h3><p>本体を持たず、実装をサブクラスに要求するメソッド。</p></article><article class="term-card"><h3>interface</h3><p>扱い方の契約。実装クラスは抽象メソッドを実装する。</p></article><article class="term-card"><h3>sealed</h3><p>継承/実装できる相手を限定する仕組み。</p></article><article class="term-card"><h3>record</h3><p>値を持つデータ用クラスを簡潔に作る構文。</p></article></section>
+      <section class="article-section"><h2>重要語句</h2><div class="article-card-grid"><article class="article-card"><h3>JDK</h3><div>開発用キット。javacなどを含む。</div></article><article class="article-card"><h3>JRE/JVM</h3><div>Javaプログラムを実行する環境。現在はJDKに含まれる形で考えることが多い。</div></article><article class="article-card"><h3>コンパイル</h3><div>ソースコードをclassファイルへ変換する段階。型や構文の誤りはここで落ちる。</div></article><article class="article-card"><h3>実行時例外</h3><div>コンパイルは通るが、実行中の状態によって発生する例外。</div></article><article class="article-card"><h3>インスタンス</h3><div>newで作られるオブジェクトの実体。</div></article><article class="article-card"><h3>参照</h3><div>オブジェクトへのリンク情報。変数に入るのは参照。</div></article><article class="article-card"><h3>抽象メソッド</h3><div>宣言だけで本体がないメソッド。具象クラスでは実装が必要。</div></article><article class="article-card"><h3>ポリモーフィズム</h3><div>親型・interface型で子クラスの実体を扱う仕組み。</div></article><article class="article-card"><h3>オーバーロード</h3><div>同名で引数リストが違うメソッドを定義すること。</div></article><article class="article-card"><h3>オーバーライド</h3><div>親メソッドを子で再定義すること。</div></article><article class="article-card"><h3>同一性比較</h3><div><code>==</code> による同じ参照かの比較。</div></article><article class="article-card"><h3>同値比較</h3><div><code>equals()</code> による値として同じかの比較。</div></article><article class="article-card"><h3>record</h3><div>データ保持用クラスを簡潔に書く仕組み。</div></article><article class="article-card"><h3>sealed</h3><div>継承・実装できる相手を制限する修飾子。</div></article></div></section>
     </main>
   </div>
   <script src="data/questions.js"></script>
