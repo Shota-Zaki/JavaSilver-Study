@@ -18,31 +18,106 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>例外処理</h1>
-        <p>try-catch-finally、checked/unchecked、throw/throws、try-with-resourcesをまとめます。</p>
+        <p>try/catch/finally、チェック例外、非チェック例外、throw/throws、try-with-resources、multi-catchを整理します。</p>
       </section>
-      <section class="article-section"><h2>例外の種類</h2><p>例外は、コンパイル時に処理を強制されるchecked例外と、強制されないunchecked例外に分かれます。RuntimeExceptionとそのサブクラスはunchecked例外です。</p><div class="article-card-grid"><article class="article-card"><h3>checked例外</h3><div><code>Exception</code> のサブクラスだが <code>RuntimeException</code> ではないもの。例: IOException。</div></article><article class="article-card"><h3>unchecked例外</h3><div><code>RuntimeException</code> とそのサブクラス。例: NullPointerException、NumberFormatException。</div></article><article class="article-card"><h3>Error</h3><div>通常アプリ側で処理する対象ではありません。</div></article><article class="article-card"><h3>throws</h3><div>メソッドが例外を外へ投げる可能性を宣言します。</div></article></div></section><section class="article-section"><h2>try-catch-finally</h2><p>try内で例外が発生すると、その後のtry内の文は実行されず、対応するcatchへ移ります。finallyは例外の有無にかかわらず基本的に実行されます。</p><pre class="article-code"><code>try {
-    System.out.println("A");
-    int n = 10 / 0;
-    System.out.println("B");
-} catch (ArithmeticException e) {
-    System.out.println("C");
-} finally {
-    System.out.println("D");
-}
 
-// A
-// C
-// D</code></pre><p>catchは上から順に判定されます。親例外を先に書くと、子例外のcatchへ到達できなくなりコンパイルエラーです。</p><pre class="article-code"><code>try {
-} catch (Exception e) {
-// } catch (IOException e) { // NG。すでにExceptionで捕まる
-}</code></pre></section><section class="article-section"><h2>throw と throws</h2><p>&lt;code&gt;throw&lt;/code&gt; は実際に例外を投げる文です。&lt;code&gt;throws&lt;/code&gt; はメソッド宣言に書き、呼び出し元へ例外処理を要求または通知します。</p><pre class="article-code"><code>void read() throws IOException {
-    throw new IOException();
-}</code></pre></section><section class="article-section"><h2>try-with-resources</h2><p>try-with-resourcesでは、tryの括弧内で宣言したリソースが自動でcloseされます。closeは宣言した順番とは逆順に呼ばれます。</p><pre class="article-code"><code>try (A a = new A("A"); A b = new A("B")) {
-    System.out.println("body");
-}
-// body
-// B
-// A</code></pre><p>finallyを書く場合、リソースのcloseが呼ばれた後にfinallyが実行されます。</p></section>
+      <section class="article-section">
+        <h2>例外問題の判定順</h2>
+        <ol class="article-list">
+          <li>コンパイルできるか。チェック例外の処理漏れ、catch順、到達不能catchを確認。</li>
+          <li>try内で例外が発生するか。発生した行より後のtry内処理は実行されない。</li>
+          <li>どのcatchが最初に受け取るか。上から順に評価される。</li>
+          <li>finallyがあるなら最後に実行される。</li>
+          <li>try-with-resourcesなら、リソースのclose順を確認する。</li>
+        </ol>
+      </section>
+      <section class="article-section">
+        <h2>try-catchの基本</h2>
+        <p>tryブロック内で例外が発生すると、その時点でtry内の残りはスキップされ、対応するcatchへ移動します。</p>
+        <pre class="article-code"><code>try {
+            int[] a = {};
+            a[0] = 10;
+            System.out.println("finish");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("error");
+        }
+        // error</code></pre>
+        <p><code>finish</code> は表示されません。例外発生行の後は実行されないためです。</p>
+      </section>
+      <section class="article-section">
+        <h2>finallyの実行</h2>
+        <p><code>finally</code> は、例外の有無にかかわらず実行されます。catchが実行された後にも実行されます。</p>
+        <pre class="article-code"><code>try {
+            System.out.println("A");
+        } catch (RuntimeException e) {
+            System.out.println("B");
+        } finally {
+            System.out.println("C");
+        }
+        // A C</code></pre>
+        <p>ただし、<code>System.exit</code> など極端なケースは例外です。Java Silverでは通常、finallyは通ると考えて処理順を追います。</p>
+      </section>
+      <section class="article-section">
+        <h2>catchの順番</h2>
+        <p>複数のcatchは上から順に評価されます。親クラスの例外を先にcatchすると、子クラスのcatchは到達不能になりコンパイルエラーです。</p>
+        <pre class="article-code"><code>try {
+            throw new java.io.FileNotFoundException();
+        } catch (java.io.FileNotFoundException e) {
+            System.out.println("file");
+        } catch (java.io.IOException e) {
+            System.out.println("io");
+        }</code></pre>
+        <p>逆にすると <code>FileNotFoundException</code> のcatchが到達不能です。</p>
+      </section>
+      <section class="article-section">
+        <h2>チェック例外と非チェック例外</h2>
+        <p>チェック例外は、catchするかthrowsで宣言する必要があります。非チェック例外は強制されません。</p>
+        <table class="ref-table"><thead><tr><th>分類</th><th>代表例</th><th>処理義務</th></tr></thead><tbody>
+        <tr><td>チェック例外</td><td><code>Exception</code> のうち <code>RuntimeException</code> 系以外、<code>IOException</code></td><td>あり</td></tr>
+        <tr><td>非チェック例外</td><td><code>RuntimeException</code>、<code>NullPointerException</code>、<code>IllegalArgumentException</code></td><td>なし</td></tr>
+        <tr><td>Error</td><td><code>OutOfMemoryError</code> など</td><td>通常処理対象外</td></tr>
+        </tbody></table>
+        <div class="article-callout warn"><code>Exception</code> はチェック例外ですが、<code>RuntimeException</code> は非チェック例外です。名前だけで雑に判断しないでください。</div>
+      </section>
+      <section class="article-section">
+        <h2>throwとthrows</h2>
+        <p><code>throw</code> は例外インスタンスを投げる文、<code>throws</code> はメソッド宣言で「この例外を投げる可能性がある」と示す句です。</p>
+        <pre class="article-code"><code>static void read() throws java.io.IOException {
+            throw new java.io.IOException();
+        }</code></pre>
+        <p>チェック例外を <code>throw</code> するなら、その場でcatchするか、メソッドに <code>throws</code> を付ける必要があります。</p>
+      </section>
+      <section class="article-section">
+        <h2>try-with-resources</h2>
+        <p><code>try-with-resources</code> では、<code>AutoCloseable</code> なリソースがtryを抜けるときに自動でcloseされます。close順は宣言の逆順です。</p>
+        <pre class="article-code"><code>try (A a = new A("A"); A b = new A("B")) {
+            System.out.println("body");
+        } finally {
+            System.out.println("finally");
+        }
+        // body
+        // B
+        // A
+        // finally</code></pre>
+        <p>closeはfinallyより前に呼ばれます。ここは出力順問題で狙われます。</p>
+      </section>
+      <section class="article-section">
+        <h2>multi-catch</h2>
+        <p>multi-catchでは、複数の例外型を <code>|</code> で並べます。ただし、親子関係にある例外を同時に並べることはできません。</p>
+        <pre class="article-code"><code>try {
+            // ...
+        } catch (java.io.IOException | IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }</code></pre>
+        <pre class="article-code"><code>// catch (Exception | java.io.IOException e) {} // NG。親子関係がある</code></pre>
+      </section>
+      <section class="article-section">
+        <h2>ミニ判定</h2>
+        <details class="article-card"><summary><strong>Q1.</strong> tryで例外が発生した後、try内の次の行は実行される？</summary><p>実行されません。対応するcatchへ移動します。</p></details>
+        <details class="article-card"><summary><strong>Q2.</strong> <code>catch(Exception)</code> の後に <code>catch(IOException)</code> は？</summary><p>コンパイルエラーです。<code>IOException</code> はすでに <code>Exception</code> で捕まるため到達不能です。</p></details>
+        <details class="article-card"><summary><strong>Q3.</strong> try-with-resourcesのclose順は？</summary><p>宣言と逆順です。<code>A a; B b;</code> なら <code>b.close()</code>、<code>a.close()</code> の順です。</p></details>
+      </section>
+
     </main>
   </div>
   <script src="data/questions.js"></script>

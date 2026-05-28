@@ -18,58 +18,107 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>演算子・分岐・ループ</h1>
-        <p>評価順、++/--、短絡評価、switch式、yield、while、do-while、break/continueをまとめます。</p>
+        <p>評価順、インクリメント、短絡評価、条件演算子、switch、ループ制御を、出力問題で使える粒度で整理します。</p>
       </section>
-      <section class="article-section"><h2>++ / -- の前置と後置</h2><p>前置は値を変更してから式に使います。後置は元の値を式に使ってから変更します。式の評価が終わったあとも、副作用として変数の値は変わっています。</p><pre class="article-code"><code>int i = 1;
-System.out.println(++i); // 2。先に増える
-System.out.println(i++); // 2。表示後に増える
-System.out.println(i);   // 3</code></pre><p>条件式の中にある後置インクリメントも、条件がtrueでもfalseでも評価された時点で副作用は残ります。</p><pre class="article-code"><code>int i = 0;
-while (i++ &lt; 3) {
-    System.out.print(i);
-}
-System.out.println("/" + i);
-// 123/4</code></pre></section><section class="article-section"><h2>短絡評価と非短絡評価</h2><p>&lt;code&gt;&amp;&amp;&lt;/code&gt; と &lt;code&gt;||&lt;/code&gt; は短絡評価です。左辺だけで結果が確定する場合、右辺は評価されません。&lt;code&gt;&amp;&lt;/code&gt; と &lt;code&gt;|&lt;/code&gt; はbooleanにも使えますが、右辺も必ず評価します。</p><pre class="article-code"><code>int a = 0;
-if (false &amp;&amp; ++a &gt; 0) {
-}
-System.out.println(a); // 0
 
-if (false &amp; ++a &gt; 0) {
-}
-System.out.println(a); // 1</code></pre></section><section class="article-section"><h2>switch文とswitch式</h2><p>switch文は処理を実行する構文です。switch式は値を返す構文です。Java Silver 17では、switch式の &lt;code&gt;yield&lt;/code&gt; が重要です。</p><pre class="article-code"><code>int n = 2;
-String result = switch (n) {
-    case 1 -&gt; "one";
-    case 2 -&gt; "two";
-    default -&gt; "other";
-};
-System.out.println(result); // two</code></pre><p>switch式でブロックを使う場合、ブロック内で返す値を &lt;code&gt;yield&lt;/code&gt; で指定します。yieldはswitch式の値を返すためのキーワードで、メソッドから抜けるreturnとは違います。</p><pre class="article-code"><code>int n = 2;
-String result = switch (n) {
-    case 1 -&gt; "one";
-    case 2 -&gt; {
-        System.out.println("case 2");
-        yield "two";
-    }
-    default -&gt; "other";
-};</code></pre><div class="article-card-grid"><article class="article-card"><h3>yield</h3><div>switch式の結果値を返します。メソッド全体から戻るわけではありません。</div></article><article class="article-card"><h3>return</h3><div>メソッドから戻ります。switch式のブロック内で値を返す用途には通常使いません。</div></article><article class="article-card"><h3>switch式末尾のセミコロン</h3><div>代入文の一部なので <code>};</code> が必要です。</div></article><article class="article-card"><h3>網羅性</h3><div>switch式は値を返すため、すべてのケースを網羅する必要があります。通常はdefaultが必要です。</div></article></div><div class="article-callout warn">switch対象がnullの場合、通常は実行時にNullPointerExceptionです。コンパイルエラーではありません。</div></section><section class="article-section"><h2>while と do-while</h2><p>whileは最初に条件判定します。条件が最初からfalseなら本体は0回です。do-whileは本体を実行してから条件判定するため、条件がfalseでも最低1回は実行されます。</p><pre class="article-code"><code>int a = 0;
-while (a &gt; 0) {
-    System.out.println("while");
-}
+      <section class="article-section">
+        <h2>演算子問題の基本姿勢</h2>
+        <p>演算子問題では、式を見た瞬間に左から雑に計算すると負けます。先に確認するのは次の4つです。</p>
+        <ol class="article-list">
+          <li><strong>コンパイルできる型か</strong>: booleanに <code>&lt;=</code> を使っていないか、数値型へ代入できるか。</li>
+          <li><strong>短絡評価か</strong>: <code>&amp;&amp;</code> と <code>||</code> で右辺が実行されるか。</li>
+          <li><strong>前置/後置</strong>: <code>++a</code> と <code>a++</code> の値の使われ方。</li>
+          <li><strong>代入を含む式か</strong>: <code>a += 5</code> の結果がそのまま式の値になる。</li>
+        </ol>
+      </section>
+      <section class="article-section">
+        <h2>代入演算子と複合代入</h2>
+        <p>代入式自体にも値があります。<code>int b = a += 5;</code> は、まず <code>a</code> に加算代入し、その結果を <code>b</code> に代入します。</p>
+        <pre class="article-code"><code>int a = 3;
+        int b = a += 5;
+        System.out.println(a + b); // 16</code></pre>
+        <p><code>a += 5</code> 後の <code>a</code> は8です。<code>b</code> も8になります。</p>
+      </section>
+      <section class="article-section">
+        <h2>前置・後置インクリメント</h2>
+        <p>前置は「変えてから値として使う」、後置は「今の値を使ってから変える」です。</p>
+        <pre class="article-code"><code>int a = 10;
+        int x = ++a; // a=11, x=11
+        int y = a++; // y=11, a=12</code></pre>
+        <p>複雑な式では、各項が式に渡す値を順にメモすると崩れません。</p>
+        <pre class="article-code"><code>int a = 10;
+        int b = a++ + a + a-- - a-- + ++a;
+        // 渡される値: 10 + 11 + 11 - 10 + 10
+        System.out.println(b); // 32</code></pre>
+        <div class="article-callout warn">副作用のある式は実務では避けるべきですが、試験では出ます。出力問題として割り切って、値の渡し方だけ追ってください。</div>
+      </section>
+      <section class="article-section">
+        <h2>短絡評価と非短絡評価</h2>
+        <p><code>&amp;&amp;</code> と <code>||</code> は短絡評価します。左辺だけで結果が決まる場合、右辺は評価されません。<code>&amp;</code> と <code>|</code> はboolean同士にも使えますが、短絡しません。</p>
+        <pre class="article-code"><code>int a = 10;
+        int b = 10;
+        if (10 &lt; a &amp;&amp; 10 &lt; ++b) {
+            a++;
+        }
+        System.out.println(a + b); // 20。右辺は評価されない</code></pre>
+        <pre class="article-code"><code>int a = 10;
+        int b = 10;
+        if (10 &lt; a &amp; 10 &lt; ++b) {
+            a++;
+        }
+        System.out.println(a + b); // 21。右辺は評価される</code></pre>
+      </section>
+      <section class="article-section">
+        <h2>関係演算子とboolean</h2>
+        <p><code>&lt;</code>、<code>&lt;=</code>、<code>&gt;</code>、<code>&gt;=</code> は数値比較に使います。<code>boolean</code> 同士には使えません。</p>
+        <pre class="article-code"><code>boolean a = true;
+        boolean b = false;
+        System.out.println(a == b); // OK
+        // System.out.println(a &lt;= b); // NG</code></pre>
+        <p><code>==</code> と <code>!=</code> はbooleanにも使えます。</p>
+      </section>
+      <section class="article-section">
+        <h2>switch文とswitch式</h2>
+        <p>Java 17では、従来のswitch文とswitch式の両方が出題対象になります。switch式は値を返すため、すべての経路で値が必要です。</p>
+        <pre class="article-code"><code>int n = 2;
+        String s = switch (n) {
+            case 1 -&gt; "one";
+            case 2 -&gt; "two";
+            default -&gt; "other";
+        };</code></pre>
+        <p>従来の <code>case:</code> 形式では、<code>break</code> がないと次のcaseへ流れます。<code>-></code> 形式は基本的にフォールスルーしません。</p>
+        <pre class="article-code"><code>int n = 1;
+        switch (n) {
+            case 1:
+                System.out.print("A");
+            case 2:
+                System.out.print("B");
+                break;
+            default:
+                System.out.print("C");
+        }
+        // AB</code></pre>
+      </section>
+      <section class="article-section">
+        <h2>ラベル付きbreak/continue</h2>
+        <p>ラベルは文につけられます。試験では二重ループから抜ける問題で使われます。<code>break label;</code> はラベルの付いた文そのものを抜けます。<code>continue label;</code> はラベル付きループの次の反復へ進みます。</p>
+        <pre class="article-code"><code>outer:
+        for (int i = 0; i &lt; 3; i++) {
+            for (int j = 0; j &lt; 3; j++) {
+                if (j == 1) break outer;
+                System.out.print(i + ":" + j + " ");
+            }
+        }
+        // 0:0</code></pre>
+        <p><code>continue</code> の対象はループでなければなりません。ラベルなら何でも <code>continue</code> できるわけではありません。</p>
+      </section>
+      <section class="article-section">
+        <h2>ミニ判定</h2>
+        <details class="article-card"><summary><strong>Q1.</strong> <code>false && ++x > 0</code> で <code>x</code> は増える？</summary><p>増えません。<code>&amp;&amp;</code> は左辺がfalseなら右辺を評価しません。</p></details>
+        <details class="article-card"><summary><strong>Q2.</strong> <code>false & ++x > 0</code> で <code>x</code> は増える？</summary><p>増えます。<code>&amp;</code> はboolean演算でも短絡しません。</p></details>
+        <details class="article-card"><summary><strong>Q3.</strong> <code>boolean</code> に <code>&lt;=</code> は使える？</summary><p>使えません。<code>==</code> または <code>!=</code> だけです。</p></details>
+      </section>
 
-int b = 0;
-do {
-    System.out.println("do");
-} while (b &gt; 0);</code></pre><p>do-whileの最後にはセミコロンが必要です。ここは問題文の記号1つで正解が変わります。</p><pre class="article-code"><code>do {
-    System.out.println("A");
-} while (false); // この ; が必要</code></pre></section><section class="article-section"><h2>for、break、continue</h2><p>通常のfor文は、初期化 → 条件判定 → 本体 → 更新式 → 条件判定、の順に進みます。breakとcontinueでは、更新式が実行されるかが違います。</p><pre class="article-code"><code>for (int i = 0; i &lt; 3; i++) {
-    if (i == 1) break;
-    System.out.print(i);
-}
-// 0
-// breakすると、その回の残り処理も更新式も実行しない</code></pre><pre class="article-code"><code>for (int i = 0; i &lt; 3; i++) {
-    if (i == 1) continue;
-    System.out.print(i);
-}
-// 02
-// continueすると、forの更新式へ進む</code></pre><p>while文でcontinueする場合は注意が必要です。continueすると下の更新処理を飛ばすため、更新前にcontinueすると無限ループになりやすいです。</p></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

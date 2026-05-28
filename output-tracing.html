@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - 出力追跡トレーニング</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main article-main">
+      <section class="hero reference-hero compact-hero article-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>出力追跡トレーニング</h1>
+        <p>値・参照・例外の流れを表で追い、出力問題の計算ミスを減らすためのページです。</p>
+      </section>
+<section class="article-section"><h2>出力問題は「表」で追う</h2><p>頭の中だけで追うと、後置インクリメント、参照の上書き、catch/finallyで崩れます。試験では紙に小さい表を書く前提で練習してください。</p><table class="ref-table"><thead><tr><th>問題型</th><th>表に書くもの</th><th>最初に見ること</th></tr></thead><tbody><tr><td>++/--</td><td>式に渡す値 / 変数の現在値</td><td>前置か後置か</td></tr><tr><td>短絡評価</td><td>左辺結果 / 右辺を評価したか</td><td>&& と || の停止条件</td></tr><tr><td>参照</td><td>変数名 / 参照先ID / フィールド値</td><td>a = b で参照がコピーされる点</td></tr><tr><td>継承</td><td>宣言型 / 実体 / 呼ぶメンバ</td><td>メソッドかフィールドか</td></tr><tr><td>例外</td><td>実行行 / 例外 / catch / finally</td><td>例外発生後のtry内は飛ぶ</td></tr></tbody></table></section><section class="article-section"><h2>++/--：式に渡す値と現在値を分ける</h2><pre class="article-code"><code>int a = 10;
+int b = a++ + a + --a;
+System.out.println(a + "," + b);</code></pre><table class="ref-table"><thead><tr><th>部分式</th><th>式に渡す値</th><th>評価後のa</th><th>理由</th></tr></thead><tbody><tr><td>a++</td><td>10</td><td>11</td><td>後置なので元の値を渡してから増える</td></tr><tr><td>a</td><td>11</td><td>11</td><td>現在値を読む</td></tr><tr><td>--a</td><td>10</td><td>10</td><td>前置なので減ってから渡す</td></tr></tbody></table><p><code>b</code> は <code>10 + 11 + 10 = 31</code>、出力は <code>10,31</code>。</p></section><section class="article-section"><h2>短絡評価：右辺が実行されたかを見る</h2><pre class="article-code"><code>int a = 10;
+int b = 10;
+if (a &lt; 5 &amp;&amp; ++b &gt; 10) {
+    a++;
+}
+System.out.println(a + "," + b);</code></pre><p><code>&amp;&amp;</code> は左辺がfalseなら右辺を評価しません。<code>a &lt; 5</code> はfalseなので <code>++b</code> は実行されず、出力は <code>10,10</code>。</p><div class="article-callout warn"><strong>危険：</strong><code>&amp;</code> と <code>&amp;&amp;</code>、<code>|</code> と <code>||</code> は違います。boolean演算で <code>&amp;</code>/<code>|</code> を使うと右辺も評価されます。</div></section><section class="article-section"><h2>参照：変数にはインスタンスそのものではなく参照が入る</h2><pre class="article-code"><code>class Item { String name; }
+
+Item a = new Item(); // #1
+a.name = "A";
+Item b = new Item(); // #2
+b.name = "B";
+a = b;
+a.name = "C";
+System.out.println(b.name);</code></pre><ol class="article-list"><li><code>a</code> は最初 #1、<code>b</code> は #2 を参照。</li><li><code>a = b;</code> で <code>a</code> も #2 を参照。</li><li><code>a.name = "C";</code> は #2 のnameを書き換える。</li><li><code>b</code> も #2 を見ているため、出力は <code>C</code>。</li></ol></section><section class="article-section"><h2>継承：メソッドは実体、フィールドは宣言型</h2><pre class="article-code"><code>class A {
+    String name = "A";
+    String getName() { return name; }
+}
+class B extends A {
+    String name = "B";
+    String getName() { return name; }
+}
+A obj = new B();
+System.out.println(obj.name + "," + obj.getName());</code></pre><p><code>obj.name</code> はフィールドなので宣言型 <code>A</code> 側。<code>obj.getName()</code> はオーバーライドメソッドなので実体 <code>B</code> 側。出力は <code>A,B</code>。</p></section><section class="article-section"><h2>例外：止まる行を確定する</h2><pre class="article-code"><code>try {
+    System.out.println("A");
+    String s = null;
+    System.out.println(s.length());
+    System.out.println("B");
+} catch (RuntimeException e) {
+    System.out.println("C");
+} finally {
+    System.out.println("D");
+}</code></pre><p><code>A</code> を出力後、<code>s.length()</code> で <code>NullPointerException</code>。try内の <code>B</code> は実行されません。対応するcatchで <code>C</code>、最後にfinallyで <code>D</code>。出力は <code>A C D</code> の順です。</p></section>
+    </main>
+  </div>
+  <script src="data/questions.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

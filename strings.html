@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - 文字列・比較</title>
+  <title>Java Silver Study - 文字列・StringBuilder・null</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -17,47 +17,87 @@
     <main class="main reference-main article-main">
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>文字列・比較</h1>
-        <p>String、StringBuilder、==、equals、intern、null比較、メソッド戻り値をまとめます。</p>
+        <h1>文字列・StringBuilder・null</h1>
+        <p>Stringの不変性、文字列プール、intern、StringBuilderの破壊的操作、nullで起きる例外を整理します。</p>
       </section>
-      <section class="article-section"><h2>Stringは不変</h2><p>Stringのメソッドは、元の文字列を変更しません。変更されたように見える処理は、新しいStringを返しています。戻り値を受け取らなければ結果は捨てられます。</p><pre class="article-code"><code>String s = "abcdef";
-s.substring(2);
-System.out.println(s); // abcdef
 
-s = s.substring(2);
-System.out.println(s); // cdef</code></pre><div class="article-callout point">試験では <code>replace</code>、<code>substring</code>、<code>toUpperCase</code> などの戻り値未代入がよく出ます。Stringは変わりません。</div></section><section class="article-section"><h2>== と equals</h2><p>&lt;code&gt;==&lt;/code&gt; は同じオブジェクトを参照しているかを見る比較です。Stringの文字内容を比較したいなら &lt;code&gt;equals()&lt;/code&gt; を使います。</p><pre class="article-code"><code>String a = "java";
-String b = "java";
-String c = new String("java");
+      <section class="article-section">
+        <h2>Stringは不変</h2>
+        <p><code>String</code> は不変です。連結や置換のように見える操作も、元の文字列を変えるのではなく、新しい文字列を返します。</p>
+        <pre class="article-code"><code>String s = "java";
+        s.concat("17");
+        System.out.println(s); // java
 
-System.out.println(a == b);      // true
-System.out.println(a == c);      // false
-System.out.println(a.equals(c)); // true</code></pre><p>文字列リテラルは文字列プールに置かれます。同じリテラルは同じインスタンスを参照するため、&lt;code&gt;a == b&lt;/code&gt; がtrueになります。一方、&lt;code&gt;new String("java")&lt;/code&gt; は新しいインスタンスを作るので、参照は別です。</p><pre class="article-code"><code>String a = "ja" + "va";  // コンパイル時定数。"java" と同じプール参照
-String part = "ja";
-String b = part + "va";   // 実行時に作られる別インスタンス
-final String fixed = "ja";
-String c = fixed + "va";  // final定数なのでコンパイル時定数
+        s = s.concat("17");
+        System.out.println(s); // java17</code></pre>
+        <div class="article-callout warn">戻り値を受け取っていない <code>String</code> メソッド呼び出しは、たいてい結果に影響しません。</div>
+      </section>
+      <section class="article-section">
+        <h2>文字列プールとnew String</h2>
+        <p>文字列リテラルは文字列プール上のインスタンスを参照します。一方、<code>new String("x")</code> は明示的に新しいインスタンスを作ります。</p>
+        <pre class="article-code"><code>String a = "sample";
+        String b = "sample";
+        String c = new String("sample");
 
-System.out.println(a == "java"); // true
-System.out.println(b == "java"); // false
-System.out.println(c == "java"); // true</code></pre></section><section class="article-section"><h2>intern()</h2><p>&lt;code&gt;intern()&lt;/code&gt; は、文字列プール上の同じ内容のStringへの参照を返します。newで作ったStringでも、intern後はプール側の参照と比較できます。</p><pre class="article-code"><code>String a = new String("java");
-String b = a.intern();
-String c = "java";
+        System.out.println(a == b); // true
+        System.out.println(a == c); // false
+        System.out.println(a.equals(c)); // true</code></pre>
+        <p><code>==</code> は参照の同一性、<code>equals</code> は内容比較です。出力問題ではまずここを分けてください。</p>
+      </section>
+      <section class="article-section">
+        <h2>internの見方</h2>
+        <p><code>intern()</code> は、文字列プール上の同じ内容の文字列への参照を返します。呼び出し元のインスタンス自体をプール上のものに変えるわけではありません。</p>
+        <pre class="article-code"><code>String a = new String("sample");
+        String b = a;
+        String c = a.intern();
+        String d = "sample";
 
-System.out.println(a == c); // false
-System.out.println(b == c); // true</code></pre></section><section class="article-section"><h2>StringBuilder</h2><p>StringBuilderは可変です。appendやdeleteなどは同じインスタンスを変更し、そのインスタンス自身を返します。Stringとは逆です。</p><pre class="article-code"><code>StringBuilder sb = new StringBuilder("abc");
-StringBuilder ret = sb.append("def");
+        System.out.println(a == b); // true
+        System.out.println(a == c); // false
+        System.out.println(c == d); // true</code></pre>
+        <p><code>a</code> と <code>b</code> はヒープ上の同じ <code>new String</code> を参照します。<code>c</code> と <code>d</code> は文字列プール上の同じインスタンスを参照します。</p>
+      </section>
+      <section class="article-section">
+        <h2>StringBuilderは可変</h2>
+        <p><code>StringBuilder</code> は可変です。<code>append</code>、<code>delete</code>、<code>insert</code>、<code>reverse</code> は対象インスタンスを変更します。</p>
+        <pre class="article-code"><code>StringBuilder sb = new StringBuilder("abc");
+        StringBuilder ret = sb.append("de");
+        System.out.println(sb);       // abcde
+        System.out.println(sb == ret); // true</code></pre>
+        <p>一方、<code>substring</code> は <code>String</code> を返し、<code>StringBuilder</code> 本体は変わりません。</p>
+        <pre class="article-code"><code>StringBuilder sb = new StringBuilder("abcdef");
+        String s = sb.substring(1, 4); // bcd
+        System.out.println(sb);       // abcdef</code></pre>
+      </section>
+      <section class="article-section">
+        <h2>主なメソッドの境界</h2>
+        <table class="ref-table"><thead><tr><th>メソッド</th><th>要点</th><th>注意</th></tr></thead><tbody>
+        <tr><td><code>charAt(i)</code></td><td>i番目の文字</td><td>範囲外は <code>StringIndexOutOfBoundsException</code></td></tr>
+        <tr><td><code>substring(begin,end)</code></td><td>begin以上end未満</td><td>endは含まない</td></tr>
+        <tr><td><code>indexOf(x)</code></td><td>見つからなければ -1</td><td>例外ではない</td></tr>
+        <tr><td><code>replace</code></td><td>置換結果を返す</td><td><code>String</code>本体は変わらない</td></tr>
+        <tr><td><code>trim</code></td><td>前後の空白除去</td><td>結果を返す</td></tr>
+        <tr><td><code>equalsIgnoreCase</code></td><td>大文字小文字を無視</td><td>呼び出し元がnullならNPE</td></tr>
+        </tbody></table>
+      </section>
+      <section class="article-section">
+        <h2>nullと文字列</h2>
+        <p><code>null</code> は文字列ではなく、参照がない状態です。メソッド呼び出しの左側が <code>null</code> だと <code>NullPointerException</code> です。</p>
+        <pre class="article-code"><code>String s = null;
+        System.out.println(s);        // null と表示
+        // System.out.println(s.length()); // 実行時例外
 
-System.out.println(sb);       // abcdef
-System.out.println(sb == ret); // true</code></pre><p>StringBuilderはequalsを内容比較用にオーバーライドしていません。内容が同じでも、別インスタンスならequalsはfalseです。</p><pre class="article-code"><code>StringBuilder a = new StringBuilder("x");
-StringBuilder b = new StringBuilder("x");
+        System.out.println("x".equals(s)); // false。安全
+        // System.out.println(s.equals("x")); // NPE</code></pre>
+        <p>比較では、定数文字列を左に置くとNPEを避けられます。</p>
+      </section>
+      <section class="article-section">
+        <h2>ミニ判定</h2>
+        <details class="article-card"><summary><strong>Q1.</strong> <code>"abc".substring(1, 1)</code> は？</summary><p>空文字列です。開始位置と終了位置が同じで、範囲としては0文字です。</p></details>
+        <details class="article-card"><summary><strong>Q2.</strong> <code>new String("x").intern() == "x"</code> は？</summary><p>通常は <code>true</code> です。<code>intern()</code> が文字列プール上の参照を返すためです。</p></details>
+        <details class="article-card"><summary><strong>Q3.</strong> <code>StringBuilder.reverse()</code> は元を変える？</summary><p>変えます。<code>StringBuilder</code> の主要な編集メソッドは破壊的操作です。</p></details>
+      </section>
 
-System.out.println(a == b);      // false
-System.out.println(a.equals(b)); // false
-System.out.println(a.toString().equals(b.toString())); // true</code></pre></section><section class="article-section"><h2>nullとの比較</h2><p>nullかもしれない変数でメソッドを呼ぶとNullPointerExceptionになります。安全に比較するなら、リテラル側からequalsを呼ぶ書き方があります。</p><pre class="article-code"><code>String s = null;
-
-// s.equals("A");      // NullPointerException
-System.out.println("A".equals(s)); // false
-System.out.println(s == null);     // true</code></pre></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

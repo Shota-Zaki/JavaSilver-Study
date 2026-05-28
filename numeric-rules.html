@@ -18,40 +18,87 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>数値・リテラル・型昇格</h1>
-        <p>整数リテラル、浮動小数点リテラル、アンダースコア、型昇格、複合代入をまとめます。</p>
+        <p>byte/short/char、定数式、数値昇格、複合代入、アンダースコアの置き方を、コンパイル判定用に整理します。</p>
       </section>
-      <section class="article-section"><h2>primitive型と参照型</h2><p>Javaの型は大きくprimitive型と参照型に分かれます。primitive型は値そのものを持ち、参照型はオブジェクトへの参照を持ちます。この違いは、代入、比較、null、初期値、例外で何度も問われます。</p><div class="article-card-grid"><article class="article-card"><h3>primitive型</h3><div><code>byte short int long float double char boolean</code>。値そのものを保持します。<code>null</code> は代入できません。</div></article><article class="article-card"><h3>参照型</h3><div>クラス、配列、interface、recordなど。参照先がない状態を <code>null</code> で表せます。</div></article><article class="article-card"><h3>ローカル変数</h3><div>自動初期化されません。代入前に読むとコンパイルエラーです。</div></article><article class="article-card"><h3>フィールド・配列要素</h3><div>型ごとの初期値で初期化されます。参照型はnull、数値は0系、booleanはfalseです。</div></article></div><pre class="article-code"><code>class Sample {
-    int field;        // 0
-    String text;      // null
 
-    void test() {
-        int local;
-        // System.out.println(local); // コンパイルエラー
-        System.out.println(field);    // OK
-    }
-}</code></pre></section><section class="article-section"><h2>整数リテラルと表記</h2><p>整数リテラルは基本的にint型です。longとして扱いたい場合は末尾にLまたはlを付けます。小文字lは数字1と紛らわしいため、試験でも実務でも大文字Lで覚える方が安全です。</p><pre class="article-code"><code>int a = 10;
-long b = 10L;
-int bin = 0b1010;
-int oct = 012;    // 8進数。10進数では10
-int hex = 0xA;    // 16進数。10進数では10</code></pre><div class="article-card-grid"><article class="article-card"><h3>2進数</h3><div><code>0b</code> または <code>0B</code>。使える数字は0と1だけ。</div></article><article class="article-card"><h3>8進数</h3><div>先頭が <code>0</code>。<code>08</code> は8が使えないのでコンパイルエラー。</div></article><article class="article-card"><h3>16進数</h3><div><code>0x</code> または <code>0X</code>。A〜Fも使えます。</div></article><article class="article-card"><h3>アンダースコア</h3><div>数字の間だけ。先頭、末尾、小数点や接尾辞の隣は不可。</div></article></div><pre class="article-code"><code>int ok1 = 1_000_000;
-int ok2 = 0b1010_0101;
+      <section class="article-section">
+        <h2>数値問題の判定フロー</h2>
+        <ol class="article-list">
+          <li>リテラルの型を決める。整数は基本 <code>int</code>、小数は基本 <code>double</code>。</li>
+          <li>代入先の型に暗黙変換できるかを見る。</li>
+          <li>式に変数が含まれるなら、<code>byte</code>/<code>short</code>/<code>char</code> は基本 <code>int</code> に昇格すると考える。</li>
+          <li><code>+=</code> などの複合代入だけは暗黙キャストが入る点を別扱いする。</li>
+        </ol>
+        <div class="article-callout warn">数値問題は「値が入るか」ではなく「式の型が代入先に合うか」です。ここを混同すると落ちます。</div>
+      </section>
+      <section class="article-section">
+        <h2>定数式なら狭い型へ代入できる</h2>
+        <p><code>byte</code> や <code>short</code> へ <code>int</code> リテラルを代入する場合、値が範囲内ならコンパイルできます。定数式も同じです。</p>
+        <pre class="article-code"><code>byte a = 127;         // OK
+        // byte b = 128;      // NG
+        short c = 128 + 128;  // OK。定数式で256
 
-// int ng1 = _100;   // 先頭は不可
-// int ng2 = 100_;   // 末尾は不可
-// float ng3 = 3_.14F; // 小数点の隣は不可
-// long ng4 = 100_L;   // 接尾辞の直前は不可</code></pre></section><section class="article-section"><h2>型変換と数値昇格</h2><p>byte、short、charは演算時にintへ昇格します。byte同士の足し算でも結果はintです。ここを落とすと、代入可否の問題で間違えます。</p><pre class="article-code"><code>byte a = 10;
-byte b = 20;
-// byte c = a + b; // コンパイルエラー。a + b は int
-byte d = (byte)(a + b); // OK</code></pre><p>ただし、リテラルや定数式が代入先の範囲に収まる場合は、byteやshortへ代入できます。</p><pre class="article-code"><code>byte a = 127;       // OK
-// byte b = 128;    // コンパイルエラー
-short s = 100 + 20; // OK。コンパイル時に120と分かる</code></pre><p>複合代入は暗黙のキャストを含みます。&lt;code&gt;a += 1&lt;/code&gt; は単純に &lt;code&gt;a = a + 1&lt;/code&gt; と同じではありません。</p><pre class="article-code"><code>byte a = 10;
-a += 1;      // OK。内部的に(byte)(a + 1)に近い
-// a = a + 1; // コンパイルエラー。a + 1 は int</code></pre></section><section class="article-section"><h2>var</h2><p>varは型ではなく、ローカル変数の型推論に使う予約された型名です。初期値から型を決めるため、初期値がない場所や型が決められない場所では使えません。</p><div class="article-card-grid"><article class="article-card"><h3>使える場所</h3><div>ローカル変数。初期値が必要。</div></article><article class="article-card"><h3>使えない場所</h3><div>フィールド、メソッド引数、戻り値型、コンストラクタ引数、catchパラメータ、配列要素型。</div></article><article class="article-card"><h3>null単独</h3><div><code>var a = null;</code> は型が決められないため不可。</div></article><article class="article-card"><h3>ラムダ単独</h3><div><code>var f = () -> {}</code> はターゲット型がないため不可。</div></article></div><pre class="article-code"><code>var name = "Java"; // String
-var list = new java.util.ArrayList&lt;String&gt;();
+        byte x = 10;
+        byte y = 20;
+        // byte z = x + y;    // NG。変数を含む演算結果はint</code></pre>
+        <p>見た目の値が小さくても、式の型が <code>int</code> なら <code>byte</code> にそのまま代入できません。</p>
+      </section>
+      <section class="article-section">
+        <h2>二項数値昇格</h2>
+        <p>算術演算では、<code>byte</code>、<code>short</code>、<code>char</code> は <code>int</code> に昇格します。片方が <code>long</code> なら結果は <code>long</code>、片方が <code>double</code> なら結果は <code>double</code> です。</p>
+        <table class="ref-table"><thead><tr><th>式</th><th>結果の型</th><th>注意</th></tr></thead><tbody>
+        <tr><td><code>byte + byte</code></td><td><code>int</code></td><td><code>byte</code> ではない</td></tr>
+        <tr><td><code>short + int</code></td><td><code>int</code></td><td>小さい方が昇格</td></tr>
+        <tr><td><code>int + long</code></td><td><code>long</code></td><td><code>int</code> へ戻すにはキャスト</td></tr>
+        <tr><td><code>float + double</code></td><td><code>double</code></td><td><code>float</code> に代入不可</td></tr>
+        </tbody></table>
+        <pre class="article-code"><code>short s1 = 10;
+        short s2 = 20;
+        // short s3 = s1 + s2; // NG。結果はint
+        short s4 = (short)(s1 + s2); // OK</code></pre>
+      </section>
+      <section class="article-section">
+        <h2>複合代入は暗黙キャストを含む</h2>
+        <p><code>+=</code>、<code>-=</code>、<code>*=</code>、<code>/=</code> などの複合代入は、通常の代入と違って暗黙のキャストを含みます。</p>
+        <pre class="article-code"><code>byte b = 10;
+        // b = b + 1; // NG。b + 1 はint
+        b += 1;       // OK。b = (byte)(b + 1) 相当</code></pre>
+        <p>ただし、値があふれれば桁あふれした値になります。複合代入は「安全」という意味ではありません。</p>
+        <pre class="article-code"><code>byte b = 127;
+        b += 1;
+        System.out.println(b); // -128</code></pre>
+      </section>
+      <section class="article-section">
+        <h2>charの扱い</h2>
+        <p><code>char</code> は文字を表しますが、内部的には16ビットの数値として扱われる場面があります。算術演算に入ると <code>int</code> になります。</p>
+        <pre class="article-code"><code>char c = 'A';      // OK
+        int n = c;         // OK。65
+        // char d = c + 1; // NG。結果はint
+        char e = (char)(c + 1); // OK</code></pre>
+        <p><code>String</code> の <code>"A"</code> と <code>char</code> の <code>'A'</code> は別物です。単一引用符は1文字だけです。</p>
+      </section>
+      <section class="article-section">
+        <h2>数値リテラルの表記とアンダースコア</h2>
+        <p><code>0b</code> は2進数、先頭 <code>0</code> は8進数、<code>0x</code> は16進数です。8進数に <code>8</code> や <code>9</code> は使えません。</p>
+        <pre class="article-code"><code>int a = 0b1010; // 10
+        int b = 012;    // 10
+        int c = 0xA;    // 10
+        // int d = 089; // NG</code></pre>
+        <p>アンダースコアは数字の間にだけ置く、と考えると安全です。</p>
+        <pre class="article-code"><code>int ok = 1_000_000;
+        int alsoOk = 0b1010_0101;
+        // int ng1 = _100;
+        // int ng2 = 100_;
+        // int ng3 = 0x_FF;
+        // double ng4 = 3_.14;</code></pre>
+      </section>
+      <section class="article-section">
+        <h2>ミニ判定</h2>
+        <details class="article-card"><summary><strong>Q1.</strong> <code>short s = 128 + 128;</code> は？</summary><p>OKです。定数式で値が <code>short</code> の範囲内です。</p></details>
+        <details class="article-card"><summary><strong>Q2.</strong> <code>int i = 2 * 3L;</code> は？</summary><p>コンパイルエラーです。<code>3L</code> により式全体が <code>long</code> になり、<code>int</code> に暗黙代入できません。</p></details>
+        <details class="article-card"><summary><strong>Q3.</strong> <code>float f = 10.0;</code> は？</summary><p>コンパイルエラーです。<code>10.0</code> は <code>double</code> リテラルです。<code>10.0F</code> にします。</p></details>
+      </section>
 
-// var x;          // 初期値なしは不可
-// var y = null;   // 型を決められない
-// private var n;  // フィールドでは不可</code></pre></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

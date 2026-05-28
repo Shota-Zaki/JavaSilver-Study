@@ -18,40 +18,93 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>型・変数・リテラル</h1>
-        <p>primitive型、参照型、初期値、未初期化、数値リテラル、型変換、var、スコープをまとめます。</p>
+        <p>プリミティブ型、参照型、初期値、数値リテラル、varを、Java Silverで落とされる境界条件まで整理します。</p>
       </section>
-      <section class="article-section"><h2>primitive型と参照型</h2><p>Javaの型は大きくprimitive型と参照型に分かれます。primitive型は値そのものを持ち、参照型はオブジェクトへの参照を持ちます。この違いは、代入、比較、null、初期値、例外で何度も問われます。</p><div class="article-card-grid"><article class="article-card"><h3>primitive型</h3><div><code>byte short int long float double char boolean</code>。値そのものを保持します。<code>null</code> は代入できません。</div></article><article class="article-card"><h3>参照型</h3><div>クラス、配列、interface、recordなど。参照先がない状態を <code>null</code> で表せます。</div></article><article class="article-card"><h3>ローカル変数</h3><div>自動初期化されません。代入前に読むとコンパイルエラーです。</div></article><article class="article-card"><h3>フィールド・配列要素</h3><div>型ごとの初期値で初期化されます。参照型はnull、数値は0系、booleanはfalseです。</div></article></div><pre class="article-code"><code>class Sample {
-    int field;        // 0
-    String text;      // null
 
-    void test() {
-        int local;
-        // System.out.println(local); // コンパイルエラー
-        System.out.println(field);    // OK
-    }
-}</code></pre></section><section class="article-section"><h2>整数リテラルと表記</h2><p>整数リテラルは基本的にint型です。longとして扱いたい場合は末尾にLまたはlを付けます。小文字lは数字1と紛らわしいため、試験でも実務でも大文字Lで覚える方が安全です。</p><pre class="article-code"><code>int a = 10;
-long b = 10L;
-int bin = 0b1010;
-int oct = 012;    // 8進数。10進数では10
-int hex = 0xA;    // 16進数。10進数では10</code></pre><div class="article-card-grid"><article class="article-card"><h3>2進数</h3><div><code>0b</code> または <code>0B</code>。使える数字は0と1だけ。</div></article><article class="article-card"><h3>8進数</h3><div>先頭が <code>0</code>。<code>08</code> は8が使えないのでコンパイルエラー。</div></article><article class="article-card"><h3>16進数</h3><div><code>0x</code> または <code>0X</code>。A〜Fも使えます。</div></article><article class="article-card"><h3>アンダースコア</h3><div>数字の間だけ。先頭、末尾、小数点や接尾辞の隣は不可。</div></article></div><pre class="article-code"><code>int ok1 = 1_000_000;
-int ok2 = 0b1010_0101;
+      <section class="article-section">
+        <h2>型の大分類</h2>
+        <p>Javaの型は、<strong>プリミティブ型</strong>と<strong>参照型</strong>に分かれます。プリミティブ型の変数は値そのもの、参照型の変数はオブジェクトへの参照を保持します。この違いは <code>null</code>、<code>==</code>、代入、メソッド呼び出し、ガベージコレクションの判断に直結します。</p>
+        <table class="ref-table"><thead><tr><th>分類</th><th>例</th><th>変数が持つもの</th><th>null</th></tr></thead><tbody>
+        <tr><td>プリミティブ型</td><td><code>int</code>, <code>double</code>, <code>boolean</code>, <code>char</code></td><td>値そのもの</td><td>不可</td></tr>
+        <tr><td>参照型</td><td><code>String</code>, 配列, <code>ArrayList</code>, 自作クラス</td><td>オブジェクトへの参照</td><td>可</td></tr>
+        </tbody></table>
+        <div class="article-callout warn"><code>String s = null;</code> は可能ですが、<code>int n = null;</code> は不可です。<code>Integer n = null;</code> は参照型なので可能です。</div>
+      </section>
+      <section class="article-section">
+        <h2>プリミティブ型の範囲と試験で必要な覚え方</h2>
+        <p>すべての範囲を丸暗記する必要は薄いですが、<code>byte</code> と <code>short</code>、整数リテラルのデフォルト型、浮動小数点リテラルのデフォルト型は必須です。</p>
+        <table class="ref-table"><thead><tr><th>型</th><th>サイズ</th><th>要点</th></tr></thead><tbody>
+        <tr><td><code>byte</code></td><td>8ビット</td><td>-128〜127。<code>byte b = 128;</code> は不可。</td></tr>
+        <tr><td><code>short</code></td><td>16ビット</td><td>-32768〜32767。定数式なら範囲内代入可。</td></tr>
+        <tr><td><code>char</code></td><td>16ビット</td><td>Unicode文字。数値型として扱われる場面もある。</td></tr>
+        <tr><td><code>int</code></td><td>32ビット</td><td>整数リテラルの基本型。</td></tr>
+        <tr><td><code>long</code></td><td>64ビット</td><td>リテラル末尾に <code>L</code>。</td></tr>
+        <tr><td><code>float</code></td><td>32ビット</td><td>リテラル末尾に <code>F</code>。</td></tr>
+        <tr><td><code>double</code></td><td>64ビット</td><td>小数リテラルの基本型。</td></tr>
+        <tr><td><code>boolean</code></td><td>規定なし</td><td><code>true</code>/<code>false</code> のみ。0/1と互換性なし。</td></tr>
+        </tbody></table>
+      </section>
+      <section class="article-section">
+        <h2>リテラルのデフォルト型</h2>
+        <p>整数リテラルは基本 <code>int</code>、小数リテラルは基本 <code>double</code> です。ここを外すと、型変換問題の大半で誤答します。</p>
+        <pre class="article-code"><code>long a = 10;       // OK。intリテラル10をlongへ拡大変換
+        long b = 10L;      // OK。longリテラル
+        float c = 1.0F;    // OK
+        // float d = 1.0;  // NG。1.0はdouble
+        // int e = 10L;    // NG。longからintへ暗黙変換不可</code></pre>
+        <p><code>L</code> や <code>F</code> はリテラルの型を表す記号です。出力時に <code>10L</code> のように表示されるわけではありません。</p>
+      </section>
+      <section class="article-section">
+        <h2>初期値: フィールドとローカル変数</h2>
+        <p>フィールドにはデフォルト値があります。ローカル変数にはありません。<strong>宣言されたか</strong>ではなく、<strong>使用前に確実に代入されたか</strong>を見ます。</p>
+        <pre class="article-code"><code>class Sample {
+            int field;       // 0
+            boolean flag;    // false
+            String text;     // null
 
-// int ng1 = _100;   // 先頭は不可
-// int ng2 = 100_;   // 末尾は不可
-// float ng3 = 3_.14F; // 小数点の隣は不可
-// long ng4 = 100_L;   // 接尾辞の直前は不可</code></pre></section><section class="article-section"><h2>型変換と数値昇格</h2><p>byte、short、charは演算時にintへ昇格します。byte同士の足し算でも結果はintです。ここを落とすと、代入可否の問題で間違えます。</p><pre class="article-code"><code>byte a = 10;
-byte b = 20;
-// byte c = a + b; // コンパイルエラー。a + b は int
-byte d = (byte)(a + b); // OK</code></pre><p>ただし、リテラルや定数式が代入先の範囲に収まる場合は、byteやshortへ代入できます。</p><pre class="article-code"><code>byte a = 127;       // OK
-// byte b = 128;    // コンパイルエラー
-short s = 100 + 20; // OK。コンパイル時に120と分かる</code></pre><p>複合代入は暗黙のキャストを含みます。&lt;code&gt;a += 1&lt;/code&gt; は単純に &lt;code&gt;a = a + 1&lt;/code&gt; と同じではありません。</p><pre class="article-code"><code>byte a = 10;
-a += 1;      // OK。内部的に(byte)(a + 1)に近い
-// a = a + 1; // コンパイルエラー。a + 1 は int</code></pre></section><section class="article-section"><h2>var</h2><p>varは型ではなく、ローカル変数の型推論に使う予約された型名です。初期値から型を決めるため、初期値がない場所や型が決められない場所では使えません。</p><div class="article-card-grid"><article class="article-card"><h3>使える場所</h3><div>ローカル変数。初期値が必要。</div></article><article class="article-card"><h3>使えない場所</h3><div>フィールド、メソッド引数、戻り値型、コンストラクタ引数、catchパラメータ、配列要素型。</div></article><article class="article-card"><h3>null単独</h3><div><code>var a = null;</code> は型が決められないため不可。</div></article><article class="article-card"><h3>ラムダ単独</h3><div><code>var f = () -> {}</code> はターゲット型がないため不可。</div></article></div><pre class="article-code"><code>var name = "Java"; // String
-var list = new java.util.ArrayList&lt;String&gt;();
+            void test(boolean condition) {
+                int local;
+                if (condition) {
+                    local = 10;
+                }
+                // System.out.println(local); // NG。condition=falseなら未初期化
+            }
+        }</code></pre>
+        <p>分岐がある場合は、すべての経路で初期化されるか確認してください。</p>
+      </section>
+      <section class="article-section">
+        <h2>識別子と予約語</h2>
+        <p>変数名・クラス名・メソッド名などを識別子と呼びます。英字、数字、<code>_</code>、<code>$</code> を使えますが、数字から始めることはできません。予約語は使えません。</p>
+        <pre class="article-code"><code>int $a = 100;   // OK。ただし実務では非推奨
+        int _a = 200;   // OK
+        // int 1a = 300; // NG。数字始まり
+        // int a.b = 400;// NG。ドットは不可
+        // int class = 5;// NG。予約語</code></pre>
+        <div class="article-callout warn"><code>_</code> 単独の識別子は使えません。<code>_a</code> のように他の文字と組み合わせるのとは別です。</div>
+      </section>
+      <section class="article-section">
+        <h2>varは型推論であって動的型ではない</h2>
+        <p><code>var</code> はローカル変数の型を右辺から推論する仕組みです。型がなくなるわけではなく、コンパイル時点で確定します。</p>
+        <pre class="article-code"><code>var n = 10;      // int
+        var s = "abc";   // String
+        // n = "abc";    // NG。nはint</code></pre>
+        <p>使えない場所も頻出です。</p>
+        <table class="ref-table"><thead><tr><th>場所</th><th>var使用</th><th>理由</th></tr></thead><tbody>
+        <tr><td>ローカル変数</td><td>可</td><td>右辺から型を推論できる</td></tr>
+        <tr><td>フィールド</td><td>不可</td><td>ローカル変数ではない</td></tr>
+        <tr><td>メソッド引数</td><td>不可</td><td>右辺がない</td></tr>
+        <tr><td>戻り値型</td><td>不可</td><td>戻り値型を推論する仕組みではない</td></tr>
+        <tr><td>初期化式なし</td><td>不可</td><td>型を決められない</td></tr>
+        <tr><td><code>null</code> 初期化</td><td>不可</td><td>nullだけでは型を決められない</td></tr>
+        </tbody></table>
+      </section>
+      <section class="article-section">
+        <h2>ミニ判定</h2>
+        <details class="article-card"><summary><strong>Q1.</strong> <code>boolean b = 1;</code> は？</summary><p>コンパイルエラーです。Javaの <code>boolean</code> は数値と互換性がありません。</p></details>
+        <details class="article-card"><summary><strong>Q2.</strong> <code>long x = 10L; System.out.println(x);</code> の表示は？</summary><p><code>10</code> です。<code>L</code> はソースコード上のリテラル接尾辞で、値の表示には含まれません。</p></details>
+        <details class="article-card"><summary><strong>Q3.</strong> <code>var list = new ArrayList&lt;&gt;();</code> の型は？</summary><p>コンテキストがなければ <code>ArrayList&lt;Object&gt;</code> 相当として扱われます。何でも安全に入れられるという意味ではありません。</p></details>
+      </section>
 
-// var x;          // 初期値なしは不可
-// var y = null;   // 型を決められない
-// private var n;  // フィールドでは不可</code></pre></section>
     </main>
   </div>
   <script src="data/questions.js"></script>

@@ -1008,6 +1008,54 @@ pre, .command {
   gap: 8px 18px;
   margin-bottom: 12px;
 }
+
+.answer-summary-item {
+  min-width: 180px;
+  padding: 10px 12px;
+  border: 1px solid rgba(15, 23, 42, .10);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .72);
+}
+.answer-summary-item > strong {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.answer-key-list {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.answer-key-list li {
+  margin: 0;
+  line-height: 1.45;
+}
+.answer-key-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.1em;
+  min-height: 1.8em;
+  padding: 2px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, .16);
+  background: #fff;
+  font-weight: 900;
+}
+.answer-empty {
+  color: var(--muted);
+}
+.answer-key-compact .answer-key-list {
+  gap: 3px;
+}
+.answer-key-compact .answer-key-chip {
+  min-height: 1.55em;
+  padding: 1px 8px;
+}
+
 .explanation-section {
   margin-top: 14px;
   padding: 12px 14px;
@@ -1048,7 +1096,8 @@ pre, .command {
 @media (max-width: 640px) {
   .explanation-section { padding: 11px 12px; }
   .option-analysis { padding: 10px; }
-  .answer-summary { display: block; }
+  .answer-summary { display: grid; }
+  .answer-summary-item { min-width: 0; }
 }
 
 /* line-numbered code final overrides */
@@ -1948,7 +1997,7 @@ pre {
 }
 
 
-/* Q17/PDF line-number fidelity: each logical source line remains one visual row. */
+/* Code block line-number fidelity: each logical source line remains one visual row. */
 .numbered-code .code-line {
   grid-template-columns: 3.25em max-content;
   min-width: max-content;
@@ -1963,7 +2012,7 @@ pre {
   grid-template-columns: 2.75em max-content;
 }
 
-/* PDF-aligned explanation layout */
+/* Explanation layout */
 .explanation-detail.source-aligned {
   border-color: rgba(37, 99, 235, .28);
   background: rgba(239, 246, 255, .72);
@@ -1980,7 +2029,7 @@ pre {
   margin-bottom: .45rem;
 }
 
-/* PDF-aligned explanation readability */
+/* Explanation readability */
 .explanation-detail.source-aligned {
   border-color: rgba(37, 99, 235, .28);
   background: rgba(239, 246, 255, .72);
@@ -2412,3 +2461,349 @@ pre {
     font-size: 12px;
   }
 }
+
+/* =========================================================
+   2026-05-28 final readability pass
+   - 問題文・選択肢の不自然なOCR改行を通常の折り返しに戻す
+   - Javaコードは折り返さず、横スクロールで読む
+   - 学習記事の表とカードをスマホでも見やすくする
+   ========================================================= */
+.main {
+  max-width: 1120px;
+}
+
+.prompt,
+.option-text {
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  line-break: strict;
+}
+
+pre,
+.command,
+.article-code,
+.article-card pre,
+.reference-main pre {
+  white-space: pre !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.numbered-code,
+.numbered-code .code-line,
+.numbered-code .code-line code {
+  white-space: pre !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+}
+
+.code-block pre,
+.option pre {
+  white-space: pre !important;
+}
+
+.article-main {
+  max-width: 1080px;
+}
+
+.article-hero {
+  padding: 24px 26px;
+}
+
+.article-local-toc {
+  margin: 16px 0 22px;
+  padding: 16px;
+  border: 1px solid rgba(148, 163, 184, .34);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .92);
+  box-shadow: 0 8px 18px rgba(31, 41, 55, .045);
+}
+.article-local-toc h2 {
+  margin: 0 0 10px;
+  font-size: 17px;
+}
+.article-local-toc .toc-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.article-local-toc a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 800;
+}
+.article-local-toc a:hover {
+  border-color: #93c5fd;
+  background: #eff6ff;
+}
+
+.nav-subtoc {
+  display: grid;
+  gap: 4px;
+  margin: -2px 0 8px 10px;
+  padding-left: 10px;
+  border-left: 2px solid #dbeafe;
+}
+.nav-subtoc a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 12px;
+  line-height: 1.45;
+  padding: 3px 0;
+}
+.nav-subtoc a:hover {
+  color: var(--accent);
+}
+
+.article-section {
+  scroll-margin-top: 20px;
+}
+.article-section > h2:first-child {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.article-section > h2:first-child::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 7px;
+  height: 1.35em;
+  border-radius: 999px;
+  background: var(--accent);
+}
+.article-card-grid {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+.article-card {
+  min-width: 0;
+}
+.article-card div,
+.article-card p,
+.qa-block div,
+.qa-block p {
+  overflow-wrap: anywhere;
+}
+.article-callout strong,
+.qa-block strong,
+.article-card strong {
+  font-weight: 900;
+}
+
+.table-scroll {
+  width: 100%;
+  margin: 14px 0 18px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.ref-table {
+  table-layout: auto;
+  min-width: 720px;
+  line-height: 1.65;
+}
+.ref-table td:first-child {
+  white-space: normal !important;
+  min-width: 120px;
+}
+.ref-table td,
+.ref-table th {
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.result-headline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.result-headline h4 {
+  margin: 0;
+}
+.result-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .03em;
+}
+.result-badge.ok {
+  color: var(--ok);
+  background: #ecfdf5;
+  border: 1px solid rgba(16, 185, 129, .35);
+}
+.result-badge.bad {
+  color: var(--bad);
+  background: #fff7f7;
+  border: 1px solid rgba(239, 68, 68, .35);
+}
+.explanation-detail {
+  margin-top: 12px;
+}
+.explanation-body .readable-text p {
+  margin: 0 0 10px;
+}
+.option-analysis {
+  display: grid;
+  gap: 6px;
+}
+.option-analysis-head {
+  margin-bottom: 0;
+}
+.option.correct {
+  border-width: 2px;
+}
+.option.incorrect,
+.option.missed {
+  border-width: 2px;
+}
+
+@media (max-width: 860px) {
+  .main {
+    max-width: none;
+  }
+  .article-local-toc {
+    padding: 14px;
+    border-radius: 16px;
+  }
+  .article-local-toc .toc-links {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .article-local-toc a {
+    border-radius: 12px;
+  }
+  .nav-subtoc {
+    display: none;
+  }
+  .question-toolbar {
+    position: static !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .q-image {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+  .q-image-figure {
+    overflow-x: auto;
+  }
+  .q-image-figure figcaption::after {
+    content: "";
+  }
+  .article-section > h2:first-child {
+    align-items: flex-start;
+  }
+  .ref-table {
+    min-width: 620px;
+  }
+}
+
+
+
+/* 2026-05-28 article content expansion */
+.article-section strong { color: var(--ink); }
+.article-section code, .article-card code, .article-callout code { font-family: var(--mono); background: #eef2f7; padding: 1px 5px; border-radius: 6px; }
+.article-section .article-code code { background: transparent; padding: 0; border-radius: 0; }
+.article-local-toc { margin: 18px 0; padding: 18px; border: 1px solid rgba(148,163,184,.32); border-radius: 18px; background: rgba(255,255,255,.92); }
+.article-local-toc h2 { margin: 0 0 12px; font-size: 18px; }
+.toc-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.toc-links a { display: inline-flex; padding: 7px 10px; border-radius: 999px; background: #f1f5f9; color: var(--ink); text-decoration: none; font-weight: 700; font-size: 13px; }
+.toc-links a:hover { background: #e0e7ff; }
+
+/* deep article enhancement */
+details.article-card summary { cursor: pointer; font-weight: 650; line-height: 1.7; }
+details.article-card[open] summary { margin-bottom: 10px; }
+.article-section details.article-card { background: rgba(255,255,255,.95); }
+.article-section ol.article-list { padding-left: 1.35rem; }
+.article-section .ref-table code { white-space: nowrap; }
+
+/* Final code block rendering: one source line = one visual row, indentation preserved. */
+.numbered-code {
+  display: block !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  background: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 12px !important;
+  white-space: normal !important;
+  -webkit-overflow-scrolling: touch;
+}
+.numbered-code .code-line {
+  display: grid !important;
+  grid-template-columns: 3.25em max-content !important;
+  min-width: max-content !important;
+  white-space: normal !important;
+  line-height: 1.55 !important;
+}
+.option .numbered-code .code-line {
+  grid-template-columns: 2.75em max-content !important;
+}
+.numbered-code .line-no {
+  display: block !important;
+  padding: 0 10px !important;
+  border-right: 1px solid #cbd5e1 !important;
+  background: #eef2f7 !important;
+  color: #64748b !important;
+  font-family: var(--mono) !important;
+  font-size: 13px !important;
+  line-height: 1.55 !important;
+  text-align: right !important;
+  user-select: none !important;
+  white-space: normal !important;
+}
+.numbered-code .code-line code {
+  display: block !important;
+  min-width: max-content !important;
+  padding: 0 14px !important;
+  background: transparent !important;
+  color: #0f172a !important;
+  border-radius: 0 !important;
+  font-family: var(--mono) !important;
+  font-size: 14px !important;
+  line-height: 1.55 !important;
+  white-space: pre !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+}
+.numbered-code .code-line:first-child .line-no,
+.numbered-code .code-line:first-child code {
+  padding-top: 10px !important;
+}
+.numbered-code .code-line:last-child .line-no,
+.numbered-code .code-line:last-child code {
+  padding-bottom: 10px !important;
+}
+@media (max-width: 560px) {
+  .numbered-code .code-line {
+    grid-template-columns: 2.8em max-content !important;
+  }
+  .option .numbered-code .code-line {
+    grid-template-columns: 2.65em max-content !important;
+  }
+  .numbered-code .line-no,
+  .numbered-code .code-line code {
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+  }
+  .numbered-code .code-line code {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+}
+

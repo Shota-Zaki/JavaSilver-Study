@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - 頻出メソッド</title>
+  <title>Java Silver Study - 頻出メソッド一覧</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -17,10 +17,62 @@
     <main class="main reference-main article-main">
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>頻出メソッド</h1>
-        <p>String、StringBuilder、ArrayList、List、Object、Integerの戻り値・副作用・境界例外をまとめます。</p>
+        <h1>頻出メソッド一覧</h1>
+        <p>戻り値・副作用・例外の有無を中心に、Java Silverで間違えやすいメソッドをまとめます。</p>
       </section>
-      <section class="article-section"><h2>String</h2><div class="article-card-grid"><article class="article-card"><h3>length()</h3><div>文字数をintで返します。配列のlengthとは違いメソッドです。</div></article><article class="article-card"><h3>charAt(index)</h3><div>指定位置のcharを返します。範囲外はStringIndexOutOfBoundsException。</div></article><article class="article-card"><h3>substring(begin, end)</h3><div>begin以上end未満の部分文字列を返します。元のStringは変わりません。</div></article><article class="article-card"><h3>indexOf(str)</h3><div>見つかれば開始位置、見つからなければ-1。</div></article><article class="article-card"><h3>equals(obj)</h3><div>内容比較。nullに対して呼ぶとNPE。</div></article><article class="article-card"><h3>equalsIgnoreCase(str)</h3><div>大文字小文字を無視して比較。呼び出し元がnullならNPE。</div></article></div></section><section class="article-section"><h2>StringBuilder</h2><div class="article-card-grid"><article class="article-card"><h3>append(value)</h3><div>自分自身を変更し、自分自身を返します。</div></article><article class="article-card"><h3>insert(index, value)</h3><div>指定位置に挿入します。</div></article><article class="article-card"><h3>delete(begin, end)</h3><div>begin以上end未満を削除します。</div></article><article class="article-card"><h3>replace(begin, end, str)</h3><div>範囲を置き換えます。</div></article><article class="article-card"><h3>reverse()</h3><div>文字順を反転します。</div></article><article class="article-card"><h3>toString()</h3><div>Stringへ変換します。</div></article></div></section><section class="article-section"><h2>ArrayList / List</h2><div class="article-card-grid"><article class="article-card"><h3>size()</h3><div>要素数を返します。</div></article><article class="article-card"><h3>get(index)</h3><div>指定位置の要素を返します。</div></article><article class="article-card"><h3>add(e)</h3><div>末尾に追加し、booleanを返します。</div></article><article class="article-card"><h3>add(index, e)</h3><div>指定位置に挿入します。</div></article><article class="article-card"><h3>set(index, e)</h3><div>指定位置を置換し、古い要素を返します。</div></article><article class="article-card"><h3>remove(index)</h3><div>指定位置を削除し、削除した要素を返します。</div></article><article class="article-card"><h3>remove(object)</h3><div>一致する要素を削除し、booleanを返します。</div></article></div></section><section class="article-section"><h2>Object / Integer / System</h2><div class="article-card-grid"><article class="article-card"><h3>toString()</h3><div>文字列表現を返します。recordでは自動生成されます。</div></article><article class="article-card"><h3>equals(Object)</h3><div>Objectの標準実装は参照比較。Stringやrecordは内容比較へオーバーライド。</div></article><article class="article-card"><h3>hashCode()</h3><div>equalsと整合するハッシュ値。recordでは自動生成。</div></article><article class="article-card"><h3>Integer.parseInt(String)</h3><div>文字列をintへ変換。変換不能ならNumberFormatException。</div></article><article class="article-card"><h3>System.out.println(...)</h3><div>表示して改行します。戻り値はvoidなので代入不可。</div></article></div></section>
+
+      <section class="article-section">
+        <h2>String</h2>
+        <table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>副作用</th><th>注意</th></tr></thead><tbody>
+        <tr><td><code>length()</code></td><td><code>int</code></td><td>なし</td><td>配列は <code>length</code> フィールド</td></tr>
+        <tr><td><code>charAt(int)</code></td><td><code>char</code></td><td>なし</td><td>範囲外で例外</td></tr>
+        <tr><td><code>substring(int,int)</code></td><td><code>String</code></td><td>なし</td><td>終了位置は含まない</td></tr>
+        <tr><td><code>replace</code></td><td><code>String</code></td><td>なし</td><td>元のStringは変わらない</td></tr>
+        <tr><td><code>concat</code></td><td><code>String</code></td><td>なし</td><td>戻り値を受け取る</td></tr>
+        <tr><td><code>intern</code></td><td><code>String</code></td><td>なし</td><td>文字列プールの参照を返す</td></tr>
+        </tbody></table>
+      </section>
+      <section class="article-section">
+        <h2>StringBuilder</h2>
+        <table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>副作用</th><th>注意</th></tr></thead><tbody>
+        <tr><td><code>append</code></td><td><code>StringBuilder</code></td><td>あり</td><td>同じインスタンスを返す</td></tr>
+        <tr><td><code>insert</code></td><td><code>StringBuilder</code></td><td>あり</td><td>位置指定に注意</td></tr>
+        <tr><td><code>delete</code></td><td><code>StringBuilder</code></td><td>あり</td><td>endは含まない</td></tr>
+        <tr><td><code>reverse</code></td><td><code>StringBuilder</code></td><td>あり</td><td>元が逆順になる</td></tr>
+        <tr><td><code>substring</code></td><td><code>String</code></td><td>なし</td><td>Builder本体は変わらない</td></tr>
+        </tbody></table>
+      </section>
+      <section class="article-section">
+        <h2>ArrayList / List</h2>
+        <table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>副作用</th><th>注意</th></tr></thead><tbody>
+        <tr><td><code>size()</code></td><td><code>int</code></td><td>なし</td><td>配列は <code>length</code></td></tr>
+        <tr><td><code>add(E)</code></td><td><code>boolean</code></td><td>あり</td><td>末尾追加</td></tr>
+        <tr><td><code>add(int,E)</code></td><td><code>void</code></td><td>あり</td><td>挿入</td></tr>
+        <tr><td><code>remove(int)</code></td><td>削除した要素</td><td>あり</td><td>インデックス指定</td></tr>
+        <tr><td><code>remove(Object)</code></td><td><code>boolean</code></td><td>あり</td><td>値指定</td></tr>
+        <tr><td><code>set(int,E)</code></td><td>置換前の要素</td><td>あり</td><td>要素数は変わらない</td></tr>
+        </tbody></table>
+      </section>
+      <section class="article-section">
+        <h2>Wrapper / parse</h2>
+        <table class="ref-table"><thead><tr><th>メソッド</th><th>戻り値</th><th>注意</th></tr></thead><tbody>
+        <tr><td><code>Integer.parseInt(String)</code></td><td><code>int</code></td><td>変換不可なら <code>NumberFormatException</code></td></tr>
+        <tr><td><code>Integer.valueOf(String)</code></td><td><code>Integer</code></td><td>戻り値はラッパー</td></tr>
+        <tr><td><code>String.valueOf(Object)</code></td><td><code>String</code></td><td>nullなら文字列 <code>"null"</code></td></tr>
+        <tr><td><code>Objects.equals(a,b)</code></td><td><code>boolean</code></td><td>null安全な比較</td></tr>
+        </tbody></table>
+      </section>
+      <section class="article-section">
+        <h2>覚える基準</h2>
+        <p>丸暗記ではなく、次の基準で分類してください。</p>
+        <ul class="article-list">
+          <li><strong>戻り値を受け取らないと意味がない</strong>: <code>String</code> 系。</li>
+          <li><strong>本体を変える</strong>: <code>StringBuilder</code> の編集系、<code>ArrayList</code> の追加削除。</li>
+          <li><strong>境界で例外</strong>: <code>charAt</code>、<code>substring</code>、<code>get</code>。</li>
+          <li><strong>見つからなくても例外ではない</strong>: <code>indexOf</code> は <code>-1</code>。</li>
+        </ul>
+      </section>
+
     </main>
   </div>
   <script src="data/questions.js"></script>
