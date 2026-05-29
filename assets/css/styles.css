@@ -3020,3 +3020,16 @@ details.article-card[open] summary { margin-bottom: 10px; }
 @media (max-width: 860px) {
   .grid-two { grid-template-columns: 1fr; }
 }
+
+
+/* Foundation concept blocks added for beginner-oriented entry explanations */
+.article-section.concept-foundation {
+  border-color: rgba(37, 99, 235, .26);
+  background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+}
+.article-section.concept-foundation > h2:first-child::before {
+  background: #2563eb;
+}
+.article-section.concept-foundation .ref-table th {
+  white-space: nowrap;
+}

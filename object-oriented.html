@@ -6,7 +6,7 @@
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Java Silver Study - クラス・static・record</title>
-  <link rel="stylesheet" href="assets/css/styles.css?v=20260529-super-sub-v13">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260529-foundation-v14">
 </head>
 <body>
   <div class="layout">
@@ -20,6 +20,49 @@
         <h1>クラス・static・record</h1>
         <p>インスタンス、参照、static、初期化順、GC、recordを、出力問題で使える粒度まで整理します。</p>
       </section>
+
+<section class="article-section concept-foundation">
+  <h2>クラス・オブジェクト・インスタンスの入口説明</h2>
+  <p>この単元では、まず用語を分けてください。クラス、オブジェクト、インスタンスを曖昧にしたまま <code>static</code> や参照コピーに進むと、出力問題で迷います。</p>
+  <table class="ref-table">
+    <thead><tr><th>用語</th><th>意味</th><th>コード上の見え方</th></tr></thead>
+    <tbody>
+      <tr><td>クラス</td><td>状態と動作を定義した型。設計図のようなもの。</td><td><code>class Item { ... }</code></td></tr>
+      <tr><td>オブジェクト</td><td>実行時に扱われるデータのまとまり。</td><td>概念としての実体。</td></tr>
+      <tr><td>インスタンス</td><td><code>new</code> によって作られた、特定クラスのオブジェクト。</td><td><code>new Item()</code></td></tr>
+      <tr><td>フィールド</td><td>インスタンスやクラスが持つ状態。</td><td><code>int price;</code></td></tr>
+      <tr><td>メソッド</td><td>状態を使って行う動作。</td><td><code>void print() { ... }</code></td></tr>
+    </tbody>
+  </table>
+  <p>Java Silverでは、「クラスに書いてある値」と「各インスタンスが持つ値」を分けることが重要です。インスタンスフィールドは、インスタンスごとに別々です。一方、<code>static</code> フィールドはクラス側に属し、インスタンスごとのコピーではありません。</p>
+</section>
+
+<section class="article-section concept-foundation">
+  <h2>状態・動作・所属先を分ける</h2>
+  <pre class="article-code"><code>class Item {
+    String name;          // インスタンスごとの状態
+    static int count;     // クラス側の状態
+
+    void print() {        // インスタンスの動作
+        System.out.println(name);
+    }
+
+    static void showCount() { // クラス側の動作
+        System.out.println(count);
+    }
+}</code></pre>
+  <table class="ref-table">
+    <thead><tr><th>対象</th><th>所属</th><th>呼び出し方の基本</th><th>注意点</th></tr></thead>
+    <tbody>
+      <tr><td>インスタンスフィールド</td><td>各インスタンス</td><td><code>obj.name</code></td><td><code>static</code> メソッドから直接は使えない。</td></tr>
+      <tr><td>インスタンスメソッド</td><td>各インスタンス</td><td><code>obj.print()</code></td><td>実行には対象インスタンスが必要。</td></tr>
+      <tr><td>staticフィールド</td><td>クラス</td><td><code>Item.count</code></td><td>全インスタンスで共有される。</td></tr>
+      <tr><td>staticメソッド</td><td>クラス</td><td><code>Item.showCount()</code></td><td><code>this</code> は使えない。</td></tr>
+    </tbody>
+  </table>
+  <div class="article-callout warn"><strong>誤解しやすい点:</strong> <code>static</code> は「常に先に実行される」という意味ではありません。「インスタンスではなくクラス側に属する」という意味で理解してください。</div>
+</section>
+
       <section class="article-section">
 <h2>この単元の目的</h2>
 
@@ -425,7 +468,7 @@ System.out.println(a.x);</code></pre>
 </section>
     </main>
   </div>
-  <script src="data/questions.js?v=20260529-super-sub-v13"></script>
-  <script src="assets/js/app.js?v=20260529-super-sub-v13"></script>
+  <script src="data/questions.js?v=20260529-foundation-v14"></script>
+  <script src="assets/js/app.js?v=20260529-foundation-v14"></script>
 </body>
 </html>

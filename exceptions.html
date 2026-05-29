@@ -6,7 +6,7 @@
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Java Silver Study - 例外処理</title>
-  <link rel="stylesheet" href="assets/css/styles.css?v=20260529-super-sub-v13">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260529-foundation-v14">
 </head>
 <body>
   <div class="layout">
@@ -20,6 +20,46 @@
         <h1>例外処理</h1>
         <p>try/catch/finally、チェック例外、throw/throws、try-with-resources、catch順序、頻出実行時例外を詳しく整理します。</p>
       </section>
+
+<section class="article-section concept-foundation">
+  <h2>例外は「文字」ではなくオブジェクト</h2>
+  <p>例外処理は、エラーメッセージを表示する仕組みではありません。Javaでは、問題が起きたときに例外クラスのインスタンス、つまり<strong>例外オブジェクト</strong>が投げられます。</p>
+  <table class="ref-table">
+    <thead><tr><th>用語</th><th>意味</th><th>コード上の見え方</th></tr></thead>
+    <tbody>
+      <tr><td>例外オブジェクト</td><td>発生した問題を表すオブジェクト。</td><td><code>new IOException()</code>, <code>new NullPointerException()</code></td></tr>
+      <tr><td><code>throw</code></td><td>例外オブジェクトを発生させる。</td><td><code>throw new Exception();</code></td></tr>
+      <tr><td><code>throws</code></td><td>そのメソッドが例外を呼び出し元へ投げる可能性を宣言する。</td><td><code>void read() throws IOException</code></td></tr>
+      <tr><td><code>catch</code></td><td>投げられた例外オブジェクトを受け取る。</td><td><code>catch (IOException e)</code></td></tr>
+      <tr><td>伝播</td><td>処理されなかった例外が呼び出し元へ戻っていくこと。</td><td>呼び出し元の <code>catch</code> に探しに行く。</td></tr>
+    </tbody>
+  </table>
+  <pre class="article-code"><code>try {
+    throw new IllegalArgumentException();
+} catch (RuntimeException e) {
+    System.out.println("caught");
+}</code></pre>
+  <p>この例では、投げられた実体は <code>IllegalArgumentException</code> ですが、<code>RuntimeException</code> 型の <code>catch</code> で受け取れます。例外も通常のクラスと同じく、継承関係によるポリモーフィズムで扱われます。</p>
+</section>
+
+<section class="article-section concept-foundation">
+  <h2>throw と throws を混同しない</h2>
+  <p><code>throw</code> と <code>throws</code> は名前が似ていますが、役割は完全に違います。</p>
+  <table class="ref-table">
+    <thead><tr><th>項目</th><th><code>throw</code></th><th><code>throws</code></th></tr></thead>
+    <tbody>
+      <tr><td>品詞的な位置</td><td>メソッド本体の中に書く文。</td><td>メソッド宣言に書く句。</td></tr>
+      <tr><td>役割</td><td>実際に例外を投げる。</td><td>例外を投げる可能性を宣言する。</td></tr>
+      <tr><td>後ろに書くもの</td><td>例外オブジェクト。</td><td>例外クラス名。</td></tr>
+      <tr><td>例</td><td><code>throw new IOException();</code></td><td><code>throws IOException</code></td></tr>
+    </tbody>
+  </table>
+  <pre class="article-code"><code>void sample() throws java.io.IOException {
+    throw new java.io.IOException();
+}</code></pre>
+  <div class="article-callout warn"><strong>誤解しやすい点:</strong> チェック例外は「重大な例外」という意味ではありません。<strong>コンパイラが処理または宣言を要求する例外</strong>という意味です。</div>
+</section>
+
 
       <section class="article-section">
         <h2>この単元の結論</h2>
@@ -398,7 +438,7 @@ static void b() {
 
     </main>
   </div>
-  <script src="data/questions.js?v=20260529-super-sub-v13"></script>
-  <script src="assets/js/app.js?v=20260529-super-sub-v13"></script>
+  <script src="data/questions.js?v=20260529-foundation-v14"></script>
+  <script src="assets/js/app.js?v=20260529-foundation-v14"></script>
 </body>
 </html>

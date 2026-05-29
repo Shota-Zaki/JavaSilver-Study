@@ -6,7 +6,7 @@
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Java Silver Study - ポリモーフィズム・キャスト</title>
-  <link rel="stylesheet" href="assets/css/styles.css?v=20260529-super-sub-v13">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260529-foundation-v14">
 </head>
 <body>
   <div class="layout">
@@ -20,6 +20,43 @@
         <h1>ポリモーフィズム・キャスト</h1>
         <p>宣言型と実体、メソッド解決、フィールド解決、キャスト、instanceof、ClassCastExceptionを詳しく整理します。</p>
       </section>
+
+<section class="article-section concept-foundation">
+  <h2>宣言型・実体・参照を最初に分ける</h2>
+  <p>ポリモーフィズムは、「変数の型」と「実際に作られたオブジェクトの型」を分けて扱う仕組みです。まず次の3語を固定してください。</p>
+  <table class="ref-table">
+    <thead><tr><th>用語</th><th>意味</th><th>例</th><th>何を決めるか</th></tr></thead>
+    <tbody>
+      <tr><td>宣言型</td><td>変数を宣言したときの型。</td><td><code>A a</code></td><td>その変数で呼べるメソッドを決める。</td></tr>
+      <tr><td>実体</td><td><code>new</code> で実際に作られたオブジェクト。</td><td><code>new B()</code></td><td>overrideメソッドの実行内容を決める。</td></tr>
+      <tr><td>参照</td><td>変数が保持する、オブジェクトへのリンク情報。</td><td><code>a = new B()</code></td><td>どの実体を見ているかを示す。</td></tr>
+    </tbody>
+  </table>
+  <pre class="article-code"><code>class A { void test() { System.out.println("A"); } }
+class B extends A { void test() { System.out.println("B"); } void onlyB() {} }
+
+A a = new B();
+a.test();   // 実行されるのはBのtest
+a.onlyB();  // コンパイルエラー。宣言型AにはonlyBがない</code></pre>
+  <p>この例で実体は <code>B</code> ですが、変数の宣言型は <code>A</code> です。したがって <code>A</code> に見えるメソッドしか呼べません。ただし、呼べたメソッドがoverrideされていれば、実体である <code>B</code> 側が実行されます。</p>
+</section>
+
+<section class="article-section concept-foundation">
+  <h2>キャストは実体を変える処理ではない</h2>
+  <p>キャストは、オブジェクトの中身を別クラスに作り替える処理ではありません。参照を「その型として扱ってよいか」をコンパイラやJVMに示すだけです。</p>
+  <table class="ref-table">
+    <thead><tr><th>種類</th><th>例</th><th>意味</th><th>失敗</th></tr></thead>
+    <tbody>
+      <tr><td>アップキャスト</td><td><code>A a = new B();</code></td><td>サブクラスをスーパークラス型で扱う。</td><td>基本的に安全。</td></tr>
+      <tr><td>ダウンキャスト</td><td><code>B b = (B) a;</code></td><td>スーパークラス型の参照をサブクラス型として扱う。</td><td>実体が合わなければ <code>ClassCastException</code>。</td></tr>
+      <tr><td>無関係な型へのキャスト</td><td><code>String s = (String) new Object();</code></td><td>コンパイル上可能な場合もあるが、実体次第。</td><td>実行時例外になりやすい。</td></tr>
+    </tbody>
+  </table>
+  <pre class="article-code"><code>A a = new B();
+((B) a).onlyB(); // キャストでBとして見せてからonlyBを呼ぶ</code></pre>
+  <div class="article-callout warn"><strong>括弧の位置に注意:</strong> <code>(B) a.onlyB()</code> は、先に <code>a.onlyB()</code> を解釈しようとするため、宣言型 <code>A</code> に <code>onlyB</code> がなければコンパイルエラーです。</div>
+</section>
+
 
       <section class="article-section">
         <h2>この単元の結論</h2>
@@ -395,7 +432,7 @@ public class Main {
 
     </main>
   </div>
-  <script src="data/questions.js?v=20260529-super-sub-v13"></script>
-  <script src="assets/js/app.js?v=20260529-super-sub-v13"></script>
+  <script src="data/questions.js?v=20260529-foundation-v14"></script>
+  <script src="assets/js/app.js?v=20260529-foundation-v14"></script>
 </body>
 </html>
