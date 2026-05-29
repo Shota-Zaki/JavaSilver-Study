@@ -859,12 +859,13 @@ service cloud.firestore {
 
   function optionHtml(q, opt) {
     const inputType = questionType(q) === "multi" ? "checkbox" : "radio";
+    const optionText = opt.text || opt.code || "";
     const body = opt.code
       ? numberedCodeHtml(opt.code, "option-code")
-      : `<span class="option-text">${escapeHtml(opt.text)}</span>`;
+      : `<span class="option-text">${escapeHtml(optionText)}</span>`;
     return `<label class="option" data-key="${escapeHtml(opt.key)}">
       <input type="${inputType}" name="${escapeHtml(q.id)}" value="${escapeHtml(opt.key)}" data-option>
-      <div><span class="option-key">${escapeHtml(opt.key)}.</span>${body}</div>
+      <div class="option-body"><span class="option-key">${escapeHtml(opt.key)}.</span><div class="option-content">${body}</div></div>
     </label>`;
   }
 
@@ -930,13 +931,25 @@ service cloud.firestore {
       : "";
   }
 
+  function optionTextByKey(q, key) {
+    const option = (q.options || []).find(opt => opt.key === key);
+    if (!option) return "";
+    return String(option.text || option.code || "").trim();
+  }
+
+  function optionTextPreviewHtml(q, key) {
+    const text = optionTextByKey(q, key);
+    if (!text) return "";
+    return `<div class="option-analysis-choice-text">${readableInlineHtml(text)}</div>`;
+  }
+
   function optionAnalysisHtml(q) {
     const analyses = q.explanation && Array.isArray(q.explanation.optionAnalysis)
       ? q.explanation.optionAnalysis
       : [];
     if (analyses.length) {
       return `<div class="option-analysis-list">${analyses.map(item => `<div class="option-analysis ${item.isCorrect ? "is-correct" : "is-wrong"}">
-        <div class="option-analysis-head"><span class="option-key">${escapeHtml(item.key)}.</span></div>
+        <div class="option-analysis-head"><span class="option-key">${escapeHtml(item.key)}.</span>${optionTextPreviewHtml(q, item.key)}</div>
         ${readableTextHtml(item.detail || "")}
       </div>`).join("")}</div>`;
     }
@@ -947,16 +960,19 @@ service cloud.firestore {
     return points.length ? listHtml(points) : `<p class="muted">選択肢別の解説は未入力です。</p>`;
   }
 
-  function answerKeysHtml(keys) {
+  function answerKeysHtml(keys, q = null) {
     const values = Array.isArray(keys) ? keys : [];
     if (!values.length) return `<span class="answer-empty">未選択</span>`;
-    return `<ul class="answer-key-list">${values.map(key => `<li><span class="answer-key-chip">${escapeHtml(key)}</span></li>`).join("")}</ul>`;
+    return `<ul class="answer-key-list">${values.map(key => {
+      const text = q ? optionTextByKey(q, key) : "";
+      return `<li><span class="answer-key-chip">${escapeHtml(key)}</span>${text ? `<span class="answer-choice-text">${readableInlineHtml(text)}</span>` : ""}</li>`;
+    }).join("")}</ul>`;
   }
 
-  function answerSummaryHtml(label, keys, className = "") {
+  function answerSummaryHtml(label, keys, className = "", q = null) {
     return `<div class="answer-summary-item ${className}">
       <strong>${escapeHtml(label)}</strong>
-      ${answerKeysHtml(keys)}
+      ${answerKeysHtml(keys, q)}
     </div>`;
   }
 
@@ -986,8 +1002,8 @@ service cloud.firestore {
         <span class="result-badge ${isCorrect ? "ok" : "bad"}">${isCorrect ? "OK" : "REVIEW"}</span>
       </div>
       <div class="answer-summary">
-        ${answerSummaryHtml("あなたの解答", selected, "user-answer")}
-        ${answerSummaryHtml("正解", q.answer || [], "correct-answer")}
+        ${answerSummaryHtml("あなたの解答", selected, "user-answer", q)}
+        ${answerSummaryHtml("正解", q.answer || [], "correct-answer", q)}
       </div>
       ${detail("解説", mainExplanation, true, "main-explanation")}
       ${detail("選択肢別解説", optionAnalysisHtml(q), true)}
@@ -1378,6 +1394,8 @@ service cloud.firestore {
       groupHtml("nav-learning", "学習記事", "基礎〜Java 17", learningHtml, learningActive, learningActive) +
       groupHtml("nav-other", "その他", "直前確認・補助", otherHtml, otherActive, otherActive || path === "index.html");
 
+    setupMobileNav(nav);
+
     nav.querySelectorAll("details.nav-group").forEach(details => {
       details.addEventListener("toggle", () => {
         const state = readJson(navStateKey, {});
@@ -1385,6 +1403,47 @@ service cloud.firestore {
         writeJson(navStateKey, state);
       });
     });
+  }
+
+
+  function setupMobileNav(nav) {
+    const sidebar = nav.closest(".sidebar");
+    if (!sidebar) return;
+    const brand = sidebar.querySelector(".brand");
+    let btn = sidebar.querySelector(".mobile-nav-toggle");
+    if (!btn) {
+      btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "mobile-nav-toggle";
+      btn.setAttribute("aria-controls", nav.id || "chapterNav");
+      btn.setAttribute("aria-expanded", "false");
+      btn.innerHTML = '<span class="mobile-nav-toggle-icon" aria-hidden="true">☰</span><span class="mobile-nav-toggle-label">メニュー</span>';
+      if (brand) brand.insertAdjacentElement("afterend", btn);
+      else sidebar.insertBefore(btn, nav);
+    }
+
+    const setOpen = open => {
+      sidebar.classList.toggle("nav-open", open);
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      const label = btn.querySelector(".mobile-nav-toggle-label");
+      if (label) label.textContent = open ? "閉じる" : "メニュー";
+    };
+
+    if (!btn.dataset.bound) {
+      btn.addEventListener("click", () => setOpen(!sidebar.classList.contains("nav-open")));
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape") setOpen(false);
+      });
+      btn.dataset.bound = "1";
+    }
+
+    nav.querySelectorAll("a.nav-link").forEach(link => {
+      if (link.dataset.mobileCloseBound) return;
+      link.addEventListener("click", () => setOpen(false));
+      link.dataset.mobileCloseBound = "1";
+    });
+
+    setOpen(false);
   }
 
   function renderIndex() {
@@ -1886,8 +1945,8 @@ service cloud.firestore {
       </div>
       <div class="wrong-item-list">
         ${items.map(({ chapter, question, record }) => {
-          const selected = answerKeysHtml(record.selected || []);
-          const answer = answerKeysHtml(question.answer || []);
+          const selected = answerKeysHtml(record.selected || [], question);
+          const answer = answerKeysHtml(question.answer || [], question);
           const wrongCount = wrongAttemptCount(record);
           const totalCount = totalAttemptCount(record);
           const tags = getQuestionTags(question).slice(0, 4).map(tag => `<span class="tag-chip">${escapeHtml(tag)}</span>`).join("");

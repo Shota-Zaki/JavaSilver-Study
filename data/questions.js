@@ -1,6 +1,6 @@
 window.JAVA_STUDY_DATA = {
   "title": "Java Silver 勉強用ページ",
-  "version": "20260529-q52-fixed-v15",
+  "version": "20260529-ch08-option-fix-v16",
   "chapters": [
     {
       "id": "ch01",
@@ -25104,32 +25104,32 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「「1, 10, 0」が表示される」という出力は発生しません。"
+              "detail": "誤りです。cはローカル変数なので0で自動初期化されません。フィールドならlongの初期値は0ですが、main内のローカル変数には適用されません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「「1, 10L, null」が表示される」という出力は発生しません。"
+              "detail": "誤りです。longの接尾辞Lはソースコード上の型指定であり、printlnの表示には出ません。またlongにnullは入りません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「「1, 10, null」が表示される」という出力は発生しません。"
+              "detail": "誤りです。cが初期化されていないため、nullが表示される以前にコンパイルエラーになります。nullは参照型用でlongでは扱えません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「「1, 10L, 0」が表示される」という出力は発生しません。"
+              "detail": "誤りです。bに代入した10Lは表示時には10です。さらにcはローカル変数なので0で自動初期化されません。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。コンパイル時点で止まるため、実行時例外ではありません。"
+              "detail": "誤りです。未初期化ローカル変数の使用はコンパイル時に検出されるため、実行時例外ではありません。"
             },
             {
               "key": "F",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「コンパイルエラーが発生する」です。ローカル変数cが初期化されないまま参照されるためコンパイルエラー。longリテラルのLは表示結果には出ない。"
+              "detail": "正解です。ローカル変数cが代入されないままprintlnで読まれているため、コンパイルエラーになります。"
             }
           ],
           "relatedKnowledge": [
@@ -25224,37 +25224,37 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正しい選択肢です。publicクラス名がAなのでファイル名A.javaは正しい。AとBの両方にmainがあるため、A.class/B.class生成後はjava Aもjava Bも実行できる。"
+              "detail": "正しいです。publicクラスはAなのでA.javaをjavac A.javaでコンパイルできます。Bにもmainがあるため、生成されたB.classをjava Bで実行できます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「このコードは、javac B.javaでコンパイルできるが、javaコマンドで実行できない」ではありません。publicクラス名がAなのでファイル名A.javaは正しい。AとBの両方にmainがあるため、A.class/B.class生成後はjava Aもjava Bも実行できる。"
+              "detail": "誤りです。ソースファイル名はpublicクラスAに合わせてA.javaです。B.javaをコンパイル対象にする説明が間違いです。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「このコードは、javac A.javaでコンパイルできるが、javaコマンドで実行できない」ではありません。publicクラス名がAなのでファイル名A.javaは正しい。AとBの両方にmainがあるため、A.class/B.class生成後はjava Aもjava Bも実行できる。"
+              "detail": "誤りです。javac A.javaでコンパイルするとA.classとB.classが生成されます。AにもBにもmainがあるため、javaコマンドで実行できます。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「このコードは、javac B.javaでコンパイルでき、java Bで実行できる」ではありません。publicクラス名がAなのでファイル名A.javaは正しい。AとBの両方にmainがあるため、A.class/B.class生成後はjava Aもjava Bも実行できる。"
+              "detail": "誤りです。java Bで実行できる点は合っていますが、コンパイル対象はB.javaではなくA.javaです。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正しい選択肢です。publicクラス名がAなのでファイル名A.javaは正しい。AとBの両方にmainがあるため、A.class/B.class生成後はjava Aもjava Bも実行できる。"
+              "detail": "正しいです。A.javaをコンパイルでき、Aにはmainがあるためjava Aで実行できます。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「このコードは、javac A.javaでコンパイルでき、java Bで実行できる / このコードは、javac A.javaでコンパイルでき、java Aで実行できる」です。"
+              "detail": "誤りです。1つのソースファイルにpublicでないクラスを一緒に書くことは可能です。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「このコードは、javac A.javaでコンパイルでき、java Bで実行できる / このコードは、javac A.javaでコンパイルでき、java Aで実行できる」です。"
+              "detail": "誤りです。ファイル名を合わせるべきなのはpublicクラスAです。BはpublicではないのでB.javaにする必要はありません。"
             }
           ],
           "relatedKnowledge": [
@@ -25333,22 +25333,22 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「何も表示されない」という出力は発生しません。"
+              "detail": "誤りです。printメソッドの中で非staticフィールドcontentsを直接参照しているため、何も表示される前にコンパイルエラーになります。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「「\"\"」が表示される」という出力は発生しません。"
+              "detail": "誤りです。引数なしコンストラクタがcontentsを空文字にするかどうか以前に、staticメソッドからインスタンスフィールドを直接読んでいる点が不正です。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「コンパイルエラーが発生する」です。staticメソッドprintから非staticフィールドcontentsを直接参照しているためコンパイルエラー。"
+              "detail": "正解です。staticメソッドは特定のインスタンスに属さないため、非staticフィールドcontentsをそのまま参照できません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。コンパイル時点で止まるため、実行時例外ではありません。"
+              "detail": "誤りです。実行時例外ではなく、static文脈からインスタンスフィールドを参照するコンパイルエラーです。"
             }
           ],
           "relatedKnowledge": [
@@ -25436,37 +25436,37 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「A」ではありません。0b0110はintリテラルの6。Number型引数に渡すとIntegerへオートボクシングされるため、Integerの分岐に入る。"
+              "detail": "誤りです。0b0110はbyteではなくintリテラルです。Number型へ渡すとIntegerにオートボクシングされるためByte分岐には入りません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「B」ではありません。0b0110はintリテラルの6。Number型引数に渡すとIntegerへオートボクシングされるため、Integerの分岐に入る。"
+              "detail": "誤りです。0b0110はshortではなくintとして扱われます。Short分岐には入りません。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「C」です。0b0110はintリテラルの6。Number型引数に渡すとIntegerへオートボクシングされるため、Integerの分岐に入る。"
+              "detail": "正解です。0b0110は10進数の6を表すintリテラルで、Number引数に渡すとIntegerへオートボクシングされます。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「D」ではありません。0b0110はintリテラルの6。Number型引数に渡すとIntegerへオートボクシングされるため、Integerの分岐に入る。"
+              "detail": "誤りです。longリテラルではないためLong分岐には入りません。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「E」ではありません。0b0110はintリテラルの6。Number型引数に渡すとIntegerへオートボクシングされるため、Integerの分岐に入る。"
+              "detail": "誤りです。Integer分岐に一致するためelseには進みません。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「C」です。"
+              "detail": "誤りです。intからIntegerへのオートボクシングとNumberへのアップキャストが成立します。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "誤りです。実行時例外は発生せず、結果は「C」です。"
+              "detail": "誤りです。キャスト失敗やnull参照はなく、Integer分岐で正常にCを返します。"
             }
           ],
           "relatedKnowledge": [
@@ -25551,32 +25551,32 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「Bが出力される」であり、「Aが出力される」ではありません。"
+              "detail": "誤りです。IllegalStateExceptionはstr.equalsIgnoreCaseの判定後にthrowされますが、strがnullなのでその前にNullPointerExceptionが発生します。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「Bが出力される」です。test(null)によりstr.equalsIgnoreCase(\"\")でNullPointerExceptionが発生する。これはRuntimeExceptionのサブクラスなのでBが出力される。"
+              "detail": "正解です。NullPointerExceptionはRuntimeExceptionのサブクラスなので、2番目のcatch(RuntimeException e)で捕捉されます。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「Bが出力される」であり、「Cが出力される」ではありません。"
+              "detail": "誤りです。catch(Exception e)にも到達可能ですが、先にcatch(RuntimeException e)が一致するためCは出力されません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「Bが出力される」であり、「何も出力されない」ではありません。"
+              "detail": "誤りです。NullPointerExceptionはcatch(RuntimeException e)で捕捉され、Bが出力されます。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「Bが出力される」です。"
+              "detail": "誤りです。catchの順序はサブクラス側から広い型へ並んでおり、この並び自体はコンパイル可能です。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。実行時例外は発生せず、結果は「Bが出力される」です。"
+              "detail": "誤りです。NullPointerExceptionはcatch(RuntimeException e)で捕捉されるため、未処理例外として外へ出ません。"
             }
           ],
           "relatedKnowledge": [
@@ -25687,47 +25687,47 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正しい選択肢です。B型にはtestメソッドが存在しないため、b.test(1)と(A)b.test(2)がコンパイルエラー。キャストよりメソッド呼び出しが先に解釈される点が罠。"
+              "detail": "正解です。(1) は b.test(1) です。変数bの宣言型Bにはtestメソッドがないため、実体がCでも呼び出せません。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正しい選択肢です。B型にはtestメソッドが存在しないため、b.test(1)と(A)b.test(2)がコンパイルエラー。キャストよりメソッド呼び出しが先に解釈される点が罠。"
+              "detail": "正解です。(2) は (A)b.test(2) です。キャストよりも b.test(2) のメソッド呼び出しが先に解釈されるため、B型にtestがない時点でコンパイルエラーです。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「(3)」ではありません。B型にはtestメソッドが存在しないため、b.test(1)と(A)b.test(2)がコンパイルエラー。キャストよりメソッド呼び出しが先に解釈される点が罠。"
+              "detail": "誤りです。(3) のように ((A)b).test(3) と括弧でキャストを先に行えば、A型としてtestを呼び出せます。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「(4)」ではありません。B型にはtestメソッドが存在しないため、b.test(1)と(A)b.test(2)がコンパイルエラー。キャストよりメソッド呼び出しが先に解釈される点が罠。"
+              "detail": "誤りです。(4) はA型変数tでtestを呼び出す形なので、Aに宣言されたtestが見えます。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「(5)」ではありません。B型にはtestメソッドが存在しないため、b.test(1)と(A)b.test(2)がコンパイルエラー。キャストよりメソッド呼び出しが先に解釈される点が罠。"
+              "detail": "誤りです。(5) はC型へキャストしてからtestを呼び出しており、CはAを実装しているため問題ありません。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。「(6)」ではありません。B型にはtestメソッドが存在しないため、b.test(1)と(A)b.test(2)がコンパイルエラー。キャストよりメソッド呼び出しが先に解釈される点が罠。"
+              "detail": "誤りです。(6) はA型へキャストしてからtestを呼び出しているだけで、コンパイルエラーにはなりません。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "誤りです。「(7)」ではありません。B型にはtestメソッドが存在しないため、b.test(1)と(A)b.test(2)がコンパイルエラー。キャストよりメソッド呼び出しが先に解釈される点が罠。"
+              "detail": "誤りです。(7) の sealed interface A permits C は、Cだけに実装を許可する宣言として成立します。"
             },
             {
               "key": "H",
               "isCorrect": false,
-              "detail": "誤りです。「(8)」ではありません。B型にはtestメソッドが存在しないため、b.test(1)と(A)b.test(2)がコンパイルエラー。キャストよりメソッド呼び出しが先に解釈される点が罠。"
+              "detail": "誤りです。(8) の final class C implements A は、sealed interfaceを実装する許可クラスとしてfinalを付けているため成立します。"
             },
             {
               "key": "I",
               "isCorrect": false,
-              "detail": "誤りです。「(9)」ではありません。B型にはtestメソッドが存在しないため、b.test(1)と(A)b.test(2)がコンパイルエラー。キャストよりメソッド呼び出しが先に解釈される点が罠。"
+              "detail": "誤りです。(9) の public void test(int i) は、Aの抽象メソッドをpublicで実装しているため成立します。"
             }
           ],
           "relatedKnowledge": [
@@ -25819,32 +25819,32 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「10,11|20,11|11,11|21,21|」です。フィールドアクセスは参照変数の型で決まり、メソッド呼び出しは実体の型で決まる。A型のb.dataはA.data、b.getData()はB側メソッドになる。"
+              "detail": "正解です。選択肢Aの内容「10,11|20,11|11,11|21,21|」が、このコードの実際の結果または正しい説明です。 フィールドアクセスは参照変数の型で決まり、メソッド呼び出しは実体の型で決まる。A型のb.dataはA.data、b.getData()はB側メソッドになる。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「10,10|10,10|20,20|21,21|」ではありません。フィールドアクセスは参照変数の型で決まり、メソッド呼び出しは実体の型で決まる。A型のb.dataはA.data、b.getData()はB側メソッドになる。"
+              "detail": "誤りです。選択肢Bの内容「10,10|10,10|20,20|21,21|」にはなりません。正しくは A「10,11|20,11|11,11|21,21|」 です。 フィールドアクセスは参照変数の型で決まり、メソッド呼び出しは実体の型で決まる。A型のb.dataはA.data、b.getData()はB側メソッドになる。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「10,10|20,20|11,11|21,21|」ではありません。フィールドアクセスは参照変数の型で決まり、メソッド呼び出しは実体の型で決まる。A型のb.dataはA.data、b.getData()はB側メソッドになる。"
+              "detail": "誤りです。選択肢Cの内容「10,10|20,20|11,11|21,21|」にはなりません。正しくは A「10,11|20,11|11,11|21,21|」 です。 フィールドアクセスは参照変数の型で決まり、メソッド呼び出しは実体の型で決まる。A型のb.dataはA.data、b.getData()はB側メソッドになる。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「10,11|20,20|11,11|21,21|」ではありません。フィールドアクセスは参照変数の型で決まり、メソッド呼び出しは実体の型で決まる。A型のb.dataはA.data、b.getData()はB側メソッドになる。"
+              "detail": "誤りです。選択肢Dの内容「10,11|20,20|11,11|21,21|」にはなりません。正しくは A「10,11|20,11|11,11|21,21|」 です。 フィールドアクセスは参照変数の型で決まり、メソッド呼び出しは実体の型で決まる。A型のb.dataはA.data、b.getData()はB側メソッドになる。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「10,10|10,20|20,20|21,21|」ではありません。フィールドアクセスは参照変数の型で決まり、メソッド呼び出しは実体の型で決まる。A型のb.dataはA.data、b.getData()はB側メソッドになる。"
+              "detail": "誤りです。選択肢Eの内容「10,10|10,20|20,20|21,21|」にはなりません。正しくは A「10,11|20,11|11,11|21,21|」 です。 フィールドアクセスは参照変数の型で決まり、メソッド呼び出しは実体の型で決まる。A型のb.dataはA.data、b.getData()はB側メソッドになる。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。「10,11|10,11|20,11|21,21|」ではありません。フィールドアクセスは参照変数の型で決まり、メソッド呼び出しは実体の型で決まる。A型のb.dataはA.data、b.getData()はB側メソッドになる。"
+              "detail": "誤りです。選択肢Fの内容「10,11|10,11|20,11|21,21|」にはなりません。正しくは A「10,11|20,11|11,11|21,21|」 です。 フィールドアクセスは参照変数の型で決まり、メソッド呼び出しは実体の型で決まる。A型のb.dataはA.data、b.getData()はB側メソッドになる。"
             }
           ],
           "relatedKnowledge": [
@@ -25948,42 +25948,42 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「A、Eの順に表示される」であり、「Aのみ表示される」ではありません。"
+              "detail": "誤りです。選択肢Aの内容「Aのみ表示される」にはなりません。正しくは B「A、Eの順に表示される」 です。 ExceptionAがスローされ、最初のcatch(ExceptionA)でAが出力される。その後finallyでEが出力される。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「A、Eの順に表示される」です。ExceptionAがスローされ、最初のcatch(ExceptionA)でAが出力される。その後finallyでEが出力される。"
+              "detail": "正解です。選択肢Bの内容「A、Eの順に表示される」が、このコードの実際の結果または正しい説明です。 ExceptionAがスローされ、最初のcatch(ExceptionA)でAが出力される。その後finallyでEが出力される。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「A、Eの順に表示される」であり、「Bのみ表示される」ではありません。"
+              "detail": "誤りです。選択肢Cの内容「Bのみ表示される」にはなりません。正しくは B「A、Eの順に表示される」 です。 ExceptionAがスローされ、最初のcatch(ExceptionA)でAが出力される。その後finallyでEが出力される。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「A、Eの順に表示される」であり、「B、Eの順に表示される」ではありません。"
+              "detail": "誤りです。選択肢Dの内容「B、Eの順に表示される」にはなりません。正しくは B「A、Eの順に表示される」 です。 ExceptionAがスローされ、最初のcatch(ExceptionA)でAが出力される。その後finallyでEが出力される。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「A、Eの順に表示される」であり、「Cのみ表示される」ではありません。"
+              "detail": "誤りです。選択肢Eの内容「Cのみ表示される」にはなりません。正しくは B「A、Eの順に表示される」 です。 ExceptionAがスローされ、最初のcatch(ExceptionA)でAが出力される。その後finallyでEが出力される。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「A、Eの順に表示される」であり、「C、Eの順に表示される」ではありません。"
+              "detail": "誤りです。選択肢Fの内容「C、Eの順に表示される」にはなりません。正しくは B「A、Eの順に表示される」 です。 ExceptionAがスローされ、最初のcatch(ExceptionA)でAが出力される。その後finallyでEが出力される。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「A、Eの順に表示される」であり、「Dのみ表示される」ではありません。"
+              "detail": "誤りです。選択肢Gの内容「Dのみ表示される」にはなりません。正しくは B「A、Eの順に表示される」 です。 ExceptionAがスローされ、最初のcatch(ExceptionA)でAが出力される。その後finallyでEが出力される。"
             },
             {
               "key": "H",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「A、Eの順に表示される」であり、「D、Eの順に表示される」ではありません。"
+              "detail": "誤りです。選択肢Hの内容「D、Eの順に表示される」にはなりません。正しくは B「A、Eの順に表示される」 です。 ExceptionAがスローされ、最初のcatch(ExceptionA)でAが出力される。その後finallyでEが出力される。"
             }
           ],
           "relatedKnowledge": [
@@ -26064,27 +26064,27 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「BAAECDDB」です。switch式のアロー形式はフォールスルーしない。70→B、80→A、90→A、95→E、40→C、20→D、10→D、60→B。"
+              "detail": "正解です。選択肢Aの内容「BAAECDDB」が、このコードの実際の結果または正しい説明です。 switch式のアロー形式はフォールスルーしない。70→B、80→A、90→A、95→E、40→C、20→D、10→D、60→B。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「BASECDDB」ではありません。switch式のアロー形式はフォールスルーしない。70→B、80→A、90→A、95→E、40→C、20→D、10→D、60→B。"
+              "detail": "誤りです。選択肢Bの内容「BASECDDB」にはなりません。正しくは A「BAAECDDB」 です。 switch式のアロー形式はフォールスルーしない。70→B、80→A、90→A、95→E、40→C、20→D、10→D、60→B。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「BASEASEASEECDBASEDCDBASEBASE」ではありません。switch式のアロー形式はフォールスルーしない。70→B、80→A、90→A、95→E、40→C、20→D、10→D、60→B。"
+              "detail": "誤りです。選択肢Cの内容「BASEASEASEECDBASEDCDBASEBASE」にはなりません。正しくは A「BAAECDDB」 です。 switch式のアロー形式はフォールスルーしない。70→B、80→A、90→A、95→E、40→C、20→D、10→D、60→B。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「BAAECDDB」です。"
+              "detail": "この選択肢は誤りです。この問題の正解は A「BAAECDDB」 です。コンパイルエラーとして処理する問題ではありません。 switch式のアロー形式はフォールスルーしない。70→B、80→A、90→A、95→E、40→C、20→D、10→D、60→B。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。実行時例外は発生せず、結果は「BAAECDDB」です。"
+              "detail": "この選択肢は誤りです。実行時例外ではなく、正解は A「BAAECDDB」 です。 switch式のアロー形式はフォールスルーしない。70→B、80→A、90→A、95→E、40→C、20→D、10→D、60→B。"
             }
           ],
           "relatedKnowledge": [
@@ -26170,27 +26170,27 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「list.add(new Item()); / list.add((Item) new Object());」であり、「list.add(new Item(null));」ではありません。"
+              "detail": "このコードは条件を満たしません。選択肢Aの記述「list.add(new Item(null));」は、正解として必要な条件から外れています。 record Item(String name)には引数なしコンストラクタがない。ObjectをItemへダウンキャストすると実行時にClassCastException。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「list.add(new Item(\"\"));」ではありません。record Item(String name)には引数なしコンストラクタがない。ObjectをItemへダウンキャストすると実行時にClassCastException。"
+              "detail": "このコードは条件を満たしません。選択肢Bの記述「list.add(new Item(\"\"));」は、正解として必要な条件から外れています。 record Item(String name)には引数なしコンストラクタがない。ObjectをItemへダウンキャストすると実行時にClassCastException。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「list.add(new Item()); / list.add((Item) new Object());」であり、「list.add(null);」ではありません。"
+              "detail": "このコードは条件を満たしません。選択肢Cの記述「list.add(null);」は、正解として必要な条件から外れています。 record Item(String name)には引数なしコンストラクタがない。ObjectをItemへダウンキャストすると実行時にClassCastException。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正しい選択肢です。record Item(String name)には引数なしコンストラクタがない。ObjectをItemへダウンキャストすると実行時にClassCastException。"
+              "detail": "このコードは条件を満たします。選択肢Dは、設問の制約に対して正しくコンパイルまたは正しく動作します。 record Item(String name)には引数なしコンストラクタがない。ObjectをItemへダウンキャストすると実行時にClassCastException。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正しい選択肢です。record Item(String name)には引数なしコンストラクタがない。ObjectをItemへダウンキャストすると実行時にClassCastException。"
+              "detail": "このコードは条件を満たします。選択肢Eは、設問の制約に対して正しくコンパイルまたは正しく動作します。 record Item(String name)には引数なしコンストラクタがない。ObjectをItemへダウンキャストすると実行時にClassCastException。"
             }
           ],
           "relatedKnowledge": [
@@ -26273,32 +26273,32 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「1」ではありません。文字列リテラル\"sample\"はコンスタントプールで1つ共有される。new String(\"sample\")が2回あるため、合計3つ。"
+              "detail": "該当しません。(1) の箇所は、この設問で問われている誤りではありません。 文字列リテラル\"sample\"はコンスタントプールで1つ共有される。new String(\"sample\")が2回あるため、合計3つ。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「2」ではありません。文字列リテラル\"sample\"はコンスタントプールで1つ共有される。new String(\"sample\")が2回あるため、合計3つ。"
+              "detail": "該当しません。(2) の箇所は、この設問で問われている誤りではありません。 文字列リテラル\"sample\"はコンスタントプールで1つ共有される。new String(\"sample\")が2回あるため、合計3つ。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「3」です。文字列リテラル\"sample\"はコンスタントプールで1つ共有される。new String(\"sample\")が2回あるため、合計3つ。"
+              "detail": "該当します。(3) の箇所で問題が発生します。 文字列リテラル\"sample\"はコンスタントプールで1つ共有される。new String(\"sample\")が2回あるため、合計3つ。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「4」ではありません。文字列リテラル\"sample\"はコンスタントプールで1つ共有される。new String(\"sample\")が2回あるため、合計3つ。"
+              "detail": "該当しません。(4) の箇所は、この設問で問われている誤りではありません。 文字列リテラル\"sample\"はコンスタントプールで1つ共有される。new String(\"sample\")が2回あるため、合計3つ。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「5」ではありません。文字列リテラル\"sample\"はコンスタントプールで1つ共有される。new String(\"sample\")が2回あるため、合計3つ。"
+              "detail": "該当しません。(5) の箇所は、この設問で問われている誤りではありません。 文字列リテラル\"sample\"はコンスタントプールで1つ共有される。new String(\"sample\")が2回あるため、合計3つ。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。「6」ではありません。文字列リテラル\"sample\"はコンスタントプールで1つ共有される。new String(\"sample\")が2回あるため、合計3つ。"
+              "detail": "該当しません。(6) の箇所は、この設問で問われている誤りではありません。 文字列リテラル\"sample\"はコンスタントプールで1つ共有される。new String(\"sample\")が2回あるため、合計3つ。"
             }
           ],
           "relatedKnowledge": [
@@ -26397,42 +26397,42 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「C、A、Bの順に表示される」であり、「A、Bの順に表示される」ではありません。"
+              "detail": "誤りです。選択肢Aの内容「A、Bの順に表示される」にはなりません。正しくは F「C、A、Bの順に表示される」 です。 tryブロックで例外が発生すると、先にリソースのcloseが呼ばれC、次にcatchでA、最後にfinallyでB。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「C、A、Bの順に表示される」であり、「A、Cの順に表示される」ではありません。"
+              "detail": "誤りです。選択肢Bの内容「A、Cの順に表示される」にはなりません。正しくは F「C、A、Bの順に表示される」 です。 tryブロックで例外が発生すると、先にリソースのcloseが呼ばれC、次にcatchでA、最後にfinallyでB。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「C、A、Bの順に表示される」であり、「B、Aの順に表示される」ではありません。"
+              "detail": "誤りです。選択肢Cの内容「B、Aの順に表示される」にはなりません。正しくは F「C、A、Bの順に表示される」 です。 tryブロックで例外が発生すると、先にリソースのcloseが呼ばれC、次にcatchでA、最後にfinallyでB。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「C、A、Bの順に表示される」であり、「A、B、Cの順に表示される」ではありません。"
+              "detail": "誤りです。選択肢Dの内容「A、B、Cの順に表示される」にはなりません。正しくは F「C、A、Bの順に表示される」 です。 tryブロックで例外が発生すると、先にリソースのcloseが呼ばれC、次にcatchでA、最後にfinallyでB。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「C、A、Bの順に表示される」であり、「A、C、Bの順に表示される」ではありません。"
+              "detail": "誤りです。選択肢Eの内容「A、C、Bの順に表示される」にはなりません。正しくは F「C、A、Bの順に表示される」 です。 tryブロックで例外が発生すると、先にリソースのcloseが呼ばれC、次にcatchでA、最後にfinallyでB。"
             },
             {
               "key": "F",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「C、A、Bの順に表示される」です。tryブロックで例外が発生すると、先にリソースのcloseが呼ばれC、次にcatchでA、最後にfinallyでB。"
+              "detail": "正解です。選択肢Fの内容「C、A、Bの順に表示される」が、このコードの実際の結果または正しい説明です。 tryブロックで例外が発生すると、先にリソースのcloseが呼ばれC、次にcatchでA、最後にfinallyでB。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「C、A、Bの順に表示される」です。"
+              "detail": "この選択肢は誤りです。この問題の正解は F「C、A、Bの順に表示される」 です。コンパイルエラーとして処理する問題ではありません。 tryブロックで例外が発生すると、先にリソースのcloseが呼ばれC、次にcatchでA、最後にfinallyでB。"
             },
             {
               "key": "H",
               "isCorrect": false,
-              "detail": "誤りです。実行時例外は発生せず、結果は「C、A、Bの順に表示される」です。"
+              "detail": "この選択肢は誤りです。実行時例外ではなく、正解は F「C、A、Bの順に表示される」 です。 tryブロックで例外が発生すると、先にリソースのcloseが呼ばれC、次にcatchでA、最後にfinallyでB。"
             }
           ],
           "relatedKnowledge": [
@@ -26513,27 +26513,27 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。interfaceの抽象メソッドは暗黙的にpublic。Cは正しく実装し、Eはabstractクラスなので未実装でもよい。"
+              "detail": "誤りです。interfaceのexecuteは暗黙的にpublicです。実装メソッドをprivateにすると、アクセス範囲を狭めるため不正です。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。interfaceの抽象メソッドは暗黙的にpublic。Cは正しく実装し、Eはabstractクラスなので未実装でもよい。"
+              "detail": "誤りです。execute(String str)は引数が違うためオーバーロードです。interfaceのexecute()を実装したことにはなりません。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正しい選択肢です。interfaceの抽象メソッドは暗黙的にpublic。Cは正しく実装し、Eはabstractクラスなので未実装でもよい。"
+              "detail": "正解です。public void execute() で、interfaceに宣言されたexecute()を同じシグネチャかつpublicで実装しています。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。interfaceの抽象メソッドは暗黙的にpublic。Cは正しく実装し、Eはabstractクラスなので未実装でもよい。"
+              "detail": "誤りです。戻り値だけをStringに変えても実装にはなりません。void execute()と戻り値型が一致しないため不正です。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正しい選択肢です。interfaceの抽象メソッドは暗黙的にpublic。Cは正しく実装し、Eはabstractクラスなので未実装でもよい。"
+              "detail": "正解です。abstractクラスはinterfaceの抽象メソッドを未実装のまま残せます。具象クラスになるまでに実装すればよいです。"
             }
           ],
           "relatedKnowledge": [
@@ -26614,27 +26614,27 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「1,2,3の順に表示される」という出力は発生しません。"
+              "detail": "誤りです。選択肢Aの内容「1,2,3の順に表示される」にはなりません。正しくは D「コンパイルエラーが発生する」 です。 testメソッドはbooleanを返す必要があるが、for文の外にreturnがなく、戻り値が保証されないためコンパイルエラー。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「1,2,3,5の順に表示される」という出力は発生しません。"
+              "detail": "誤りです。選択肢Bの内容「1,2,3,5の順に表示される」にはなりません。正しくは D「コンパイルエラーが発生する」 です。 testメソッドはbooleanを返す必要があるが、for文の外にreturnがなく、戻り値が保証されないためコンパイルエラー。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「1,3,5,7の順に表示される」という出力は発生しません。"
+              "detail": "誤りです。選択肢Cの内容「1,3,5,7の順に表示される」にはなりません。正しくは D「コンパイルエラーが発生する」 です。 testメソッドはbooleanを返す必要があるが、for文の外にreturnがなく、戻り値が保証されないためコンパイルエラー。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「コンパイルエラーが発生する」です。testメソッドはbooleanを返す必要があるが、for文の外にreturnがなく、戻り値が保証されないためコンパイルエラー。"
+              "detail": "この選択肢が正解です。実行前のコンパイル段階で止まるため、出力結果や実行時例外の選択肢は成立しません。 testメソッドはbooleanを返す必要があるが、for文の外にreturnがなく、戻り値が保証されないためコンパイルエラー。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。コンパイル時点で止まるため、実行時例外ではありません。"
+              "detail": "この選択肢は誤りです。実行時まで進まず、コンパイル段階で判定が終わります。 testメソッドはbooleanを返す必要があるが、for文の外にreturnがなく、戻り値が保証されないためコンパイルエラー。"
             }
           ],
           "relatedKnowledge": [
@@ -26720,27 +26720,27 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「Sampleはhelloを実装する必要がある。Aの実装にアクセスするには、A.default.hello()のように記述する」ではありません。複数インタフェースの同名defaultメソッドが競合するため、Sampleはhelloを実装して明示的に解決する必要がある。default実装の呼び出しはInterfaceName.super.method()。"
+              "detail": "誤りです。Sampleがhelloを実装する必要がある点は正しいですが、default実装の呼び出し方はA.default.hello()ではありません。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「Sampleはhelloを実装する必要がある。Bの実装にアクセスするには、B.super.hello()のように記述する」です。複数インタフェースの同名defaultメソッドが競合するため、Sampleはhelloを実装して明示的に解決する必要がある。default実装の呼び出しはInterfaceName.super.method()。"
+              "detail": "正解です。AとBのdefault helloが競合するためSample側でhelloを実装し、必要ならB.super.hello()のように呼び分けます。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「Sampleはhelloを実装する必要はない。helloが呼び出されるとAの実装が使われる」ではありません。複数インタフェースの同名defaultメソッドが競合するため、Sampleはhelloを実装して明示的に解決する必要がある。default実装の呼び出しはInterfaceName.super.method()。"
+              "detail": "誤りです。複数interfaceの同名defaultメソッドは自動的にAが選ばれるわけではありません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「Sampleはhelloを実装する必要はない。helloが呼び出されるとBの実装が使われる」ではありません。複数インタフェースの同名defaultメソッドが競合するため、Sampleはhelloを実装して明示的に解決する必要がある。default実装の呼び出しはInterfaceName.super.method()。"
+              "detail": "誤りです。B側のdefaultが自動的に優先されるわけでもありません。クラス側で明示的な解決が必要です。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「Sampleはhelloを実装する必要はない。利用したい実装を持つインタフェース型の変数からアクセスする必要がある」ではありません。複数インタフェースの同名defaultメソッドが競合するため、Sampleはhelloを実装して明示的に解決する必要がある。default実装の呼び出しはInterfaceName.super.method()。"
+              "detail": "誤りです。変数のinterface型で解決する問題ではありません。実装クラスSampleで競合を解決する必要があります。"
             }
           ],
           "relatedKnowledge": [
@@ -26822,32 +26822,32 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。sealed interfaceを実装するクラスは、許可されたクラスであり、かつsealed/non-sealed/finalのいずれかで修飾される必要がある。BとCが条件を満たす。"
+              "detail": "誤りです。abstract class Bはsealed interface Aの許可クラスではありますが、sealed/non-sealed/finalのいずれかで修飾されていません。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正しい選択肢です。sealed interfaceを実装するクラスは、許可されたクラスであり、かつsealed/non-sealed/finalのいずれかで修飾される必要がある。BとCが条件を満たす。"
+              "detail": "正解です。Bはpermitsで許可されており、non-sealedを指定してsampleも実装しているため成立します。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正しい選択肢です。sealed interfaceを実装するクラスは、許可されたクラスであり、かつsealed/non-sealed/finalのいずれかで修飾される必要がある。BとCが条件を満たす。"
+              "detail": "正解です。Bは許可された実装クラスで、finalを指定してsampleを実装しているため成立します。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。sealed interfaceを実装するクラスは、許可されたクラスであり、かつsealed/non-sealed/finalのいずれかで修飾される必要がある。BとCが条件を満たす。"
+              "detail": "誤りです。sealed interfaceを実装する許可クラスでも、final/sealed/non-sealedのいずれかが必要です。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。sealed interfaceを実装するクラスは、許可されたクラスであり、かつsealed/non-sealed/finalのいずれかで修飾される必要がある。BとCが条件を満たす。"
+              "detail": "誤りです。sealed classにするなら、さらにそのクラスを継承できるクラスをpermitsなどで管理する必要があります。ここでは不十分です。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。sealed interfaceを実装するクラスは、許可されたクラスであり、かつsealed/non-sealed/finalのいずれかで修飾される必要がある。BとCが条件を満たす。"
+              "detail": "誤りです。abstractでsampleを実装していても、sealed interfaceを実装するクラスとしてfinal/sealed/non-sealedがない点が不正です。"
             }
           ],
           "relatedKnowledge": [
@@ -26936,32 +26936,32 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「Bが表示される」であり、「Aが表示される」ではありません。"
+              "detail": "誤りです。選択肢Aの内容「Aが表示される」にはなりません。正しくは B「Bが表示される」 です。 A型変数でBインスタンスを参照しても、オーバーライドされたB#testが実行される。その中でhelloが呼ばれBが表示される。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「Bが表示される」です。A型変数でBインスタンスを参照しても、オーバーライドされたB#testが実行される。その中でhelloが呼ばれBが表示される。"
+              "detail": "正解です。選択肢Bの内容「Bが表示される」が、このコードの実際の結果または正しい説明です。 A型変数でBインスタンスを参照しても、オーバーライドされたB#testが実行される。その中でhelloが呼ばれBが表示される。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「Bが表示される」であり、「A、Bが表示される」ではありません。"
+              "detail": "誤りです。選択肢Cの内容「A、Bが表示される」にはなりません。正しくは B「Bが表示される」 です。 A型変数でBインスタンスを参照しても、オーバーライドされたB#testが実行される。その中でhelloが呼ばれBが表示される。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「Bが表示される」であり、「B、Aが表示される」ではありません。"
+              "detail": "誤りです。選択肢Dの内容「B、Aが表示される」にはなりません。正しくは B「Bが表示される」 です。 A型変数でBインスタンスを参照しても、オーバーライドされたB#testが実行される。その中でhelloが呼ばれBが表示される。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「Bが表示される」です。"
+              "detail": "この選択肢は誤りです。この問題の正解は B「Bが表示される」 です。コンパイルエラーとして処理する問題ではありません。 A型変数でBインスタンスを参照しても、オーバーライドされたB#testが実行される。その中でhelloが呼ばれBが表示される。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。実行時例外は発生せず、結果は「Bが表示される」です。"
+              "detail": "この選択肢は誤りです。実行時例外ではなく、正解は B「Bが表示される」 です。 A型変数でBインスタンスを参照しても、オーバーライドされたB#testが実行される。その中でhelloが呼ばれBが表示される。"
             }
           ],
           "relatedKnowledge": [
@@ -27044,32 +27044,32 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「a() != b()」です。a()でresultは1、b()で3。どちらもtrueなのでa()!=b()はfalseとなりelseで+4、合計7。"
+              "detail": "正解です。選択肢Aの内容「a() != b()」が、このコードの実際の結果または正しい説明です。 a()でresultは1、b()で3。どちらもtrueなのでa()!=b()はfalseとなりelseで+4、合計7。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「a() | b()」ではありません。a()でresultは1、b()で3。どちらもtrueなのでa()!=b()はfalseとなりelseで+4、合計7。"
+              "detail": "誤りです。選択肢Bの内容「a() | b()」にはなりません。正しくは A「a() != b()」 です。 a()でresultは1、b()で3。どちらもtrueなのでa()!=b()はfalseとなりelseで+4、合計7。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「a() == b()」ではありません。a()でresultは1、b()で3。どちらもtrueなのでa()!=b()はfalseとなりelseで+4、合計7。"
+              "detail": "誤りです。選択肢Cの内容「a() == b()」にはなりません。正しくは A「a() != b()」 です。 a()でresultは1、b()で3。どちらもtrueなのでa()!=b()はfalseとなりelseで+4、合計7。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「a() & b()」ではありません。a()でresultは1、b()で3。どちらもtrueなのでa()!=b()はfalseとなりelseで+4、合計7。"
+              "detail": "誤りです。選択肢Dの内容「a() & b()」にはなりません。正しくは A「a() != b()」 です。 a()でresultは1、b()で3。どちらもtrueなのでa()!=b()はfalseとなりelseで+4、合計7。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「a() || b()」ではありません。a()でresultは1、b()で3。どちらもtrueなのでa()!=b()はfalseとなりelseで+4、合計7。"
+              "detail": "誤りです。選択肢Eの内容「a() || b()」にはなりません。正しくは A「a() != b()」 です。 a()でresultは1、b()で3。どちらもtrueなのでa()!=b()はfalseとなりelseで+4、合計7。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。「a() && b()」ではありません。a()でresultは1、b()で3。どちらもtrueなのでa()!=b()はfalseとなりelseで+4、合計7。"
+              "detail": "誤りです。選択肢Fの内容「a() && b()」にはなりません。正しくは A「a() != b()」 です。 a()でresultは1、b()で3。どちらもtrueなのでa()!=b()はfalseとなりelseで+4、合計7。"
             }
           ],
           "relatedKnowledge": [
@@ -27147,27 +27147,27 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正しい選択肢です。クラス名.メソッド名で呼べるのはstaticメソッド。さらにprivateは他クラスから呼べないため、aとpublic staticのcが正しい。"
+              "detail": "このコードは条件を満たします。選択肢Aは、設問の制約に対して正しくコンパイルまたは正しく動作します。 クラス名.メソッド名で呼べるのはstaticメソッド。さらにprivateは他クラスから呼べないため、aとpublic staticのcが正しい。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「Test.b();」ではありません。クラス名.メソッド名で呼べるのはstaticメソッド。さらにprivateは他クラスから呼べないため、aとpublic staticのcが正しい。"
+              "detail": "このコードは条件を満たしません。選択肢Bの記述「Test.b();」は、正解として必要な条件から外れています。 クラス名.メソッド名で呼べるのはstaticメソッド。さらにprivateは他クラスから呼べないため、aとpublic staticのcが正しい。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正しい選択肢です。クラス名.メソッド名で呼べるのはstaticメソッド。さらにprivateは他クラスから呼べないため、aとpublic staticのcが正しい。"
+              "detail": "このコードは条件を満たします。選択肢Cは、設問の制約に対して正しくコンパイルまたは正しく動作します。 クラス名.メソッド名で呼べるのはstaticメソッド。さらにprivateは他クラスから呼べないため、aとpublic staticのcが正しい。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「Test.d();」ではありません。クラス名.メソッド名で呼べるのはstaticメソッド。さらにprivateは他クラスから呼べないため、aとpublic staticのcが正しい。"
+              "detail": "このコードは条件を満たしません。選択肢Dの記述「Test.d();」は、正解として必要な条件から外れています。 クラス名.メソッド名で呼べるのはstaticメソッド。さらにprivateは他クラスから呼べないため、aとpublic staticのcが正しい。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「Test.e();」ではありません。クラス名.メソッド名で呼べるのはstaticメソッド。さらにprivateは他クラスから呼べないため、aとpublic staticのcが正しい。"
+              "detail": "このコードは条件を満たしません。選択肢Eの記述「Test.e();」は、正解として必要な条件から外れています。 クラス名.メソッド名で呼べるのはstaticメソッド。さらにprivateは他クラスから呼べないため、aとpublic staticのcが正しい。"
             }
           ],
           "relatedKnowledge": [
@@ -27236,27 +27236,27 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。abstract classに具象finalメソッドを定義することは可能。finalとabstractの同時指定、sealedのサブクラス修飾不足、抽象メソッドの誤記述は不可。"
+              "detail": "誤りです。finalは継承禁止、abstractは未完成で継承前提です。同じクラスに同時指定できません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。abstract classに具象finalメソッドを定義することは可能。finalとabstractの同時指定、sealedのサブクラス修飾不足、抽象メソッドの誤記述は不可。"
+              "detail": "誤りです。sealed class Aを継承するBは、final/sealed/non-sealedのいずれかで修飾する必要があります。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。abstract classに具象finalメソッドを定義することは可能。finalとabstractの同時指定、sealedのサブクラス修飾不足、抽象メソッドの誤記述は不可。"
+              "detail": "誤りです。abstract void method()のような抽象メソッドには本体を付けられません。さらにクラスA自体もabstractではありません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。abstract classに具象finalメソッドを定義することは可能。finalとabstractの同時指定、sealedのサブクラス修飾不足、抽象メソッドの誤記述は不可。"
+              "detail": "誤りです。本体なしのメソッドを宣言するならabstractが必要です。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「」です。abstract classに具象finalメソッドを定義することは可能。finalとabstractの同時指定、sealedのサブクラス修飾不足、抽象メソッドの誤記述は不可。"
+              "detail": "正解です。abstractクラスの中に、通常の具象メソッドやfinalメソッドを定義することは可能です。"
             }
           ],
           "relatedKnowledge": [
@@ -27343,37 +27343,37 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「A:B:C::E:」ではありません。Bではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。結果はA:C::E:。"
+              "detail": "誤りです。選択肢Aの内容「A:B:C::E:」にはなりません。正しくは C「A:C::E:」 です。 Bではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。結果はA:C::E:。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「A::C:E:」ではありません。Bではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。結果はA:C::E:。"
+              "detail": "誤りです。選択肢Bの内容「A::C:E:」にはなりません。正しくは C「A:C::E:」 です。 Bではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。結果はA:C::E:。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「A:C::E:」です。Bではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。結果はA:C::E:。"
+              "detail": "正解です。選択肢Cの内容「A:C::E:」が、このコードの実際の結果または正しい説明です。 Bではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。結果はA:C::E:。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「A:C:E:」ではありません。Bではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。結果はA:C::E:。"
+              "detail": "誤りです。選択肢Dの内容「A:C:E:」にはなりません。正しくは C「A:C::E:」 です。 Bではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。結果はA:C::E:。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「A::C::E:」ではありません。Bではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。結果はA:C::E:。"
+              "detail": "誤りです。選択肢Eの内容「A::C::E:」にはなりません。正しくは C「A:C::E:」 です。 Bではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。結果はA:C::E:。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。「A:B:C:D:E:」ではありません。Bではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。結果はA:C::E:。"
+              "detail": "誤りです。選択肢Fの内容「A:B:C:D:E:」にはなりません。正しくは C「A:C::E:」 です。 Bではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。結果はA:C::E:。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "誤りです。「A:C:D:E:」ではありません。Bではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。結果はA:C::E:。"
+              "detail": "誤りです。選択肢Gの内容「A:C:D:E:」にはなりません。正しくは C「A:C::E:」 です。 Bではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。結果はA:C::E:。"
             }
           ],
           "relatedKnowledge": [
@@ -27461,37 +27461,37 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「5が表示される」であり、「2が表示される」ではありません。"
+              "detail": "誤りです。選択肢Aの内容「2が表示される」にはなりません。正しくは D「5が表示される」 です。 numは2→3→4→5と増え、num<5がfalseになってwhileを抜けるため5が表示される。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「5が表示される」であり、「3が表示される」ではありません。"
+              "detail": "誤りです。選択肢Bの内容「3が表示される」にはなりません。正しくは D「5が表示される」 です。 numは2→3→4→5と増え、num<5がfalseになってwhileを抜けるため5が表示される。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「5が表示される」であり、「4が表示される」ではありません。"
+              "detail": "誤りです。選択肢Cの内容「4が表示される」にはなりません。正しくは D「5が表示される」 です。 numは2→3→4→5と増え、num<5がfalseになってwhileを抜けるため5が表示される。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「5が表示される」です。numは2→3→4→5と増え、num<5がfalseになってwhileを抜けるため5が表示される。"
+              "detail": "正解です。選択肢Dの内容「5が表示される」が、このコードの実際の結果または正しい説明です。 numは2→3→4→5と増え、num<5がfalseになってwhileを抜けるため5が表示される。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「5が表示される」であり、「6が表示される」ではありません。"
+              "detail": "誤りです。選択肢Eの内容「6が表示される」にはなりません。正しくは D「5が表示される」 です。 numは2→3→4→5と増え、num<5がfalseになってwhileを抜けるため5が表示される。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「5が表示される」であり、「whileループが終了せずに何も表示されない」ではありません。"
+              "detail": "誤りです。選択肢Fの内容「whileループが終了せずに何も表示されない」にはなりません。正しくは D「5が表示される」 です。 numは2→3→4→5と増え、num<5がfalseになってwhileを抜けるため5が表示される。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「5が表示される」です。"
+              "detail": "この選択肢は誤りです。この問題の正解は D「5が表示される」 です。コンパイルエラーとして処理する問題ではありません。 numは2→3→4→5と増え、num<5がfalseになってwhileを抜けるため5が表示される。"
             }
           ],
           "relatedKnowledge": [
@@ -27577,37 +27577,37 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「i=1, j=2」です。Fは2つ目の配列の3番目の要素。配列添字は0始まりなのでi=1、j=2。"
+              "detail": "正解です。選択肢Aの内容「i=1, j=2」が、このコードの実際の結果または正しい説明です。 Fは2つ目の配列の3番目の要素。配列添字は0始まりなのでi=1、j=2。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「i=1, j=1」ではありません。Fは2つ目の配列の3番目の要素。配列添字は0始まりなのでi=1、j=2。"
+              "detail": "誤りです。選択肢Bの内容「i=1, j=1」にはなりません。正しくは A「i=1, j=2」 です。 Fは2つ目の配列の3番目の要素。配列添字は0始まりなのでi=1、j=2。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「i=1, j=4」ではありません。Fは2つ目の配列の3番目の要素。配列添字は0始まりなのでi=1、j=2。"
+              "detail": "誤りです。選択肢Cの内容「i=1, j=4」にはなりません。正しくは A「i=1, j=2」 です。 Fは2つ目の配列の3番目の要素。配列添字は0始まりなのでi=1、j=2。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「i=0, j=2」ではありません。Fは2つ目の配列の3番目の要素。配列添字は0始まりなのでi=1、j=2。"
+              "detail": "誤りです。選択肢Dの内容「i=0, j=2」にはなりません。正しくは A「i=1, j=2」 です。 Fは2つ目の配列の3番目の要素。配列添字は0始まりなのでi=1、j=2。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「i=0, j=1」ではありません。Fは2つ目の配列の3番目の要素。配列添字は0始まりなのでi=1、j=2。"
+              "detail": "誤りです。選択肢Eの内容「i=0, j=1」にはなりません。正しくは A「i=1, j=2」 です。 Fは2つ目の配列の3番目の要素。配列添字は0始まりなのでi=1、j=2。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。「i=0, j=3」ではありません。Fは2つ目の配列の3番目の要素。配列添字は0始まりなのでi=1、j=2。"
+              "detail": "誤りです。選択肢Fの内容「i=0, j=3」にはなりません。正しくは A「i=1, j=2」 です。 Fは2つ目の配列の3番目の要素。配列添字は0始まりなのでi=1、j=2。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "誤りです。「i=1, j=3」ではありません。Fは2つ目の配列の3番目の要素。配列添字は0始まりなのでi=1、j=2。"
+              "detail": "誤りです。選択肢Gの内容「i=1, j=3」にはなりません。正しくは A「i=1, j=2」 です。 Fは2つ目の配列の3番目の要素。配列添字は0始まりなのでi=1、j=2。"
             }
           ],
           "relatedKnowledge": [
@@ -27688,27 +27688,27 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「aが表示される」という出力は発生しません。"
+              "detail": "誤りです。選択肢Aの内容「aが表示される」にはなりません。正しくは D「コンパイルエラーが発生する」 です。 PDF解説上は、パターン変数strのスコープ外参照としてコンパイルエラー。実際のJavaバージョン差が出やすい論点なので、必要ならコンパイラで確認すること。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「Aが表示される」という出力は発生しません。"
+              "detail": "誤りです。選択肢Bの内容「Aが表示される」にはなりません。正しくは D「コンパイルエラーが発生する」 です。 PDF解説上は、パターン変数strのスコープ外参照としてコンパイルエラー。実際のJavaバージョン差が出やすい論点なので、必要ならコンパイラで確認すること。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「何も表示されない」という出力は発生しません。"
+              "detail": "誤りです。選択肢Cの内容「何も表示されない」にはなりません。正しくは D「コンパイルエラーが発生する」 です。 PDF解説上は、パターン変数strのスコープ外参照としてコンパイルエラー。実際のJavaバージョン差が出やすい論点なので、必要ならコンパイラで確認すること。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「コンパイルエラーが発生する」です。PDF解説上は、パターン変数strのスコープ外参照としてコンパイルエラー。実際のJavaバージョン差が出やすい論点なので、必要ならコンパイラで確認すること。"
+              "detail": "この選択肢が正解です。実行前のコンパイル段階で止まるため、出力結果や実行時例外の選択肢は成立しません。 PDF解説上は、パターン変数strのスコープ外参照としてコンパイルエラー。実際のJavaバージョン差が出やすい論点なので、必要ならコンパイラで確認すること。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。コンパイル時点で止まるため、実行時例外ではありません。"
+              "detail": "この選択肢は誤りです。実行時まで進まず、コンパイル段階で判定が終わります。 PDF解説上は、パターン変数strのスコープ外参照としてコンパイルエラー。実際のJavaバージョン差が出やすい論点なので、必要ならコンパイラで確認すること。"
             }
           ],
           "relatedKnowledge": [
@@ -27793,37 +27793,37 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正しい選択肢です。varはローカル変数に使える。Aは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。"
+              "detail": "このコードは条件を満たします。選択肢Aは、設問の制約に対して正しくコンパイルまたは正しく動作します。 varはローカル変数に使える。Aは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。varはローカル変数に使える。Aは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。"
+              "detail": "このコードは条件を満たしません。選択肢Bの記述「class B { public void hello() { var a = 0; a = \"0\"; } }」は、正解として必要な条件から外れています。 varはローカル変数に使える。Aは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。varはローカル変数に使える。Aは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。"
+              "detail": "このコードは条件を満たしません。選択肢Cの記述「class C { var x = 10; }」は、正解として必要な条件から外れています。 varはローカル変数に使える。Aは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。varはローカル変数に使える。Aは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。"
+              "detail": "このコードは条件を満たしません。選択肢Dの記述「record D(var x, var y) { }」は、正解として必要な条件から外れています。 varはローカル変数に使える。Aは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正しい選択肢です。varはローカル変数に使える。Aは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。"
+              "detail": "このコードは条件を満たします。選択肢Eは、設問の制約に対して正しくコンパイルまたは正しく動作します。 varはローカル変数に使える。Aは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。varはローカル変数に使える。Aは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。"
+              "detail": "このコードは条件を満たしません。選択肢Fの記述「class F { public void hello(int x) { var x = 0; } }」は、正解として必要な条件から外れています。 varはローカル変数に使える。Aは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。varはローカル変数に使える。Aは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。"
+              "detail": "このコードは条件を満たしません。選択肢Gの記述「class G { public void hello() { var v = null; } }」は、正解として必要な条件から外れています。 varはローカル変数に使える。Aは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。"
             }
           ],
           "relatedKnowledge": [
@@ -27906,32 +27906,32 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「18が表示される」であり、「0が表示される」ではありません。"
+              "detail": "誤りです。選択肢Aの内容「0が表示される」にはなりません。正しくは C「18が表示される」 です。 コンストラクタのi=++iは引数ローカル変数への代入で、フィールドiは0のまま。i++の値で3の倍数判定を行い、j=0,3,6,9を加算して18。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「18が表示される」であり、「13が表示される」ではありません。"
+              "detail": "誤りです。選択肢Bの内容「13が表示される」にはなりません。正しくは C「18が表示される」 です。 コンストラクタのi=++iは引数ローカル変数への代入で、フィールドiは0のまま。i++の値で3の倍数判定を行い、j=0,3,6,9を加算して18。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「18が表示される」です。コンストラクタのi=++iは引数ローカル変数への代入で、フィールドiは0のまま。i++の値で3の倍数判定を行い、j=0,3,6,9を加算して18。"
+              "detail": "正解です。選択肢Cの内容「18が表示される」が、このコードの実際の結果または正しい説明です。 コンストラクタのi=++iは引数ローカル変数への代入で、フィールドiは0のまま。i++の値で3の倍数判定を行い、j=0,3,6,9を加算して18。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「18が表示される」であり、「無限ループになり何も表示されない」ではありません。"
+              "detail": "誤りです。選択肢Dの内容「無限ループになり何も表示されない」にはなりません。正しくは C「18が表示される」 です。 コンストラクタのi=++iは引数ローカル変数への代入で、フィールドiは0のまま。i++の値で3の倍数判定を行い、j=0,3,6,9を加算して18。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「18が表示される」です。"
+              "detail": "この選択肢は誤りです。この問題の正解は C「18が表示される」 です。コンパイルエラーとして処理する問題ではありません。 コンストラクタのi=++iは引数ローカル変数への代入で、フィールドiは0のまま。i++の値で3の倍数判定を行い、j=0,3,6,9を加算して18。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。実行時例外は発生せず、結果は「18が表示される」です。"
+              "detail": "この選択肢は誤りです。実行時例外ではなく、正解は C「18が表示される」 です。 コンストラクタのi=++iは引数ローカル変数への代入で、フィールドiは0のまま。i++の値で3の倍数判定を行い、j=0,3,6,9を加算して18。"
             }
           ],
           "relatedKnowledge": [
@@ -28028,37 +28028,37 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「result=100 result=100 result=100 result=100」です。呼び出しているのは常に引数なしprint()で、A側のメソッド。A#printはA.valueを表示するため、B側valueの設定に関係なく100が4回出る。"
+              "detail": "正解です。選択肢Aの内容「result=100 result=100 result=100 result=100」が、このコードの実際の結果または正しい説明です。 呼び出しているのは常に引数なしprint()で、A側のメソッド。A#printはA.valueを表示するため、B側valueの設定に関係なく100が4回出る。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「result=200 result=20 result=100 result=100」ではありません。呼び出しているのは常に引数なしprint()で、A側のメソッド。A#printはA.valueを表示するため、B側valueの設定に関係なく100が4回出る。"
+              "detail": "誤りです。選択肢Bの内容「result=200 result=20 result=100 result=100」にはなりません。正しくは A「result=100 result=100 result=100 result=100」 です。 呼び出しているのは常に引数なしprint()で、A側のメソッド。A#printはA.valueを表示するため、B側valueの設定に関係なく100が4回出る。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「result=0 result=0 result=100 result=10」ではありません。呼び出しているのは常に引数なしprint()で、A側のメソッド。A#printはA.valueを表示するため、B側valueの設定に関係なく100が4回出る。"
+              "detail": "誤りです。選択肢Cの内容「result=0 result=0 result=100 result=10」にはなりません。正しくは A「result=100 result=100 result=100 result=100」 です。 呼び出しているのは常に引数なしprint()で、A側のメソッド。A#printはA.valueを表示するため、B側valueの設定に関係なく100が4回出る。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「result=200 result=20 result=100 result=10」ではありません。呼び出しているのは常に引数なしprint()で、A側のメソッド。A#printはA.valueを表示するため、B側valueの設定に関係なく100が4回出る。"
+              "detail": "誤りです。選択肢Dの内容「result=200 result=20 result=100 result=10」にはなりません。正しくは A「result=100 result=100 result=100 result=100」 です。 呼び出しているのは常に引数なしprint()で、A側のメソッド。A#printはA.valueを表示するため、B側valueの設定に関係なく100が4回出る。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「result=100 result=100 result=100 result=100」であり、「result=null result=null result=100 result=100」ではありません。"
+              "detail": "誤りです。選択肢Eの内容「result=null result=null result=100 result=100」にはなりません。正しくは A「result=100 result=100 result=100 result=100」 です。 呼び出しているのは常に引数なしprint()で、A側のメソッド。A#printはA.valueを表示するため、B側valueの設定に関係なく100が4回出る。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「result=100 result=100 result=100 result=100」です。"
+              "detail": "この選択肢は誤りです。この問題の正解は A「result=100 result=100 result=100 result=100」 です。コンパイルエラーとして処理する問題ではありません。 呼び出しているのは常に引数なしprint()で、A側のメソッド。A#printはA.valueを表示するため、B側valueの設定に関係なく100が4回出る。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "誤りです。実行時例外は発生せず、結果は「result=100 result=100 result=100 result=100」です。"
+              "detail": "この選択肢は誤りです。実行時例外ではなく、正解は A「result=100 result=100 result=100 result=100」 です。 呼び出しているのは常に引数なしprint()で、A側のメソッド。A#printはA.valueを表示するため、B側valueの設定に関係なく100が4回出る。"
             }
           ],
           "relatedKnowledge": [
@@ -28136,27 +28136,27 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「6が表示される」であり、「4が表示される」ではありません。"
+              "detail": "誤りです。選択肢Aの内容「4が表示される」にはなりません。正しくは C「6が表示される」 です。 case 1とcase 5はbreakがないためフォールスルーする。順に処理するとnumは6になる。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「6が表示される」であり、「5が表示される」ではありません。"
+              "detail": "誤りです。選択肢Bの内容「5が表示される」にはなりません。正しくは C「6が表示される」 です。 case 1とcase 5はbreakがないためフォールスルーする。順に処理するとnumは6になる。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「6が表示される」です。case 1とcase 5はbreakがないためフォールスルーする。順に処理するとnumは6になる。"
+              "detail": "正解です。選択肢Cの内容「6が表示される」が、このコードの実際の結果または正しい説明です。 case 1とcase 5はbreakがないためフォールスルーする。順に処理するとnumは6になる。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「6が表示される」です。"
+              "detail": "この選択肢は誤りです。この問題の正解は C「6が表示される」 です。コンパイルエラーとして処理する問題ではありません。 case 1とcase 5はbreakがないためフォールスルーする。順に処理するとnumは6になる。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。実行時例外は発生せず、結果は「6が表示される」です。"
+              "detail": "この選択肢は誤りです。実行時例外ではなく、正解は C「6が表示される」 です。 case 1とcase 5はbreakがないためフォールスルーする。順に処理するとnumは6になる。"
             }
           ],
           "relatedKnowledge": [
@@ -28246,32 +28246,32 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「CacheTrashクラスのaddメソッドは、引数をlistに追加する / CacheTrashクラスのflushメソッドは、Trashクラスのdeleteメソッドを呼び出す / CacheTrashクラスのコンストラクタは、nullをlistに追加する」であり、「CacheTrashクラスのtestメソッドは常にtrueを戻す」ではありません。"
+              "detail": "誤りです。testは一時保存用のtmpとの比較や代入を行うため、常にtrueを返すとは限りません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「CacheTrashクラスのdeleteメソッドは、Trashクラスのdeleteメソッドを呼び出す」ではありません。addはfinalなのでTrashの実装を継承し、listに追加する。flushはsuper.delete(tmp)を呼ぶ。コンストラクタsuper(null)によりnullがaddされる。"
+              "detail": "誤りです。CacheTrashのdeleteはtmpに値を保持する処理で、Trashのdeleteを直接呼び出すのはflush内のsuper.delete(tmp)です。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正しい選択肢です。addはfinalなのでTrashの実装を継承し、listに追加する。flushはsuper.delete(tmp)を呼ぶ。コンストラクタsuper(null)によりnullがaddされる。"
+              "detail": "正解です。addはTrash側でfinalとして定義されているため、CacheTrashでもその実装を使い、listへ追加します。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「Trashクラスのlistは、Trashクラスのすべてのサブクラスで参照できる」ではありません。addはfinalなのでTrashの実装を継承し、listに追加する。flushはsuper.delete(tmp)を呼ぶ。コンストラクタsuper(null)によりnullがaddされる。"
+              "detail": "誤りです。listはアクセス修飾子なし、つまり同一パッケージ内アクセスです。すべてのサブクラスから参照できるprotectedではありません。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正しい選択肢です。addはfinalなのでTrashの実装を継承し、listに追加する。flushはsuper.delete(tmp)を呼ぶ。コンストラクタsuper(null)によりnullがaddされる。"
+              "detail": "正解です。flushはsuper.delete(tmp)を呼び、スーパークラスTrashのdelete処理を実行します。"
             },
             {
               "key": "F",
               "isCorrect": true,
-              "detail": "正しい選択肢です。addはfinalなのでTrashの実装を継承し、listに追加する。flushはsuper.delete(tmp)を呼ぶ。コンストラクタsuper(null)によりnullがaddされる。"
+              "detail": "正解です。CacheTrashのコンストラクタはsuper(null)を呼び、Trashのコンストラクタ内でadd(null)が実行されます。"
             }
           ],
           "relatedKnowledge": [
@@ -28349,22 +28349,22 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「null」と表示される」であり、「「Hello, Java」と表示される」ではありません。"
+              "detail": "誤りです。選択肢Aの内容「「Hello, Java」と表示される」にはなりません。正しくは C「「null」と表示される」 です。 setValue内のvalueは引数ローカル変数であり、フィールドvalueは変更されない。toStringはフィールドを返すのでnull。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「null」と表示される」であり、「「Hello, null」と表示される」ではありません。"
+              "detail": "誤りです。選択肢Bの内容「「Hello, null」と表示される」にはなりません。正しくは C「「null」と表示される」 です。 setValue内のvalueは引数ローカル変数であり、フィールドvalueは変更されない。toStringはフィールドを返すのでnull。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「「null」と表示される」です。setValue内のvalueは引数ローカル変数であり、フィールドvalueは変更されない。toStringはフィールドを返すのでnull。"
+              "detail": "正解です。選択肢Cの内容「「null」と表示される」が、このコードの実際の結果または正しい説明です。 setValue内のvalueは引数ローカル変数であり、フィールドvalueは変更されない。toStringはフィールドを返すのでnull。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実行時例外は発生せず、結果は「「null」と表示される」です。"
+              "detail": "この選択肢は誤りです。実行時例外ではなく、正解は C「「null」と表示される」 です。 setValue内のvalueは引数ローカル変数であり、フィールドvalueは変更されない。toStringはフィールドを返すのでnull。"
             }
           ],
           "relatedKnowledge": [
@@ -28450,32 +28450,32 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「javac Sample\njava Sample」ではありません。classファイルがない状態でも、単一ファイルのソースファイルモードとしてjava Sample.javaで実行できる。"
+              "detail": "このコードは条件を満たしません。選択肢Aの記述「javac Sample java Sample」は、正解として必要な条件から外れています。 classファイルがない状態でも、単一ファイルのソースファイルモードとしてjava Sample.javaで実行できる。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「javac Sample.java\njava Sample.class」ではありません。classファイルがない状態でも、単一ファイルのソースファイルモードとしてjava Sample.javaで実行できる。"
+              "detail": "このコードは条件を満たしません。選択肢Bの記述「javac Sample.java java Sample.class」は、正解として必要な条件から外れています。 classファイルがない状態でも、単一ファイルのソースファイルモードとしてjava Sample.javaで実行できる。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「javac Sample.java\njava -p. -m Sample」ではありません。classファイルがない状態でも、単一ファイルのソースファイルモードとしてjava Sample.javaで実行できる。"
+              "detail": "このコードは条件を満たしません。選択肢Cの記述「javac Sample.java java -p. -m Sample」は、正解として必要な条件から外れています。 classファイルがない状態でも、単一ファイルのソースファイルモードとしてjava Sample.javaで実行できる。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「java Sample.java」です。classファイルがない状態でも、単一ファイルのソースファイルモードとしてjava Sample.javaで実行できる。"
+              "detail": "正解です。選択肢Dの内容「java Sample.java」が、このコードの実際の結果または正しい説明です。 classファイルがない状態でも、単一ファイルのソースファイルモードとしてjava Sample.javaで実行できる。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「java -m Sample.java」ではありません。classファイルがない状態でも、単一ファイルのソースファイルモードとしてjava Sample.javaで実行できる。"
+              "detail": "誤りです。選択肢Eの内容「java -m Sample.java」にはなりません。正しくは D「java Sample.java」 です。 classファイルがない状態でも、単一ファイルのソースファイルモードとしてjava Sample.javaで実行できる。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。「java Sample」ではありません。classファイルがない状態でも、単一ファイルのソースファイルモードとしてjava Sample.javaで実行できる。"
+              "detail": "誤りです。選択肢Fの内容「java Sample」にはなりません。正しくは D「java Sample.java」 です。 classファイルがない状態でも、単一ファイルのソースファイルモードとしてjava Sample.javaで実行できる。"
             }
           ],
           "relatedKnowledge": [
@@ -28548,22 +28548,22 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「「ab」と表示される」です。97と98をcharへキャストすると、それぞれaとbになる。文字列連結によりabと表示される。"
+              "detail": "正解です。選択肢Aの内容「「ab」と表示される」が、このコードの実際の結果または正しい説明です。 97と98をcharへキャストすると、それぞれaとbになる。文字列連結によりabと表示される。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「ab」と表示される」であり、「「a」と表示された後に例外が発生する」ではありません。"
+              "detail": "誤りです。選択肢Bの内容「「a」と表示された後に例外が発生する」にはなりません。正しくは A「「ab」と表示される」 です。 97と98をcharへキャストすると、それぞれaとbになる。文字列連結によりabと表示される。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「「ab」と表示される」です。"
+              "detail": "この選択肢は誤りです。この問題の正解は A「「ab」と表示される」 です。コンパイルエラーとして処理する問題ではありません。 97と98をcharへキャストすると、それぞれaとbになる。文字列連結によりabと表示される。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「ClassCastExceptionがスローされる」ではありません。97と98をcharへキャストすると、それぞれaとbになる。文字列連結によりabと表示される。"
+              "detail": "誤りです。選択肢Dの内容「ClassCastExceptionがスローされる」にはなりません。正しくは A「「ab」と表示される」 です。 97と98をcharへキャストすると、それぞれaとbになる。文字列連結によりabと表示される。"
             }
           ],
           "relatedKnowledge": [
@@ -28640,22 +28640,22 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「new B().b と new B().c の両方でコンパイルエラーが発生する」ではありません。A#aはパッケージアクセスなので別パッケージのBからアクセス不可。protectedのbとpublicのcはアクセス可能。"
+              "detail": "この選択肢は誤りです。この問題の正解は C「new B().a のみでコンパイルエラーが発生する」 です。コンパイルエラーとして処理する問題ではありません。 A#aはパッケージアクセスなので別パッケージのBからアクセス不可。protectedのbとpublicのcはアクセス可能。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「new B().b のみでコンパイルエラーが発生する」ではありません。A#aはパッケージアクセスなので別パッケージのBからアクセス不可。protectedのbとpublicのcはアクセス可能。"
+              "detail": "この選択肢は誤りです。この問題の正解は C「new B().a のみでコンパイルエラーが発生する」 です。コンパイルエラーとして処理する問題ではありません。 A#aはパッケージアクセスなので別パッケージのBからアクセス不可。protectedのbとpublicのcはアクセス可能。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「new B().a のみでコンパイルエラーが発生する」です。A#aはパッケージアクセスなので別パッケージのBからアクセス不可。protectedのbとpublicのcはアクセス可能。"
+              "detail": "この選択肢が正解です。実行前のコンパイル段階で止まるため、出力結果や実行時例外の選択肢は成立しません。 A#aはパッケージアクセスなので別パッケージのBからアクセス不可。protectedのbとpublicのcはアクセス可能。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「new B().a と new B().b の両方でコンパイルエラーが発生する」ではありません。A#aはパッケージアクセスなので別パッケージのBからアクセス不可。protectedのbとpublicのcはアクセス可能。"
+              "detail": "この選択肢は誤りです。この問題の正解は C「new B().a のみでコンパイルエラーが発生する」 です。コンパイルエラーとして処理する問題ではありません。 A#aはパッケージアクセスなので別パッケージのBからアクセス不可。protectedのbとpublicのcはアクセス可能。"
             }
           ],
           "relatedKnowledge": [
@@ -28725,22 +28725,22 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「var a = {1.0, 2.0, 3.0, 4.0};」ではありません。varでは右辺から型推論できる必要がある。配列生成式new Float[]やnew double[]なら推論できる。"
+              "detail": "このコードは条件を満たしません。選択肢Aの記述「var a = {1.0, 2.0, 3.0, 4.0};」は、正解として必要な条件から外れています。 varでは右辺から型推論できる必要がある。配列生成式new Float[]やnew double[]なら推論できる。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「var b = new Double{1.0, 2.0, 3.0, 4.0};」ではありません。varでは右辺から型推論できる必要がある。配列生成式new Float[]やnew double[]なら推論できる。"
+              "detail": "このコードは条件を満たしません。選択肢Bの記述「var b = new Double{1.0, 2.0, 3.0, 4.0};」は、正解として必要な条件から外れています。 varでは右辺から型推論できる必要がある。配列生成式new Float[]やnew double[]なら推論できる。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正しい選択肢です。varでは右辺から型推論できる必要がある。配列生成式new Float[]やnew double[]なら推論できる。"
+              "detail": "このコードは条件を満たします。選択肢Cは、設問の制約に対して正しくコンパイルまたは正しく動作します。 varでは右辺から型推論できる必要がある。配列生成式new Float[]やnew double[]なら推論できる。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正しい選択肢です。varでは右辺から型推論できる必要がある。配列生成式new Float[]やnew double[]なら推論できる。"
+              "detail": "このコードは条件を満たします。選択肢Dは、設問の制約に対して正しくコンパイルまたは正しく動作します。 varでは右辺から型推論できる必要がある。配列生成式new Float[]やnew double[]なら推論できる。"
             }
           ],
           "relatedKnowledge": [
@@ -28826,27 +28826,27 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「BのインスタンスをA型で扱ったため」ではありません。変数aの型はAなので、呼び出せるのはAに定義されたメソッドだけ。AにはString[]を受け取るsetValue(String...)がない。"
+              "detail": "誤りです。選択肢Aの内容「BのインスタンスをA型で扱ったため」にはなりません。正しくは E「AクラスにはsetValue(String... values)というメソッドがないため」 です。 変数aの型はAなので、呼び出せるのはAに定義されたメソッドだけ。AにはString[]を受け取るsetValue(String...)がない。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「AクラスのtoStringメソッドをBクラスでオーバーライドしていないため」ではありません。変数aの型はAなので、呼び出せるのはAに定義されたメソッドだけ。AにはString[]を受け取るsetValue(String...)がない。"
+              "detail": "誤りです。選択肢Bの内容「AクラスのtoStringメソッドをBクラスでオーバーライドしていないため」にはなりません。正しくは E「AクラスにはsetValue(String... values)というメソッドがないため」 です。 変数aの型はAなので、呼び出せるのはAに定義されたメソッドだけ。AにはString[]を受け取るsetValue(String...)がない。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「Bクラスのtestメソッドがprivateであるため」ではありません。変数aの型はAなので、呼び出せるのはAに定義されたメソッドだけ。AにはString[]を受け取るsetValue(String...)がない。"
+              "detail": "誤りです。選択肢Cの内容「Bクラスのtestメソッドがprivateであるため」にはなりません。正しくは E「AクラスにはsetValue(String... values)というメソッドがないため」 です。 変数aの型はAなので、呼び出せるのはAに定義されたメソッドだけ。AにはString[]を受け取るsetValue(String...)がない。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「BクラスからAクラスのvalueにアクセスできないため」ではありません。変数aの型はAなので、呼び出せるのはAに定義されたメソッドだけ。AにはString[]を受け取るsetValue(String...)がない。"
+              "detail": "誤りです。選択肢Dの内容「BクラスからAクラスのvalueにアクセスできないため」にはなりません。正しくは E「AクラスにはsetValue(String... values)というメソッドがないため」 です。 変数aの型はAなので、呼び出せるのはAに定義されたメソッドだけ。AにはString[]を受け取るsetValue(String...)がない。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「AクラスにはsetValue(String... values)というメソッドがないため」です。変数aの型はAなので、呼び出せるのはAに定義されたメソッドだけ。AにはString[]を受け取るsetValue(String...)がない。"
+              "detail": "正解です。選択肢Eの内容「AクラスにはsetValue(String... values)というメソッドがないため」が、このコードの実際の結果または正しい説明です。 変数aの型はAなので、呼び出せるのはAに定義されたメソッドだけ。AにはString[]を受け取るsetValue(String...)がない。"
             }
           ],
           "relatedKnowledge": [
@@ -28928,22 +28928,22 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「10が表示される」です。"
+              "detail": "この選択肢は誤りです。この問題の正解は C「10が表示される」 です。コンパイルエラーとして処理する問題ではありません。 aの型はAなのでa.numはAのpublicフィールドを参照する。Bにもnumはあるが、フィールドはポリモーフィックに解決されない。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「10が表示される」です。"
+              "detail": "この選択肢は誤りです。この問題の正解は C「10が表示される」 です。コンパイルエラーとして処理する問題ではありません。 aの型はAなのでa.numはAのpublicフィールドを参照する。Bにもnumはあるが、フィールドはポリモーフィックに解決されない。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「10が表示される」です。aの型はAなのでa.numはAのpublicフィールドを参照する。Bにもnumはあるが、フィールドはポリモーフィックに解決されない。"
+              "detail": "正解です。選択肢Cの内容「10が表示される」が、このコードの実際の結果または正しい説明です。 aの型はAなのでa.numはAのpublicフィールドを参照する。Bにもnumはあるが、フィールドはポリモーフィックに解決されない。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「10が表示される」であり、「20が表示される」ではありません。"
+              "detail": "誤りです。選択肢Dの内容「20が表示される」にはなりません。正しくは C「10が表示される」 です。 aの型はAなのでa.numはAのpublicフィールドを参照する。Bにもnumはあるが、フィールドはポリモーフィックに解決されない。"
             }
           ],
           "relatedKnowledge": [
@@ -29027,27 +29027,27 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正しい選択肢です。varはローカル変数宣言専用。4行目のフィールド宣言、5行目の戻り値型には使えない。"
+              "detail": "正解です。選択肢Aの内容「5行目」が、このコードの実際の結果または正しい説明です。 varはローカル変数宣言専用。4行目のフィールド宣言、5行目の戻り値型には使えない。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「10行目」ではありません。varはローカル変数宣言専用。4行目のフィールド宣言、5行目の戻り値型には使えない。"
+              "detail": "誤りです。選択肢Bの内容「10行目」にはなりません。正しくは A「5行目」、E「4行目」 です。 varはローカル変数宣言専用。4行目のフィールド宣言、5行目の戻り値型には使えない。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「7行目」ではありません。varはローカル変数宣言専用。4行目のフィールド宣言、5行目の戻り値型には使えない。"
+              "detail": "誤りです。選択肢Cの内容「7行目」にはなりません。正しくは A「5行目」、E「4行目」 です。 varはローカル変数宣言専用。4行目のフィールド宣言、5行目の戻り値型には使えない。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「6行目」ではありません。varはローカル変数宣言専用。4行目のフィールド宣言、5行目の戻り値型には使えない。"
+              "detail": "誤りです。選択肢Dの内容「6行目」にはなりません。正しくは A「5行目」、E「4行目」 です。 varはローカル変数宣言専用。4行目のフィールド宣言、5行目の戻り値型には使えない。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正しい選択肢です。varはローカル変数宣言専用。4行目のフィールド宣言、5行目の戻り値型には使えない。"
+              "detail": "正解です。選択肢Eの内容「4行目」が、このコードの実際の結果または正しい説明です。 varはローカル変数宣言専用。4行目のフィールド宣言、5行目の戻り値型には使えない。"
             }
           ],
           "relatedKnowledge": [
@@ -29128,27 +29128,27 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「this(num);」ではありません。BはAを継承しており、Aにはint引数のコンストラクタしかない。サブクラスのコンストラクタ先頭でsuper(num)を呼ぶ必要がある。"
+              "detail": "このコードは条件を満たしません。選択肢Aの記述「this(num);」は、正解として必要な条件から外れています。 BはAを継承しており、Aにはint引数のコンストラクタしかない。サブクラスのコンストラクタ先頭でsuper(num)を呼ぶ必要がある。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「super(num);」です。BはAを継承しており、Aにはint引数のコンストラクタしかない。サブクラスのコンストラクタ先頭でsuper(num)を呼ぶ必要がある。"
+              "detail": "このコードは条件を満たします。選択肢Bは、設問の制約に対して正しくコンパイルまたは正しく動作します。 BはAを継承しており、Aにはint引数のコンストラクタしかない。サブクラスのコンストラクタ先頭でsuper(num)を呼ぶ必要がある。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「this(val);」ではありません。BはAを継承しており、Aにはint引数のコンストラクタしかない。サブクラスのコンストラクタ先頭でsuper(num)を呼ぶ必要がある。"
+              "detail": "このコードは条件を満たしません。選択肢Cの記述「this(val);」は、正解として必要な条件から外れています。 BはAを継承しており、Aにはint引数のコンストラクタしかない。サブクラスのコンストラクタ先頭でsuper(num)を呼ぶ必要がある。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「super(val);」ではありません。BはAを継承しており、Aにはint引数のコンストラクタしかない。サブクラスのコンストラクタ先頭でsuper(num)を呼ぶ必要がある。"
+              "detail": "このコードは条件を満たしません。選択肢Dの記述「super(val);」は、正解として必要な条件から外れています。 BはAを継承しており、Aにはint引数のコンストラクタしかない。サブクラスのコンストラクタ先頭でsuper(num)を呼ぶ必要がある。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「super();」ではありません。BはAを継承しており、Aにはint引数のコンストラクタしかない。サブクラスのコンストラクタ先頭でsuper(num)を呼ぶ必要がある。"
+              "detail": "このコードは条件を満たしません。選択肢Eの記述「super();」は、正解として必要な条件から外れています。 BはAを継承しており、Aにはint引数のコンストラクタしかない。サブクラスのコンストラクタ先頭でsuper(num)を呼ぶ必要がある。"
             }
           ],
           "relatedKnowledge": [
@@ -29221,22 +29221,22 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「6行目を「a = (int) b;」に置き換える」です。floatからintへの代入はデータ欠損の可能性があるため暗黙変換できない。明示的キャストが必要。"
+              "detail": "このコードは条件を満たします。選択肢Aは、設問の制約に対して正しくコンパイルまたは正しく動作します。 floatからintへの代入はデータ欠損の可能性があるため暗黙変換できない。明示的キャストが必要。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「7行目を「b = (float) a;」に置き換える」ではありません。floatからintへの代入はデータ欠損の可能性があるため暗黙変換できない。明示的キャストが必要。"
+              "detail": "このコードは条件を満たしません。選択肢Bの記述「7行目を「b = (float) a;」に置き換える」は、正解として必要な条件から外れています。 floatからintへの代入はデータ欠損の可能性があるため暗黙変換できない。明示的キャストが必要。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「8行目を「c = (double) b;」に置き換える」ではありません。floatからintへの代入はデータ欠損の可能性があるため暗黙変換できない。明示的キャストが必要。"
+              "detail": "このコードは条件を満たしません。選択肢Cの記述「8行目を「c = (double) b;」に置き換える」は、正解として必要な条件から外れています。 floatからintへの代入はデータ欠損の可能性があるため暗黙変換できない。明示的キャストが必要。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「9行目を「c = (double) a;」に置き換える」ではありません。floatからintへの代入はデータ欠損の可能性があるため暗黙変換できない。明示的キャストが必要。"
+              "detail": "このコードは条件を満たしません。選択肢Dの記述「9行目を「c = (double) a;」に置き換える」は、正解として必要な条件から外れています。 floatからintへの代入はデータ欠損の可能性があるため暗黙変換できない。明示的キャストが必要。"
             }
           ],
           "relatedKnowledge": [
@@ -29309,22 +29309,22 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「null」「A」「B」「C」「null」と表示される」であり、「「A」「B」「C」と表示される」ではありません。"
+              "detail": "誤りです。選択肢Aの内容「「A」「B」「C」と表示される」にはなりません。正しくは B「「null」「A」「B」「C」「null」と表示される」 です。 String配列の未代入要素はnull。要素数5の0番目と4番目はnullのまま表示される。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「「null」「A」「B」「C」「null」と表示される」です。String配列の未代入要素はnull。要素数5の0番目と4番目はnullのまま表示される。"
+              "detail": "正解です。選択肢Bの内容「「null」「A」「B」「C」「null」と表示される」が、このコードの実際の結果または正しい説明です。 String配列の未代入要素はnull。要素数5の0番目と4番目はnullのまま表示される。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「null」「A」「B」「C」「null」と表示される」であり、「「Error」と表示される」ではありません。"
+              "detail": "誤りです。選択肢Cの内容「「Error」と表示される」にはなりません。正しくは B「「null」「A」「B」「C」「null」と表示される」 です。 String配列の未代入要素はnull。要素数5の0番目と4番目はnullのまま表示される。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「「null」「A」「B」「C」「null」と表示される」です。"
+              "detail": "この選択肢は誤りです。この問題の正解は B「「null」「A」「B」「C」「null」と表示される」 です。コンパイルエラーとして処理する問題ではありません。 String配列の未代入要素はnull。要素数5の0番目と4番目はnullのまま表示される。"
             }
           ],
           "relatedKnowledge": [
@@ -29410,32 +29410,32 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「System.out.println(Sample.getValue + s.header);」ではありません。headerはstaticでパッケージアクセス、getValue()はpublic static。privateなvalueへは外部から直接アクセスできない。"
+              "detail": "このコードは条件を満たしません。選択肢Aの記述「System.out.println(Sample.getValue + s.header);」は、正解として必要な条件から外れています。 headerはstaticでパッケージアクセス、getValue()はpublic static。privateなvalueへは外部から直接アクセスできない。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「System.out.println(Sample.header + Sample.value);」ではありません。headerはstaticでパッケージアクセス、getValue()はpublic static。privateなvalueへは外部から直接アクセスできない。"
+              "detail": "このコードは条件を満たしません。選択肢Bの記述「System.out.println(Sample.header + Sample.value);」は、正解として必要な条件から外れています。 headerはstaticでパッケージアクセス、getValue()はpublic static。privateなvalueへは外部から直接アクセスできない。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「System.out.println(new Sample().header + new Sample().value);」ではありません。headerはstaticでパッケージアクセス、getValue()はpublic static。privateなvalueへは外部から直接アクセスできない。"
+              "detail": "このコードは条件を満たしません。選択肢Cの記述「System.out.println(new Sample().header + new Sample().value);」は、正解として必要な条件から外れています。 headerはstaticでパッケージアクセス、getValue()はpublic static。privateなvalueへは外部から直接アクセスできない。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「System.out.println(s.header + Sample.value);」ではありません。headerはstaticでパッケージアクセス、getValue()はpublic static。privateなvalueへは外部から直接アクセスできない。"
+              "detail": "このコードは条件を満たしません。選択肢Dの記述「System.out.println(s.header + Sample.value);」は、正解として必要な条件から外れています。 headerはstaticでパッケージアクセス、getValue()はpublic static。privateなvalueへは外部から直接アクセスできない。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「System.out.println(Sample.header + Sample.getValue());」です。headerはstaticでパッケージアクセス、getValue()はpublic static。privateなvalueへは外部から直接アクセスできない。"
+              "detail": "このコードは条件を満たします。選択肢Eは、設問の制約に対して正しくコンパイルまたは正しく動作します。 headerはstaticでパッケージアクセス、getValue()はpublic static。privateなvalueへは外部から直接アクセスできない。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。「System.out.println(s.header + s.value);」ではありません。headerはstaticでパッケージアクセス、getValue()はpublic static。privateなvalueへは外部から直接アクセスできない。"
+              "detail": "このコードは条件を満たしません。選択肢Fの記述「System.out.println(s.header + s.value);」は、正解として必要な条件から外れています。 headerはstaticでパッケージアクセス、getValue()はpublic static。privateなvalueへは外部から直接アクセスできない。"
             }
           ],
           "relatedKnowledge": [
@@ -29516,27 +29516,27 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「Cが表示される」であり、「Aが表示される」ではありません。"
+              "detail": "誤りです。選択肢Aの内容「Aが表示される」にはなりません。正しくは C「Cが表示される」 です。 int[]はObjectとして扱えるが、Object[]やlong[]とは互換性がない。最も適用可能なのはtest(Object)。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「Cが表示される」であり、「Bが表示される」ではありません。"
+              "detail": "誤りです。選択肢Bの内容「Bが表示される」にはなりません。正しくは C「Cが表示される」 です。 int[]はObjectとして扱えるが、Object[]やlong[]とは互換性がない。最も適用可能なのはtest(Object)。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「Cが表示される」です。int[]はObjectとして扱えるが、Object[]やlong[]とは互換性がない。最も適用可能なのはtest(Object)。"
+              "detail": "正解です。選択肢Cの内容「Cが表示される」が、このコードの実際の結果または正しい説明です。 int[]はObjectとして扱えるが、Object[]やlong[]とは互換性がない。最も適用可能なのはtest(Object)。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「Cが表示される」です。"
+              "detail": "この選択肢は誤りです。この問題の正解は C「Cが表示される」 です。コンパイルエラーとして処理する問題ではありません。 int[]はObjectとして扱えるが、Object[]やlong[]とは互換性がない。最も適用可能なのはtest(Object)。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「Cが表示される」です。"
+              "detail": "この選択肢は誤りです。この問題の正解は C「Cが表示される」 です。コンパイルエラーとして処理する問題ではありません。 int[]はObjectとして扱えるが、Object[]やlong[]とは互換性がない。最も適用可能なのはtest(Object)。"
             }
           ],
           "relatedKnowledge": [
@@ -29614,27 +29614,27 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「「1」「2」と表示される」という出力は発生しません。"
+              "detail": "誤りです。選択肢Aの内容「「1」「2」と表示される」にはなりません。正しくは C「testメソッドでコンパイルエラーが発生する」 です。 staticメソッドtestから非staticフィールドnumを直接参照しているためコンパイルエラー。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「1回表示される」という出力は発生しません。"
+              "detail": "誤りです。選択肢Bの内容「1回表示される」にはなりません。正しくは C「testメソッドでコンパイルエラーが発生する」 です。 staticメソッドtestから非staticフィールドnumを直接参照しているためコンパイルエラー。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「testメソッドでコンパイルエラーが発生する」です。staticメソッドtestから非staticフィールドnumを直接参照しているためコンパイルエラー。"
+              "detail": "この選択肢が正解です。実行前のコンパイル段階で止まるため、出力結果や実行時例外の選択肢は成立しません。 staticメソッドtestから非staticフィールドnumを直接参照しているためコンパイルエラー。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「mainメソッドでコンパイルエラーが発生する」ではありません。staticメソッドtestから非staticフィールドnumを直接参照しているためコンパイルエラー。"
+              "detail": "この選択肢は誤りです。この問題の正解は C「testメソッドでコンパイルエラーが発生する」 です。コンパイルエラーとして処理する問題ではありません。 staticメソッドtestから非staticフィールドnumを直接参照しているためコンパイルエラー。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。コンパイル時点で止まるため、実行時例外ではありません。"
+              "detail": "この選択肢は誤りです。実行時まで進まず、コンパイル段階で判定が終わります。 staticメソッドtestから非staticフィールドnumを直接参照しているためコンパイルエラー。"
             }
           ],
           "relatedKnowledge": [
@@ -29707,22 +29707,22 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「abcde」と表示される」であり、「「abxde」と表示される」ではありません。"
+              "detail": "誤りです。選択肢Aの内容「「abxde」と表示される」にはなりません。正しくは B「「abcde」と表示される」 です。 Stringのreplaceやsubstringは新しい文字列を返すだけで、元のStringは変更しない。戻り値を代入していないためabcdeのまま。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「「abcde」と表示される」です。Stringのreplaceやsubstringは新しい文字列を返すだけで、元のStringは変更しない。戻り値を代入していないためabcdeのまま。"
+              "detail": "正解です。選択肢Bの内容「「abcde」と表示される」が、このコードの実際の結果または正しい説明です。 Stringのreplaceやsubstringは新しい文字列を返すだけで、元のStringは変更しない。戻り値を代入していないためabcdeのまま。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「abcde」と表示される」であり、「「cde」と表示される」ではありません。"
+              "detail": "誤りです。選択肢Cの内容「「cde」と表示される」にはなりません。正しくは B「「abcde」と表示される」 です。 Stringのreplaceやsubstringは新しい文字列を返すだけで、元のStringは変更しない。戻り値を代入していないためabcdeのまま。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「abcde」と表示される」であり、「「xde」と表示される」ではありません。"
+              "detail": "誤りです。選択肢Dの内容「「xde」と表示される」にはなりません。正しくは B「「abcde」と表示される」 です。 Stringのreplaceやsubstringは新しい文字列を返すだけで、元のStringは変更しない。戻り値を代入していないためabcdeのまま。"
             }
           ],
           "relatedKnowledge": [
@@ -29795,22 +29795,22 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「「1,22」と表示される」です。num++ + numは0+1で1。その後文字列連結になり、++numで2、最後のnumも2なので「1,22」。"
+              "detail": "正解です。選択肢Aの内容「「1,22」と表示される」が、このコードの実際の結果または正しい説明です。 num++ + numは0+1で1。その後文字列連結になり、++numで2、最後のnumも2なので「1,22」。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「1,22」と表示される」であり、「「2,22」と表示される」ではありません。"
+              "detail": "誤りです。選択肢Bの内容「「2,22」と表示される」にはなりません。正しくは A「「1,22」と表示される」 です。 num++ + numは0+1で1。その後文字列連結になり、++numで2、最後のnumも2なので「1,22」。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「1,22」と表示される」であり、「「2,4」と表示される」ではありません。"
+              "detail": "誤りです。選択肢Cの内容「「2,4」と表示される」にはなりません。正しくは A「「1,22」と表示される」 です。 num++ + numは0+1で1。その後文字列連結になり、++numで2、最後のnumも2なので「1,22」。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「「1,22」と表示される」です。"
+              "detail": "この選択肢は誤りです。この問題の正解は A「「1,22」と表示される」 です。コンパイルエラーとして処理する問題ではありません。 num++ + numは0+1で1。その後文字列連結になり、++numで2、最後のnumも2なので「1,22」。"
             }
           ],
           "relatedKnowledge": [
@@ -29887,27 +29887,27 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「「A」「C」と表示される」です。Bはcontinueで表示されず、Cを表示した後にbreakでループ終了。表示されるのはAとC。"
+              "detail": "正解です。選択肢Aの内容「「A」「C」と表示される」が、このコードの実際の結果または正しい説明です。 Bはcontinueで表示されず、Cを表示した後にbreakでループ終了。表示されるのはAとC。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「A」「C」と表示される」であり、「「A」「C」「D」と表示される」ではありません。"
+              "detail": "誤りです。選択肢Bの内容「「A」「C」「D」と表示される」にはなりません。正しくは A「「A」「C」と表示される」 です。 Bはcontinueで表示されず、Cを表示した後にbreakでループ終了。表示されるのはAとC。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「A」「C」と表示される」であり、「「B」「C」と表示される」ではありません。"
+              "detail": "誤りです。選択肢Cの内容「「B」「C」と表示される」にはなりません。正しくは A「「A」「C」と表示される」 です。 Bはcontinueで表示されず、Cを表示した後にbreakでループ終了。表示されるのはAとC。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「A」「C」と表示される」であり、「「C」と表示される」ではありません。"
+              "detail": "誤りです。選択肢Dの内容「「C」と表示される」にはなりません。正しくは A「「A」「C」と表示される」 です。 Bはcontinueで表示されず、Cを表示した後にbreakでループ終了。表示されるのはAとC。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「「A」「C」と表示される」です。"
+              "detail": "この選択肢は誤りです。この問題の正解は A「「A」「C」と表示される」 です。コンパイルエラーとして処理する問題ではありません。 Bはcontinueで表示されず、Cを表示した後にbreakでループ終了。表示されるのはAとC。"
             }
           ],
           "relatedKnowledge": [
@@ -29985,27 +29985,27 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「「1234」「12」と表示される」です。int[2][4]で作った2次元目の配列を、それぞれ長さ4と長さ2の配列に差し替えている。拡張for文は実際の配列長だけ回る。"
+              "detail": "正解です。選択肢Aの内容「「1234」「12」と表示される」が、このコードの実際の結果または正しい説明です。 int[2][4]で作った2次元目の配列を、それぞれ長さ4と長さ2の配列に差し替えている。拡張for文は実際の配列長だけ回る。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「1234」「12」と表示される」であり、「「12」「12」と表示される」ではありません。"
+              "detail": "誤りです。選択肢Bの内容「「12」「12」と表示される」にはなりません。正しくは A「「1234」「12」と表示される」 です。 int[2][4]で作った2次元目の配列を、それぞれ長さ4と長さ2の配列に差し替えている。拡張for文は実際の配列長だけ回る。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「1234」「12」と表示される」であり、「「12」「1200」と表示される」ではありません。"
+              "detail": "誤りです。選択肢Cの内容「「12」「1200」と表示される」にはなりません。正しくは A「「1234」「12」と表示される」 です。 int[2][4]で作った2次元目の配列を、それぞれ長さ4と長さ2の配列に差し替えている。拡張for文は実際の配列長だけ回る。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「「1234」「12」と表示される」です。"
+              "detail": "この選択肢は誤りです。この問題の正解は A「「1234」「12」と表示される」 です。コンパイルエラーとして処理する問題ではありません。 int[2][4]で作った2次元目の配列を、それぞれ長さ4と長さ2の配列に差し替えている。拡張for文は実際の配列長だけ回る。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。実行時例外は発生せず、結果は「「1234」「12」と表示される」です。"
+              "detail": "この選択肢は誤りです。実行時例外ではなく、正解は A「「1234」「12」と表示される」 です。 int[2][4]で作った2次元目の配列を、それぞれ長さ4と長さ2の配列に差し替えている。拡張for文は実際の配列長だけ回る。"
             }
           ],
           "relatedKnowledge": [
@@ -30083,27 +30083,27 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「ABCCと表示される」であり、「ABCDと表示される」ではありません。"
+              "detail": "誤りです。選択肢Aの内容「ABCDと表示される」にはなりません。正しくは C「ABCCと表示される」 です。 concatの戻り値は代入しているが、replaceの戻り値は捨てているためABCのまま。最後にCを連結してABCC。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「ABCCと表示される」であり、「ACDと表示される」ではありません。"
+              "detail": "誤りです。選択肢Bの内容「ACDと表示される」にはなりません。正しくは C「ABCCと表示される」 です。 concatの戻り値は代入しているが、replaceの戻り値は捨てているためABCのまま。最後にCを連結してABCC。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「ABCCと表示される」です。concatの戻り値は代入しているが、replaceの戻り値は捨てているためABCのまま。最後にCを連結してABCC。"
+              "detail": "正解です。選択肢Cの内容「ABCCと表示される」が、このコードの実際の結果または正しい説明です。 concatの戻り値は代入しているが、replaceの戻り値は捨てているためABCのまま。最後にCを連結してABCC。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「ABCCと表示される」であり、「ABDと表示される」ではありません。"
+              "detail": "誤りです。選択肢Dの内容「ABDと表示される」にはなりません。正しくは C「ABCCと表示される」 です。 concatの戻り値は代入しているが、replaceの戻り値は捨てているためABCのまま。最後にCを連結してABCC。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「ABCCと表示される」であり、「ABDcと表示される」ではありません。"
+              "detail": "誤りです。選択肢Eの内容「ABDcと表示される」にはなりません。正しくは C「ABCCと表示される」 です。 concatの戻り値は代入しているが、replaceの戻り値は捨てているためABCのまま。最後にCを連結してABCC。"
             }
           ],
           "relatedKnowledge": [
@@ -30180,22 +30180,22 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「C、A、Bと表示される」であり、「A、B、Cと表示される」ではありません。"
+              "detail": "誤りです。選択肢Aの内容「A、B、Cと表示される」にはなりません。正しくは C「C、A、Bと表示される」 です。 try内で例外が発生した場合、リソースのcloseでC、catchでA、finallyでBの順に出力される。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「C、A、Bと表示される」であり、「A、C、Bと表示される」ではありません。"
+              "detail": "誤りです。選択肢Bの内容「A、C、Bと表示される」にはなりません。正しくは C「C、A、Bと表示される」 です。 try内で例外が発生した場合、リソースのcloseでC、catchでA、finallyでBの順に出力される。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「C、A、Bと表示される」です。try内で例外が発生した場合、リソースのcloseでC、catchでA、finallyでBの順に出力される。"
+              "detail": "正解です。選択肢Cの内容「C、A、Bと表示される」が、このコードの実際の結果または正しい説明です。 try内で例外が発生した場合、リソースのcloseでC、catchでA、finallyでBの順に出力される。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「C、A、Bと表示される」です。"
+              "detail": "この選択肢は誤りです。この問題の正解は C「C、A、Bと表示される」 です。コンパイルエラーとして処理する問題ではありません。 try内で例外が発生した場合、リソースのcloseでC、catchでA、finallyでBの順に出力される。"
             }
           ],
           "relatedKnowledge": [
@@ -30268,22 +30268,22 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「3」ではありません。continueの直後にあるcnt++は到達不能コードになるためコンパイルエラー。"
+              "detail": "該当しません。(3) の箇所は、この設問で問われている誤りではありません。 continueの直後にあるcnt++は到達不能コードになるためコンパイルエラー。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「2」ではありません。continueの直後にあるcnt++は到達不能コードになるためコンパイルエラー。"
+              "detail": "該当しません。(2) の箇所は、この設問で問われている誤りではありません。 continueの直後にあるcnt++は到達不能コードになるためコンパイルエラー。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「1」ではありません。continueの直後にあるcnt++は到達不能コードになるためコンパイルエラー。"
+              "detail": "該当しません。(1) の箇所は、この設問で問われている誤りではありません。 continueの直後にあるcnt++は到達不能コードになるためコンパイルエラー。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「コンパイルエラーが発生する」です。continueの直後にあるcnt++は到達不能コードになるためコンパイルエラー。"
+              "detail": "この選択肢が正解です。実行前のコンパイル段階で止まるため、出力結果や実行時例外の選択肢は成立しません。 continueの直後にあるcnt++は到達不能コードになるためコンパイルエラー。"
             }
           ],
           "relatedKnowledge": [
@@ -30368,32 +30368,32 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「public ArrayList<Integer> test(Set<String> s) { ... }」ではありません。Fは引数が同じで戻り値がList<Number>のサブタイプなのでオーバーライド可能。Bは引数がTreeSetで別シグネチャのオーバーロードになるため定義可能。"
+              "detail": "このコードは条件を満たしません。選択肢Aの記述「public ArrayList<Integer> test(Set<String> s) { ... }」は、正解として必要な条件から外れています。 Fは引数が同じで戻り値がList<Number>のサブタイプなのでオーバーライド可能。Bは引数がTreeSetで別シグネチャのオーバーロードになるため定義可能。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正しい選択肢です。Fは引数が同じで戻り値がList<Number>のサブタイプなのでオーバーライド可能。Bは引数がTreeSetで別シグネチャのオーバーロードになるため定義可能。"
+              "detail": "このコードは条件を満たします。選択肢Bは、設問の制約に対して正しくコンパイルまたは正しく動作します。 Fは引数が同じで戻り値がList<Number>のサブタイプなのでオーバーライド可能。Bは引数がTreeSetで別シグネチャのオーバーロードになるため定義可能。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「public List<Integer> test(Set<String> s) { ... }」ではありません。Fは引数が同じで戻り値がList<Number>のサブタイプなのでオーバーライド可能。Bは引数がTreeSetで別シグネチャのオーバーロードになるため定義可能。"
+              "detail": "このコードは条件を満たしません。選択肢Cの記述「public List<Integer> test(Set<String> s) { ... }」は、正解として必要な条件から外れています。 Fは引数が同じで戻り値がList<Number>のサブタイプなのでオーバーライド可能。Bは引数がTreeSetで別シグネチャのオーバーロードになるため定義可能。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「public List<Object> test(Set<CharSequence> s) { ... }」ではありません。Fは引数が同じで戻り値がList<Number>のサブタイプなのでオーバーライド可能。Bは引数がTreeSetで別シグネチャのオーバーロードになるため定義可能。"
+              "detail": "このコードは条件を満たしません。選択肢Dの記述「public List<Object> test(Set<CharSequence> s) { ... }」は、正解として必要な条件から外れています。 Fは引数が同じで戻り値がList<Number>のサブタイプなのでオーバーライド可能。Bは引数がTreeSetで別シグネチャのオーバーロードになるため定義可能。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「public List<Integer> test(Set<CharSequence> s) { ... }」ではありません。Fは引数が同じで戻り値がList<Number>のサブタイプなのでオーバーライド可能。Bは引数がTreeSetで別シグネチャのオーバーロードになるため定義可能。"
+              "detail": "このコードは条件を満たしません。選択肢Eの記述「public List<Integer> test(Set<CharSequence> s) { ... }」は、正解として必要な条件から外れています。 Fは引数が同じで戻り値がList<Number>のサブタイプなのでオーバーライド可能。Bは引数がTreeSetで別シグネチャのオーバーロードになるため定義可能。"
             },
             {
               "key": "F",
               "isCorrect": true,
-              "detail": "正しい選択肢です。Fは引数が同じで戻り値がList<Number>のサブタイプなのでオーバーライド可能。Bは引数がTreeSetで別シグネチャのオーバーロードになるため定義可能。"
+              "detail": "このコードは条件を満たします。選択肢Fは、設問の制約に対して正しくコンパイルまたは正しく動作します。 Fは引数が同じで戻り値がList<Number>のサブタイプなのでオーバーライド可能。Bは引数がTreeSetで別シグネチャのオーバーロードになるため定義可能。"
             }
           ],
           "relatedKnowledge": [
@@ -30467,22 +30467,22 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「」です。配列変数は[]で宣言し、new 型[要素数]でインスタンスを生成する。要素数は変数宣言側には書かない。"
+              "detail": "このコードは条件を満たします。選択肢Aは、設問の制約に対して正しくコンパイルまたは正しく動作します。 配列変数は[]で宣言し、new 型[要素数]でインスタンスを生成する。要素数は変数宣言側には書かない。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。配列変数は[]で宣言し、new 型[要素数]でインスタンスを生成する。要素数は変数宣言側には書かない。"
+              "detail": "このコードは条件を満たしません。選択肢Bの記述「int[] array; array = int[2];」は、正解として必要な条件から外れています。 配列変数は[]で宣言し、new 型[要素数]でインスタンスを生成する。要素数は変数宣言側には書かない。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。配列変数は[]で宣言し、new 型[要素数]でインスタンスを生成する。要素数は変数宣言側には書かない。"
+              "detail": "このコードは条件を満たしません。選択肢Cの記述「int array = new int[2];」は、正解として必要な条件から外れています。 配列変数は[]で宣言し、new 型[要素数]でインスタンスを生成する。要素数は変数宣言側には書かない。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。配列変数は[]で宣言し、new 型[要素数]でインスタンスを生成する。要素数は変数宣言側には書かない。"
+              "detail": "このコードは条件を満たしません。選択肢Dの記述「int array[2];」は、正解として必要な条件から外れています。 配列変数は[]で宣言し、new 型[要素数]でインスタンスを生成する。要素数は変数宣言側には書かない。"
             }
           ],
           "relatedKnowledge": [
@@ -30556,22 +30556,22 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「array1[1] == array3」ではありません。二次元配列array1.clone()は1次元目だけ新しい配列を作り、内側のchar[]参照は共有する。したがってarray1[1]とarray2[1]は同じ。"
+              "detail": "このコードは条件を満たしません。選択肢Aの記述「array1[1] == array3」は、正解として必要な条件から外れています。 二次元配列array1.clone()は1次元目だけ新しい配列を作り、内側のchar[]参照は共有する。したがってarray1[1]とarray2[1]は同じ。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「array1[1] == array3[1]」ではありません。二次元配列array1.clone()は1次元目だけ新しい配列を作り、内側のchar[]参照は共有する。したがってarray1[1]とarray2[1]は同じ。"
+              "detail": "このコードは条件を満たしません。選択肢Bの記述「array1[1] == array3[1]」は、正解として必要な条件から外れています。 二次元配列array1.clone()は1次元目だけ新しい配列を作り、内側のchar[]参照は共有する。したがってarray1[1]とarray2[1]は同じ。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「array1[1] == array2[1]」です。二次元配列array1.clone()は1次元目だけ新しい配列を作り、内側のchar[]参照は共有する。したがってarray1[1]とarray2[1]は同じ。"
+              "detail": "このコードは条件を満たします。選択肢Cは、設問の制約に対して正しくコンパイルまたは正しく動作します。 二次元配列array1.clone()は1次元目だけ新しい配列を作り、内側のchar[]参照は共有する。したがってarray1[1]とarray2[1]は同じ。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「array1.equals(array2)」ではありません。二次元配列array1.clone()は1次元目だけ新しい配列を作り、内側のchar[]参照は共有する。したがってarray1[1]とarray2[1]は同じ。"
+              "detail": "このコードは条件を満たしません。選択肢Dの記述「array1.equals(array2)」は、正解として必要な条件から外れています。 二次元配列array1.clone()は1次元目だけ新しい配列を作り、内側のchar[]参照は共有する。したがってarray1[1]とarray2[1]は同じ。"
             }
           ],
           "relatedKnowledge": [
@@ -30656,22 +30656,22 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「ABCと表示される」です。C生成時にスーパークラスのコンストラクタが先に実行される。A→B→Cの順に表示。"
+              "detail": "正解です。選択肢Aの内容「ABCと表示される」が、このコードの実際の結果または正しい説明です。 C生成時にスーパークラスのコンストラクタが先に実行される。A→B→Cの順に表示。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「ABCと表示される」であり、「Cと表示される」ではありません。"
+              "detail": "誤りです。選択肢Bの内容「Cと表示される」にはなりません。正しくは A「ABCと表示される」 です。 C生成時にスーパークラスのコンストラクタが先に実行される。A→B→Cの順に表示。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「ABCと表示される」であり、「CBAと表示される」ではありません。"
+              "detail": "誤りです。選択肢Cの内容「CBAと表示される」にはなりません。正しくは A「ABCと表示される」 です。 C生成時にスーパークラスのコンストラクタが先に実行される。A→B→Cの順に表示。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「ABCと表示される」です。"
+              "detail": "この選択肢は誤りです。この問題の正解は A「ABCと表示される」 です。コンパイルエラーとして処理する問題ではありません。 C生成時にスーパークラスのコンストラクタが先に実行される。A→B→Cの順に表示。"
             }
           ],
           "relatedKnowledge": [
@@ -30750,27 +30750,27 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「public void print();」ではありません。抽象クラスには、通常の具象メソッド、abstractメソッド、staticメソッドを定義できます。Bは本体を持つ通常のインスタンスメソッド、Dは本体を持たないabstractメソッド、Eは本体を持つstaticメソッドなので成立します。Aは本体がないのにabstractが付いていないため不正です。Cはabstractメソッドなのに本体を持っているため不正です。"
+              "detail": "誤りです。本体のないメソッドを宣言するならabstractを付ける必要があります。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正しい選択肢です。抽象クラスには、通常の具象メソッド、abstractメソッド、staticメソッドを定義できます。Bは本体を持つ通常のインスタンスメソッド、Dは本体を持たないabstractメソッド、Eは本体を持つstaticメソッドなので成立します。Aは本体がないのにabstractが付いていないため不正です。Cはabstractメソッドなのに本体を持っているため不正です。"
+              "detail": "正解です。抽象クラスの中には、通常の具象メソッドを定義できます。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。抽象クラスには、通常の具象メソッド、abstractメソッド、staticメソッドを定義できます。Bは本体を持つ通常のインスタンスメソッド、Dは本体を持たないabstractメソッド、Eは本体を持つstaticメソッドなので成立します。Aは本体がないのにabstractが付いていないため不正です。Cはabstractメソッドなのに本体を持っているため不正です。"
+              "detail": "誤りです。abstractメソッドには本体を付けられません。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正しい選択肢です。抽象クラスには、通常の具象メソッド、abstractメソッド、staticメソッドを定義できます。Bは本体を持つ通常のインスタンスメソッド、Dは本体を持たないabstractメソッド、Eは本体を持つstaticメソッドなので成立します。Aは本体がないのにabstractが付いていないため不正です。Cはabstractメソッドなのに本体を持っているため不正です。"
+              "detail": "正解です。抽象クラスなので、本体のないabstractメソッドを宣言できます。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正しい選択肢です。抽象クラスには、通常の具象メソッド、abstractメソッド、staticメソッドを定義できます。Bは本体を持つ通常のインスタンスメソッド、Dは本体を持たないabstractメソッド、Eは本体を持つstaticメソッドなので成立します。Aは本体がないのにabstractが付いていないため不正です。Cはabstractメソッドなのに本体を持っているため不正です。"
+              "detail": "正解です。抽象クラスにもstaticメソッドを定義できます。"
             }
           ],
           "relatedKnowledge": [
@@ -30842,22 +30842,22 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「2,3」と表示される」であり、「「4,9」と表示される」ではありません。"
+              "detail": "誤りです。選択肢Aの内容「「4,9」と表示される」にはなりません。正しくは C「「2,3」と表示される」 です。 コンストラクタでフィールドa,bは二乗されるが、mainで表示しているのはローカル変数a,b。したがって2,3が表示される。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「2,3」と表示される」であり、「「0,0」と表示される」ではありません。"
+              "detail": "誤りです。選択肢Bの内容「「0,0」と表示される」にはなりません。正しくは C「「2,3」と表示される」 です。 コンストラクタでフィールドa,bは二乗されるが、mainで表示しているのはローカル変数a,b。したがって2,3が表示される。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「「2,3」と表示される」です。コンストラクタでフィールドa,bは二乗されるが、mainで表示しているのはローカル変数a,b。したがって2,3が表示される。"
+              "detail": "正解です。選択肢Cの内容「「2,3」と表示される」が、このコードの実際の結果または正しい説明です。 コンストラクタでフィールドa,bは二乗されるが、mainで表示しているのはローカル変数a,b。したがって2,3が表示される。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「「2,3」と表示される」です。"
+              "detail": "この選択肢は誤りです。この問題の正解は C「「2,3」と表示される」 です。コンパイルエラーとして処理する問題ではありません。 コンストラクタでフィールドa,bは二乗されるが、mainで表示しているのはローカル変数a,b。したがって2,3が表示される。"
             }
           ],
           "relatedKnowledge": [
@@ -30957,42 +30957,42 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「this.num = 0;」ではありません。t.numに直接0を代入すればよい。modifyは加算なので、現在値100の符号反転値-100を渡せば0になる。"
+              "detail": "誤りです。Mainクラスのstatic main内でthisは使えません。thisは現在のインスタンスを表すため、static文脈では利用不可です。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「num = 0;」ではありません。t.numに直接0を代入すればよい。modifyは加算なので、現在値100の符号反転値-100を渡せば0になる。"
+              "detail": "誤りです。numというローカル変数やフィールドはMain側に宣言されていません。変更したいのはtが参照するTestインスタンスのnumです。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「t(0);」ではありません。t.numに直接0を代入すればよい。modifyは加算なので、現在値100の符号反転値-100を渡せば0になる。"
+              "detail": "誤りです。tは変数であってメソッドではないため、t(0)のようには呼び出せません。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正しい選択肢です。t.numに直接0を代入すればよい。modifyは加算なので、現在値100の符号反転値-100を渡せば0になる。"
+              "detail": "正解です。numはpublicフィールドなので、t.num = 0; で直接0を代入できます。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「t.getNum() = 0;」ではありません。t.numに直接0を代入すればよい。modifyは加算なので、現在値100の符号反転値-100を渡せば0になる。"
+              "detail": "誤りです。メソッド呼び出しの戻り値は代入先にできません。t.getNum() = 0; は左辺として不正です。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。「t.modify(0);」ではありません。t.numに直接0を代入すればよい。modifyは加算なので、現在値100の符号反転値-100を渡せば0になる。"
+              "detail": "誤りです。modify(0)は現在値に0を加えるだけなので、100のままです。"
             },
             {
               "key": "G",
               "isCorrect": true,
-              "detail": "正しい選択肢です。t.numに直接0を代入すればよい。modifyは加算なので、現在値100の符号反転値-100を渡せば0になる。"
+              "detail": "正解です。t.numは現在100なので、modify(-t.num)で-100を加算し、結果は0になります。"
             },
             {
               "key": "H",
               "isCorrect": true,
-              "detail": "正しい選択肢です。t.numに直接0を代入すればよい。modifyは加算なので、現在値100の符号反転値-100を渡せば0になる。"
+              "detail": "正解です。t.getNum()も現在100を返すため、modify(-t.getNum())で0になります。"
             }
           ],
           "relatedKnowledge": [
@@ -31067,22 +31067,22 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。引数名とフィールド名が同じなので、this.valueでフィールドを明示して代入する必要がある。"
+              "detail": "誤りです。value = value; は引数valueを引数value自身へ代入しているだけで、フィールドは変更されません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。引数名とフィールド名が同じなので、this.valueでフィールドを明示して代入する必要がある。"
+              "detail": "誤りです。メソッド内のString valueはローカル変数です。フィールドvalueを変更していません。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「」です。引数名とフィールド名が同じなので、this.valueでフィールドを明示して代入する必要がある。"
+              "detail": "正解です。this.valueでフィールドを明示し、右辺の引数valueを代入しています。setterとして成立します。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。引数名とフィールド名が同じなので、this.valueでフィールドを明示して代入する必要がある。"
+              "detail": "誤りです。引数がないため、右辺のvalueはフィールド自身を指すだけです。外から受け取った値で変更できません。"
             }
           ],
           "relatedKnowledge": [
@@ -31153,38 +31153,38 @@ window.JAVA_STUDY_DATA = {
           }
         ],
         "answer": [
-          "D",
-          "E"
+          "C",
+          "D"
         ],
         "explanation": {
-          "summary": "protectedメソッドをオーバーライドするとき、アクセスをより狭いデフォルトにできない。Test#doProcessをprotectedまたはpublicにすればよい。",
+          "summary": "Test#doProcessはSample#doProcessをオーバーライドしているが、protectedからデフォルトアクセスへ狭めているためコンパイルエラー。Testクラス2行目のdoProcessをpublicまたはprotectedにすれば修正できる。",
           "points": [],
-          "correctReason": "正解は D・E です。\n\nprotectedメソッドをオーバーライドするとき、アクセスをより狭いデフォルトにできない。Test#doProcessをprotectedまたはpublicにすればよい。",
+          "correctReason": "正解は C、D です。\n\nSampleクラス2行目のdoProcessはprotectedです。Testクラス2行目のdoProcessは同じシグネチャでオーバーライドしていますが、アクセス修飾子なし、つまりデフォルトアクセスになっています。オーバーライドでは、スーパークラス側よりアクセス範囲を狭くできません。そのため、Testクラス2行目をpublicまたはprotectedにすれば修正できます。\n\nSampleクラス3行目のdoTestはデフォルトアクセスのabstractメソッドです。Testクラス3行目のprotected void doTest()は、アクセス範囲を広げているため問題ありません。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「Sampleクラスの2行目のメソッドをpublicにする」ではありません。protectedメソッドをオーバーライドするとき、アクセスをより狭いデフォルトにできない。Test#doProcessをprotectedまたはpublicにすればよい。"
+              "detail": "誤りです。Sampleクラス2行目をpublicにすると、スーパークラス側のアクセス範囲がさらに広くなり、Testクラス2行目のデフォルトアクセスとの差が悪化します。修正になりません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「Sampleクラスの3行目のメソッドをpublicにする」ではありません。protectedメソッドをオーバーライドするとき、アクセスをより狭いデフォルトにできない。Test#doProcessをprotectedまたはpublicにすればよい。"
+              "detail": "誤りです。Sampleクラス3行目をpublicにすると、Testクラス3行目のprotectedがpublicより狭くなり、doTest側にも別のコンパイルエラーを作ります。"
             },
             {
               "key": "C",
-              "isCorrect": false,
-              "detail": "誤りです。「Testクラスの2行目のメソッドをpublicにする」ではありません。protectedメソッドをオーバーライドするとき、アクセスをより狭いデフォルトにできない。Test#doProcessをprotectedまたはpublicにすればよい。"
+              "isCorrect": true,
+              "detail": "正解です。Testクラス2行目のdoProcessをpublicにすれば、protectedより広いアクセス範囲でオーバーライドできるため修正できます。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正しい選択肢です。protectedメソッドをオーバーライドするとき、アクセスをより狭いデフォルトにできない。Test#doProcessをprotectedまたはpublicにすればよい。"
+              "detail": "正解です。Testクラス2行目のdoProcessをprotectedにすれば、スーパークラス側と同じアクセス範囲になり、オーバーライドの条件を満たします。"
             },
             {
               "key": "E",
-              "isCorrect": true,
-              "detail": "正しい選択肢です。protectedメソッドをオーバーライドするとき、アクセスをより狭いデフォルトにできない。Test#doProcessをprotectedまたはpublicにすればよい。"
+              "isCorrect": false,
+              "detail": "誤りです。Testクラス3行目のdoTestはすでに問題ありません。publicにしてもTestクラス2行目のdoProcessのアクセス範囲が狭い問題は残ります。"
             }
           ],
           "relatedKnowledge": [
@@ -31259,27 +31259,27 @@ window.JAVA_STUDY_DATA = {
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「Sample [a=10, b=10, c=10, d=10]」です。setAllで右からsetD(x)が10を返し、this.c、b、aに順に10が代入される。toStringの表示は全フィールド10。"
+              "detail": "正解です。選択肢Aの内容「Sample [a=10, b=10, c=10, d=10]」が、このコードの実際の結果または正しい説明です。 setAllで右からsetD(x)が10を返し、this.c、b、aに順に10が代入される。toStringの表示は全フィールド10。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「Sample [a=0, b=10, c=10, d=10]」ではありません。setAllで右からsetD(x)が10を返し、this.c、b、aに順に10が代入される。toStringの表示は全フィールド10。"
+              "detail": "誤りです。選択肢Bの内容「Sample [a=0, b=10, c=10, d=10]」にはなりません。正しくは A「Sample [a=10, b=10, c=10, d=10]」 です。 setAllで右からsetD(x)が10を返し、this.c、b、aに順に10が代入される。toStringの表示は全フィールド10。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「Sample [a=0, b=0, c=0, d=10]」ではありません。setAllで右からsetD(x)が10を返し、this.c、b、aに順に10が代入される。toStringの表示は全フィールド10。"
+              "detail": "誤りです。選択肢Cの内容「Sample [a=0, b=0, c=0, d=10]」にはなりません。正しくは A「Sample [a=10, b=10, c=10, d=10]」 です。 setAllで右からsetD(x)が10を返し、this.c、b、aに順に10が代入される。toStringの表示は全フィールド10。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「Sample [a=10, b=10, c=10, d=10]」です。"
+              "detail": "この選択肢は誤りです。この問題の正解は A「Sample [a=10, b=10, c=10, d=10]」 です。コンパイルエラーとして処理する問題ではありません。 setAllで右からsetD(x)が10を返し、this.c、b、aに順に10が代入される。toStringの表示は全フィールド10。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。実行時例外は発生せず、結果は「Sample [a=10, b=10, c=10, d=10]」です。"
+              "detail": "この選択肢は誤りです。実行時例外ではなく、正解は A「Sample [a=10, b=10, c=10, d=10]」 です。 setAllで右からsetD(x)が10を返し、this.c、b、aに順に10が代入される。toStringの表示は全フィールド10。"
             }
           ],
           "relatedKnowledge": [
