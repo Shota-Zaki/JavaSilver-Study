@@ -6,7 +6,7 @@
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Java Silver Study - メソッド・コンストラクタ</title>
-  <link rel="stylesheet" href="assets/css/styles.css?v=20260529-foundation-v14">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260529-super-sub-v13">
 </head>
 <body>
   <div class="layout">
@@ -20,48 +20,6 @@
         <h1>メソッド・コンストラクタ</h1>
         <p>オーバーロード、可変長引数、戻り値、this/super、暗黙super、値渡しを体系的に整理します。</p>
       </section>
-
-<section class="article-section concept-foundation">
-  <h2>メソッド呼び出しの基本部品</h2>
-  <p>メソッド問題では、まず「誰に対して」「何を渡して」「何が返るか」を分けます。用語を固定すると、オーバーロードや値渡しの問題が読みやすくなります。</p>
-  <table class="ref-table">
-    <thead><tr><th>用語</th><th>意味</th><th>例</th></tr></thead>
-    <tbody>
-      <tr><td>呼び出し先</td><td>メソッドを実行する対象。インスタンスまたはクラス。</td><td><code>s.length()</code>, <code>Integer.parseInt("10")</code></td></tr>
-      <tr><td>実引数</td><td>呼び出し時に渡す値。</td><td><code>add(3, 5)</code> の <code>3</code> と <code>5</code></td></tr>
-      <tr><td>仮引数</td><td>メソッド宣言側で受け取る変数。</td><td><code>int add(int a, int b)</code> の <code>a</code> と <code>b</code></td></tr>
-      <tr><td>戻り値</td><td>メソッドの実行結果として呼び出し元へ返す値。</td><td><code>return a + b;</code></td></tr>
-      <tr><td>シグネチャ</td><td>メソッド名と引数リスト。オーバーロード判定に使う。</td><td><code>test(int)</code>, <code>test(String)</code></td></tr>
-    </tbody>
-  </table>
-  <pre class="article-code"><code>static int add(int a, int b) { // a,b は仮引数
-    return a + b;              // int値を戻す
-}
-
-int result = add(3, 5);        // 3,5 は実引数</code></pre>
-  <p>戻り値の型はシグネチャに含まれません。つまり、引数が同じで戻り値だけ違うメソッドは、オーバーロードとして成立しません。</p>
-</section>
-
-<section class="article-section concept-foundation">
-  <h2>コンストラクタはメソッドではない</h2>
-  <p>コンストラクタは、インスタンス生成時に初期化を行う特殊な構文です。名前がクラス名と同じで、戻り値型を書きません。</p>
-  <table class="ref-table">
-    <thead><tr><th>比較</th><th>メソッド</th><th>コンストラクタ</th></tr></thead>
-    <tbody>
-      <tr><td>目的</td><td>処理を実行し、必要なら値を返す。</td><td>インスタンス生成時の初期化。</td></tr>
-      <tr><td>名前</td><td>任意の識別子。</td><td>クラス名と同じ。</td></tr>
-      <tr><td>戻り値型</td><td>必要。<code>void</code> も戻り値型。</td><td>書かない。<code>void</code> を書くとメソッドになる。</td></tr>
-      <tr><td>呼び出し</td><td><code>obj.method()</code></td><td><code>new ClassName(...)</code></td></tr>
-      <tr><td>継承</td><td>継承・overrideの対象になることがある。</td><td>継承されない。</td></tr>
-    </tbody>
-  </table>
-  <pre class="article-code"><code>class Item {
-    Item() { }       // コンストラクタ
-    void Item() { }  // メソッド。コンストラクタではない
-}</code></pre>
-  <div class="article-callout warn"><strong>試験での罠:</strong> <code>void ClassName()</code> はコンストラクタではありません。戻り値型を書いた時点でメソッドです。</div>
-</section>
-
       
 <section class="article-section article-card important">
   <h2>この単元のゴール</h2>
@@ -401,7 +359,7 @@ class B extends A {
 
     </main>
   </div>
-  <script src="data/questions.js?v=20260529-foundation-v14"></script>
-  <script src="assets/js/app.js?v=20260529-foundation-v14"></script>
+  <script src="data/questions.js?v=20260529-mock-natural-v14"></script>
+  <script src="assets/js/app.js?v=20260529-mock-natural-v14"></script>
 </body>
 </html>

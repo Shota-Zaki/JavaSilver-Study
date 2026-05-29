@@ -6,7 +6,7 @@
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Java Silver Study - 型・変数・リテラル</title>
-  <link rel="stylesheet" href="assets/css/styles.css?v=20260529-foundation-v14">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260529-super-sub-v13">
 </head>
 <body>
   <div class="layout">
@@ -20,40 +20,6 @@
         <h1>型・変数・リテラル</h1>
         <p>プリミティブ型、参照型、初期値、識別子、null、参照コピーを、Java Silverでそのまま使える判定手順まで掘り下げます。</p>
       </section>
-
-<section class="article-section concept-foundation">
-  <h2>値・型・変数・リテラル・式・文を分ける</h2>
-  <p>型の問題で詰まる原因の多くは、用語をまとめて「値」として扱ってしまうことです。Javaは、コード上の見た目ではなく、各式が持つ<strong>型</strong>で判定します。</p>
-  <table class="ref-table">
-    <thead><tr><th>用語</th><th>意味</th><th>例</th><th>試験での注意</th></tr></thead>
-    <tbody>
-      <tr><td>値</td><td>実際に扱うデータ。</td><td><code>10</code>, <code>true</code>, <code>'A'</code>, オブジェクト</td><td>見た目が似ていても型が違えば別物。</td></tr>
-      <tr><td>型</td><td>値の扱い方を決める分類。</td><td><code>int</code>, <code>char</code>, <code>String</code></td><td>代入、演算、比較、メソッド呼び出しの可否を決める。</td></tr>
-      <tr><td>変数</td><td>値または参照値を保持する名前付き領域。</td><td><code>int n</code>, <code>String s</code></td><td>プリミティブ型は値、参照型はオブジェクトへの参照を持つ。</td></tr>
-      <tr><td>リテラル</td><td>コードに直接書いた値。</td><td><code>10</code>, <code>10L</code>, <code>"10"</code>, <code>null</code></td><td>リテラル自体にも型がある。</td></tr>
-      <tr><td>式</td><td>評価すると値と型を持つコード片。</td><td><code>a + 1</code>, <code>str.length()</code></td><td><code>byte + byte</code> の式は <code>int</code> になる。</td></tr>
-      <tr><td>文</td><td>処理の単位。</td><td><code>int a = 1;</code>, <code>if (...) {}</code></td><td>式と文を混同すると、代入式や戻り値の判定を誤る。</td></tr>
-    </tbody>
-  </table>
-  <div class="article-callout warn"><strong>試験での見方:</strong> <code>byte b = 1;</code> は「1が小さいから入る」ではなく、「<code>int</code> リテラルだが、定数で範囲内なので特例で代入できる」と見る必要があります。</div>
-</section>
-
-<section class="article-section concept-foundation">
-  <h2>プリミティブ型と参照型は、変数の中身が違う</h2>
-  <p>Javaの変数は大きく2種類です。ここを曖昧にすると、<code>null</code>、<code>==</code>、メソッド呼び出し、参照コピーの問題で崩れます。</p>
-  <pre class="article-code"><code>int a = 10;              // 変数aは数値10そのものを持つ
-String s = "abc";        // 変数sはStringオブジェクトへの参照を持つ
-String t = s;            // 参照値がコピーされ、同じオブジェクトを見る</code></pre>
-  <table class="ref-table">
-    <thead><tr><th>分類</th><th>変数が持つもの</th><th><code>null</code></th><th><code>==</code> の意味</th></tr></thead>
-    <tbody>
-      <tr><td>プリミティブ型</td><td>値そのもの</td><td>代入不可</td><td>値の比較</td></tr>
-      <tr><td>参照型</td><td>オブジェクトへの参照</td><td>代入可</td><td>参照先が同じかの比較</td></tr>
-    </tbody>
-  </table>
-  <p><code>null</code> は「空文字」でも「0」でもありません。参照型変数が<strong>どのオブジェクトも参照していない状態</strong>を表す特別なリテラルです。したがって <code>null.length()</code> のような呼び出しは、コンパイルは通っても実行時に <code>NullPointerException</code> になります。</p>
-</section>
-
       
 <section class="article-section article-card important">
   <h2>この単元で最初に固定する結論</h2>
@@ -363,7 +329,7 @@ Integer n = null;
 
     </main>
   </div>
-  <script src="data/questions.js?v=20260529-foundation-v14"></script>
-  <script src="assets/js/app.js?v=20260529-foundation-v14"></script>
+  <script src="data/questions.js?v=20260529-mock-natural-v14"></script>
+  <script src="assets/js/app.js?v=20260529-mock-natural-v14"></script>
 </body>
 </html>
