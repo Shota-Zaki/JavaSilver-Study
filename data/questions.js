@@ -1,6 +1,6 @@
 window.JAVA_STUDY_DATA = {
   "title": "Java Silver 勉強用ページ",
-  "version": "20260529-mock-explain-natural-v14",
+  "version": "20260529-q52-fixed-v15",
   "chapters": [
     {
       "id": "ch01",
@@ -24225,51 +24225,54 @@ window.JAVA_STUDY_DATA = {
           "E"
         ],
         "explanation": {
-          "summary": "SubSampleのコンストラクタでは、明示的にsuper(...)またはthis(...)を書かない場合、先頭にsuper()が暗黙挿入されます。しかし親Sampleには引数なしコンストラクタがないため、該当箇所でコンパイルエラーになります。",
-          "correctReason": "正解は E です。\n\nSubSampleのコンストラクタでは、明示的にsuper(...)またはthis(...)を書かない場合、先頭にsuper()が暗黙挿入されます。しかし親Sampleには引数なしコンストラクタがないため、該当箇所でコンパイルエラーになります。",
+          "summary": "正解は E です。SubSampleクラスの3行目と8行目の両方でコンパイルエラーになります。3行目のコンストラクタは先頭に暗黙のsuper()が入りますが、親クラスSampleには引数なしコンストラクタがありません。8行目のthis(price)は、同じコンストラクタ内ですでに7行目でsuper(name, num)を呼んだ後に書かれているため不正です。",
+          "correctReason": "正解は E です。\n\nまず、SubSample(int price) コンストラクタを確認します。3行目から始まるこのコンストラクタには、明示的な super(...) も this(...) もありません。この場合、コンパイラは先頭に super() を暗黙に挿入します。しかし、親クラス Sample には Sample(String name, int num) だけが定義されており、引数なしコンストラクタ Sample() は存在しません。そのため、SubSampleクラスの3行目でコンパイルエラーになります。\n\n次に、SubSample(String name, int num, int price) コンストラクタを確認します。7行目で super(name, num) を呼び出した後、8行目で this(price) を呼び出しています。コンストラクタ内の this(...) または super(...) は、必ずそのコンストラクタの先頭文でなければなりません。また、this(...) と super(...) を同じコンストラクタ内で両方呼ぶこともできません。したがって、8行目もコンパイルエラーです。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、この選択肢の説明にはなりません。"
+              "detail": "誤りです。Aの出力は、両方のSubSampleインスタンスが正常に生成できる場合のように見えます。しかし実際にはSubSampleクラス自体がコンパイルできないため、出力処理まで進みません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「null 0 100\nsample 200 100」という出力は発生しません。"
+              "detail": "誤りです。SubSample(int price) が正常に動けば、nameはnull、numは0、priceは100になりそうに見えます。しかしこのコンストラクタでは暗黙のsuper()呼び出しが必要になり、親Sampleに引数なしコンストラクタがないためコンパイルできません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、この選択肢の説明にはなりません。"
+              "detail": "誤りです。3行目でコンパイルエラーになる点は正しいですが、それだけではありません。8行目のthis(price)も、7行目のsuper(name, num)の後に書かれているためコンパイルエラーになります。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、この選択肢の説明にはなりません。"
+              "detail": "誤りです。8行目でコンパイルエラーになる点は正しいですが、それだけではありません。3行目のコンストラクタも、暗黙に呼ばれるsuper()に対応する親の引数なしコンストラクタがないためコンパイルエラーになります。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「SubSampleクラスの3行目と8行目の両方でコンパイルエラーになる」です。SubSampleのコンストラクタでは、明示的にsuper(...)またはthis(...)を書かない場合、先頭にsuper()が暗黙挿入されます。しかし親Sampleには引数なしコンストラクタがないため、該当箇所でコンパイルエラーになります。"
+              "detail": "正解です。3行目は暗黙のsuper()に対応するSample()が存在しないためエラーです。8行目はthis(price)がコンストラクタの先頭文ではなく、すでにsuper(name, num)の後に書かれているためエラーです。"
             }
           ],
           "relatedKnowledge": [
-            "コンストラクタは継承されない。サブクラスのインスタンス生成時には、親クラスのコンストラクタが先に実行され、その後に子クラス側の初期化へ進む。",
-            "this(...)とsuper(...)はコンストラクタの先頭行にしか書けない。両方を同じコンストラクタに並べることはできない。",
-            "明示的にsuper(...)を書かない場合、引数なしのsuper()が暗黙に挿入される。親に引数なしコンストラクタがない場合は注意が必要。"
+            "コンストラクタは継承されない。親クラスに引数ありコンストラクタだけを定義すると、親の引数なしコンストラクタは自動生成されない。",
+            "サブクラスのコンストラクタでthis(...)またはsuper(...)を明示しない場合、先頭にsuper()が暗黙挿入される。",
+            "this(...)とsuper(...)は、どちらもコンストラクタの先頭文にしか書けない。同じコンストラクタ内で両方を直接呼び出すことはできない。"
           ],
           "examTips": [
-            "表示順問題では、newされたクラスからではなく、最上位の親コンストラクタから順に出力を並べる。",
-            "this()で同じクラス内の別コンストラクタへ飛んだ場合、その先で最終的にsuper()が呼ばれる流れまで追う。"
+            "出力を追う前に、まずすべてのコンストラクタがコンパイルできるか確認する。出力選択肢に引っ張られてはいけない。",
+            "親クラスに引数ありコンストラクタがある場合は、親の引数なしコンストラクタが存在するかを必ず確認する。",
+            "this(...) と super(...) は「最初の1文だけ」という制約を機械的に確認する。"
           ],
           "judgeSteps": [
-            "newしているクラスのコンストラクタを確認する。",
-            "そのコンストラクタの先頭にthis(...)またはsuper(...)があるか確認する。",
-            "親クラスのコンストラクタ実行、フィールド初期化、子クラス側の処理の順に出力を並べる。"
+            "親クラスSampleにどのコンストラクタが定義されているか確認する。",
+            "SubSampleの各コンストラクタの先頭にthis(...)またはsuper(...)があるか確認する。",
+            "明示的な呼び出しがない場合はsuper()が暗黙に入ると考える。",
+            "this(...)またはsuper(...)が先頭文以外に書かれていないか確認する。",
+            "コンパイルできる場合だけ、Mainの出力を追跡する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は E です。\n\nSubSampleのコンストラクタでは、明示的にsuper(...)またはthis(...)を書かない場合、先頭にsuper()が暗黙挿入されます。しかし親Sampleには引数なしコンストラクタがないため、該当箇所でコンパイルエラーになります。",
+          "pdfExplanation": "正解は E です。\n\nまず、SubSample(int price) コンストラクタを確認します。3行目から始まるこのコンストラクタには、明示的な super(...) も this(...) もありません。この場合、コンパイラは先頭に super() を暗黙に挿入します。しかし、親クラス Sample には Sample(String name, int num) だけが定義されており、引数なしコンストラクタ Sample() は存在しません。そのため、SubSampleクラスの3行目でコンパイルエラーになります。\n\n次に、SubSample(String name, int num, int price) コンストラクタを確認します。7行目で super(name, num) を呼び出した後、8行目で this(price) を呼び出しています。コンストラクタ内の this(...) または super(...) は、必ずそのコンストラクタの先頭文でなければなりません。また、this(...) と super(...) を同じコンストラクタ内で両方呼ぶこともできません。したがって、8行目もコンパイルエラーです。",
           "pdfAlignmentNote": "",
           "additionalExplanation": "",
           "points": []
@@ -24286,7 +24289,7 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "title": "Main.java",
-            "code": "public class Main {\n    public static void main(String[] args) {\n        // ...\n    }\n}"
+            "code": "public class Main {\n    public static void main(String[] args) {\n        SubSample s1 = new SubSample(100);\n        SubSample s2 = new SubSample(\"sample\", 200, 100);\n        System.out.println(s1.name + \", \" + s1.num + \", \" + s1.price);\n        System.out.println(s2.name + \", \" + s2.num + \", \" + s2.price);\n    }\n}"
           }
         ],
         "tags": [
@@ -24295,7 +24298,7 @@ window.JAVA_STUDY_DATA = {
           "super",
           "compile-error"
         ],
-        "status": "pdf_visual_checked_explanation_checked"
+        "status": "pdf_visual_checked_explanation_checked_q52_fixed"
       },
       {
         "id": "ch07-q53",
