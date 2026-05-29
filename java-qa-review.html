@@ -6,7 +6,7 @@
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Java Silver Study - 質問整理まとめ</title>
-  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260529-super-sub-v13">
 </head>
 <body>
   <div class="layout">
@@ -18,164 +18,79 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>質問整理まとめ</h1>
-        <p>最近確認した論点を、試験で使える判断基準として再整理します。用語暗記ではなく、コードを読んだときの失点箇所を潰すためのページです。</p>
+        <p>混ざりやすい疑問をQ&A形式で整理し、試験で使える判断基準に落とし込みます。</p>
       </section>
 
       <section class="article-section">
-        <h2>interface Worker { void work(); } はどういう状態か</h2>
-        <p>これは「Workerとして扱うなら <code>work()</code> を呼べる」という契約だけを定義している状態です。実装はありません。interface内の抽象メソッドは暗黙的に <code>public abstract</code> です。</p>
-        <pre class="article-code"><code>interface Worker {
-    void work(); // public abstract void work(); と同じ扱い
-}
-
-class Engineer implements Worker {
-    public void work() {
-        System.out.println(&quot;work&quot;);
-    }
-}</code></pre>
-        <p>実装クラス側で <code>public</code> を付け忘れると、interfaceのpublicメソッドよりアクセスを狭めることになりコンパイルエラーです。</p>
+        <h2>このページの位置づけ</h2>
+        <p>ここは、学習中に混ざりやすい質問をQ&A形式で整理するページです。結論だけ覚えるのではなく、<strong>なぜその結論になるか</strong>を判定順で確認してください。</p>
       </section>
 
       <section class="article-section">
-        <h2>抽象メソッド</h2>
-        <p>抽象メソッドは、本体を持たない未完成のメソッドです。抽象メソッドを含むクラスはabstractでなければなりません。具象クラスにするなら、継承した抽象メソッドをすべて実装する必要があります。</p>
-        <pre class="article-code"><code>abstract class Employee {
-    abstract void work();
-}
-
-class Engineer extends Employee {
-    @Override
-    void work() {
-        System.out.println(&quot;engineer&quot;);
-    }
-}</code></pre>
-        <div class="article-callout">抽象メソッドは「まだ処理が決まっていないメソッド」です。呼び出し方だけ先に決め、具体的な処理はサブクラスに任せます。</div>
+        <h2>アクセス修飾子・継承</h2>
+        <details class="article-card"><summary><strong>Q. publicクラスなら、別パッケージでも中のメンバを自由に使える？</strong></summary><p>使えません。<code>public</code> クラスであることは「そのクラス型を外部から見える」という意味です。フィールドやメソッドを使えるかは、それぞれのメンバのアクセス修飾子で別に判定します。</p><p>たとえば <code>public class A</code> の中に defaultアクセスのフィールド <code>int value;</code> がある場合、別パッケージから <code>a.value</code> は使えません。</p></details>
+        <details class="article-card"><summary><strong>Q. protectedコンストラクタはサブクラスの <code>super()</code> から呼べる？</strong></summary><p>呼べます。<code>protected</code> は同じパッケージ、または継承関係にあるサブクラスからのアクセスを許します。別パッケージのサブクラスでも、サブクラスのコンストラクタ内で <code>super()</code> として呼ぶのは可能です。</p><p>ただし、別パッケージの無関係なクラスが <code>new A()</code> のように呼ぶことはできません。</p></details>
+        <details class="article-card"><summary><strong>Q. privateメソッドはサブクラスで同じ名前を書いたらoverride？</strong></summary><p>overrideではありません。<code>private</code> メソッドはそのクラスの外から見えないため、サブクラスの同名メソッドは「親のメソッドを再定義したもの」ではなく、別メソッドです。<code>@Override</code> を付けるとコンパイルエラーになります。</p></details>
+        <details class="article-card"><summary><strong>Q. override時にアクセス修飾子はどう変えられる？</strong></summary><p>同じか、より広くできます。狭くはできません。<code>protected</code> を <code>public</code> にするのはOKですが、<code>public</code> を <code>protected</code> にするのはNGです。</p></details>
       </section>
 
       <section class="article-section">
-        <h2>Engineerにwork()がなくても、親にwork()があればOKか</h2>
-        <p>はい、条件付きでOKです。具象親クラスが <code>work()</code> を実装済みなら、子クラスはそのメソッドを継承しているため、interfaceの契約を満たせます。</p>
-        <pre class="article-code"><code>interface Worker {
-    void work();
-}
-
-class Employee {
-    public void work() {
-        System.out.println(&quot;employee&quot;);
-    }
-}
-
-class Engineer extends Employee implements Worker {
-    // work()を書かなくても、Employeeから継承したpublic work()で契約を満たす
-}</code></pre>
-        <p>ただし、親の <code>work()</code> がprivateだったり、戻り値や引数が違ったり、アクセスがpublicでなかったりすると満たせません。</p>
+        <h2>ポリモーフィズム・キャスト</h2>
+        <details class="article-card"><summary><strong>Q. <code>A a = new B();</code> のとき、Bだけにあるメソッドは呼べる？</strong></summary><p>呼べません。コンパイル時に呼べるメソッドは宣言型 <code>A</code> で決まります。実体が <code>B</code> でも、<code>A</code> 型にそのメソッドがなければコンパイルエラーです。</p></details>
+        <details class="article-card"><summary><strong>Q. ではoverrideされたメソッドはAとBのどちらが動く？</strong></summary><p>実体である <code>B</code> 側が動きます。ここが重要です。<strong>呼べるかどうかは宣言型、override後にどの実装が動くかは実体</strong>です。</p></details>
+        <details class="article-card"><summary><strong>Q. フィールドもoverrideされる？</strong></summary><p>されません。フィールドはメソッドと違い、多態的に解決されません。<code>A a = new B(); a.value</code> のように直接フィールドへアクセスした場合、参照変数の型 <code>A</code> のフィールドが使われます。</p></details>
+        <details class="article-card"><summary><strong>Q. キャストすれば何でも呼べる？</strong></summary><p>コンパイル上は通ることがありますが、実体が一致していなければ実行時に <code>ClassCastException</code> です。<code>Object o = "abc"; Integer i = (Integer)o;</code> はコンパイル可能でも実行時例外です。</p></details>
+        <details class="article-card"><summary><strong>Q. <code>null</code> をキャストしたら例外？</strong></summary><p>例外ではありません。<code>String s = (String) null;</code> は可能で、結果は <code>null</code> です。ただし、その後 <code>s.length()</code> のようにメソッドを呼ぶと <code>NullPointerException</code> です。</p></details>
       </section>
 
       <section class="article-section">
-        <h2>extends / implements / abstract の整理</h2>
-        <div class="article-card-grid">
-          <article class="article-card"><h3>extends</h3><p>クラスなら1つだけ継承。interface同士なら複数継承可能です。</p></article>
-          <article class="article-card"><h3>implements</h3><p>クラスがinterfaceの契約を満たすときに使います。複数実装可能です。</p></article>
-          <article class="article-card"><h3>abstract class</h3><p>未完成のクラス。抽象メソッドを持てますが、直接newできません。</p></article>
-          <article class="article-card"><h3>interface</h3><p>外から見た操作契約。抽象メソッドはpublic abstract扱いです。</p></article>
-        </div>
+        <h2>String・StringBuilder</h2>
+        <details class="article-card"><summary><strong>Q. <code>substring</code> や <code>replace</code> を呼んだのに文字列が変わらないのはなぜ？</strong></summary><p><code>String</code> は不変だからです。<code>substring</code> や <code>replace</code> は、元の文字列を変更せず、新しい文字列を返します。戻り値を代入しなければ元の変数は変わりません。</p></details>
+        <details class="article-card"><summary><strong>Q. <code>StringBuilder</code> はなぜ参照コピーで影響が出る？</strong></summary><p><code>StringBuilder</code> は可変です。複数の変数が同じ <code>StringBuilder</code> インスタンスを参照している場合、一方から <code>append</code> すると同じ実体が変わるため、もう一方から見ても変わっています。</p></details>
+        <details class="article-card"><summary><strong>Q. <code>StringBuilder.equals()</code> は内容比較？</strong></summary><p>違います。<code>String</code> の <code>equals</code> は内容比較ですが、<code>StringBuilder</code> は内容比較用に <code>equals</code> を上書きしていません。別インスタンスなら同じ文字列を持っていても <code>false</code> です。</p></details>
+        <details class="article-card"><summary><strong>Q. <code>str.substring(x + 3);</code> だけ書いたら <code>str</code> は変わる？</strong></summary><p>変わりません。戻り値を捨てています。<code>str = str.substring(x + 3);</code> と代入して初めて変数 <code>str</code> の参照先が変わります。</p></details>
       </section>
 
       <section class="article-section">
-        <h2>オーバーライドとオーバーロード</h2>
-        <p>オーバーライドは親のメソッドを子で再定義すること。オーバーロードは同じ名前で引数リストが違うメソッドを複数用意することです。</p>
-        <pre class="article-code"><code>class A {
-    void test(int n) { }
-    void test(String s) { } // overload
-}
-
-class B extends A {
-    @Override
-    void test(int n) { }    // override
-}</code></pre>
-        <div class="article-card-grid">
-          <article class="article-card"><h3>override判定</h3><p>同じシグネチャか。戻り値は同じか共変戻り値か。アクセスを狭めていないか。</p></article>
-          <article class="article-card"><h3>overload判定</h3><p>引数リストが違うか。戻り値だけ違うものは不可。</p></article>
-          <article class="article-card"><h3>@Override</h3><p>付けなくてもオーバーライドは成立しますが、付けておくと誤りをコンパイラが検出します。</p></article>
-          <article class="article-card"><h3>static</h3><p>staticメソッドはオーバーライドではなく隠蔽です。</p></article>
-        </div>
+        <h2>配列・List</h2>
+        <details class="article-card"><summary><strong>Q. <code>int[] a;</code> と書いた時点で配列はある？</strong></summary><p>ありません。これは配列を参照する変数を宣言しただけです。<code>new int[3]</code> や <code>{1,2,3}</code> で配列インスタンスを作って初めて要素が存在します。</p></details>
+        <details class="article-card"><summary><strong>Q. 長さ0の配列は作れる？</strong></summary><p>作れます。<code>new int[0]</code> は有効です。ただし要素がないので <code>a[0]</code> は <code>ArrayIndexOutOfBoundsException</code> です。</p></details>
+        <details class="article-card"><summary><strong>Q. <code>List.of</code> と <code>new ArrayList</code> は同じように変更できる？</strong></summary><p>できません。<code>List.of</code> が返すリストは変更不可です。<code>add</code> や <code>remove</code> を呼ぶと <code>UnsupportedOperationException</code> です。</p></details>
+        <details class="article-card"><summary><strong>Q. <code>remove(1)</code> は値1を消す？</strong></summary><p><code>List&lt;Integer&gt;</code> では特に注意が必要です。<code>remove(1)</code> は通常、インデックス1の要素を削除します。値としての <code>Integer.valueOf(1)</code> を消したいなら <code>remove(Integer.valueOf(1))</code> のようにします。</p></details>
       </section>
 
       <section class="article-section">
-        <h2>record</h2>
-        <p>recordは値の組を表すクラスを短く書く構文です。アクセサは <code>getName()</code> ではなく <code>name()</code> です。継承不可、追加インスタンスフィールド不可、interface実装可、という制限を押さえます。</p>
-        <pre class="article-code"><code>record Person(String name, int age) {}
-
-Person p1 = new Person(&quot;A&quot;, 10);
-Person p2 = new Person(&quot;A&quot;, 10);
-
-System.out.println(p1.name());     // A
-System.out.println(p1 == p2);      // false
-System.out.println(p1.equals(p2)); // true</code></pre>
+        <h2>例外</h2>
+        <details class="article-card"><summary><strong>Q. RuntimeExceptionかどうかは何で判断する？</strong></summary><p>クラス階層で判断します。<code>RuntimeException</code> のサブクラスなら非チェック例外です。代表例は <code>NullPointerException</code>、<code>ArrayIndexOutOfBoundsException</code>、<code>ClassCastException</code>、<code>NumberFormatException</code>、<code>ArithmeticException</code> です。</p></details>
+        <details class="article-card"><summary><strong>Q. チェック例外は全部覚えるしかない？</strong></summary><p>代表例は覚える必要があります。ただし試験上は、<code>Exception</code> 直下寄り、<code>IOException</code> 系はチェック例外、<code>RuntimeException</code> 系は非チェック例外と切るのが実用的です。</p></details>
+        <details class="article-card"><summary><strong>Q. try内で例外が起きたら、下の行は実行される？</strong></summary><p>されません。例外が発生した時点で、対応する <code>catch</code> へ制御が移ります。対応する <code>catch</code> がなくても、<code>finally</code> があればそれを実行してから外へ送出されます。</p></details>
+        <details class="article-card"><summary><strong>Q. catchは広い例外から書いていい？</strong></summary><p>だめです。<code>Exception</code> を先に書くと、その後の <code>IOException</code> などは到達不能になりコンパイルエラーです。狭い例外から広い例外へ書きます。</p></details>
+        <details class="article-card"><summary><strong>Q. try-with-resourcesのclose順は？</strong></summary><p>宣言と逆順です。<code>try (A a = ...; B b = ...)</code> なら、先に <code>b.close()</code>、次に <code>a.close()</code> です。その後に <code>finally</code> が実行されます。</p></details>
       </section>
 
       <section class="article-section">
-        <h2>sealed class / sealed interface</h2>
-        <p>sealedは継承先・実装先を限定する仕組みです。親の <code>permits</code> で許可された直接サブタイプだけが継承・実装できます。子側は <code>final</code>、<code>sealed</code>、<code>non-sealed</code> のどれかを必ず示します。</p>
-        <pre class="article-code"><code>sealed interface Service permits FileService {}
-
-final class FileService implements Service { }
-// class NetService implements Service { } // NG。permitsされていない</code></pre>
-        <div class="article-callout warn">sealedは「newできない」ではありません。newできないのはabstractです。ここを混同すると選択肢で落ちます。</div>
+        <h2>Java 17</h2>
+        <details class="article-card"><summary><strong>Q. recordのアクセサはgetter形式？</strong></summary><p>違います。<code>record User(String name)</code> のアクセサは <code>name()</code> です。<code>getName()</code> は自動生成されません。</p></details>
+        <details class="article-card"><summary><strong>Q. recordのフィールドは変更できる？</strong></summary><p>基本的にできません。recordコンポーネントに対応するフィールドは <code>private final</code> です。値を保持するための簡潔なクラスとして扱います。</p></details>
+        <details class="article-card"><summary><strong>Q. sealedクラスを継承したクラスは普通に書ける？</strong></summary><p>書けません。許可されたサブクラス側も、<code>final</code>、<code>sealed</code>、<code>non-sealed</code> のいずれかで今後の継承方針を明示する必要があります。</p></details>
+        <details class="article-card"><summary><strong>Q. switch式では <code>break</code> で値を返す？</strong></summary><p>基本は <code>-&gt;</code> 形式で値を返すか、ブロック内で <code>yield</code> を使って値を返します。従来のswitch文とは別に考えるべきです。</p></details>
       </section>
 
       <section class="article-section">
-        <h2>try-catch-finally の流れ</h2>
-        <p>try内で例外が発生した時点で、それ以降のtry内処理はスキップされ、対応するcatchへ移ります。finallyは例外の有無に関係なく基本的に実行されます。</p>
-        <pre class="article-code"><code>try {
-    System.out.println(&quot;A&quot;);
-    int[] x = new int[0];
-    x[0] = 10;
-    System.out.println(&quot;B&quot;); // 実行されない
-} catch (ArrayIndexOutOfBoundsException e) {
-    System.out.println(&quot;C&quot;);
-} finally {
-    System.out.println(&quot;D&quot;);
-}
-// A C D</code></pre>
-      </section>
-
-      <section class="article-section">
-        <h2>try-with-resources と close()</h2>
-        <p>try-with-resourcesは、<code>AutoCloseable</code> を実装したリソースを自動的に閉じます。closeは宣言した順番の逆順に呼ばれ、finallyはその後です。</p>
-        <pre class="article-code"><code>try (A a = new A(&quot;A&quot;); A b = new A(&quot;B&quot;)) {
-    System.out.println(&quot;body&quot;);
-} finally {
-    System.out.println(&quot;finally&quot;);
-}
-// body B A finally</code></pre>
-      </section>
-
-      <section class="article-section">
-        <h2>RuntimeException</h2>
-        <p><code>RuntimeException</code> 系は非チェック例外です。catchやthrowsをコンパイラに強制されませんが、実行時に発生すれば通常の例外として制御が移ります。</p>
-        <div class="article-card-grid">
-          <article class="article-card"><h3>NullPointerException</h3><p>null参照に対してメソッドやフィールドへアクセス。</p></article>
-          <article class="article-card"><h3>ArrayIndexOutOfBoundsException</h3><p>配列の範囲外アクセス。</p></article>
-          <article class="article-card"><h3>NumberFormatException</h3><p>数値変換できない文字列をparse。</p></article>
-          <article class="article-card"><h3>ClassCastException</h3><p>実体と互換性のない型へのキャスト。</p></article>
-        </div>
-      </section>
-
-      <section class="article-section">
-        <h2>トップレベルクラス・サブクラス・インナークラス</h2>
-        <p>トップレベルクラスはファイル直下に書くクラスです。トップレベルに使えるアクセス修飾子はpublicかデフォルトだけです。サブクラスは継承関係にある子クラスです。インナークラスはクラスの中に定義されたクラスです。</p>
-        <pre class="article-code"><code>public class Outer {          // トップレベルクラス
-    class Inner { }           // インナークラス
-    static class Nested { }    // staticネストクラス
-}
-
-class Child extends Outer { }  // サブクラス</code></pre>
+        <h2>最後に残りやすい誤解</h2>
+        <ul class="check-list">
+          <li>「実体がBだからBのメソッドを呼べる」は誤り。呼べるかは宣言型。</li>
+          <li>「Stringのメソッドを呼べば元の文字列が変わる」は誤り。Stringは不変。</li>
+          <li>「publicクラスなら中身もpublic」は誤り。メンバごとに判定。</li>
+          <li>「catchすればtryの残りに戻る」は誤り。戻らない。</li>
+          <li>「フィールドもoverrideされる」は誤り。メソッドと分ける。</li>
+          <li>「RuntimeExceptionはcatch必須」は誤り。非チェック例外。</li>
+        </ul>
       </section>
 
     </main>
   </div>
-  <script src="data/questions.js"></script>
-  <script src="assets/js/app.js"></script>
+  <script src="data/questions.js?v=20260529-mock-natural-v14"></script>
+  <script src="assets/js/app.js?v=20260529-mock-natural-v14"></script>
 </body>
 </html>

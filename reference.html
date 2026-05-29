@@ -6,7 +6,7 @@
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Java Silver Study - 学習記事</title>
-  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260529-super-sub-v13">
 </head>
 <body>
   <div class="layout">
@@ -18,38 +18,27 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>学習記事</h1>
-        <p>問題を解くための判定基準をまとめたページです。間違い方から読む記事を選び、同じ論点を自力で判定できる状態に戻します。</p>
+        <p>問題を解くための判定基準を、単元別に整理した詳説版です。読む順番、使い分け、復習導線までここから確認します。</p>
       </section>
-
-      <section class="article-section"><h2>まず読む3ページ</h2><div class="ref-index-grid clean-index"><a class="ref-index-card emphasized" href="decision-flow.html"><strong>判定フロー完全版</strong><small>コンパイル可否 → 実行時例外 → 出力</small></a><a class="ref-index-card emphasized" href="weakness-map.html"><strong>弱点別復習マップ</strong><small>間違い方から読む記事を決める</small></a><a class="ref-index-card emphasized" href="mini-drills.html"><strong>ミニ演習 強化版</strong><small>短問で判定速度を上げる</small></a></div></section>
-      <section class="article-section"><h2>出力問題・エラー判定</h2><div class="ref-index-grid clean-index"><a class="ref-index-card" href="compile-runtime.html"><strong>コンパイルエラーと実行時例外</strong><small>基本の判定順</small></a><a class="ref-index-card" href="error-catalog.html"><strong>エラー・例外カタログ完全版</strong><small>原因、コード形、見分け方</small></a><a class="ref-index-card" href="output-tracing.html"><strong>出力追跡トレーニング</strong><small>++/--、参照、例外の表追跡</small></a><a class="ref-index-card" href="exam-traps.html"><strong>ひっかけ集 完全版</strong><small>頻出ひっかけ50</small></a><a class="ref-index-card" href="cheatsheet.html"><strong>直前確認チートシート</strong><small>試験前の圧縮版</small></a></div></section>
-      <section class="article-section"><h2>分野別記事</h2><div class="ref-index-grid clean-index">
-          <a class="ref-index-card" href="syntax-basics.html"><strong>Java実行・宣言ルール</strong><small>main、ファイル名、package/import、起動引数</small></a>
-          <a class="ref-index-card" href="datatypes.html"><strong>型・変数・リテラル</strong><small>primitive、参照型、初期値、var</small></a>
-          <a class="ref-index-card" href="numeric-rules.html"><strong>数値・リテラル・型昇格</strong><small>byte/short/char、複合代入、定数式</small></a>
-          <a class="ref-index-card" href="var-scope.html"><strong>var・スコープ・初期化</strong><small>var禁止場所、ローカル変数、ブロックスコープ</small></a>
-          <a class="ref-index-card" href="strings.html"><strong>文字列・比較</strong><small>String、StringBuilder、intern、null</small></a>
-          <a class="ref-index-card" href="equality.html"><strong>同一性比較・同値比較</strong><small>==、equals、record equals、null</small></a>
-          <a class="ref-index-card" href="collections-arrays.html"><strong>配列・ArrayList・List</strong><small>配列、ArrayList、List.of、拡張for</small></a>
-          <a class="ref-index-card" href="operators-control.html"><strong>演算子・分岐・ループ</strong><small>評価順、++/--、短絡評価、switch</small></a>
-          <a class="ref-index-card" href="loop-control.html"><strong>ループ制御</strong><small>while、do-while、break、continue、ラベル</small></a>
-          <a class="ref-index-card" href="methods-constructors.html"><strong>メソッド・コンストラクタ</strong><small>overload、varargs、this/super、引数渡し</small></a>
-          <a class="ref-index-card" href="object-oriented.html"><strong>クラス・static・record</strong><small>参照、static、final、record、GC</small></a>
-          <a class="ref-index-card" href="modifiers-access.html"><strong>修飾子・アクセス制御</strong><small>public/protected/default/private、sealed</small></a>
-          <a class="ref-index-card" href="oop-relations.html"><strong>継承・interface・override</strong><small>extends、implements、abstract、default、sealed</small></a>
-          <a class="ref-index-card" href="inheritance-interface.html"><strong>継承とインタフェース詳細</strong><small>PDF問題と対応しやすい補助記事</small></a>
-          <a class="ref-index-card" href="polymorphism-cast.html"><strong>ポリモーフィズム・キャスト</strong><small>宣言型、実体、キャスト、instanceof</small></a>
-          <a class="ref-index-card" href="exceptions.html"><strong>例外処理</strong><small>try/catch/finally、throw/throws、try-with-resources</small></a>
-          <a class="ref-index-card" href="silver17-points.html"><strong>Java 17 Silver新しめ論点</strong><small>record、sealed、switch式、pattern matching</small></a>
-          <a class="ref-index-card" href="method-list.html"><strong>頻出メソッド</strong><small>戻り値、副作用、境界例外</small></a>
-          <a class="ref-index-card" href="fine-points.html"><strong>細かい仕様メモ</strong><small>case、char/String、配列初期化子、protected</small></a>
-          <a class="ref-index-card" href="java-qa-review.html"><strong>質問整理まとめ</strong><small>最近確認した論点の復習</small></a>
-          <a class="ref-index-card" href="glossary.html"><strong>単語集</strong><small>用語、意味、試験での注意点</small></a></div></section>
-      <section class="article-section"><h2>使い方</h2><div class="article-card-grid"><article class="article-card"><h3>問題で間違えた直後</h3><p><a href="weakness-map.html">弱点別復習マップ</a>で原因を分類し、対応記事を読む。</p></article><article class="article-card"><h3>模試前</h3><p><a href="cheatsheet.html">チートシート</a>と<a href="exam-traps.html">ひっかけ集</a>だけを見る。</p></article><article class="article-card"><h3>理解確認</h3><p><a href="mini-drills.html">ミニ演習</a>で20秒以内に分類できるか確認する。</p></article></div></section>
-
+      <section class="article-section">
+<h2>まず読む順番</h2>
+<div class="article-card-grid"><article class="article-card"><h3>1. 判定フロー</h3><p><a href="decision-flow.html">問題文を読んだら最初に何を見るか</a>を固定します。出力を追う前にコンパイル可否を切るのが最優先です。</p></article><article class="article-card"><h3>2. コンパイル/実行時例外</h3><p><a href="compile-runtime.html">コンパイルエラー、実行時例外、正常終了</a>を分けます。ここが曖昧だと選択肢を消せません。</p></article><article class="article-card"><h3>3. 弱点別復習</h3><p><a href="weakness-map.html">間違え方から読む記事を逆引き</a>します。全部読むより、弱点から潰すほうが効率的です。</p></article></div>
+</section>
+<section class="article-section">
+<h2>単元別メイン記事</h2>
+<div class="ref-index-grid clean-index"><a class="ref-index-card" href="syntax-basics.html"><strong>Java実行・宣言ルール</strong><small>main、ファイル名、package/import、起動引数</small></a><a class="ref-index-card" href="datatypes.html"><strong>型・変数・リテラル</strong><small>primitive、参照型、初期値、識別子、null</small></a><a class="ref-index-card" href="numeric-rules.html"><strong>数値・型昇格</strong><small>byte/short/char、定数式、複合代入、進数表記</small></a><a class="ref-index-card" href="var-scope.html"><strong>var・スコープ・初期化</strong><small>var禁止場所、スコープ、確定代入</small></a><a class="ref-index-card" href="strings.html"><strong>文字列・StringBuilder</strong><small>Stringの不変性、intern、主要メソッド</small></a><a class="ref-index-card" href="equality.html"><strong>同一性・同値性</strong><small>==、equals、String、配列、record、null安全</small></a><a class="ref-index-card" href="collections-arrays.html"><strong>配列・ArrayList・List</strong><small>配列初期化、ArrayList、List.of、remove、拡張for</small></a><a class="ref-index-card" href="operators-control.html"><strong>演算子・制御構造</strong><small>評価順、短絡評価、switch、三項演算子</small></a><a class="ref-index-card" href="loop-control.html"><strong>ループ制御</strong><small>while、do-while、for、break/continue、ラベル</small></a><a class="ref-index-card" href="methods-constructors.html"><strong>メソッド・コンストラクタ</strong><small>overload、varargs、this/super、値渡し</small></a><a class="ref-index-card" href="object-oriented.html"><strong>クラス・static・record</strong><small>参照、static、初期化順、GC、record</small></a><a class="ref-index-card" href="modifiers-access.html"><strong>修飾子・アクセス制御</strong><small>アクセス制御、abstract/final、sealed</small></a><a class="ref-index-card" href="oop-relations.html"><strong>継承・interface・override</strong><small>extends、implements、abstract、override</small></a><a class="ref-index-card" href="inheritance-interface.html"><strong>継承とインタフェース詳細</strong><small>default、interface修飾子、sealed、protected</small></a><a class="ref-index-card" href="polymorphism-cast.html"><strong>ポリモーフィズム・キャスト</strong><small>宣言型、実体、instanceof、ClassCastException</small></a><a class="ref-index-card" href="exceptions.html"><strong>例外処理</strong><small>try/catch/finally、throw/throws、try-with-resources</small></a><a class="ref-index-card" href="silver17-points.html"><strong>Java 17論点</strong><small>record、sealed、switch式、pattern matching</small></a></div>
+</section>
+<section class="article-section">
+<h2>補助記事</h2>
+<div class="ref-index-grid clean-index"><a class="ref-index-card" href="output-tracing.html"><strong>出力追跡トレーニング</strong><small>変数表・参照表・制御表で1行ずつ追う</small></a><a class="ref-index-card" href="error-catalog.html"><strong>エラー・例外カタログ</strong><small>コンパイルエラー・実行時例外を逆引き</small></a><a class="ref-index-card" href="method-list.html"><strong>頻出メソッド</strong><small>戻り値、副作用、境界値、例外</small></a><a class="ref-index-card" href="fine-points.html"><strong>細かい仕様メモ</strong><small>1行単位の境界仕様と例外</small></a><a class="ref-index-card" href="exam-traps.html"><strong>ひっかけ集</strong><small>選択肢を切るための論点</small></a><a class="ref-index-card" href="mini-drills.html"><strong>ミニ演習</strong><small>30問で判定速度を上げる</small></a><a class="ref-index-card" href="glossary.html"><strong>単語集</strong><small>意味・コード上の見え方・注意点</small></a><a class="ref-index-card" href="java-qa-review.html"><strong>質問整理まとめ</strong><small>混ざりやすい疑問をQ&Aで整理</small></a></div>
+</section>
+<section class="article-section">
+<h2>使い方</h2>
+<ol class="article-list priority-list"><li><strong>問題を解く前:</strong> まず判定フローを読む。問題を見た瞬間に「コンパイル可否」「実行時例外」「出力」のどれを問われているか分類する。</li><li><strong>間違えた直後:</strong> 解説を読むだけで終わらせず、該当単元の記事に戻る。なぜ他の選択肢が誤りかを言語化できるか確認する。</li><li><strong>模擬問題前:</strong> 全記事を読み返すのではなく、チートシート・ひっかけ集・頻出メソッドに絞る。直前に新知識を増やしすぎるのは逆効果です。</li></ol>
+</section>
     </main>
   </div>
-  <script src="data/questions.js"></script>
-  <script src="assets/js/app.js"></script>
+  <script src="data/questions.js?v=20260529-mock-natural-v14"></script>
+  <script src="assets/js/app.js?v=20260529-mock-natural-v14"></script>
 </body>
 </html>

@@ -5,8 +5,8 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - ひっかけ集 完全版</title>
-  <link rel="stylesheet" href="assets/css/styles.css">
+  <title>Java Silver Study - ひっかけ集</title>
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260529-super-sub-v13">
 </head>
 <body>
   <div class="layout">
@@ -17,13 +17,217 @@
     <main class="main reference-main article-main">
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>ひっかけ集 完全版</h1>
-        <p>Java Silverで選択肢を誤らせる典型パターンを、論点別に整理した確認ページです。</p>
+        <h1>ひっかけ集</h1>
+        <p>Java Silverで選択肢を誤らせる典型パターンを、コンパイル可否・実行時例外・出力追跡の順に整理します。</p>
       </section>
-<section class="article-section"><h2>ひっかけは「知識不足」より「判定順ミス」で起きる</h2><p>このページは暗記用ではなく、選択肢を切るためのチェックリストです。間違えた問題のタグと照合し、該当項目を3回読んでください。</p></section><section class="article-section"><h2>頻出ひっかけ50</h2><table class="ref-table"><thead><tr><th>論点</th><th>落とし穴</th></tr></thead><tbody><tr><td><code>package/import</code></td><td>package宣言はコメントを除いて先頭。importが先にあるとコンパイルエラー。</td></tr><tr><td><code>main引数</code></td><td>起動クラス名はargsに入らない。args[0]はコマンドで渡した1個目。</td></tr><tr><td><code>publicクラス名</code></td><td>publicトップレベルクラスがある場合、ファイル名と一致が必要。</td></tr><tr><td><code>var</code></td><td>varはローカル変数の型推論。フィールド、引数、戻り値型には使えない。</td></tr><tr><td><code>var = null</code></td><td>var b = null; は型を推論できないため不可。</td></tr><tr><td><code>整数リテラル</code></td><td>0始まりは8進数。0827のように8を含むと不可。</td></tr><tr><td><code>アンダースコア</code></td><td>数値リテラルの先頭・末尾・小数点前後・接尾辞直前は不可。</td></tr><tr><td><code>float</code></td><td>1.0はdouble。floatには1.0Fが必要。</td></tr><tr><td><code>byte演算</code></td><td>byte/short/charは演算時にintへ昇格する。</td></tr><tr><td><code>複合代入</code></td><td>b += 1 は暗黙キャストを含むが、b = b + 1 は不可。</td></tr><tr><td><code>boolean</code></td><td>booleanと数値に互換性はない。if(1)は不可。</td></tr><tr><td><code>String不変</code></td><td>concat/replace/toUpperCaseなどは戻り値を受けないと元は変わらない。</td></tr><tr><td><code>StringBuilder</code></td><td>append/delete/reverseなどは自身を変更する。Stringと逆。</td></tr><tr><td><code>==</code></td><td>参照型の==は同一参照。内容比較ではない。</td></tr><tr><td><code>intern</code></td><td>internは文字列プール上の参照を返す。new Stringとは別参照。</td></tr><tr><td><code>null println</code></td><td>println(null参照)はnull表示。ただしnull参照のメソッド呼び出しはNPE。</td></tr><tr><td><code>配列長</code></td><td>配列のlengthはフィールド。Stringのlength()はメソッド。</td></tr><tr><td><code>配列0要素</code></td><td>new int[0]は作れる。a[0]に触った時点で例外。</td></tr><tr><td><code>ArrayList remove</code></td><td>remove(int)とremove(Object)のオーバーロードに注意。</td></tr><tr><td><code>List.of</code></td><td>変更不可。add/remove/setで実行時例外。</td></tr><tr><td><code>拡張for</code></td><td>ループ変数に代入しても元の要素は差し替わらない。</td></tr><tr><td><code>短絡評価</code></td><td>&amp;&amp;は左falseで右を評価しない。||は左trueで右を評価しない。</td></tr><tr><td><code>&amp; と |</code></td><td>booleanでも&amp;と|は使えるが短絡しない。右辺も評価される。</td></tr><tr><td><code>後置++</code></td><td>式には元の値を渡し、その後増える。</td></tr><tr><td><code>switch文</code></td><td>breakがなければフォールスルー。</td></tr><tr><td><code>switch式</code></td><td>値を返す。ブロックではyieldが必要。</td></tr><tr><td><code>ラベル</code></td><td>ラベルは文に付ける。変数宣言だけをbreak先のように扱えない。</td></tr><tr><td><code>コンストラクタ</code></td><td>戻り値型を書いたらコンストラクタではなくメソッド。</td></tr><tr><td><code>this()</code></td><td>コンストラクタ内のthis()/super()は最初の文でなければならない。</td></tr><tr><td><code>super()</code></td><td>明示しなくても先頭にsuper()が暗黙挿入される。親に無引数がないと注意。</td></tr><tr><td><code>overload</code></td><td>戻り値型だけ違う同名同引数は不可。</td></tr><tr><td><code>varargs</code></td><td>可変長引数は引数リストの最後に1つだけ。</td></tr><tr><td><code>static</code></td><td>staticメソッドからインスタンスメンバを直接参照できない。</td></tr><tr><td><code>private</code></td><td>privateメンバは継承関係でも直接アクセス不可。</td></tr><tr><td><code>protected</code></td><td>同一パッケージ、または継承関係でアクセス可能。別パッケージでは条件がやや厳しい。</td></tr><tr><td><code>field hiding</code></td><td>フィールドはoverrideされない。宣言型で解決される。</td></tr><tr><td><code>method override</code></td><td>インスタンスメソッドは実体で動的束縛される。</td></tr><tr><td><code>interface method</code></td><td>interfaceの抽象メソッドはpublic abstract扱い。実装側もpublic。</td></tr><tr><td><code>default method</code></td><td>interfaceのdefaultは実装を持てる。Object由来メソッドの扱いに注意。</td></tr><tr><td><code>abstract class</code></td><td>抽象メソッドを持つクラスはabstract必須。abstractクラスは未実装でもよい。</td></tr><tr><td><code>sealed</code></td><td>許可サブクラスだけが継承可能。サブクラス側もfinal/sealed/non-sealedが必要。</td></tr><tr><td><code>record</code></td><td>アクセサはgetXではなくx()。recordは暗黙的にfinal。</td></tr><tr><td><code>宣言型</code></td><td>呼べるメソッドは宣言型で決まる。実体にだけあるメソッドは呼べない。</td></tr><tr><td><code>cast</code></td><td>キャストでコンパイルは通っても、実体が合わなければClassCastException。</td></tr><tr><td><code>instanceof</code></td><td>null instanceof 型 はfalse。例外にはならない。</td></tr><tr><td><code>checked例外</code></td><td>catchまたはthrowsしないとコンパイルエラー。</td></tr><tr><td><code>RuntimeException</code></td><td>非チェック例外。処理しなくてもコンパイル可。</td></tr><tr><td><code>catch順</code></td><td>子例外から親例外へ。親が先だと子catchは到達不能。</td></tr><tr><td><code>finally</code></td><td>例外の有無に関わらず基本的に実行される。</td></tr><tr><td><code>try-with-resources</code></td><td>closeは宣言の逆順。finallyより先にcloseされる。</td></tr></tbody></table></section><section class="article-section"><h2>特に優先して潰すべき10個</h2><ol class="article-list priority-list"><li><strong>コンパイル可否を先に見る。</strong> 出力を追うのは最後。</li><li><strong>宣言型で呼べるかを見る。</strong> 実体にメソッドがあっても宣言型になければ不可。</li><li><strong>byte/short/charの演算結果はint。</strong> Silverの定番。</li><li><strong>Stringは不変、StringBuilderは可変。</strong> 戻り値を受けたかを見る。</li><li><strong>nullは表示とメソッド呼び出しで違う。</strong> printlnだけなら表示、呼び出しならNPE。</li><li><strong>catchは子から親。</strong> 到達不能catchはコンパイルエラー。</li><li><strong>interface実装はpublic。</strong> 書き忘れが多い。</li><li><strong>recordアクセサは部品名と同じ。</strong> getXではない。</li><li><strong>sealedサブクラス側の修飾子。</strong> permitsだけ見ても足りない。</li><li><strong>List.ofは変更不可。</strong> コンパイルではなく実行時例外。</li></ol></section>
+
+      <section class="article-section">
+        <h2>ひっかけ問題の正体</h2>
+        <p>Java Silverのひっかけは、知識量ではなく<strong>判定順の崩れ</strong>を狙っています。コードを見た瞬間に出力を追い始める人は落とされます。まずコンパイル可否、次に実行時例外、最後に出力です。</p>
+        <div class="decision-lane compact">
+          <div><span>1</span><strong>コンパイルエラー候補を潰す</strong><p>宣言、型、アクセス、override、例外処理、到達不能文。</p></div>
+          <div><span>2</span><strong>実行時例外候補を探す</strong><p>null、境界外、キャスト、parse、変更不可List。</p></div>
+          <div><span>3</span><strong>初めて出力を追う</strong><p>評価順、参照、動的束縛、finally、close順。</p></div>
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>罠1：出力問題に見せたコンパイルエラー</h2>
+        <p>選択肢に具体的な出力が並んでいても、コードがコンパイルできるとは限りません。次の項目を先に確認します。</p>
+        <table class="ref-table">
+          <thead><tr><th>罠</th><th>典型コード</th><th>切り方</th></tr></thead>
+          <tbody>
+            <tr><td>ローカル変数未初期化</td><td><code>int x; System.out.println(x);</code></td><td>ローカル変数にデフォルト値はない。</td></tr>
+            <tr><td><code>var</code> 禁止場所</td><td><code>private var value;</code></td><td><code>var</code> はローカル変数のみ。</td></tr>
+            <tr><td><code>var</code> 推論不可</td><td><code>var a = null;</code></td><td>型を推論できない。</td></tr>
+            <tr><td>booleanと数値</td><td><code>if (1) {}</code></td><td>条件式はbooleanのみ。</td></tr>
+            <tr><td>booleanの大小比較</td><td><code>true &lt; false</code></td><td>booleanに大小関係はない。</td></tr>
+            <tr><td>縮小変換</td><td><code>float f = 1.0;</code></td><td>小数リテラルはdouble。</td></tr>
+            <tr><td>演算後のint昇格</td><td><code>byte b = 1; b = b + 1;</code></td><td><code>b + 1</code> はint。</td></tr>
+            <tr><td>アクセス制御</td><td><code>private</code> メンバ呼び出し</td><td>同じクラス外からは不可。継承しても不可。</td></tr>
+            <tr><td>override違反</td><td>アクセスを狭める、戻り値が不適切</td><td>override条件を機械的に確認。</td></tr>
+            <tr><td>catch順序</td><td><code>catch(Exception)</code> の後に <code>catch(IOException)</code></td><td>親が先だと子catchに到達不能。</td></tr>
+            <tr><td>checked例外未処理</td><td><code>throw new IOException();</code></td><td>catchまたはthrowsが必要。</td></tr>
+            <tr><td>publicクラスとファイル名</td><td><code>public class A</code> を <code>B.java</code></td><td>publicトップレベルクラス名とファイル名を合わせる。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="article-section">
+        <h2>罠2：コンパイルできるが実行時例外</h2>
+        <p>コンパイルできるコードでも、実行中に該当行へ到達した瞬間に止まることがあります。例外発生後の通常処理は実行されません。</p>
+        <table class="ref-table">
+          <thead><tr><th>例外</th><th>典型コード</th><th>判断ポイント</th></tr></thead>
+          <tbody>
+            <tr><td><code>NullPointerException</code></td><td><code>s.length()</code>、<code>s.equals("A")</code></td><td>参照先がnullか。<code>System.out.println(s)</code> は例外ではない。</td></tr>
+            <tr><td><code>ArrayIndexOutOfBoundsException</code></td><td><code>new int[0][0]</code>、<code>args[0]</code></td><td>配列の長さと添字を確認。</td></tr>
+            <tr><td><code>IndexOutOfBoundsException</code></td><td><code>list.get(0)</code>、<code>str.substring(5)</code></td><td>ListやStringの範囲外。</td></tr>
+            <tr><td><code>ClassCastException</code></td><td><code>(Dog) animal</code></td><td>宣言型ではなく実体を確認。</td></tr>
+            <tr><td><code>NumberFormatException</code></td><td><code>Integer.parseInt("A")</code></td><td>文字列が整数形式か。</td></tr>
+            <tr><td><code>ArrayStoreException</code></td><td><code>Object[] a = new String[1]; a[0] = 10;</code></td><td>配列の実体型に入れられるか。</td></tr>
+            <tr><td><code>UnsupportedOperationException</code></td><td><code>List.of("A").add("B")</code></td><td>変更不可リストの変更操作。</td></tr>
+            <tr><td><code>ArithmeticException</code></td><td><code>10 / 0</code></td><td>整数除算の0割り。小数とは違う。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="article-section">
+        <h2>罠3：実行できるが出力を誤る</h2>
+        <p>コンパイルも実行時例外も問題ない場合だけ、出力を追います。ここからは「値」ではなく「評価順」と「参照」を見る段階です。</p>
+        <div class="grid-two">
+          <div class="article-card"><h3>Stringは不変</h3><pre class="article-code"><code>String s = "abc";
+s.toUpperCase();
+System.out.println(s); // abc</code></pre><p>戻り値を受け取らない限り、元のStringは変わりません。</p></div>
+          <div class="article-card"><h3>StringBuilderは可変</h3><pre class="article-code"><code>StringBuilder sb = new StringBuilder("A");
+sb.append("B");
+System.out.println(sb); // AB</code></pre><p>同じインスタンスの中身が変わります。</p></div>
+          <div class="article-card"><h3>後置インクリメント</h3><pre class="article-code"><code>int a = 10;
+int b = a++ + a;
+System.out.println(b); // 21</code></pre><p>後置は古い値を式に使い、その後で変数を更新します。</p></div>
+          <div class="article-card"><h3>短絡評価</h3><pre class="article-code"><code>int a = 0;
+if (false && ++a > 0) {}
+System.out.println(a); // 0</code></pre><p><code>&&</code> は左がfalseなら右を評価しません。</p></div>
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>罠4：参照型の代入を「コピー」と誤解する</h2>
+        <p>参照型変数に入っているのは、インスタンスそのものではなく参照です。代入すると参照がコピーされ、同じインスタンスを見る変数が増えます。</p>
+        <pre class="article-code"><code>class Box {
+    int value;
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Box a = new Box();
+        Box b = a;
+        b.value = 10;
+        System.out.println(a.value);
+    }
+}</code></pre>
+        <p>出力は <code>10</code> です。<code>a</code> と <code>b</code> は同じBoxインスタンスを参照しています。</p>
+        <details class="article-card"><summary><strong>見抜き方</strong></summary><p><code>new</code> が何回出たかを数えます。<code>new</code> が1回なら、原則としてインスタンスは1個です。参照変数が複数あっても、インスタンスが増えるわけではありません。</p></details>
+      </section>
+
+      <section class="article-section">
+        <h2>罠5：メソッドは実体、フィールドは宣言型</h2>
+        <p>ポリモーフィズム問題では、メソッドとフィールドを同じルールで見てはいけません。</p>
+        <pre class="article-code"><code>class A {
+    String name = "A";
+    String getName() { return "A"; }
+}
+class B extends A {
+    String name = "B";
+    String getName() { return "B"; }
+}
+public class Main {
+    public static void main(String[] args) {
+        A obj = new B();
+        System.out.println(obj.name);
+        System.out.println(obj.getName());
+    }
+}</code></pre>
+        <table class="ref-table">
+          <thead><tr><th>式</th><th>結果</th><th>理由</th></tr></thead>
+          <tbody>
+            <tr><td><code>obj.name</code></td><td><code>A</code></td><td>フィールドはoverrideされず、宣言型 <code>A</code> で決まる。</td></tr>
+            <tr><td><code>obj.getName()</code></td><td><code>B</code></td><td>overrideされたインスタンスメソッドは実体 <code>B</code> で決まる。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="article-section">
+        <h2>罠6：overloadとoverrideの判定タイミングを混ぜる</h2>
+        <p><code>override</code> は実体で決まりますが、<code>overload</code> はコンパイル時の引数型で決まります。</p>
+        <pre class="article-code"><code>class A {}
+class B extends A {}
+
+public class Main {
+    static void test(A a) { System.out.println("A"); }
+    static void test(B b) { System.out.println("B"); }
+
+    public static void main(String[] args) {
+        A obj = new B();
+        test(obj);
+    }
+}</code></pre>
+        <p>出力は <code>A</code> です。実体は <code>B</code> でも、変数 <code>obj</code> の宣言型は <code>A</code> なので、<code>test(A)</code> が選ばれます。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>罠7：try-catch-finallyの出力順</h2>
+        <p>例外処理の出力問題は、例外が出た時点でtry内の残りが飛ばされること、そしてfinallyが最後に実行されることを表で追います。</p>
+        <pre class="article-code"><code>try {
+    System.out.print("A");
+    String s = null;
+    s.length();
+    System.out.print("B");
+} catch (NullPointerException e) {
+    System.out.print("C");
+} finally {
+    System.out.print("D");
+}</code></pre>
+        <table class="ref-table">
+          <thead><tr><th>順番</th><th>処理</th><th>出力</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><code>System.out.print("A")</code></td><td>A</td></tr>
+            <tr><td>2</td><td><code>s.length()</code> で例外</td><td>なし</td></tr>
+            <tr><td>3</td><td>catchへ移動</td><td>C</td></tr>
+            <tr><td>4</td><td>finally</td><td>D</td></tr>
+          </tbody>
+        </table>
+        <p>出力は <code>ACD</code> です。<code>B</code> は実行されません。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>罠8：try-with-resourcesのclose順</h2>
+        <p>try-with-resourcesでは、リソースは宣言した順と逆順にcloseされます。さらに、closeはfinallyより前です。</p>
+        <pre class="article-code"><code>try (Resource a = new Resource("A");
+     Resource b = new Resource("B")) {
+    System.out.print("T");
+} finally {
+    System.out.print("F");
+}</code></pre>
+        <p>closeが名前を出力するなら、順番は <code>TBAF</code> です。<code>A</code> から閉じるのではなく、後から作った <code>B</code> から閉じます。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>罠9：選択肢の文言で誤る</h2>
+        <table class="ref-table">
+          <thead><tr><th>選択肢の言い方</th><th>注意点</th></tr></thead>
+          <tbody>
+            <tr><td>「実行時に例外がスローされる」</td><td>コンパイルエラーが先なら実行されない。実行時例外を選ばない。</td></tr>
+            <tr><td>「何も表示されない」</td><td>正常終了で何も出ないのか、コンパイルエラーなのかを分ける。</td></tr>
+            <tr><td>「nullと表示される」</td><td><code>println(null参照)</code> は表示、<code>null参照.メソッド()</code> は例外。</td></tr>
+            <tr><td>「継承しているから使える」</td><td><code>private</code> とコンストラクタは引き継がない。</td></tr>
+            <tr><td>「同じ内容だからtrue」</td><td><code>==</code> なら参照比較。<code>equals</code> なら実装確認。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="article-section">
+        <h2>模擬問題前の10秒チェック</h2>
+        <ol class="article-list priority-list">
+          <li><strong>出力を追う前に、宣言と型を見たか。</strong> ここを飛ばすとコンパイルエラー問題で落ちます。</li>
+          <li><strong>例外が出る行に到達するか確認したか。</strong> 到達しない例外は発生しません。</li>
+          <li><strong>メソッドとフィールドの解決規則を分けたか。</strong> メソッドは実体、フィールドは宣言型です。</li>
+          <li><strong>StringとStringBuilderを分けたか。</strong> 不変か可変かで結果が変わります。</li>
+          <li><strong>checked例外を処理しているか。</strong> 未処理ならコンパイルエラーです。</li>
+        </ol>
+      </section>
+
+      <section class="article-section">
+        <h2>ミニ演習</h2>
+        <details class="article-card"><summary><strong>Q1. <code>String s = null; System.out.println(s);</code> は例外？</strong></summary><p>例外ではありません。<code>null</code> と表示されます。<code>s.length()</code> なら <code>NullPointerException</code> です。</p></details>
+        <details class="article-card"><summary><strong>Q2. <code>byte b = 1; b += 1;</code> はコンパイルできる？</strong></summary><p>できます。複合代入には暗黙のキャストが含まれます。ただし <code>b = b + 1</code> は <code>int</code> になるため不可です。</p></details>
+        <details class="article-card"><summary><strong>Q3. <code>A a = new B(); test(a);</code> のoverloadは実体Bで選ぶ？</strong></summary><p>選びません。overloadはコンパイル時の引数型で選びます。宣言型が <code>A</code> なら <code>test(A)</code> が優先されます。</p></details>
+        <details class="article-card"><summary><strong>Q4. try-with-resourcesで <code>A</code>、<code>B</code> の順に宣言したらcloseは？</strong></summary><p><code>B</code>、<code>A</code> の順です。宣言と逆順です。</p></details>
+        <p class="inline-note">次に確認: <a href="cheatsheet.html">直前確認</a> / <a href="decision-flow.html">判定フロー</a></p>
+      </section>
+
     </main>
   </div>
-  <script src="data/questions.js"></script>
-  <script src="assets/js/app.js"></script>
+  <script src="data/questions.js?v=20260529-mock-natural-v14"></script>
+  <script src="assets/js/app.js?v=20260529-mock-natural-v14"></script>
 </body>
 </html>

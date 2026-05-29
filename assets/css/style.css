@@ -2807,3 +2807,31 @@ details.article-card[open] summary { margin-bottom: 10px; }
   }
 }
 
+
+
+/* 20260529-output-methods-v10: sidebar large groups */
+.nav-group-summary {
+  cursor: pointer;
+  user-select: none;
+}
+.nav-group-summary::after {
+  content: "＋";
+}
+.nav-group[open] .nav-group-summary::after {
+  content: "−";
+}
+.nav-group-body {
+  overflow: hidden;
+}
+.grid-two {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+.grid-two .article-card {
+  margin: 0;
+}
+@media (max-width: 860px) {
+  .grid-two { grid-template-columns: 1fr; }
+}

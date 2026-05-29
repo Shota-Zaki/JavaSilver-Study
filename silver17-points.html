@@ -5,8 +5,8 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - Java 17 Silver新しめ論点</title>
-  <link rel="stylesheet" href="assets/css/styles.css">
+  <title>Java Silver Study - Java 17論点</title>
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260529-super-sub-v13">
 </head>
 <body>
   <div class="layout">
@@ -17,35 +17,296 @@
     <main class="main reference-main article-main">
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>Java 17 Silver新しめ論点</h1>
-        <p>record、sealed、switch式、instanceofパターンなど、Java 17 Silverで混ざりやすい論点を整理します。</p>
+        <h1>Java 17論点</h1>
+        <p>record、sealed、switch式、instanceofパターンマッチングを、試験で失点しない判定順に落とし込みます。</p>
       </section>
-<section class="article-section"><h2>Silver 17で特に崩れやすい論点</h2><p>Java 17 Silverでは、従来の基本文法に加えて、record、sealed、switch式、instanceofのパターンマッチングなどが混ざります。新機能そのものより、「既存ルールと組み合わさったとき」に落とされます。</p></section><section class="article-section"><h2>record：データ保持用クラスを短く書く構文</h2><pre class="article-code"><code>public record Person(String name, int age) {}</code></pre><p>recordでは、private finalなフィールド相当、正準コンストラクタ、<code>name()</code>、<code>age()</code>、<code>equals</code>、<code>hashCode</code>、<code>toString</code>が主に用意されます。</p><div class="article-callout warn"><strong>ひっかけ：</strong>アクセサ名は <code>getName()</code> ではなく <code>name()</code>。recordは暗黙的にfinalなので、通常クラスで継承できません。</div></section><section class="article-section"><h2>sealed：継承できる相手を制限する</h2><pre class="article-code"><code>public sealed class Animal permits Dog, Cat {}
-public final class Dog extends Animal {}
-public non-sealed class Cat extends Animal {}</code></pre><ul class="article-list"><li><code>permits</code> に書かれたクラスだけが継承できる。</li><li>sealedを継承したクラスは、<code>final</code> / <code>sealed</code> / <code>non-sealed</code> のいずれかが必要。</li><li><code>non-sealed</code> は「ここから先は制限を外す」という意味。</li></ul></section><section class="article-section"><h2>instanceof パターンマッチング</h2><pre class="article-code"><code>Object obj = "java";
+
+      <section class="article-section">
+        <h2>このページの使い方</h2>
+        <p>Java 17論点は、単に「新しい書き方を知っているか」ではありません。試験では、<strong>その構文がどこまで自動生成するか</strong>、<strong>どの修飾子が必須か</strong>、<strong>どの範囲で変数が使えるか</strong>を狙ってきます。</p>
+        <div class="decision-lane compact">
+          <div><span>1</span><strong>構文として成立するか</strong><p>record、sealed、switch式、instanceofパターンの形を確認する。</p></div>
+          <div><span>2</span><strong>暗黙に補われるものを読む</strong><p>recordのフィールド・アクセサ、interfaceの修飾子など。</p></div>
+          <div><span>3</span><strong>実行時の型・出力を追う</strong><p>toString、equals、switchの戻り値、pattern変数のスコープ。</p></div>
+        </div>
+        <p class="inline-note">Java 17論点は、<a href="object-oriented.html">クラス・static・record</a>、<a href="modifiers-access.html">修飾子・アクセス制御</a>、<a href="polymorphism-cast.html">ポリモーフィズム・キャスト</a>と強くつながっています。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>recordの基本：データ保持用クラスを短く書く</h2>
+        <p><code>record</code> は、値のまとまりを表すクラスを簡潔に書くための仕組みです。次の1行だけで、コンストラクタ、アクセサ、<code>equals</code>、<code>hashCode</code>、<code>toString</code> などが自動的に用意されます。</p>
+        <pre class="article-code"><code>record Item(String name, int price) {}
+
+public class Main {
+    public static void main(String[] args) {
+        Item item = new Item("apple", 100);
+        System.out.println(item.name());
+        System.out.println(item.price());
+        System.out.println(item);
+    }
+}</code></pre>
+        <table class="ref-table">
+          <thead><tr><th>自動生成されるもの</th><th>試験での注意点</th></tr></thead>
+          <tbody>
+            <tr><td>private final フィールド</td><td>外部から直接 <code>item.name</code> のようには読めない。</td></tr>
+            <tr><td>標準コンストラクタ</td><td><code>new Item("apple", 100)</code> のように全コンポーネントを渡す。</td></tr>
+            <tr><td>アクセサ</td><td><code>getName()</code> ではなく <code>name()</code>。</td></tr>
+            <tr><td><code>equals/hashCode</code></td><td>同じコンポーネント値なら同値と判定される。</td></tr>
+            <tr><td><code>toString</code></td><td>クラス名とコンポーネント名付きで表示される。</td></tr>
+          </tbody>
+        </table>
+        <p>特にアクセサ名の罠は頻出です。JavaBeans風の <code>getName()</code> を勝手に想像すると、存在しないメソッド呼び出しになりコンパイルエラーです。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>recordの同値比較とtoString</h2>
+        <p>recordは <code>equals</code> を自動生成します。通常クラスで <code>equals</code> をオーバーライドしていない場合と違い、コンポーネント値で比較される点が重要です。</p>
+        <pre class="article-code"><code>record Item(String name, int price) {}
+
+public class Main {
+    public static void main(String[] args) {
+        Item a = new Item("apple", 100);
+        Item b = new Item("apple", 100);
+        System.out.println(a == b);
+        System.out.println(a.equals(b));
+        System.out.println(a);
+    }
+}</code></pre>
+        <table class="ref-table">
+          <thead><tr><th>式</th><th>結果</th><th>理由</th></tr></thead>
+          <tbody>
+            <tr><td><code>a == b</code></td><td><code>false</code></td><td>別々に生成したインスタンスなので参照が違う。</td></tr>
+            <tr><td><code>a.equals(b)</code></td><td><code>true</code></td><td>recordの自動生成 <code>equals</code> がコンポーネント値を比較する。</td></tr>
+            <tr><td><code>System.out.println(a)</code></td><td><code>Item[name=apple, price=100]</code> 形式</td><td>record用の <code>toString</code> が自動生成される。</td></tr>
+          </tbody>
+        </table>
+        <p><code>==</code> と <code>equals</code> の違いはrecordでも変わりません。recordだからといって <code>==</code> が内容比較になるわけではありません。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>recordの制約</h2>
+        <p>recordは普通のクラスより制約があります。制約を知らないと「それっぽく見えるコード」に引っかかります。</p>
+        <table class="ref-table">
+          <thead><tr><th>項目</th><th>可否</th><th>理由・注意</th></tr></thead>
+          <tbody>
+            <tr><td>別クラスを <code>extends</code></td><td>不可</td><td>recordは暗黙的に <code>java.lang.Record</code> を継承する。</td></tr>
+            <tr><td><code>interface</code> を <code>implements</code></td><td>可</td><td>通常クラスと同じく実装できる。</td></tr>
+            <tr><td>追加のインスタンスフィールド</td><td>不可</td><td>recordの状態はコンポーネントで表す。</td></tr>
+            <tr><td><code>static</code> フィールド・メソッド</td><td>可</td><td>インスタンス状態ではないため定義できる。</td></tr>
+            <tr><td>インスタンスメソッド追加</td><td>可</td><td>コンポーネントを使った処理を追加できる。</td></tr>
+            <tr><td>暗黙的な <code>final</code></td><td>あり</td><td>recordをさらに継承することはできない。</td></tr>
+          </tbody>
+        </table>
+        <pre class="article-code"><code>interface Printable {
+    void print();
+}
+
+record User(String name) implements Printable {
+    static int count = 0;          // OK
+    public void print() {         // OK
+        System.out.println(name);
+    }
+    // int age;                   // NG: 追加インスタンスフィールド不可
+}
+
+// class SubUser extends User {}  // NG: recordは継承不可</code></pre>
+      </section>
+
+      <section class="article-section">
+        <h2>recordのコンストラクタ：標準形式とコンパクト形式</h2>
+        <p>recordには、全コンポーネントに対応するコンストラクタがあります。処理を追加したい場合、標準コンストラクタまたはコンパクトコンストラクタを書けます。</p>
+        <h3>標準コンストラクタ</h3>
+        <pre class="article-code"><code>record User(String name) {
+    public User(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException();
+        }
+        this.name = name;
+    }
+}</code></pre>
+        <h3>コンパクトコンストラクタ</h3>
+        <pre class="article-code"><code>record User(String name) {
+    public User {
+        if (name == null) {
+            throw new IllegalArgumentException();
+        }
+        name = name.trim();
+    }
+}</code></pre>
+        <p>コンパクトコンストラクタでは、引数リストを書きません。処理後にコンポーネントへの代入が行われるため、引数値の検証や加工を書くのに向いています。</p>
+        <details class="article-card"><summary><strong>試験での見方</strong></summary><p>recordのコンストラクタ問題では、通常クラスのコンストラクタ問題と同じく「戻り値型を書いていないか」「アクセス修飾子は不自然でないか」「コンポーネント名と一致しているか」を確認します。</p></details>
+      </section>
+
+      <section class="article-section">
+        <h2>sealed class / sealed interface</h2>
+        <p><code>sealed</code> は、継承または実装できる相手を制限する仕組みです。許可リストに書かれていないクラスは、継承・実装できません。</p>
+        <pre class="article-code"><code>sealed class Animal permits Dog, Cat {}
+
+final class Dog extends Animal {}
+non-sealed class Cat extends Animal {}
+
+// class Bird extends Animal {} // NG: permitsにない</code></pre>
+        <p>sealedの出題では、親側と子側の両方を見ます。</p>
+        <table class="ref-table">
+          <thead><tr><th>確認箇所</th><th>見る内容</th></tr></thead>
+          <tbody>
+            <tr><td>親側</td><td><code>sealed</code> が付いているか。<code>permits</code> に許可クラスが列挙されているか。</td></tr>
+            <tr><td>子側</td><td>許可されているか。さらに <code>final</code> / <code>sealed</code> / <code>non-sealed</code> のいずれかが付いているか。</td></tr>
+            <tr><td>孫クラス以降</td><td><code>final</code> ならそこで終了。<code>non-sealed</code> なら通常の継承に戻る。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="article-section">
+        <h2>sealedでコンパイルエラーになる典型</h2>
+        <div class="grid-two">
+          <div class="article-card">
+            <h3>permitsにない</h3>
+            <pre class="article-code"><code>sealed class A permits B {}
+final class B extends A {}
+final class C extends A {} // NG</code></pre>
+            <p><code>C</code> は許可されていないためコンパイルエラーです。</p>
+          </div>
+          <div class="article-card">
+            <h3>子側の修飾子忘れ</h3>
+            <pre class="article-code"><code>sealed class A permits B {}
+class B extends A {} // NG</code></pre>
+            <p>sealedの直接サブクラスは、継承方針を明示する必要があります。</p>
+          </div>
+          <div class="article-card">
+            <h3>普通のクラスにnon-sealed</h3>
+            <pre class="article-code"><code>class A {}
+non-sealed class B extends A {} // NG</code></pre>
+            <p><code>non-sealed</code> はsealed階層の制限を解除するための指定です。普通の継承には使えません。</p>
+          </div>
+          <div class="article-card">
+            <h3>sealedを継続するのにpermitsなし</h3>
+            <pre class="article-code"><code>sealed class A permits B {}
+sealed class B extends A {} // 状況によりNG</code></pre>
+            <p><code>B</code> をさらにsealedにするなら、次に誰を許可するかを設計上明確にする必要があります。試験ではサブクラス指定の有無を確認します。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>switch式：値を返すswitch</h2>
+        <p>従来の <code>switch</code> 文は処理を分岐します。一方、<code>switch</code> 式は値を返します。</p>
+        <pre class="article-code"><code>int n = 2;
+String result = switch (n) {
+    case 1 -> "one";
+    case 2 -> "two";
+    default -> "other";
+};
+System.out.println(result);</code></pre>
+        <table class="ref-table">
+          <thead><tr><th>観点</th><th>switch文</th><th>switch式</th></tr></thead>
+          <tbody>
+            <tr><td>値を返すか</td><td>返さない</td><td>返す</td></tr>
+            <tr><td>代入できるか</td><td>不可</td><td>可</td></tr>
+            <tr><td><code>-></code></td><td>使用可</td><td>使用可</td></tr>
+            <tr><td>ブロックで値を返す</td><td>通常の処理を書く</td><td><code>yield</code> を使う</td></tr>
+            <tr><td>網羅性</td><td>必須ではない</td><td>値を返すため全経路が必要</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="article-section">
+        <h2>switch式のyield</h2>
+        <p><code>case -></code> の右側に単一式を書くならその値が返ります。複数行の処理を書いて値を返す場合は <code>yield</code> を使います。</p>
+        <pre class="article-code"><code>int score = 80;
+String rank = switch (score / 10) {
+    case 10, 9 -> "A";
+    case 8 -> {
+        System.out.println("border");
+        yield "B";
+    }
+    default -> "C";
+};</code></pre>
+        <p><code>return</code> と <code>yield</code> は違います。<code>yield</code> はswitch式の値を返すためのものです。メソッドから戻るわけではありません。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>switchで狙われる型・caseラベル</h2>
+        <p>Java Silverでは、switchの中身そのものより、<strong>switchに使える型か</strong>、<strong>caseラベルが定数か</strong>を問われやすいです。</p>
+        <table class="ref-table">
+          <thead><tr><th>項目</th><th>要点</th></tr></thead>
+          <tbody>
+            <tr><td>使える主な型</td><td><code>byte</code>, <code>short</code>, <code>char</code>, <code>int</code>, 対応ラッパー, <code>String</code>, enum など。</td></tr>
+            <tr><td><code>long</code>, <code>float</code>, <code>double</code>, <code>boolean</code></td><td>switch式・文の制御式として不適切。</td></tr>
+            <tr><td>caseラベル</td><td>コンパイル時定数である必要がある。</td></tr>
+            <tr><td><code>final</code> 変数</td><td>初期化値がコンパイル時定数ならcaseに使える。</td></tr>
+          </tbody>
+        </table>
+        <pre class="article-code"><code>final int A = 1;
+int b = 2;
+
+switch (A) {
+    case A: System.out.println("A"); break;
+    // case b: System.out.println("B"); break; // NG: 定数ではない
+}</code></pre>
+      </section>
+
+      <section class="article-section">
+        <h2>instanceof パターンマッチング</h2>
+        <p>Java 17では、<code>instanceof</code> の判定と同時に変数を宣言できます。trueと判定された範囲内で、その変数をキャスト済みの型として使えます。</p>
+        <pre class="article-code"><code>Object obj = "abc";
+
 if (obj instanceof String s) {
     System.out.println(s.length());
-}</code></pre><p><code>obj instanceof String s</code> は、objがStringとして扱える場合だけ、変数 <code>s</code> をそのブロック内で使えます。条件がfalseになりうる場所では使えません。</p></section><section class="article-section"><h2>switch式：値を返せるswitch</h2><pre class="article-code"><code>int result = switch (rank) {
-    case 1 -&gt; 100;
-    case 2 -&gt; 80;
-    default -&gt; 0;
-};</code></pre><ul class="article-list"><li>switch式は値を返すので、全分岐で値を返す必要がある。</li><li><code>-></code> 形式では基本的にフォールスルーしない。</li><li>ブロックで複数文を書く場合は <code>yield</code> で値を返す。</li></ul><pre class="article-code"><code>String text = switch (n) {
-    case 1 -&gt; "one";
-    default -&gt; {
-        String s = "other";
-        yield s;
-    }
-};</code></pre></section><section class="article-section"><h2>private interface method</h2><p>interfaceには、defaultメソッドやstaticメソッドから使う補助用としてprivateメソッドを定義できます。ただし、外部から呼ぶためのものではありません。</p><pre class="article-code"><code>interface A {
-    default void run() {
-        helper();
-    }
-    private void helper() {
-        System.out.println("help");
-    }
-}</code></pre><p>privateメソッドは実装クラスから直接呼べません。interface内の処理を共通化するための部品です。</p></section>
+}</code></pre>
+        <p>従来の書き方では、判定後に明示的なキャストが必要でした。</p>
+        <pre class="article-code"><code>if (obj instanceof String) {
+    String s = (String) obj;
+    System.out.println(s.length());
+}</code></pre>
+        <p>パターンマッチングは、このキャストを省略する構文です。<code>obj</code> 自体の宣言型が変わるわけではありません。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>パターン変数のスコープ</h2>
+        <p>パターン変数は、型判定がtrueだと保証できる範囲でだけ使えます。</p>
+        <table class="ref-table">
+          <thead><tr><th>コード</th><th>可否</th><th>理由</th></tr></thead>
+          <tbody>
+            <tr><td><code>if (obj instanceof String s) { s.length(); }</code></td><td>OK</td><td>ifブロック内ではStringと確定している。</td></tr>
+            <tr><td><code>if (obj instanceof String s && s.length() &gt; 0)</code></td><td>OK</td><td><code>&amp;&amp;</code> の右側は左側がtrueのときだけ評価される。</td></tr>
+            <tr><td><code>if (obj instanceof String s || s.length() &gt; 0)</code></td><td>NG</td><td><code>||</code> の右側では <code>s</code> が存在する保証がない。</td></tr>
+            <tr><td><code>System.out.println(s);</code> をif外に書く</td><td>原則NG</td><td>ifがfalseの場合、<code>s</code> は宣言されていない。</td></tr>
+          </tbody>
+        </table>
+        <pre class="article-code"><code>Object obj = "abc";
+
+if (obj instanceof String s && s.length() > 2) {
+    System.out.println(s.toUpperCase());
+}</code></pre>
+      </section>
+
+      <section class="article-section">
+        <h2>Java 17論点の総合判断表</h2>
+        <table class="ref-table">
+          <thead><tr><th>論点</th><th>最初に見ること</th><th>典型ミス</th></tr></thead>
+          <tbody>
+            <tr><td>record</td><td>アクセサ名、追加フィールド、extends可否</td><td><code>getX()</code> を呼ぶ、追加インスタンスフィールドを書く。</td></tr>
+            <tr><td>sealed</td><td><code>permits</code> と子側修飾子</td><td>許可されていない継承、<code>final/sealed/non-sealed</code> 忘れ。</td></tr>
+            <tr><td>switch式</td><td>値を返す経路があるか</td><td><code>yield</code> 忘れ、網羅性不足、case定数でない。</td></tr>
+            <tr><td>instanceof pattern</td><td>パターン変数の使える範囲</td><td><code>||</code> の右側やif外で使う。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="article-section">
+        <h2>ミニ演習</h2>
+        <details class="article-card"><summary><strong>Q1. <code>record Item(String name) { int count; }</code> はコンパイルできる？</strong></summary><p>できません。recordに追加のインスタンスフィールドは定義できません。<code>static</code> フィールドなら定義できます。</p></details>
+        <details class="article-card"><summary><strong>Q2. <code>new Item("A").getName()</code> は呼べる？</strong></summary><p>recordのアクセサは <code>name()</code> です。<code>getName()</code> は自動生成されません。</p></details>
+        <details class="article-card"><summary><strong>Q3. sealedクラスを継承した直接サブクラスに何も修飾子を付けないと？</strong></summary><p>コンパイルエラーです。<code>final</code>、<code>sealed</code>、<code>non-sealed</code> のいずれかを明示します。</p></details>
+        <details class="article-card"><summary><strong>Q4. switch式のブロック内で値を返すキーワードは？</strong></summary><p><code>yield</code> です。<code>return</code> ではありません。</p></details>
+        <details class="article-card"><summary><strong>Q5. <code>if (obj instanceof String s || s.length() &gt; 0)</code> はなぜだめ？</strong></summary><p><code>||</code> の右側は、左側がfalseのときに評価されます。その場合、<code>s</code> は宣言されていません。</p></details>
+        <p class="inline-note">次に確認: <a href="exam-traps.html">ひっかけ集</a> / <a href="cheatsheet.html">直前確認</a></p>
+      </section>
+
     </main>
   </div>
-  <script src="data/questions.js"></script>
-  <script src="assets/js/app.js"></script>
+  <script src="data/questions.js?v=20260529-mock-natural-v14"></script>
+  <script src="assets/js/app.js?v=20260529-mock-natural-v14"></script>
 </body>
 </html>

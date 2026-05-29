@@ -6,7 +6,7 @@
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Java Silver Study - var・スコープ・初期化</title>
-  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260529-super-sub-v13">
 </head>
 <body>
   <div class="layout">
@@ -18,53 +18,278 @@
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
         <h1>var・スコープ・初期化</h1>
-        <p>varの使用可能範囲、型推論の限界、ローカル変数のスコープと初期化を整理します。</p>
+        <p>varの使える場所、推論できない右辺、スコープ、確定代入を、コンパイル可否で判定できる形に整理します。</p>
       </section>
+      
+<section class="article-section">
+  <h2>この単元の結論</h2>
+  <div class="article-card">
+    <p><code>var</code> は「型を書かなくてもよい便利機能」ではありますが、試験では<strong>使える場所・推論される型・初期化の有無・スコープ</strong>で落とされます。</p>
+    <p>最初に押さえるべき判断は次の4つです。</p>
+    <ol class="article-list">
+      <li><strong>ローカル変数か。</strong> フィールド、メソッド引数、戻り値型なら即コンパイルエラー。</li>
+      <li><strong>初期化式があるか。</strong> <code>var x;</code> は型を推論できないので不可。</li>
+      <li><strong>右辺だけで型が決まるか。</strong> <code>null</code>、配列初期化子だけ、ラムダ式だけは不可。</li>
+      <li><strong>推論後の型でその後の代入・メソッド呼び出しが成立するか。</strong> <code>var</code> は動的型ではない。</li>
+    </ol>
+  </div>
+</section>
 
-      <section class="article-section">
-        <h2>varはローカル変数の型推論</h2>
-        <p><code>var</code> は「型を書かない」構文ではなく、右辺からコンパイラが型を決める構文です。決まった後は普通の静的型付き変数です。</p>
-        <pre class="article-code"><code>var n = 10;       // int
-var s = &quot;abc&quot;;    // String
-// n = &quot;abc&quot;;     // NG。nはint</code></pre>
-      </section>
+<section class="article-section">
+  <h2>varは動的型ではない</h2>
+  <p><code>var</code> は、ローカル変数の型を<strong>コンパイル時に右辺から推論する</strong>構文です。実行時に型が変わるわけではありません。</p>
+  <pre class="article-code"><code>var n = 10;       // nの型はintに確定
+var s = "abc";    // sの型はStringに確定
 
-      <section class="article-section">
-        <h2>varを使えない場所</h2>
-        <p>Java Silverでは、<code>var</code> の禁止場所がよく問われます。フィールド、引数、戻り値、配列要素型、catchパラメータなどに使えません。</p>
-        <pre class="article-code"><code>class Sample {
-    // private var value = 10;      // NG。フィールド
+// n = "abc";     // NG: int型の変数にStringは代入できない
+s = "def";        // OK: String同士</code></pre>
+  <div class="article-callout warn">誤解しやすい点: <code>var</code> はJavaScriptの <code>var</code> とは別物です。Javaでは、型はコンパイル時に確定します。</div>
+</section>
 
-    // void test(var x) { }         // NG。引数
-    // var method() { return 10; }  // NG。戻り値
+<section class="article-section">
+  <h2>varが使える場所</h2>
+  <table class="ref-table">
+    <thead><tr><th>場所</th><th>可否</th><th>例</th><th>判断理由</th></tr></thead>
+    <tbody>
+      <tr><td>ローカル変数</td><td>可</td><td><code>var x = 10;</code></td><td>初期化式から型を推論できる</td></tr>
+      <tr><td>for文の初期化変数</td><td>可</td><td><code>for (var i = 0; i &lt; 3; i++)</code></td><td><code>i</code> はローカル変数</td></tr>
+      <tr><td>拡張forの変数</td><td>可</td><td><code>for (var s : list)</code></td><td>要素型から推論できる</td></tr>
+      <tr><td>try-with-resourcesの変数</td><td>可</td><td><code>try (var r = new R())</code></td><td>初期化式から推論できる</td></tr>
+      <tr><td>lambdaの仮引数</td><td>限定的に可</td><td><code>(var a, var b) -&gt; a + b</code></td><td>Java 11以降。ただし全引数で統一が必要</td></tr>
+    </tbody>
+  </table>
+</section>
 
-    void ok() {
-        var value = 10;             // OK。ローカル変数
+<section class="article-section">
+  <h2>varが使えない場所</h2>
+  <p>試験ではこちらの方が重要です。<strong>ローカル変数型推論</strong>なので、ローカル変数ではない場所では使えません。</p>
+  <table class="ref-table">
+    <thead><tr><th>場所</th><th>コード例</th><th>結果</th><th>理由</th></tr></thead>
+    <tbody>
+      <tr><td>フィールド</td><td><code>private var value = 10;</code></td><td>コンパイルエラー</td><td>フィールドはローカル変数ではない</td></tr>
+      <tr><td>staticフィールド</td><td><code>static var count = 0;</code></td><td>コンパイルエラー</td><td>クラス変数にも使えない</td></tr>
+      <tr><td>メソッド引数</td><td><code>void test(var x)</code></td><td>コンパイルエラー</td><td>通常のメソッド引数では使えない</td></tr>
+      <tr><td>コンストラクタ引数</td><td><code>Sample(var x)</code></td><td>コンパイルエラー</td><td>引数の型は明示する</td></tr>
+      <tr><td>戻り値型</td><td><code>var get()</code></td><td>コンパイルエラー</td><td>戻り値型推論ではない</td></tr>
+      <tr><td>catchパラメータ</td><td><code>catch (var e)</code></td><td>コンパイルエラー</td><td>例外型を明示する</td></tr>
+    </tbody>
+  </table>
+  <pre class="article-code"><code>class Sample {
+    // var field = 10;          // NG
+
+    // Sample(var value) {}     // NG
+
+    // var getValue() {         // NG
+    //     return 10;
+    // }
+
+    void method() {
+        var local = 10;         // OK
     }
 }</code></pre>
-        <div class="article-card-grid">
-          <article class="article-card"><h3>初期化式なし</h3><p><code>var a;</code> は不可。型を推論できません。</p></article>
-          <article class="article-card"><h3>null単独</h3><p><code>var a = null;</code> は不可。型を決められません。</p></article>
-          <article class="article-card"><h3>配列初期化子</h3><p><code>var a = {1,2,3};</code> は不可。<code>new int[]{...}</code> が必要です。</p></article>
-          <article class="article-card"><h3>ラムダ単独</h3><p><code>var f = () -> 1;</code> はターゲット型がないため不可です。</p></article>
-        </div>
-      </section>
+</section>
 
-      <section class="article-section">
-        <h2>スコープと初期化</h2>
-        <p>ローカル変数は宣言されたブロック内でのみ有効です。また、使用前に確実に初期化されている必要があります。</p>
-        <pre class="article-code"><code>if (true) {
-    int x = 10;
+<section class="article-section">
+  <h2>初期化式がないvarは不可</h2>
+  <p><code>var</code> は右辺から型を推論します。したがって、右辺がなければ型を決められません。</p>
+  <pre class="article-code"><code>// var a;              // NG: 初期化式がない
+var b = 10;            // OK: int
+var c = "abc";         // OK: String</code></pre>
+  <p>ここで混同しやすいのが、通常のローカル変数宣言です。通常の型を明示すれば、宣言だけはできます。ただし、使う前には必ず初期化が必要です。</p>
+  <pre class="article-code"><code>int x;                 // 宣言だけならOK
+// System.out.println(x); // NG: ローカル変数xが初期化されていない
+x = 10;
+System.out.println(x); // OK</code></pre>
+</section>
+
+<section class="article-section">
+  <h2>nullだけでは推論できない</h2>
+  <p><code>null</code> はどの参照型にも代入できる特別な値です。逆に言えば、<code>null</code> だけでは具体的な型が決まりません。</p>
+  <pre class="article-code"><code>// var a = null;        // NG: 型を推論できない
+var b = (String) null;  // OK: Stringと推論できる
+String c = null;        // OK: 型を明示している</code></pre>
+  <div class="article-callout">判断: <code>null</code> は「参照なし」を表す値であり、<code>String</code> 型そのものではありません。型推論の材料としては弱すぎます。</div>
+</section>
+
+<section class="article-section">
+  <h2>配列初期化子だけでは不可</h2>
+  <p>配列初期化子 <code>{1, 2, 3}</code> は、左辺の型があって初めて意味が決まります。<code>var</code> では左辺の型がないため使えません。</p>
+  <pre class="article-code"><code>// var a = {1, 2, 3};       // NG
+var b = new int[]{1, 2, 3}; // OK: int[]
+int[] c = {1, 2, 3};        // OK: 左辺にint[]がある</code></pre>
+  <p>また、<code>var[]</code> のように配列型の要素型として <code>var</code> を使うこともできません。</p>
+  <pre class="article-code"><code>// var[] nums = new int[3]; // NG
+var nums = new int[3];      // OK: int[]と推論</code></pre>
+</section>
+
+<section class="article-section">
+  <h2>ラムダ式だけでは不可</h2>
+  <p>ラムダ式は、代入先の関数型インタフェースがあって初めて型が決まります。<code>var</code> の右辺にラムダ式だけを書いても、目標型がないため推論できません。</p>
+  <pre class="article-code"><code>// var f = () -&gt; System.out.println("A"); // NG
+Runnable r = () -&gt; System.out.println("A"); // OK</code></pre>
+  <p>メソッド参照も同じです。</p>
+  <pre class="article-code"><code>// var f = System.out::println; // NG
+java.util.function.Consumer&lt;String&gt; c = System.out::println; // OK</code></pre>
+</section>
+
+<section class="article-section">
+  <h2>複数変数を同時宣言できない</h2>
+  <p><code>var</code> は1つの宣言につき1つの変数です。通常の <code>int a = 1, b = 2;</code> のような書き方はできません。</p>
+  <pre class="article-code"><code>int a = 1, b = 2;       // OK
+// var x = 1, y = 2;    // NG
+var x = 1;              // OK
+var y = 2;              // OK</code></pre>
+</section>
+
+<section class="article-section">
+  <h2>推論される型は「見た目より具体的」になりやすい</h2>
+  <p><code>var</code> は、右辺の型そのものに近い型で推論します。インタフェース型に自動で寄せてくれるわけではありません。</p>
+  <pre class="article-code"><code>var list = new java.util.ArrayList&lt;String&gt;();
+// listの型は ArrayList&lt;String&gt;。List&lt;String&gt; ではない。
+
+java.util.List&lt;String&gt; list2 = new java.util.ArrayList&lt;&gt;();
+// list2の型は List&lt;String&gt;。</code></pre>
+  <div class="article-callout warn">Silverでは、厳密な総称型推論よりも「varが使える場所か」「その後の代入が成立するか」を優先して見れば十分です。</div>
+</section>
+
+<section class="article-section">
+  <h2>varとダイヤモンド演算子</h2>
+  <p><code>new ArrayList&lt;&gt;()</code> のように型引数を省略した右辺でも、<code>var</code> 自体は使えます。ただし、推論結果が意図より広くなることがあります。</p>
+  <pre class="article-code"><code>var list1 = new java.util.ArrayList&lt;String&gt;(); // ArrayList&lt;String&gt;
+var list2 = new java.util.ArrayList&lt;&gt;();       // ArrayList&lt;Object&gt; に近い扱いになりやすい
+
+list1.add("A");
+// list1.add(10);      // NG
+
+list2.add("A");       // OK
+list2.add(10);         // OK</code></pre>
+  <p>学習用には、<code>var</code> とダイヤモンド演算子を同時に使うと型が読みづらくなる、と覚えておくと安全です。</p>
+</section>
+
+<section class="article-section">
+  <h2>final var</h2>
+  <p><code>final</code> と <code>var</code> は併用できます。<code>final</code> は再代入禁止、<code>var</code> は型推論です。役割が違います。</p>
+  <pre class="article-code"><code>final var x = 10; // xはfinalなint
+// x = 20;        // NG: finalなので再代入不可</code></pre>
+</section>
+
+<section class="article-section">
+  <h2>スコープの基本</h2>
+  <p>ローカル変数は、宣言されたブロック内でだけ使えます。ブロックとは、基本的に <code>{ }</code> で囲まれた範囲です。</p>
+  <pre class="article-code"><code>if (true) {
+    var x = 10;
+    System.out.println(x); // OK
 }
-// System.out.println(x); // NG。スコープ外
+// System.out.println(x);  // NG: xはスコープ外</code></pre>
+  <p>for文の初期化部で宣言した変数も、for文の中だけで有効です。</p>
+  <pre class="article-code"><code>for (var i = 0; i &lt; 3; i++) {
+    System.out.println(i);
+}
+// System.out.println(i);  // NG</code></pre>
+</section>
 
-int y;
-// System.out.println(y); // NG。未初期化</code></pre>
-      </section>
+<section class="article-section">
+  <h2>同じ名前の再宣言</h2>
+  <p>同じスコープ、または外側のスコープの変数がまだ見えている範囲では、同じ名前のローカル変数を再宣言できません。</p>
+  <pre class="article-code"><code>void test() {
+    var x = 10;
+    // var x = 20;       // NG: 同じスコープで再宣言
+
+    if (true) {
+        // var x = 30;   // NG: 外側のxが見えている
+    }
+}</code></pre>
+  <p>ただし、互いにスコープが重ならないブロックなら、同じ名前を使えます。</p>
+  <pre class="article-code"><code>void test() {
+    if (true) {
+        var x = 10;
+    }
+    if (true) {
+        var x = 20;      // OK: 先ほどのxはもう見えない
+    }
+}</code></pre>
+</section>
+
+<section class="article-section">
+  <h2>フィールドとローカル変数の名前が同じ場合</h2>
+  <p>ローカル変数がフィールドと同じ名前の場合、単に名前を書くとローカル変数が優先されます。フィールドにアクセスしたい場合は <code>this.</code> を使います。</p>
+  <pre class="article-code"><code>class Sample {
+    int value = 10;
+
+    void test() {
+        var value = 20;
+        System.out.println(value);      // 20
+        System.out.println(this.value); // 10
+    }
+}</code></pre>
+</section>
+
+<section class="article-section">
+  <h2>確定代入: ローカル変数は使う前に必ず初期化</h2>
+  <p>フィールドにはデフォルト値がありますが、ローカル変数にはデフォルト値がありません。<code>var</code> 以前の問題として、ローカル変数は使う前に初期化が必要です。</p>
+  <pre class="article-code"><code>class Sample {
+    int field; // 0で初期化される
+
+    void test(boolean flag) {
+        int local;
+        if (flag) {
+            local = 10;
+        }
+        // System.out.println(local); // NG: flagがfalseなら未初期化
+    }
+}</code></pre>
+  <p>条件分岐がある場合は、すべての経路で初期化されるかを確認します。</p>
+  <pre class="article-code"><code>void test(boolean flag) {
+    int local;
+    if (flag) {
+        local = 10;
+    } else {
+        local = 20;
+    }
+    System.out.println(local); // OK</code></pre>
+</section>
+
+<section class="article-section">
+  <h2>試験での判断順</h2>
+  <ol class="article-list">
+    <li><strong>varがローカル変数として使われているか。</strong> フィールド・引数・戻り値なら即エラー。</li>
+    <li><strong>右辺があるか。</strong> <code>var x;</code> は不可。</li>
+    <li><strong>右辺だけで型が決まるか。</strong> <code>null</code>、配列初期化子、ラムダ式単体は不可。</li>
+    <li><strong>複数変数宣言になっていないか。</strong> <code>var a=1,b=2;</code> は不可。</li>
+    <li><strong>推論後の型で後続コードを読む。</strong> 以降は通常の型チェック問題として処理する。</li>
+    <li><strong>スコープ外参照・未初期化参照がないか。</strong> 特にif/for内の変数に注意する。</li>
+  </ol>
+</section>
+
+<section class="article-section">
+  <h2>典型ひっかけ</h2>
+  <table class="ref-table">
+    <thead><tr><th>コード</th><th>結果</th><th>理由</th></tr></thead>
+    <tbody>
+      <tr><td><code>var a;</code></td><td>エラー</td><td>初期化式がない</td></tr>
+      <tr><td><code>var a = null;</code></td><td>エラー</td><td>nullだけでは型が決まらない</td></tr>
+      <tr><td><code>var a = {1,2};</code></td><td>エラー</td><td>配列初期化子だけでは型が決まらない</td></tr>
+      <tr><td><code>var a = new int[]{1,2};</code></td><td>OK</td><td>int[]と推論できる</td></tr>
+      <tr><td><code>private var x = 1;</code></td><td>エラー</td><td>フィールドにvarは使えない</td></tr>
+      <tr><td><code>void m(var x)</code></td><td>エラー</td><td>通常のメソッド引数にvarは使えない</td></tr>
+      <tr><td><code>var a = 1, b = 2;</code></td><td>エラー</td><td>複数変数宣言は不可</td></tr>
+      <tr><td><code>var var = 10;</code></td><td>OK</td><td>変数名としてのvarは使える</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="article-section">
+  <h2>ミニ演習</h2>
+  <details class="article-card"><summary><strong>Q1. <code>var x = 10; x = 10L;</code> は？</strong></summary><p>コンパイルエラーです。<code>x</code> は最初の代入で <code>int</code> と推論されています。<code>long</code> から <code>int</code> への暗黙変換はできません。</p></details>
+  <details class="article-card"><summary><strong>Q2. <code>var x = (Object) &quot;abc&quot;;</code> のxの型は？</strong></summary><p><code>Object</code> です。右辺全体の型が <code>Object</code> なので、<code>String</code> ではありません。</p></details>
+  <details class="article-card"><summary><strong>Q3. <code>for (var i=0; i&lt;3; i++) { } System.out.println(i);</code> は？</strong></summary><p>コンパイルエラーです。<code>i</code> のスコープはfor文の中だけです。</p></details>
+  <details class="article-card"><summary><strong>Q4. <code>var list = new java.util.ArrayList&lt;&gt;(); list.add(1); list.add("A");</code> は？</strong></summary><p>コンパイルできます。型引数を明示していないため、要素型が広く推論されます。試験では、<code>var</code> と <code>&lt;&gt;</code> を同時に使うと型が読みづらくなる点に注意します。</p></details>
+  <p class="inline-note">次に読む: <a href="strings.html">文字列・StringBuilder</a> / 関連: <a href="datatypes.html">型・変数・リテラル</a> / <a href="numeric-rules.html">数値・型昇格</a></p>
+</section>
 
     </main>
   </div>
-  <script src="data/questions.js"></script>
-  <script src="assets/js/app.js"></script>
+  <script src="data/questions.js?v=20260529-mock-natural-v14"></script>
+  <script src="assets/js/app.js?v=20260529-mock-natural-v14"></script>
 </body>
 </html>
