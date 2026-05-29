@@ -1306,7 +1306,7 @@ service cloud.firestore {
     const nav = document.getElementById("chapterNav");
     if (!nav) return;
     const path = (location.pathname || "").split("/").pop() || "index.html";
-    const navStateKey = "java-study-nav-groups-v7";
+    const navStateKey = "java-study-nav-groups-v15";
     const navState = readJson(navStateKey, {});
 
     const learningItems = [
@@ -1318,31 +1318,32 @@ service cloud.firestore {
       ["numeric-rules.html", "数値・型昇格（教材版）", "byte/short"],
       ["var-scope.html", "var・スコープ（教材版）", "初期化"],
       ["strings.html", "文字列・StringBuilder（教材版）", "不変/可変"],
-      ["equality.html", "同一性・同値性", "==/equals"],
-      ["collections-arrays.html", "配列・List", "ArrayList"],
-      ["operators-control.html", "演算子・制御", "評価順"],
-      ["loop-control.html", "ループ制御", "break/continue"],
-      ["output-tracing.html", "出力追跡", "表で追う"],
-      ["methods-constructors.html", "メソッド・コンストラクタ", "overload"],
-      ["object-oriented.html", "クラス・static・record", "GC/static"],
-      ["modifiers-access.html", "修飾子・アクセス", "protected"],
-      ["oop-relations.html", "継承・interface", "override"],
-      ["inheritance-interface.html", "継承/interface詳細", "default"],
-      ["polymorphism-cast.html", "ポリモーフィズム", "cast"],
-      ["exceptions.html", "例外処理", "try/catch"],
-      ["silver17-points.html", "Java 17論点", "record/sealed"]
+      ["equality.html", "同一性・同値性（教材版）", "==/equals"],
+      ["collections-arrays.html", "配列・List（教材版）", "ArrayList"],
+      ["operators-control.html", "演算子・制御（教材版）", "評価順"],
+      ["loop-control.html", "ループ制御（教材版）", "break/continue"],
+      ["output-tracing.html", "出力追跡（教材版）", "表で追う"],
+      ["methods-constructors.html", "メソッド・コンストラクタ（教材版）", "overload"],
+      ["object-oriented.html", "クラス・static・record（教材版）", "参照/static"],
+      ["modifiers-access.html", "修飾子・アクセス（教材版）", "final/sealed"],
+      ["oop-relations.html", "継承・interface（教材版）", "override"],
+      ["inheritance-interface.html", "継承/interface詳細（教材版）", "default"],
+      ["polymorphism-cast.html", "ポリモーフィズム・キャスト（教材版）", "cast"],
+      ["exceptions.html", "例外処理（教材版）", "try/catch"],
+      ["silver17-points.html", "Java 17論点（教材版）", "record/sealed"]
     ];
 
     const otherItems = [
       ["index.html", "トップページ", "演習・記事一覧"],
-      ["cheatsheet.html", "直前確認", "圧縮版"],
-      ["method-list.html", "頻出メソッド", "戻り値"],
-      ["fine-points.html", "細かい仕様", "境界"],
-      ["exam-traps.html", "ひっかけ集", "模擬問題前"],
+      ["cheatsheet.html", "直前確認（教材版）", "総仕上げ"],
+      ["method-list.html", "頻出メソッド（教材版）", "戻り値/副作用"],
+      ["error-catalog.html", "エラー・例外カタログ（教材版）", "逆引き"],
+      ["fine-points.html", "細かい仕様（教材版）", "境界"],
+      ["exam-traps.html", "ひっかけ集（教材版）", "模擬問題前"],
       ["weakness-map.html", "弱点マップ", "復習順"],
-      ["mini-drills.html", "ミニ演習", "短問"],
-      ["glossary.html", "単語集", "用語"],
-      ["java-qa-review.html", "質問整理", "最近の弱点"]
+      ["mini-drills.html", "ミニ演習（教材版）", "短問"],
+      ["glossary.html", "単語集（教材版）", "用語"],
+      ["java-qa-review.html", "質問整理（教材版）", "最近の弱点"]
     ];
 
     function linkHtml(href, label, hint, active) {

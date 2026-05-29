@@ -1,6 +1,6 @@
 window.JAVA_STUDY_DATA = {
   "title": "Java Silver 勉強用ページ",
-  "version": "20260528-sidebar-v5",
+  "version": "20260529-output-methods-v10",
   "chapters": [
     {
       "id": "ch01",

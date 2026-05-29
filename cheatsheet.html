@@ -5,8 +5,8 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - 直前確認チートシート 完全版</title>
-  <link rel="stylesheet" href="assets/css/styles.css?v=20260528-var-strings-v7">
+  <title>Java Silver Study - 直前確認（教材版）</title>
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260529-aux-textbook-v16">
 </head>
 <body>
   <div class="layout">
@@ -17,28 +17,184 @@
     <main class="main reference-main article-main">
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>直前確認チートシート 完全版</h1>
-        <p>試験直前に見るため、細かい説明よりも判定基準を優先して圧縮したページです。</p>
+        <h1>直前確認（教材版）</h1>
+        <p>模擬問題や試験直前に、全単元の判定基準だけを短時間で確認する総仕上げページです。</p>
       </section>
-<section class="article-section"><h2>試験直前の判定順</h2><div class="decision-lane compact"><div><span>1</span><strong>コンパイル</strong><p>型・宣言・アクセス・例外処理。</p></div><div><span>2</span><strong>実行時例外</strong><p>null・境界外・cast・parse。</p></div><div><span>3</span><strong>出力</strong><p>評価順・参照・動的束縛。</p></div></div></section><section class="article-section"><h2>型・リテラル</h2><table class="ref-table"><thead><tr><th>項目</th><th>要点</th></tr></thead><tbody><tr><td><code>byte</code></td><td>-128〜127。整数定数が範囲内なら代入可。</td></tr><tr><td><code>short</code></td><td>-32768〜32767。演算すると基本int。</td></tr><tr><td><code>char</code></td><td>0〜65535。数値としても扱えるが演算ではint。</td></tr><tr><td><code>float</code></td><td><code>1.0F</code> が必要。<code>1.0</code> はdouble。</td></tr><tr><td><code>long</code></td><td><code>10L</code>。小文字lは見間違いが多い。</td></tr><tr><td><code>boolean</code></td><td>数値と互換性なし。<code>0/1</code> は使えない。</td></tr><tr><td><code>var</code></td><td>ローカル変数のみ。null単独、配列初期化子単独、ラムダ単独は不可。</td></tr></tbody></table></section><section class="article-section"><h2>文字列・配列・List</h2><ul class="check-list dense-list"><li><code>String</code> は不変。戻り値を受けないと変わらない。</li><li><code>StringBuilder</code> は可変。append等は自分を変える。</li><li><code>==</code> は参照比較。<code>equals</code> は内容比較。</li><li><code>intern()</code> はプール上の参照を返す。</li><li>配列の長さは <code>length</code>、Stringの長さは <code>length()</code>。</li><li>配列は固定長。ArrayListは要素数を変えられる。</li><li><code>Arrays.asList</code> と <code>List.of</code> は変更可否が違う。</li><li>拡張forのループ変数代入では元要素は差し替わらない。</li></ul></section><section class="article-section"><h2>オブジェクト指向</h2><table class="ref-table"><thead><tr><th>項目</th><th>要点</th></tr></thead><tbody><tr><td>コンストラクタ</td><td>継承されない。戻り値型を書いたらメソッド。</td></tr><tr><td>overload</td><td>引数リストが違う。同じ引数で戻り値だけ違うのは不可。</td></tr><tr><td>override</td><td>同じシグネチャ。戻り値は同じか共変戻り値。アクセスは狭めない。</td></tr><tr><td>static</td><td>インスタンスなしで使える。staticからinstanceを直接読めない。</td></tr><tr><td>フィールド</td><td>overrideされない。宣言型で決まる。</td></tr><tr><td>メソッド</td><td>overrideされたインスタンスメソッドは実体で決まる。</td></tr><tr><td>interface</td><td>抽象メソッドはpublic abstract扱い。フィールドはpublic static final扱い。</td></tr><tr><td>abstract</td><td>抽象クラスはインスタンス化不可。抽象メソッド未実装なら子もabstract。</td></tr></tbody></table></section><section class="article-section"><h2>Java 17系</h2><ul class="article-list"><li><strong>record</strong>: アクセサは <code>name()</code> 型。暗黙的にfinal。</li><li><strong>sealed</strong>: <code>permits</code> で許可。サブクラス側は <code>final/sealed/non-sealed</code> 必須。</li><li><strong>switch式</strong>: 値を返す。ブロックでは <code>yield</code>。</li><li><strong>instanceof pattern</strong>: trueの範囲でだけパターン変数が使える。</li></ul></section><section class="article-section"><h2>例外</h2><table class="ref-table"><thead><tr><th>項目</th><th>要点</th></tr></thead><tbody><tr><td>checked例外</td><td>catchまたはthrowsが必要。未処理はコンパイルエラー。</td></tr><tr><td>RuntimeException</td><td>非チェック例外。処理しなくてもコンパイル可。</td></tr><tr><td>catch順</td><td>子から親。親が先だと後続catchが到達不能。</td></tr><tr><td>finally</td><td>例外の有無に関わらず基本実行。</td></tr><tr><td>try-with-resources</td><td>closeは宣言の逆順。finallyより前。</td></tr></tbody></table></section>
-<section class="article-section">
-  <h2>さらに深掘り：直前に見る最小チェック</h2>
-  <ul class="article-list dense-list">
-    <li><code>String</code> は不変、<code>StringBuilder</code> は可変。</li>
-    <li><code>==</code> は参照比較、<code>equals</code> は実装依存の内容比較。</li>
-    <li>ローカル変数にデフォルト値はない。</li>
-    <li><code>byte/short/char</code> の演算結果は基本 <code>int</code>。</li>
-    <li><code>var</code> はローカル変数のみ。<code>null</code> 単独不可。</li>
-    <li><code>interface</code> の抽象メソッドは暗黙に <code>public</code>。</li>
-    <li>オーバーライドでアクセスを狭くできない。</li>
-    <li>チェック例外はcatchまたはthrowsが必要。</li>
-    <li>try-with-resourcesはcloseが逆順。</li>
-    <li>出力追跡はコンパイル可否を確認した後。</li>
-  </ul>
-</section>
-</main>
+
+      <section class="article-section">
+        <h2>直前確認の使い方</h2>
+        <p>このページは新知識を増やすためではなく、解答時の判定順を固定するためのページです。試験直前に全部を深く読み込むより、ここを使って「どの順番で切るか」を固めてください。</p>
+        <div class="decision-lane compact">
+          <div><span>1</span><strong>コンパイル可否</strong><p>宣言・型・アクセス・override・例外処理。</p></div>
+          <div><span>2</span><strong>実行時例外</strong><p>null・境界外・cast・parse・変更不可。</p></div>
+          <div><span>3</span><strong>出力</strong><p>評価順・参照・動的束縛・finally。</p></div>
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>型・リテラル・var</h2>
+        <table class="ref-table">
+          <thead><tr><th>項目</th><th>直前チェック</th><th>落とし穴</th></tr></thead>
+          <tbody>
+            <tr><td><code>byte</code></td><td>-128〜127</td><td><code>byte b = 128;</code> は不可。</td></tr>
+            <tr><td><code>short</code></td><td>-32768〜32767</td><td>演算すると基本 <code>int</code>。</td></tr>
+            <tr><td><code>char</code></td><td>0〜65535</td><td>負数は不可。演算すると <code>int</code>。</td></tr>
+            <tr><td><code>int</code></td><td>整数リテラルの基本型</td><td>2進数・8進数・16進数も基本は <code>int</code>。</td></tr>
+            <tr><td><code>long</code></td><td><code>L</code> 接尾辞</td><td><code>l</code> は1と見間違える。</td></tr>
+            <tr><td><code>float</code></td><td><code>F</code> 接尾辞</td><td><code>1.0</code> は <code>double</code>。</td></tr>
+            <tr><td><code>boolean</code></td><td><code>true/false</code> のみ</td><td><code>0/1</code> と互換性なし。</td></tr>
+            <tr><td><code>var</code></td><td>ローカル変数のみ</td><td>フィールド、引数、戻り値、<code>null</code> 単独、配列初期化子単独は不可。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="article-section">
+        <h2>数値変換</h2>
+        <table class="ref-table">
+          <thead><tr><th>コード</th><th>結果</th><th>理由</th></tr></thead>
+          <tbody>
+            <tr><td><code>byte b = 10;</code></td><td>OK</td><td>int定数がbyte範囲内。</td></tr>
+            <tr><td><code>byte b = 128;</code></td><td>NG</td><td>byte範囲外。</td></tr>
+            <tr><td><code>byte b = 1 + 2;</code></td><td>OK</td><td>コンパイル時定数で範囲内。</td></tr>
+            <tr><td><code>byte b = x + 1;</code></td><td>NG</td><td>変数を含む演算結果は基本int。</td></tr>
+            <tr><td><code>b += 1;</code></td><td>OK</td><td>複合代入は暗黙キャスト込み。</td></tr>
+            <tr><td><code>int i = 2 * 3L;</code></td><td>NG</td><td>結果がlong。</td></tr>
+            <tr><td><code>float f = 10.0;</code></td><td>NG</td><td>doubleをfloatへ縮小。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="article-section">
+        <h2>String・StringBuilder・比較</h2>
+        <ul class="check-list dense-list">
+          <li><code>String</code> は不変。<code>s.replace(...)</code> の戻り値を受けないと元は変わらない。</li>
+          <li><code>StringBuilder</code> は可変。<code>append</code>、<code>reverse</code>、<code>delete</code> などは自分を変える。</li>
+          <li><code>==</code> は参照比較。内容比較は原則 <code>equals</code>。</li>
+          <li><code>StringBuilder</code> は <code>equals</code> を内容比較としてオーバーライドしていない。</li>
+          <li><code>"a" + "b"</code> はコンパイル時に <code>"ab"</code> になり得る。変数を含むと実行時結合。</li>
+          <li><code>intern()</code> は文字列プール上の参照を返す。</li>
+          <li><code>substring(begin, end)</code> はbegin以上end未満。</li>
+          <li><code>indexOf</code> は見つからなければ <code>-1</code>。</li>
+        </ul>
+      </section>
+
+      <section class="article-section">
+        <h2>配列・List</h2>
+        <table class="ref-table">
+          <thead><tr><th>項目</th><th>直前チェック</th></tr></thead>
+          <tbody>
+            <tr><td>配列</td><td>固定長。長さは <code>length</code>。要素にはデフォルト値が入る。</td></tr>
+            <tr><td>多次元配列</td><td>配列の配列。各行の長さは揃っていなくてよい。</td></tr>
+            <tr><td>拡張for</td><td>ループ変数への代入では元要素は差し替わらない。</td></tr>
+            <tr><td><code>ArrayList</code></td><td><code>add</code> は追加、<code>set</code> は置換、<code>remove</code> は削除。</td></tr>
+            <tr><td><code>remove(int)</code> / <code>remove(Object)</code></td><td><code>list.remove(1)</code> は添字削除になりやすい。</td></tr>
+            <tr><td><code>List.of</code></td><td>変更不可。変更操作で実行時例外。</td></tr>
+            <tr><td><code>Arrays.asList</code></td><td>固定サイズ。要素置換は可、追加削除は不可。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="article-section">
+        <h2>演算子・制御構造</h2>
+        <ul class="article-list dense-list">
+          <li>後置 <code>a++</code> は古い値を使ってから増やす。前置 <code>++a</code> は増やしてから使う。</li>
+          <li><code>&amp;&amp;</code> と <code>||</code> は短絡評価。右辺が評価されないことがある。</li>
+          <li><code>&amp;</code> と <code>|</code> はbooleanにも使えるが、右辺も評価する。</li>
+          <li>代入式は値を持つ。<code>int b = a += 5;</code> のような式に注意。</li>
+          <li><code>String</code> 結合は左から評価。途中で文字列になったら以後は連結。</li>
+          <li><code>switch</code> のcaseはコンパイル時定数。<code>long</code>、<code>boolean</code> などは制御式に使えない。</li>
+          <li><code>switch</code> 文の <code>:</code> は <code>break</code> がなければフォールスルー。</li>
+          <li><code>switch</code> 式のブロックでは <code>yield</code>。</li>
+        </ul>
+      </section>
+
+      <section class="article-section">
+        <h2>クラス・メソッド・コンストラクタ</h2>
+        <table class="ref-table">
+          <thead><tr><th>項目</th><th>直前チェック</th></tr></thead>
+          <tbody>
+            <tr><td>コンストラクタ</td><td>戻り値型なし。継承されない。最初に <code>this()</code> または <code>super()</code>。</td></tr>
+            <tr><td>デフォルトコンストラクタ</td><td>コンストラクタを1つも書かない場合だけ自動生成。</td></tr>
+            <tr><td>overload</td><td>引数リストで決まる。戻り値だけ違うのは不可。</td></tr>
+            <tr><td>override</td><td>同じシグネチャ。戻り値は同じか共変。アクセスは狭めない。</td></tr>
+            <tr><td>static</td><td>staticからインスタンスメンバを直接参照できない。</td></tr>
+            <tr><td>値渡し</td><td>参照型でも参照値のコピーを渡す。呼び出し元変数の参照先差し替えはできない。</td></tr>
+            <tr><td>GC</td><td>どこからも参照されないインスタンスが対象。実行タイミングは保証されない。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="article-section">
+        <h2>継承・interface・ポリモーフィズム</h2>
+        <ul class="check-list dense-list">
+          <li>コンストラクタと <code>private</code> メンバは継承されない。</li>
+          <li>抽象メソッドを実装しない具象クラスはコンパイルエラー。</li>
+          <li>interfaceの抽象メソッドは暗黙に <code>public abstract</code>。</li>
+          <li>interfaceのフィールドは暗黙に <code>public static final</code>。</li>
+          <li>defaultメソッドの衝突は実装クラス側で解決が必要。</li>
+          <li>呼べるメソッドは宣言型で決まる。実行されるoverrideメソッドは実体で決まる。</li>
+          <li>フィールドはoverrideされない。宣言型で決まる。</li>
+          <li>staticメソッドもoverrideではなく隠蔽。</li>
+          <li>ダウンキャストはコンパイル可でも、実体が合わなければ <code>ClassCastException</code>。</li>
+        </ul>
+      </section>
+
+      <section class="article-section">
+        <h2>Java 17</h2>
+        <table class="ref-table">
+          <thead><tr><th>論点</th><th>直前チェック</th></tr></thead>
+          <tbody>
+            <tr><td>record</td><td>アクセサは <code>name()</code>。暗黙にfinal。追加インスタンスフィールド不可。</td></tr>
+            <tr><td>record equals</td><td>コンポーネント値で比較。<code>==</code> は参照比較のまま。</td></tr>
+            <tr><td>sealed</td><td><code>permits</code> にない継承は不可。子は <code>final/sealed/non-sealed</code> 必須。</td></tr>
+            <tr><td>switch式</td><td>値を返す。ブロックでは <code>yield</code>。全経路で値が必要。</td></tr>
+            <tr><td>instanceof pattern</td><td>trueと保証される範囲でだけパターン変数を使える。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="article-section">
+        <h2>例外</h2>
+        <table class="ref-table">
+          <thead><tr><th>項目</th><th>直前チェック</th></tr></thead>
+          <tbody>
+            <tr><td>checked例外</td><td>catchまたはthrowsが必要。未処理ならコンパイルエラー。</td></tr>
+            <tr><td>RuntimeException</td><td>非チェック例外。処理しなくてもコンパイル可。</td></tr>
+            <tr><td>catch順</td><td>子から親。親を先にすると後続catchが到達不能。</td></tr>
+            <tr><td>finally</td><td>基本的に必ず実行。tryまたはcatchの後。</td></tr>
+            <tr><td>throw</td><td>例外インスタンスを投げる。</td></tr>
+            <tr><td>throws</td><td>呼び出し元へ例外処理を要求する宣言。</td></tr>
+            <tr><td>try-with-resources</td><td>closeは宣言の逆順。finallyより前。</td></tr>
+            <tr><td>multi-catch</td><td>親子関係の例外を同時に並べられない。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="article-section">
+        <h2>最後に見る15項目</h2>
+        <ol class="article-list priority-list">
+          <li>出力を追う前にコンパイル可否を見る。</li>
+          <li>ローカル変数にデフォルト値はない。</li>
+          <li><code>byte/short/char</code> の演算結果は基本 <code>int</code>。</li>
+          <li><code>float f = 1.0;</code> は不可。<code>1.0F</code>。</li>
+          <li><code>var</code> はローカル変数のみ。</li>
+          <li><code>String</code> は不変、<code>StringBuilder</code> は可変。</li>
+          <li><code>==</code> は参照比較、<code>equals</code> は実装確認。</li>
+          <li>配列は固定長、ArrayListは可変長。</li>
+          <li>後置 <code>++</code> は古い値、前置 <code>++</code> は新しい値。</li>
+          <li><code>&&</code> と <code>||</code> は右辺を評価しないことがある。</li>
+          <li>コンストラクタは継承されない。</li>
+          <li>overrideでアクセスを狭められない。</li>
+          <li>フィールドはoverrideされない。</li>
+          <li>checked例外はcatchまたはthrows。</li>
+          <li>try-with-resourcesのcloseは逆順。</li>
+        </ol>
+        <p class="inline-note">総仕上げ: <a href="exam-traps.html">ひっかけ集（教材版）</a> / <a href="mini-drills.html">ミニ演習</a> / <a href="ch07.html">模擬問題①</a> / <a href="ch08.html">模擬問題②</a></p>
+      </section>
+
+    </main>
   </div>
-  <script src="data/questions.js?v=20260528-var-strings-v7"></script>
-  <script src="assets/js/app.js?v=20260528-var-strings-v7"></script>
+  <script src="data/questions.js?v=20260529-aux-textbook-v16"></script>
+  <script src="assets/js/app.js?v=20260529-aux-textbook-v16"></script>
 </body>
 </html>
