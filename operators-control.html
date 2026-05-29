@@ -5,8 +5,8 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - 演算子・制御構造（教材版）</title>
-  <link rel="stylesheet" href="assets/css/styles.css?v=20260529-aux-textbook-v16">
+  <title>Java Silver Study - 演算子・制御構造</title>
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260529-super-sub-v13">
 </head>
 <body>
   <div class="layout">
@@ -17,7 +17,7 @@
     <main class="main reference-main article-main">
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>演算子・制御構造（教材版）</h1>
+        <h1>演算子・制御構造</h1>
         <p>演算子問題は「知識」だけでなく、評価順を崩さず追跡できるかで差が出ます。暗算ではなく、型・副作用・短絡評価・分岐の順に機械的に判定します。</p>
       </section>
 
@@ -277,11 +277,11 @@ System.out.println(result); // two</code></pre>
         <details class="article-card"><summary><strong>Q3. <code>int a = 0; if (false &amp;&amp; ++a &gt; 0) {} System.out.println(a);</code></strong></summary><p><code>&amp;&amp;</code> の左辺がfalseなので右辺は評価されません。出力は0です。</p></details>
         <details class="article-card"><summary><strong>Q4. <code>int a = 0; if (false &amp; ++a &gt; 0) {} System.out.println(a);</code></strong></summary><p><code>&amp;</code> は右辺も評価します。<code>++a</code> が実行され、出力は1です。</p></details>
         <details class="article-card"><summary><strong>Q5. <code>switch</code> の <code>default</code> は最後に書かないといけない？</strong></summary><p>最後でなくても構文上は可能です。ただしbreakがなければそこから下にフォールスルーします。</p></details>
-        <p class="inline-note">次に読む: <a href="loop-control.html">ループ制御（教材版）</a> / 関連: <a href="numeric-rules.html">数値・型昇格（教材版）</a> / <a href="output-tracing.html">出力追跡</a></p>
+        <p class="inline-note">次に読む: <a href="loop-control.html">ループ制御</a> / 関連: <a href="numeric-rules.html">数値・型昇格</a> / <a href="output-tracing.html">出力追跡</a></p>
       </section>
     </main>
   </div>
-  <script src="data/questions.js?v=20260529-aux-textbook-v16"></script>
-  <script src="assets/js/app.js?v=20260529-aux-textbook-v16"></script>
+  <script src="data/questions.js?v=20260529-super-sub-v13"></script>
+  <script src="assets/js/app.js?v=20260529-super-sub-v13"></script>
 </body>
 </html>

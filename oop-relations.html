@@ -5,8 +5,8 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - 継承・interface・override（教材版）</title>
-  <link rel="stylesheet" href="assets/css/styles.css?v=20260529-aux-textbook-v16">
+  <title>Java Silver Study - 継承・interface・override</title>
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260529-super-sub-v13">
 </head>
 <body>
   <div class="layout">
@@ -17,7 +17,7 @@
     <main class="main reference-main article-main">
       <section class="hero reference-hero compact-hero article-hero">
         <p class="eyebrow">Java Silver Reference</p>
-        <h1>継承・interface・override（教材版）</h1>
+        <h1>継承・interface・override</h1>
         <p>extends、implements、abstract、overrideを、コンパイル可否と出力追跡に直結する形で整理します。</p>
       </section>
 
@@ -35,8 +35,100 @@
       </section>
 
       <section class="article-section">
+        <h2>スーパークラスとサブクラス</h2>
+        <p>継承を読むときは、まず「どちらが元で、どちらが拡張先か」を固定します。<code>class Child extends Parent</code> なら、<code>Parent</code> がスーパークラス、<code>Child</code> がサブクラスです。</p>
+        <table class="ref-table">
+          <thead><tr><th>用語</th><th>別名</th><th>意味</th><th>コード上の位置</th></tr></thead>
+          <tbody>
+            <tr><td>スーパークラス</td><td>親クラス / 基底クラス</td><td>継承元。共通のフィールドやメソッドを持つ側</td><td><code>extends</code> の右側</td></tr>
+            <tr><td>サブクラス</td><td>子クラス / 派生クラス</td><td>継承先。スーパークラスを土台に差分を追加する側</td><td><code>extends</code> の左側</td></tr>
+          </tbody>
+        </table>
+        <pre class="article-code"><code>class Parent {          // スーパークラス
+    String name = "parent";
+    void hello() {
+        System.out.println("hello " + name);
+    }
+}
+
+class Child extends Parent { // サブクラス
+    void childOnly() {
+        System.out.println("child");
+    }
+}</code></pre>
+        <p><code>Child</code> のインスタンスは、<code>Parent</code> として扱える部分と、<code>Child</code> で追加した部分をあわせて持ちます。だから <code>Parent p = new Child();</code> のように、サブクラスのインスタンスをスーパークラス型の変数に代入できます。</p>
+        <pre class="article-code"><code>Parent p = new Child();
+p.hello();
+// p.childOnly(); // NG: 変数の宣言型ParentにはchildOnlyがない</code></pre>
+        <p>ここで重要なのは、<strong>インスタンスが持っている機能</strong>と、<strong>変数の型から呼べる機能</strong>は別だという点です。実体が <code>Child</code> でも、変数の宣言型が <code>Parent</code> なら、<code>Parent</code> に見えているメンバしか呼べません。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>継承は「is-a関係」として読む</h2>
+        <p>サブクラスはスーパークラスの一種として扱えます。これを <strong>is-a関係</strong> と考えます。<code>Child extends Parent</code> なら「Child は Parent の一種」と読める関係です。</p>
+        <pre class="article-code"><code>class Animal {
+    void eat() {}
+}
+
+class Dog extends Animal {
+    void bark() {}
+}
+
+Animal a = new Dog(); // OK: DogはAnimalの一種
+// Dog d = new Animal(); // NG: Animalが必ずDogとは限らない</code></pre>
+        <p>この非対称性が重要です。サブクラスからスーパークラスへの代入は自然にできますが、スーパークラスからサブクラスへの代入にはキャストが必要です。そして、実体がそのサブクラスでなければ実行時に <code>ClassCastException</code> になります。</p>
+        <details class="article-card"><summary><strong>試験での読み方</strong></summary><p><code>A a = new B();</code> が出たら、まず <code>B extends A</code> または <code>B implements A</code> の関係があるかを確認します。関係がなければコンパイルエラーです。関係がある場合でも、<code>a</code> から呼べるのは宣言型 <code>A</code> にあるメンバだけです。</p></details>
+      </section>
+
+      <section class="article-section">
+        <h2>継承されるもの・されないもの・直接アクセスできないもの</h2>
+        <p>「サブクラスはスーパークラスを継承する」という表現を雑に覚えると危険です。試験では、何が使えて何が使えないかを分けて問われます。</p>
+        <table class="ref-table">
+          <thead><tr><th>対象</th><th>サブクラスでどう扱うか</th><th>注意点</th></tr></thead>
+          <tbody>
+            <tr><td>public / protected / 条件を満たすdefaultメンバ</td><td>利用できる</td><td>アクセス修飾子とパッケージ条件を見る</td></tr>
+            <tr><td>privateフィールド・privateメソッド</td><td>直接アクセス不可</td><td>親の内部には存在するが、子から直接触れない</td></tr>
+            <tr><td>コンストラクタ</td><td>継承されない</td><td><code>super(...)</code> で呼び出すだけ</td></tr>
+            <tr><td>同名フィールド</td><td>overrideではない</td><td>フィールドは宣言型で解決される</td></tr>
+            <tr><td>インスタンスメソッド</td><td>override可能</td><td>呼び出し可否は宣言型、実行される本体は実体で決まる</td></tr>
+            <tr><td>staticメソッド</td><td>overrideではなく隠蔽</td><td>インスタンスメソッドとは解決規則が違う</td></tr>
+          </tbody>
+        </table>
+        <p>特に <code>private</code> とコンストラクタは「継承しているから使える」という雑な理解を壊すためによく出ます。ここを曖昧にしたまま問題を解くと、コンパイルエラー判定を外します。</p>
+      </section>
+
+      <section class="article-section">
+        <h2><code>this</code> と <code>super</code> の役割</h2>
+        <p><code>this</code> は現在のインスタンス、<code>super</code> はスーパークラス側のメンバやコンストラクタを指すために使います。</p>
+        <pre class="article-code"><code>class Parent {
+    String name = "parent";
+    Parent(String name) {
+        this.name = name;
+    }
+    void print() {
+        System.out.println(name);
+    }
+}
+
+class Child extends Parent {
+    String name = "child";
+
+    Child() {
+        super("super-name"); // 親コンストラクタ呼び出し。必ず先頭
+    }
+
+    void printBoth() {
+        System.out.println(this.name);  // Child側のname
+        System.out.println(super.name); // Parent側のname
+        super.print();                  // Parent側のメソッド呼び出し
+    }
+}</code></pre>
+        <p><code>super(...)</code> はコンストラクタ呼び出しで、コンストラクタの先頭にしか書けません。<code>super.name</code> や <code>super.print()</code> はスーパークラス側のメンバ参照です。同じ <code>super</code> でも使い方を混ぜないでください。</p>
+      </section>
+
+      <section class="article-section">
         <h2>extends：クラス継承の基本</h2>
-        <p><code>extends</code> は、既存クラスを拡張してサブクラスを作る構文です。サブクラスのインスタンスは、スーパークラス部分とサブクラス部分を持ちます。</p>
+        <p><code>extends</code> は、既存クラスを拡張してサブクラスを作る構文です。左側のクラスがサブクラス、右側のクラスがスーパークラスです。サブクラスのインスタンスは、スーパークラス部分とサブクラス部分を持ちます。</p>
         <pre class="article-code"><code>class Parent {
     String name = "parent";
     void hello() {
@@ -247,7 +339,7 @@ System.out.println(obj.getName()); // B: メソッドは実体</code></pre>
 
     </main>
   </div>
-  <script src="data/questions.js?v=20260529-aux-textbook-v16"></script>
-  <script src="assets/js/app.js?v=20260529-aux-textbook-v16"></script>
+  <script src="data/questions.js?v=20260529-super-sub-v13"></script>
+  <script src="assets/js/app.js?v=20260529-super-sub-v13"></script>
 </body>
 </html>
