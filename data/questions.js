@@ -1,6 +1,6 @@
 window.JAVA_STUDY_DATA = {
   "title": "Java Silver 勉強用ページ",
-  "version": "20260529-q52-fixed-v15",
+  "version": "20260601-mock-ch08-051-060-individual",
   "chapters": [
     {
       "id": "ch01",
@@ -18922,48 +18922,50 @@ window.JAVA_STUDY_DATA = {
           "B"
         ],
         "explanation": {
-          "summary": "コマンド引数は args[0] = \"5\", args[1] = \"2\" です。コードで使っているのは args[0] だけなので target は 5 になります。配列 {1, 2, 3, 7, 9} に 5 は含まれないため search は false を返し、else側の「B」が表示されます。",
-          "correctReason": "正解は B です。\n\nコマンド引数は args[0] = \"5\", args[1] = \"2\" です。コードで使っているのは args[0] だけなので target は 5 になります。配列 {1, 2, 3, 7, 9} に 5 は含まれないため search は false を返し、else側の「B」が表示されます。",
+          "summary": "コマンドは `java Sample 5 2` なので、`args[0]` は文字列の `\"5\"`、`args[1]` は `\"2\"` です。コードで使っているのは `args[0]` だけです。`Integer.parseInt(args[0])` により target は 5 になります。配列 `{1, 2, 3, 7, 9}` に 5 は含まれないため、`search` は `false` を返し、`else` 側の「B」が表示されます。",
+          "correctReason": "正解は B です。\n\nこの問題は、interfaceのdefaultメソッドより先に、起動パラメータの使われ方を正確に追う必要があります。`main(String... args)` は `String[] args` と同じように起動引数を受け取れます。`java Sample 5 2` で実行すると、`args[0]` は `\"5\"`、`args[1]` は `\"2\"` です。\n\n`Integer.parseInt(args[0])` で使っているのは1つ目の引数だけなので、検索対象は 5 です。`new int[]{1, 2, 3, 7, 9}` の中に 5 はありません。したがって `cnt` は0のままで、`return cnt > 0;` は `false` になります。\n\nif条件がfalseなので、実行されるのはelseブロックです。結果として「B」が表示されます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "配列に5は含まれないため、if条件はtrueになりません。"
+              "detail": "配列に 5 は含まれないため、`search` は `true` を返しません。ifブロックの `System.out.println(\"A\")` には到達しません。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正解です。args[0]だけを使うため、2番目の引数2は結果に影響しません。"
+              "detail": "正解です。`args[0]` の 5 を検索し、配列内に見つからないため `false` となり、else側の「B」が表示されます。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "interface B の default メソッド実装、C implements B、main(String... args) は合法です。"
+              "detail": "コンパイルエラーは発生しません。`B` は `A` を継承するinterfaceで、`A` の抽象メソッド `search` をdefaultメソッドとして実装しています。`C implements B` も合法です。`main(String... args)` もエントリポイントとして有効です。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "args[0]は存在し、\"5\"はparseInt可能なので例外は発生しません。"
+              "detail": "実行時例外も発生しません。`args[0]` は存在し、値は `\"5\"` なので `Integer.parseInt` も成功します。仮に引数がなければ `ArrayIndexOutOfBoundsException`、数値化できない文字列なら `NumberFormatException` ですが、この実行コマンドでは該当しません。"
             }
           ],
           "relatedKnowledge": [
-            "main(String[] args)とmain(String... args)は、エントリポイントとして同じように扱える。",
-            "コマンドライン引数はクラス名の後ろから順にargs[0]、args[1]へ入る。添字は0始まり。",
-            "argsの各要素はString。数値として使う場合はInteger.parseIntなどで変換されるため、変換できない文字列ならNumberFormatExceptionになる。"
+            "`String... args` は可変長引数だが、mainメソッドでは `String[] args` と同様に扱える。",
+            "コマンドライン引数はすべてStringとして渡される。数値として使うには変換が必要。",
+            "interfaceはdefaultメソッドで抽象メソッドに実装を与えられる。"
           ],
           "examTips": [
-            "java Sample 5 2 なら、使っているのがargs[0]かargs[1]かを最初に確認する。",
-            "引数が足りない場合はArrayIndexOutOfBoundsException、数値変換不能ならNumberFormatExceptionを疑う。"
+            "起動コマンド付きの問題では、まず `args[0]`、`args[1]` の中身を確定する。",
+            "2つ引数があっても、コードが片方しか使っていない場合がある。",
+            "defaultメソッドの文法チェックより先に、実際に呼ばれる処理を追う。"
           ],
           "judgeSteps": [
-            "コマンドのクラス名以降の値をargs[0]から順に割り当てる。",
-            "コードが参照している添字だけを取り出す。",
-            "parseIntなどの変換がある場合、対象文字列が変換可能か確認する。"
+            "起動コマンドから `args` の中身を表にする。",
+            "`parseInt` などの変換が成功するか確認する。",
+            "呼び出されるメソッドの処理を追い、戻り値を確定する。",
+            "if/elseのどちらに進むかを決める。"
           ],
           "choiceAnalysis": [],
           "pdfExplanation": "正解は B です。\n\nコマンド引数は args[0] = \"5\", args[1] = \"2\" です。コードで使っているのは args[0] だけなので target は 5 になります。配列 {1, 2, 3, 7, 9} に 5 は含まれないため search は false を返し、else側の「B」が表示されます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": "",
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、interfaceの継承・defaultメソッド・起動パラメータが組み合わさっています。ただし、最初に見るべきなのは「どの値を検索しているか」です。\n\n`A` interfaceには `search` という抽象メソッドがあります。`B` interfaceは `A` を継承し、同じシグネチャの `search` をdefaultメソッドとして定義しています。つまり、`B` を実装するクラスは、自分で `search` を書かなくてもdefault実装を使えます。`C` は空のクラスですが、`implements B` しているので `new C().search(...)` は呼び出せます。\n\n次に実行コマンドを見ます。`java Sample 5 2` では `5` と `2` の2つが渡されますが、コードでは `args[0]` だけを使っています。`args[0]` は `\"5\"` で、`parseInt` 後は整数の 5 です。\n\n`search` は配列の各要素を拡張forで確認し、targetと等しいものがあれば `cnt++` します。配列は `{1, 2, 3, 7, 9}` なので、5と一致する要素はありません。結果として `cnt > 0` はfalseです。\n\nこのfalseがif文に返るので、else側の `System.out.println(\"B\")` が実行されます。",
           "points": []
         },
         "source": "",
@@ -19014,53 +19016,55 @@ window.JAVA_STUDY_DATA = {
           "E"
         ],
         "explanation": {
-          "summary": "Cクラスでは ex.p1.A と ex.p2.B を通常のクラスとして参照します。Aは単一型インポート `import ex.p1.A;` で読み込み、Bは `import ex.p2.*;` で ex.p2 パッケージ直下のクラスを読み込めます。",
-          "correctReason": "正解は A・E です。\n\nCクラスでは ex.p1.A と ex.p2.B を通常のクラスとして参照します。Aは単一型インポート `import ex.p1.A;` で読み込み、Bは `import ex.p2.*;` で ex.p2 パッケージ直下のクラスを読み込めます。",
+          "summary": "`C` は `ex.p1.A` を継承し、メソッド内で `ex.p2.B` を生成しています。必要なのは通常のクラスimportです。`import ex.p1.A;` でAを、`import ex.p2.*;` でex.p2直下のBを参照できます。`import ex.*;` は下位パッケージまで読み込まないため使えません。static importもクラス型の通常参照には使いません。",
+          "correctReason": "正解は A と E です。\n\n`C extends A` と書くには、単純名 `A` が `ex.p1.A` を指すようにする必要があります。選択肢Aの `import ex.p1.A;` は、Aクラスを直接importする単一型インポートなので正しいです。\n\nメソッド内の `B b = new B();` では、単純名 `B` が `ex.p2.B` を指す必要があります。選択肢Eの `import ex.p2.*;` は、`ex.p2` パッケージ直下のクラスを読み込む通常のワイルドカードimportなので正しいです。\n\n注意点は、`import ex.*;` が `ex.p1.A` や `ex.p2.B` まで読み込まないことです。Javaのimportの `*` は、そのパッケージ直下の型だけが対象で、サブパッケージを再帰的に読み込む機能ではありません。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。ex.p1.A を直接インポートできます。"
+              "detail": "正解です。`ex.p1.A` を単一型インポートしているので、`extends A` と単純名で書けます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。ワイルドカードはパッケージ階層をまたぎません。ex.* で ex.p1.A や ex.p2.B は読めません。"
+              "detail": "`import ex.*;` は `ex` パッケージ直下の型だけを対象にします。`ex.p1` や `ex.p2` という下位パッケージ内のクラスまでは読み込めません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。static import はクラスのstaticメンバ用であり、クラスそのものの通常利用には使いません。"
+              "detail": "`import static` はクラスのstaticメンバを単純名で使うためのものです。AやBというクラス型そのものを通常の型名として参照する目的には合いません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。static import の指定として不適切です。クラスA/B自体を通常参照する目的では使いません。"
+              "detail": "`import static ex.p1.A;` のようにクラス名だけをstatic importする書き方は、通常のクラスimportの代わりにはなりません。static importはstaticメンバ用です。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正解です。ex.p2パッケージ直下のBをワイルドカードでインポートできます。"
+              "detail": "正解です。`ex.p2.*` により、`ex.p2` パッケージ直下の `B` を単純名で参照できます。"
             }
           ],
           "relatedKnowledge": [
-            "publicクラスを含むソースファイル名は、そのpublicクラス名と一致させる必要がある。publicでないトップレベルクラスは同じファイルに複数書ける。",
-            "importのワイルドカードは、そのパッケージ直下の型だけを対象にする。サブパッケージまでは含まない。",
-            "static importはstaticメンバを簡略参照するためのもの。通常のクラス型を使うためのimportとは目的が違う。"
+            "通常のimportは型名を省略して書くためのもの。",
+            "ワイルドカードimportは指定パッケージ直下だけが対象で、サブパッケージは対象外。",
+            "static importはstaticフィールドやstaticメソッド用で、通常のクラスimportとは目的が違う。"
           ],
           "examTips": [
-            "ex.* で ex.p1.A は読めない。ドットがあると親子関係に見えるが、importでは別パッケージとして扱う。",
-            "javacはソースファイル名、javaは完全修飾クラス名またはクラス名を指定する。コマンドの対象を混同しない。"
+            "`*` を見ると「全部」と思いがちだが、下位パッケージは含まれない。",
+            "クラスを使いたいのか、staticメンバを使いたいのかを分けて読む。",
+            "パッケージ名の途中にワイルドカードは使えない。"
           ],
           "judgeSteps": [
-            "package宣言とファイル配置・クラス名の対応を確認する。",
-            "利用している型が同じパッケージか、import済みか、完全修飾名で書かれているか確認する。",
-            "ワイルドカードimportの場合、対象パッケージ直下の型かどうかを確認する。"
+            "コード中で単純名になっている型名を拾う。",
+            "それぞれの完全修飾名を確認する。",
+            "通常importかstatic importかを区別する。",
+            "ワイルドカードが対象にする範囲を確認する。"
           ],
           "choiceAnalysis": [],
           "pdfExplanation": "正解は A・E です。\n\nCクラスでは ex.p1.A と ex.p2.B を通常のクラスとして参照します。Aは単一型インポート `import ex.p1.A;` で読み込み、Bは `import ex.p2.*;` で ex.p2 パッケージ直下のクラスを読み込めます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": "",
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、importの文法よりも「どの名前を単純名で使いたいのか」を整理すると簡単です。\n\n`C.java` では `A` と `B` がパッケージ名なしで使われています。しかし実際のクラスは `ex.p1.A` と `ex.p2.B` です。したがって、C.java側でAとBを見つけられるようにimportを書く必要があります。\n\nAは `extends A` に使われています。これはクラス型の通常参照なので、`import ex.p1.A;` が適切です。Bは `B b = new B();` に使われています。`ex.p2.B` を単純名で使うには、`import ex.p2.B;` または `import ex.p2.*;` が使えます。選択肢には後者があるためEが正解です。\n\n一方、`import ex.*;` は `ex.p1.A` と `ex.p2.B` を読み込めません。Javaでは `ex`、`ex.p1`、`ex.p2` は別々のパッケージです。親パッケージをimportしても子パッケージのクラスは見えません。",
           "points": []
         },
         "source": "",
@@ -19122,58 +19126,60 @@ window.JAVA_STUDY_DATA = {
           "D"
         ],
         "explanation": {
-          "summary": "try-with-resourcesで宣言したリソースは、宣言と逆順にcloseされます。aが先、bが後に宣言されているため、closeはb→aの順です。その後finallyが実行されるので、出力は B, A, C の順です。",
-          "correctReason": "正解は D です。\n\ntry-with-resourcesで宣言したリソースは、宣言と逆順にcloseされます。aが先、bが後に宣言されているため、closeはb→aの順です。その後finallyが実行されるので、出力は B, A, C の順です。",
+          "summary": "try-with-resourcesでは、リソースの `close()` は宣言した順番と逆順に呼ばれます。`a` がA、`b` がBとして宣言されているため、先に `b.close()` で「B」、次に `a.close()` で「A」が表示されます。その後で `finally` が実行され、「C」が表示されます。",
+          "correctReason": "正解は D です。\n\ntry-with-resourcesのリソースは、tryブロックを抜けるときに自動的に `close()` が呼ばれます。このときの順序は、宣言した順番の逆です。\n\nこのコードでは、リソース宣言が `A a = new A(\"A\");`、次に `A b = new A(\"B\")` です。したがってclose順は `b` → `a` です。`b.close()` は `name` が `\"B\"` なので「B」を表示し、`a.close()` は「A」を表示します。\n\n`finally` ブロックは、リソースのcloseが終わった後に実行されます。よって最後に「C」が表示されます。出力順は「B」「A」「C」です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "finallyのCだけではありません。try-with-resourcesのcloseも実行されます。"
+              "detail": "「C」だけにはなりません。try-with-resourcesで宣言したリソースの `close()` が自動実行されるため、「B」と「A」も表示されます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "close順だけなら正しいですが、finallyのCも最後に表示されます。"
+              "detail": "「B」「A」までは正しいですが、その後に `finally` の「C」も表示されます。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "finallyはcloseの後です。Cが先ではありません。"
+              "detail": "`finally` が最初に実行されるわけではありません。try-with-resourcesでは、リソースのcloseが先、その後でfinallyです。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正解です。b.close() → a.close() → finally の順です。"
+              "detail": "正解です。リソースは逆順にcloseされるためB→A、その後finallyでCです。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "finallyが先ではありません。"
+              "detail": "Cが先ではありません。またB→Aのclose順は正しいものの、finallyは最後です。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "closeは宣言順ではなく逆順です。"
+              "detail": "close順が逆です。宣言順はA→Bですが、close順はB→Aです。"
             }
           ],
           "relatedKnowledge": [
-            "try-with-resourcesで宣言したリソースは、tryブロック終了時に自動でcloseされる。closeの順序は宣言順ではなく逆順。",
-            "try本体が空でも、tryブロックを抜ける処理としてcloseは実行される。finallyがある場合、リソースのclose後にfinallyへ進む。",
-            "AutoCloseableのcloseは例外を投げられる。main側のthrowsやcatchの有無もコンパイル可否に影響する。"
+            "try-with-resourcesの対象はAutoCloseableを実装したオブジェクト。",
+            "複数リソースは宣言と逆順にcloseされる。",
+            "finallyはリソースのclose後に実行される。"
           ],
           "examTips": [
-            "リソースがA、Bの順で宣言されていたら、出力はBのclose、Aのcloseの順になる。",
-            "finallyの出力を先に置かない。try-with-resourcesではcloseの後にfinallyを読む。"
+            "tryブロックが空でもcloseは呼ばれる。",
+            "複数リソース問題では、宣言順とclose順を必ず分ける。",
+            "finallyがある場合、closeとfinallyの順序を逆にしない。"
           ],
           "judgeSteps": [
-            "tryの丸括弧内に宣言されたリソースを左から順に列挙する。",
-            "tryブロックを抜けるタイミングで、その列挙を逆順にしてcloseの出力を並べる。",
-            "finallyがあれば、close後にfinally内の処理を追加する。"
+            "リソース宣言の順番を確認する。",
+            "closeの順番を逆順にする。",
+            "closeで何が出力されるか確認する。",
+            "finallyの出力を最後に追加する。"
           ],
           "choiceAnalysis": [],
           "pdfExplanation": "正解は D です。\n\ntry-with-resourcesで宣言したリソースは、宣言と逆順にcloseされます。aが先、bが後に宣言されているため、closeはb→aの順です。その後finallyが実行されるので、出力は B, A, C の順です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": "",
+          "additionalExplanation": "【詳しい読み解き】\nこの問題では、tryブロック内に処理がないため「何も起きない」と判断すると誤ります。try-with-resourcesの本体は空でも、リソースは生成され、tryを抜けるタイミングでcloseされます。\n\n`A` クラスは `AutoCloseable` を実装しており、`close()` で `name` を表示します。`new A(\"A\")` で作ったリソースをcloseすればA、`new A(\"B\")` をcloseすればBが表示されます。\n\n問題の核心はclose順です。リソースはスタックのように、後から作ったものが先に閉じられます。したがって `b` が先、`a` が後です。\n\n最後にfinallyを確認します。try-with-resourcesにfinallyが付いている場合、リソースの自動closeが終わってからfinallyに入ります。したがって出力はB、A、Cです。",
           "points": []
         },
         "source": "",
@@ -19224,48 +19230,51 @@ window.JAVA_STUDY_DATA = {
           "A"
         ],
         "explanation": {
-          "summary": "`==` はStringの内容ではなく参照の同一性を比較します。aはnewで作ったヒープ上のString、bはaと同じ参照です。cはinternにより文字列プール上の\"sample\"を参照し、dも同じ文字列プールの\"sample\"を参照します。よって a==b と c==d だけがtrueです。",
-          "correctReason": "正解は A です。\n\n`==` はStringの内容ではなく参照の同一性を比較します。aはnewで作ったヒープ上のString、bはaと同じ参照です。cはinternにより文字列プール上の\"sample\"を参照し、dも同じ文字列プールの\"sample\"を参照します。よって a==b と c==d だけがtrueです。",
+          "summary": "`==` はStringの内容ではなく参照先が同じかを比較します。`a` は `new String(\"sample\")` で作った別インスタンス、`b` はそのaと同じ参照です。`c` は `intern()` により文字列プール上の `\"sample\"` を参照し、`d` も文字列リテラルなので同じプール上の参照です。よってtrueになるのは `a == b` と `c == d` だけです。",
+          "correctReason": "正解は A です。\n\n`String a = new String(\"sample\");` は、文字列リテラルとは別に、newによってStringインスタンスを作ります。`b = a;` は参照のコピーなので、aとbは同じインスタンスを指します。したがって `a == b` はtrueで「A」が表示されます。\n\n`c = a.intern();` は、文字列プール上の `\"sample\"` への参照を返します。`d = \"sample\";` も文字列リテラルなので、同じく文字列プール上の `\"sample\"` を参照します。したがって `c == d` はtrueで「F」が表示されます。\n\n一方、aとbはnewで作ったヒープ上のインスタンス、cとdは文字列プール上のインスタンスなので、aとc、aとd、bとc、bとdは同じ参照ではありません。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。aとbは同じnew Stringの参照、cとdは文字列プール上の同じ参照です。"
+              "detail": "正解です。`a == b` と `c == d` だけがtrueになり、「A」「F」が表示されます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "a==bだけでなく、c==dもtrueです。"
+              "detail": "「A」は表示されますが、`c == d` もtrueなので「F」も表示されます。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "new Stringで作ったa/bと文字列プールのc/dは別参照です。すべてtrueにはなりません。"
+              "detail": "すべてがtrueになるわけではありません。`new String(\"sample\")` で作ったaは、文字列プール上のcやdとは別参照です。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "bとcは別参照なのでDは表示されません。"
+              "detail": "`b == c` はfalseです。bはaと同じnewされたStringを指し、cはintern後の文字列プール上のStringを指します。"
             }
           ],
           "relatedKnowledge": [
-            "Stringは不変オブジェクト。substring、concat、replaceなどは元の文字列を変更せず、新しい結果を戻す。戻り値を受け取らなければ結果は捨てられる。",
-            "==は参照の同一性を比較し、equalsは文字列内容の同値性を比較する。new String(...)は通常、文字列プールとは別のインスタンスを作る。",
-            "intern()は文字列プール上の同じ内容のインスタンス参照を返す。リテラルとintern結果の比較が問われやすい。"
+            "Stringの `==` は参照比較。内容比較なら `equals()` を使う。",
+            "文字列リテラルは文字列プールに置かれる。",
+            "`new String(...)` はリテラルと同じ内容でも別インスタンスを作る。",
+            "`intern()` は文字列プール上の参照を返す。"
           ],
           "examTips": [
-            "Stringメソッドを呼んだだけで元の変数が変わると考えない。代入されているかを必ず見る。",
-            "==の問題では、内容ではなく参照先が同じかを図にして追う。"
+            "String比較問題では、まず各変数が「new側」か「プール側」かを分ける。",
+            "`b = a` は中身のコピーではなく参照のコピー。",
+            "`equals` が出ていないなら、内容が同じでもtrueとは限らない。"
           ],
           "judgeSteps": [
-            "各String変数が、newで作られたヒープ上のインスタンスか、文字列プール上のインスタンスかを分ける。",
-            "メソッド呼び出しの戻り値が変数に代入されているかを確認する。",
-            "==なら参照比較、equalsなら内容比較として判定する。"
+            "各変数の参照先を分類する。",
+            "`new` されたインスタンスと文字列プールを分ける。",
+            "代入による参照コピーを確認する。",
+            "`==` の組み合わせごとに同じ参照か判定する。"
           ],
           "choiceAnalysis": [],
           "pdfExplanation": "正解は A です。\n\n`==` はStringの内容ではなく参照の同一性を比較します。aはnewで作ったヒープ上のString、bはaと同じ参照です。cはinternにより文字列プール上の\"sample\"を参照し、dも同じ文字列プールの\"sample\"を参照します。よって a==b と c==d だけがtrueです。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": "",
+          "additionalExplanation": "【詳しい読み解き】\nこの問題でやってはいけないのは、`sample` という文字の内容だけを見て全部同じと判断することです。`==` は内容比較ではありません。\n\nまずaは `new String(\"sample\")` です。これは文字列プール上の `\"sample\"` とは別に、newでStringオブジェクトを作ります。bは `String b = a;` なので、aと同じオブジェクトを指します。ここで `a == b` はtrueです。\n\ncは `a.intern()` です。internは、同じ内容の文字列を文字列プールから探し、その参照を返します。dは文字列リテラルなので、最初から文字列プール上の `\"sample\"` を参照します。したがってcとdは同じ参照になります。\n\nこの結果、表示されるのはAとFだけです。",
           "points": []
         },
         "source": "",
@@ -19324,63 +19333,66 @@ window.JAVA_STUDY_DATA = {
           "F"
         ],
         "explanation": {
-          "summary": "通常のトップレベルクラスに使えるアクセス修飾子は public かデフォルトだけです。また final クラスは通常のクラスとして宣言できます。static/protected/private はトップレベルクラスには使えません。sealedはpermits等の条件が必要で、non-sealedはsealed階層のサブクラスで使います。",
-          "correctReason": "正解は E・F です。\n\n通常のトップレベルクラスに使えるアクセス修飾子は public かデフォルトだけです。また final クラスは通常のクラスとして宣言できます。static/protected/private はトップレベルクラスには使えません。sealedはpermits等の条件が必要で、non-sealedはsealed階層のサブクラスで使います。",
+          "summary": "トップレベルクラスに使える修飾子は限られています。`public class B extends A {}` は通常のpublicクラスとして正しく、`final class B extends A {}` もこれ以上継承させないクラスとして正しく宣言できます。一方、`static`、`protected`、`private` はトップレベルクラスには使えません。`sealed` は許可するサブクラスの指定が必要で、`non-sealed` はsealed階層の中で使う修飾子です。",
+          "correctReason": "正解は E と F です。\n\n設問の `A` は通常のpublicクラスです。このサブクラスとして普通に宣言できるのは、`public class B extends A {}` と `final class B extends A {}` です。`final` は「Bをこれ以上継承できない」という意味であり、Aを継承すること自体は禁止しません。\n\nトップレベルクラスに使えるアクセス修飾子は `public` か、何も書かないデフォルトだけです。したがって `protected class` や `private class` はトップレベルでは使えません。`static class` もトップレベルでは使えず、主にネストしたクラスで使います。\n\n`sealed class` は単独で書けば常に正しいわけではありません。許可するサブクラスを `permits` で指定するなど、sealed階層としての条件が必要です。`non-sealed` はsealedクラスを直接または間接に継承するクラスが制限を解除するための修飾子であり、通常のAを継承するBには使えません。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "staticはトップレベルクラスには使えません。"
+              "detail": "トップレベルクラスに `static` は使えません。`static class` はネストクラスで使う修飾子です。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "protectedはトップレベルクラスには使えません。"
+              "detail": "トップレベルクラスに `protected` は使えません。トップレベルではpublicかデフォルトです。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "sealedクラスとして宣言するには、許可するサブクラスの指定などが必要です。この形だけでは不適切です。"
+              "detail": "`sealed` は、継承を許可するクラスを明確に管理する修飾子です。この選択肢のように単独で書いても、許可先の指定などがなく正しいサブクラス宣言とは扱えません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "non-sealedはsealedクラスを継承したクラスで使う修飾子です。"
+              "detail": "`non-sealed` はsealed階層の中で制限を解除するための修飾子です。通常クラスAを継承するだけのBには使えません。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正解です。publicな通常クラスとして宣言できます。"
+              "detail": "正解です。publicなトップレベルクラスとしてAを継承できます。"
             },
             {
               "key": "F",
               "isCorrect": true,
-              "detail": "正解です。finalな通常クラスとして宣言できます。"
+              "detail": "正解です。finalクラスはこれ以上継承されないだけで、Aを継承することはできます。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "privateはトップレベルクラスには使えません。"
+              "detail": "トップレベルクラスに `private` は使えません。privateはメンバやネストクラスなどで使う修飾子です。"
             }
           ],
           "relatedKnowledge": [
-            "sealedは継承・実装できる直接の相手をpermitsで制限する仕組み。許可されていないクラスは継承できない。",
-            "sealedクラスまたはsealedインタフェースを直接継承・実装した側は、final、sealed、non-sealedのいずれかを明示する必要がある。",
-            "finalはそれ以上の継承禁止、sealedはさらに許可制、non-sealedは以降の継承制限解除を意味する。"
+            "トップレベルクラスのアクセス修飾子はpublicかデフォルト。",
+            "finalクラスは「継承できない側」になるが、「何かを継承する側」にはなれる。",
+            "static/protected/privateは通常のトップレベルクラス宣言には使えない。",
+            "sealed/non-sealedはJava 17で問われやすい。"
           ],
           "examTips": [
-            "permitsに名前があるかだけでなく、サブクラス側のfinal/sealed/non-sealed指定も確認する。",
-            "non-sealedは、sealedな親を直接継承・実装している場面で意味を持つ。通常クラスに突然付けても成立しない。"
+            "「サブクラスとして正しい」と問われたら、extendsの可否だけでなく、クラス宣言修飾子の可否も見る。",
+            "finalは継承元に付くと継承禁止、継承先に付くとさらに継承されないだけ。",
+            "non-sealedはsealed階層外では使えない。"
           ],
           "judgeSteps": [
-            "親がsealedか、permitsで許可している直接サブクラス名を確認する。",
-            "各サブクラスが許可リストに含まれているかを確認する。",
-            "許可されたサブクラス側にfinal、sealed、non-sealedのいずれかがあるかを確認する。"
+            "その宣言がトップレベルクラスか確認する。",
+            "トップレベルで使える修飾子か確認する。",
+            "final/sealed/non-sealedの意味を継承元・継承先で分ける。",
+            "extends A自体が禁止されていないか確認する。"
           ],
           "choiceAnalysis": [],
           "pdfExplanation": "正解は E・F です。\n\n通常のトップレベルクラスに使えるアクセス修飾子は public かデフォルトだけです。また final クラスは通常のクラスとして宣言できます。static/protected/private はトップレベルクラスには使えません。sealedはpermits等の条件が必要で、non-sealedはsealed階層のサブクラスで使います。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": "",
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は「Aを継承できるか」だけを見ると間違えます。選択肢の大半は、クラス宣言の修飾子が不正です。\n\nトップレベルクラスとは、別のクラスの内側ではなく、ソースファイルの直下に書くクラスです。トップレベルクラスには `public` かデフォルトアクセスしか使えません。そのため `protected class` や `private class` はその時点で不可です。`static class` もトップレベルでは使えません。\n\nEは普通のpublicクラスなので問題ありません。Fはfinalクラスですが、これは「Bを継承できない」という意味です。B自身がAを継承することはできます。\n\nsealed系は、Java 17の頻出ひっかけです。`non-sealed` はsealedクラスの子クラスが使うものであり、通常クラスAのサブクラスには使えません。",
           "points": []
         },
         "source": "",
@@ -19433,58 +19445,61 @@ window.JAVA_STUDY_DATA = {
           "E"
         ],
         "explanation": {
-          "summary": "`var` はローカル変数の型推論にだけ使えます。フィールド宣言 `private var num = 10;` は不正です。選択肢に(1)行のエラーがないため、結果としてフィールドnumが有効に宣言されていない扱いになり、(4)行の `int var = num;` でも参照できずコンパイルエラーになります。",
-          "correctReason": "正解は E です。\n\n`var` はローカル変数の型推論にだけ使えます。フィールド宣言 `private var num = 10;` は不正です。選択肢に(1)行のエラーがないため、結果としてフィールドnumが有効に宣言されていない扱いになり、(4)行の `int var = num;` でも参照できずコンパイルエラーになります。",
+          "summary": "`var` はローカル変数の型推論にだけ使えます。`private var num = 10;` はフィールド宣言なので本来は(1)行でコンパイルエラーです。ただし選択肢に(1)行がないため、設問はその結果として `num` が有効なフィールドとして扱えず、(4)行の `int var = num;` でコンパイルエラーになるものを選ばせています。",
+          "correctReason": "正解は E です。\n\n`var` はローカル変数の型推論専用です。メソッド内やコンストラクタ内のローカル変数宣言には使えますが、フィールド、メソッド引数、戻り値型、コンストラクタ引数などには使えません。\n\nこのコードの `private var num = 10; // (1)` はフィールド宣言です。したがってこの時点で不正です。しかし選択肢には(1)行でコンパイルエラーという選択肢がありません。問題の意図としては、`num` フィールドが正しく宣言されていないため、後続の `int var = num; // (4)` でも `num` を参照できずコンパイルエラーになる、という判断になります。\n\n(2)行の `var var = Integer.parseInt(num);` はローカル変数宣言なので、`var` 自体は使えます。右辺はintを返すため、左辺の変数 `var` の型はintに推論されます。変数名としての `var` も使用可能です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "フィールドでvarを使っているため正しくコンパイルされません。"
+              "detail": "コンパイルできません。フィールドに `var` を使っているため、正常実行して10が表示されることはありません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "同じくコンパイルできないため実行結果は出ません。"
+              "detail": "コンパイルできないため、20が表示されるところまで進みません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "(2)の `var var` はローカル変数宣言であり、変数名varも使えます。"
+              "detail": "(2)行の `var var = Integer.parseInt(num);` はローカル変数宣言なので、`var` を使えます。`var` は予約語ではないため、変数名としての `var` も使えます。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "コンパイルできないため実行時のClassCastExceptionにはなりません。"
+              "detail": "ClassCastExceptionは型キャスト失敗時の実行時例外です。このコードは実行前にコンパイルで止まります。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正解です。numフィールドが有効に宣言されていないため、(4)で参照できません。"
+              "detail": "正解です。設問の選択肢の中では、`num` を参照する(4)行がコンパイルエラー箇所として該当します。根本原因は(1)行のフィールド宣言に `var` を使っていることです。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "NumberFormatExceptionは実行時例外ですが、このコードは実行前にコンパイルエラーです。"
+              "detail": "`Integer.parseInt(\"20\")` は成功します。さらに、このコードは実行前にコンパイルエラーになるため、NumberFormatExceptionは発生しません。"
             }
           ],
           "relatedKnowledge": [
-            "varはローカル変数の型推論に使うための予約型名。フィールド、メソッド引数、戻り値型、コンストラクタ引数には使えない。",
-            "varで宣言するには、右辺から型を一意に推論できる必要がある。null単体、ラムダ式単体、配列初期化子単体では推論できない。",
-            "varは動的型付けではない。コンパイル時に型が決まり、その後に別系統の型へ自由に変わるわけではない。"
+            "`var` はローカル変数にだけ使える。",
+            "`var` は予約語ではなく予約型名に近い扱いなので、変数名として使える場面がある。",
+            "フィールドには型を明示する必要がある。",
+            "コンパイルエラーがあるコードは実行時例外まで進まない。"
           ],
           "examTips": [
-            "varを見たら、使われている場所がローカル変数宣言かを先に見る。場所が違えば即コンパイルエラー。",
-            "右辺がnullや `{...}` だけの場合は型推論できない。"
+            "`var` 問題では、まず使われている場所を見る。右辺より先に場所。",
+            "フィールド、引数、戻り値にvarが出たら原則コンパイルエラー。",
+            "選択肢に根本原因の行がない場合、派生してエラーになる行を選ばせる問題がある。"
           ],
           "judgeSteps": [
-            "varがフィールド・引数・戻り値型に使われていないか確認する。",
-            "ローカル変数なら、右辺から具体的な型を推論できるか確認する。",
-            "推論された型で、その後の代入やメソッド呼び出しが成立するか確認する。"
+            "`var` が使われている位置を確認する。",
+            "ローカル変数宣言かどうかを判定する。",
+            "右辺から型推論できるか確認する。",
+            "コンパイルエラーが先なら実行時例外の選択肢を消す。"
           ],
           "choiceAnalysis": [],
           "pdfExplanation": "正解は E です。\n\n`var` はローカル変数の型推論にだけ使えます。フィールド宣言 `private var num = 10;` は不正です。選択肢に(1)行のエラーがないため、結果としてフィールドnumが有効に宣言されていない扱いになり、(4)行の `int var = num;` でも参照できずコンパイルエラーになります。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": "",
+          "additionalExplanation": "【詳しい読み解き】\nこの問題の重要点は、`var` の右辺が10だからintに推論できる、という話ではありません。先に「どこで使っているか」を見ます。\n\n`private var num = 10;` はクラス直下にあるためフィールドです。`var` はフィールドには使えません。よって本来はここがコンパイルエラーです。\n\nただし、選択肢に(1)行がありません。そのため問題としては、フィールド `num` が有効に宣言されていない状態で、(4)行の `int var = num;` が成立しない、という読み方になります。\n\n(2)行はコンストラクタ内のローカル変数です。`Integer.parseInt(num)` の戻り値はintなので、`var` による型推論は可能です。また、`var` という名前の変数を宣言している点もひっかけですが、これはこの文脈では可能です。",
           "points": []
         },
         "source": "",
@@ -19548,63 +19563,65 @@ window.JAVA_STUDY_DATA = {
           "F"
         ],
         "explanation": {
-          "summary": "sealedクラスAは permits B, C により B と C だけに継承を許可しています。さらに、sealedクラスを直接継承するクラスは final / sealed / non-sealed のいずれかで修飾する必要があります。Cをnon-sealedにしたE、BをfinalにしたFが正しいです。",
-          "correctReason": "正解は E・F です。\n\nsealedクラスAは permits B, C により B と C だけに継承を許可しています。さらに、sealedクラスを直接継承するクラスは final / sealed / non-sealed のいずれかで修飾する必要があります。Cをnon-sealedにしたE、BをfinalにしたFが正しいです。",
+          "summary": "`sealed class A permits B, C` は、Aを直接継承できるクラスをBとCだけに制限します。さらに、sealedクラスを直接継承するBとCは、`final`、`sealed`、`non-sealed` のいずれかで宣言しなければなりません。よって、Cを `non-sealed` にしたE、Bを `final` にしたFが正しいです。",
+          "correctReason": "正解は E と F です。\n\n`public sealed class A permits B, C {}` は、Aを直接継承できるクラスをBとCに限定しています。したがって、DがAを継承する選択肢は、Dがpermitsに含まれていない時点で不正です。\n\n次に、BとCがAを継承する場合でも、何も修飾子を付けずに `class B extends A` のようには書けません。sealedクラスを直接継承するクラスは、自分自身を `final`、`sealed`、`non-sealed` のいずれかで修飾する必要があります。\n\nEの `public non-sealed class C extends A {}` は、許可されたCがsealed制限を解除する宣言なので正しいです。Fの `public final class B extends A {}` は、許可されたBがこれ以上継承されないことを示す宣言なので正しいです。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "Dはpermitsに含まれていないためAを継承できません。"
+              "detail": "DはAのpermitsに含まれていません。`non-sealed` を付けても、許可されていないクラスがsealedクラスを継承することはできません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "Cは許可されていますが、final/sealed/non-sealedの指定がないため不正です。"
+              "detail": "Cはpermitsに含まれていますが、sealedクラスを直接継承するなら `final`、`sealed`、`non-sealed` のいずれかが必要です。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "Bも許可されていますが、final/sealed/non-sealedの指定がないため不正です。"
+              "detail": "Bはpermitsに含まれていますが、修飾子なしでは不正です。sealedクラスの直接サブクラスは継承方針を明示する必要があります。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "abstractだけではsealed階層のサブクラス要件を満たしません。"
+              "detail": "`abstract` だけでは不足です。sealedクラスの直接サブクラスである以上、`sealed` または `non-sealed` などの指定が必要です。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正解です。Cは許可されており、non-sealedで修飾されています。"
+              "detail": "正解です。Cはpermitsに含まれており、`non-sealed` によって以降の継承制限を解除しています。"
             },
             {
               "key": "F",
               "isCorrect": true,
-              "detail": "正解です。Bは許可されており、finalで修飾されています。"
+              "detail": "正解です。Bはpermitsに含まれており、`final` によってこれ以上継承されないことを示しています。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "Dはpermitsに含まれていないためAを継承できません。"
+              "detail": "Dはpermitsに含まれていません。`final` を付けても、Aを継承する許可がないため不正です。"
             }
           ],
           "relatedKnowledge": [
-            "sealedは継承・実装できる直接の相手をpermitsで制限する仕組み。許可されていないクラスは継承できない。",
-            "sealedクラスまたはsealedインタフェースを直接継承・実装した側は、final、sealed、non-sealedのいずれかを明示する必要がある。",
-            "finalはそれ以上の継承禁止、sealedはさらに許可制、non-sealedは以降の継承制限解除を意味する。"
+            "sealedは継承できる直接サブクラスを制限する。",
+            "permitsにないクラスはsealedクラスを直接継承できない。",
+            "sealedクラスの直接サブクラスはfinal/sealed/non-sealedのいずれかが必要。"
           ],
           "examTips": [
-            "permitsに名前があるかだけでなく、サブクラス側のfinal/sealed/non-sealed指定も確認する。",
-            "non-sealedは、sealedな親を直接継承・実装している場面で意味を持つ。通常クラスに突然付けても成立しない。"
+            "sealed問題は「permitsに含まれるか」と「子側の修飾子」の2段階で切る。",
+            "`final`、`sealed`、`non-sealed` のどれかがない直接サブクラスは誤り。",
+            "許可されていないクラスにfinalやnon-sealedを付けても正解にはならない。"
           ],
           "judgeSteps": [
-            "親がsealedか、permitsで許可している直接サブクラス名を確認する。",
-            "各サブクラスが許可リストに含まれているかを確認する。",
-            "許可されたサブクラス側にfinal、sealed、non-sealedのいずれかがあるかを確認する。"
+            "継承しようとしているクラス名を確認する。",
+            "permitsに含まれているか確認する。",
+            "直接サブクラス側にfinal/sealed/non-sealedがあるか確認する。",
+            "abstractだけで済ませていないか確認する。"
           ],
           "choiceAnalysis": [],
           "pdfExplanation": "正解は E・F です。\n\nsealedクラスAは permits B, C により B と C だけに継承を許可しています。さらに、sealedクラスを直接継承するクラスは final / sealed / non-sealed のいずれかで修飾する必要があります。Cをnon-sealedにしたE、BをfinalにしたFが正しいです。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": "",
+          "additionalExplanation": "【詳しい読み解き】\nsealedクラスの問題は、1つのルールだけで判断しないことが重要です。\n\nまず、Aは `permits B, C` と書いています。これはAの直接のサブクラスをBとCに限定するという意味です。したがってDがAを継承している選択肢は、修飾子が何であっても不正です。\n\n次に、BとCなら何でもよいわけではありません。sealedクラスを直接継承するクラスは、自分の先の継承方針を示す必要があります。これ以上継承させないなら `final`、制限を続けるなら `sealed`、制限を解除するなら `non-sealed` です。\n\nEはCが許可されていて、non-sealedも付いているため正解です。FはBが許可されていて、finalも付いているため正解です。",
           "points": []
         },
         "source": "",
@@ -19663,65 +19680,65 @@ window.JAVA_STUDY_DATA = {
           "E"
         ],
         "explanation": {
-          "summary": "コンパイラによって処理を要求されるのはチェック例外です。RuntimeExceptionとそのサブクラスは非チェック例外です。ExceptionはRuntimeExceptionを除けばチェック例外の親であり、IOExceptionもチェック例外です。",
-          "correctReason": "正解は C・E です。\n\nコンパイラによって処理を要求されるのはチェック例外です。RuntimeExceptionとそのサブクラスは非チェック例外です。ExceptionはRuntimeExceptionを除けばチェック例外の親であり、IOExceptionもチェック例外です。",
+          "summary": "コンパイラによって処理を要求される例外がチェック例外です。`RuntimeException` とそのサブクラスは非チェック例外なので、`ArrayIndexOutOfBoundsException`、`ClassCastException`、`ArithmeticException`、`NumberFormatException` は対象外です。`Exception` と `IOException` はチェック例外として扱われます。",
+          "correctReason": "正解は C と E です。\n\nチェック例外とは、コンパイラが「catchするかthrowsで宣言しなさい」と要求する例外です。基本的には `Exception` のサブクラスのうち、`RuntimeException` 系ではないものがチェック例外です。\n\n`java.lang.Exception` はチェック例外の代表的な親クラスです。`java.io.IOException` もチェック例外です。\n\n一方、`RuntimeException` とそのサブクラスは非チェック例外です。配列範囲外、キャスト失敗、0除算、数値変換失敗などは実行時に発生し得ますが、コンパイラが事前にcatch/throwsを要求する種類ではありません。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "ArrayIndexOutOfBoundsExceptionはRuntimeException系の非チェック例外です。"
+              "detail": "`ArrayIndexOutOfBoundsException` は `RuntimeException` のサブクラスなので非チェック例外です。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "ClassCastExceptionはRuntimeException系の非チェック例外です。"
+              "detail": "`ClassCastException` はキャスト失敗時の実行時例外で、非チェック例外です。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。Exceptionはチェック例外として扱われます。ただしRuntimeException系は除きます。"
+              "detail": "正解です。`Exception` はチェック例外として処理要求の対象になる代表的な型です。ただし、そのサブクラスのうち `RuntimeException` 系は非チェック例外です。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "ArithmeticExceptionはRuntimeException系の非チェック例外です。"
+              "detail": "`ArithmeticException` は0除算などで起きる `RuntimeException` 系の非チェック例外です。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正解です。IOExceptionは代表的なチェック例外です。"
+              "detail": "正解です。`IOException` はファイル入出力などで使われるチェック例外です。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "NumberFormatExceptionはRuntimeException系の非チェック例外です。"
+              "detail": "`NumberFormatException` は `IllegalArgumentException` を経由する `RuntimeException` 系の非チェック例外です。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "RuntimeException自体が非チェック例外です。"
+              "detail": "`RuntimeException` 自体が非チェック例外の親クラスです。"
             }
           ],
           "relatedKnowledge": [
-            "例外問題では、最初に「コンパイル時に処理が必須のチェック例外か」「実行時に発生する非チェック例外か」を分ける。Exception直下の例外とRuntimeException配下の例外を混同しない。",
-            "catchは上から順に判定される。先に広い型で捕まえると、後ろの狭い型のcatchが到達不能になり、コンパイルエラーになる。",
-            "finallyは、例外が発生しても発生しなくても原則として実行される。try-with-resourcesでは、try本体を抜けるときにリソースのcloseが宣言と逆順に呼ばれ、その後にfinallyへ進む。"
+            "チェック例外はcatchまたはthrowsが必要。",
+            "非チェック例外はRuntimeExceptionとそのサブクラス。",
+            "Error系も通常はコンパイラの処理要求対象ではない。"
           ],
           "examTips": [
-            "try内で例外が発生した行より後ろのtry内処理は実行されない。出力順を追うときにここを飛ばすと誤答になる。",
-            "「例外が発生する」と「catchで処理されて正常終了する」は別。選択肢に実行時例外がある場合、catchに捕まるかまで確認する。",
-            "catchの並びは、サブクラスからスーパークラスの順が基本。逆順だと後続catchが到達不能になる。"
+            "例外名の意味で判断しない。クラス階層で判断する。",
+            "`Exception` はチェック例外、`RuntimeException` は非チェック例外という軸をまず覚える。",
+            "よく出る非チェック例外は名前ごと覚えると選択問題が速くなる。"
           ],
           "judgeSteps": [
-            "例外を投げる可能性があるメソッド呼び出し・配列アクセス・null参照・キャストを探す。",
-            "その例外がチェック例外なら、catchまたはthrowsがあるかを先に確認する。",
-            "実行時は、例外発生地点でtryの残りを捨て、最初に一致したcatchへ移動する。",
-            "最後にfinallyまたはリソースcloseの有無を加えて、表示順を確定する。"
+            "候補がRuntimeExceptionかそのサブクラスか確認する。",
+            "RuntimeException系なら非チェック例外として消す。",
+            "Exception系でRuntimeExceptionではないものを選ぶ。",
+            "IOExceptionはチェック例外として即判断する。"
           ],
           "choiceAnalysis": [],
           "pdfExplanation": "正解は C・E です。\n\nコンパイラによって処理を要求されるのはチェック例外です。RuntimeExceptionとそのサブクラスは非チェック例外です。ExceptionはRuntimeExceptionを除けばチェック例外の親であり、IOExceptionもチェック例外です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": "",
+          "additionalExplanation": "【詳しい読み解き】\nこの問題で重要なのは、「実行時に起きるかどうか」ではありません。チェック例外も実行時に発生します。違いは、コンパイラが事前に処理を要求するかどうかです。\n\n`Exception` は例外クラス階層の大きな親です。ただし、その下に `RuntimeException` という非チェック例外の系統があります。`RuntimeException` 系は、catchやthrowsを書かなくてもコンパイルできます。\n\n配列範囲外、キャスト失敗、0除算、数値変換失敗は、どれも実行時に起きる典型的な非チェック例外です。これらはプログラムの書き方や入力値によって起きるため、コンパイラが必ず処理を書けとは要求しません。\n\n一方、`IOException` はチェック例外です。ファイルや入出力のように外部環境に左右される処理では、例外処理を明示させる設計になっています。",
           "points": []
         },
         "source": "",
@@ -19776,59 +19793,61 @@ window.JAVA_STUDY_DATA = {
           "D"
         ],
         "explanation": {
-          "summary": "インタフェースの `A execute(int num);` を実装するには、メソッド名と引数型が同じである必要があります。戻り値型はAまたはAのサブクラス型にできます。BはAのサブクラスなので共変戻り値として認められます。",
-          "correctReason": "正解は C・D です。\n\nインタフェースの `A execute(int num);` を実装するには、メソッド名と引数型が同じである必要があります。戻り値型はAまたはAのサブクラス型にできます。BはAのサブクラスなので共変戻り値として認められます。",
+          "summary": "`Sample` の抽象メソッドは `A execute(int num);` です。実装メソッドは、メソッド名と引数リストが一致している必要があります。戻り値型はAそのもの、またはAのサブクラス型にできます。BはAを継承しているため、戻り値型をBにすることは可能です。よって `A execute(int)` と `B execute(int)` が正しいです。",
+          "correctReason": "正解は C と D です。\n\ninterface `Sample` には `A execute(int num);` が定義されています。これを実装するメソッドは、まずメソッド名 `execute` と引数リスト `(int num)` が一致していなければなりません。`Integer` は `int` と同じシグネチャではないため、`execute(Integer)` はオーバーロードであって実装ではありません。\n\n戻り値型は、元の `A` と同じ型、またはそのサブクラス型にできます。これを共変戻り値と呼びます。`B extends A` なので、戻り値型を `B` にすることは認められます。\n\nCは `public A execute(int num)` で、シグネチャも戻り値型も正しいです。戻している `new B(num)` はA型変数に代入可能です。Dは `public B execute(int num)` で、戻り値型BがAのサブクラスなので正しいです。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "引数がIntegerになっており、`execute(int)` の実装ではなくオーバーロードです。"
+              "detail": "引数が `Integer` なので、`execute(int)` の実装ではありません。戻り値型B自体は許されますが、引数リストが違うため不正です。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "戻り値型ObjectはAのスーパータイプなので、オーバーライドの戻り値として不正です。さらにnew A()も引数なしコンストラクタがありません。"
+              "detail": "戻り値型が `Object` で、interfaceが要求する `A` より広い型です。オーバーライドでは戻り値型を親方向に広げることはできません。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。戻り値型A、引数intで一致し、new B(num)はAとして返せます。"
+              "detail": "正解です。`A execute(int num)` はinterfaceの宣言と一致し、`new B(num)` はA型として返せます。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正解です。戻り値型BはAのサブクラスなので共変戻り値として認められます。"
+              "detail": "正解です。`B` は `A` のサブクラスなので、共変戻り値として `B execute(int num)` が認められます。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "引数がIntegerなので実装になりません。"
+              "detail": "引数が `Integer` なので `execute(int)` の実装ではありません。さらに問題の実装義務を満たしません。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "戻り値型BなのにreturnしているのはAのインスタンスです。AをBとして返すことはできません。"
+              "detail": "戻り値型Bのメソッドで `new A(num)` を返そうとしています。AはBの親クラスなので、Bとして返すことはできません。"
             }
           ],
           "relatedKnowledge": [
-            "オーバーライドは、メソッド名と引数リストが同じであることが前提。戻り値型は同じ型または共変戻り値としてサブクラス型にできる。",
-            "オーバーライド時のアクセス修飾子は、親より狭くできない。publicをprotectedやデフォルトに落とすとコンパイルエラー。",
-            "オーバーロードは引数リスト違いの別メソッド。実行時の動的選択ではなく、コンパイル時の引数型で候補が決まる。"
+            "オーバーライドではメソッド名と引数リストが一致する必要がある。",
+            "戻り値型は同じ型またはサブクラス型にできる。",
+            "戻り値型を親クラス方向に広げることはできない。",
+            "intとIntegerはオーバーロードでは別の引数型として扱われる。"
           ],
           "examTips": [
-            "@Overrideが付いているのに条件を満たさない場合はコンパイルエラーになる。付いていなくても条件を満たせばオーバーライドは成立する。",
-            "戻り値だけ違うメソッドはオーバーロードにならない。戻り値型でメソッドを区別できない。"
+            "実装メソッド選択では、最初に引数リストを見る。戻り値型だけで判断しない。",
+            "`Integer` と `int` は自動変換できる場面があるが、シグネチャとしては別。",
+            "戻り値で `new A()` を返してよいかは、宣言された戻り値型から判断する。"
           ],
           "judgeSteps": [
-            "親メソッドと子メソッドのメソッド名・引数リストを比較する。",
-            "戻り値型が同じか、親の戻り値型のサブタイプになっているか確認する。",
-            "アクセス修飾子が親と同じか、より広いか確認する。",
-            "throws句が親より広いチェック例外になっていないか確認する。"
+            "interfaceのメソッド名と引数型を確認する。",
+            "選択肢の引数リストが一致するか確認する。",
+            "戻り値型が同じかサブクラス型か確認する。",
+            "return文の実体が戻り値型に代入可能か確認する。"
           ],
           "choiceAnalysis": [],
           "pdfExplanation": "正解は C・D です。\n\nインタフェースの `A execute(int num);` を実装するには、メソッド名と引数型が同じである必要があります。戻り値型はAまたはAのサブクラス型にできます。BはAのサブクラスなので共変戻り値として認められます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": "",
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、オーバーロードとオーバーライドの混同を狙っています。`execute(Integer num)` は、`execute(int num)` と似ていますが、シグネチャとしては別物です。interfaceが要求しているのは `execute(int)` なので、`Integer` 版を書いても実装したことにはなりません。\n\n次に戻り値型です。Javaでは、オーバーライド時に戻り値型をサブクラス型に狭めることができます。interfaceではAを返すと宣言されていますが、BはAのサブクラスなので、Bを返すメソッドとして実装しても問題ありません。\n\nCはAを返すのでそのまま正しいです。DはBを返しますが、BはAの一種なので正しいです。Fは一見似ていますが、Bを返すと宣言しているのにAのインスタンスを返しています。親クラスAのインスタンスにはB固有部分がないため、Bとして返せません。",
           "points": []
         },
         "source": "",
@@ -19895,65 +19914,67 @@ window.JAVA_STUDY_DATA = {
           "B"
         ],
         "explanation": {
-          "summary": "配列の1つ目 new A() は A型なので `instanceof A b` がtrueとなり、A.execute()でAを表示します。2つ目 new B() もAのサブクラスなのでtrueとなり、変数bのコンパイル時型はAでも実体はBなので、オーバーライドされたB.execute()が呼ばれてBを表示します。3つ目の\"C\"はAではないので何も表示しません。",
-          "correctReason": "正解は B です。\n\n配列の1つ目 new A() は A型なので `instanceof A b` がtrueとなり、A.execute()でAを表示します。2つ目 new B() もAのサブクラスなのでtrueとなり、変数bのコンパイル時型はAでも実体はBなので、オーバーライドされたB.execute()が呼ばれてBを表示します。3つ目の\"C\"はAではないので何も表示しません。",
+          "summary": "配列には `new A()`、`new B()`、文字列 `\"C\"` が入っています。`obj instanceof A b` は、objがAまたはAのサブクラスならtrueです。1つ目のAではAの `execute()` が呼ばれ「A」を表示します。2つ目のBもAのサブクラスなのでtrueとなり、変数bの型はAでも実体はBなので、オーバーライドされたBの `execute()` が呼ばれて「B」を表示します。文字列はAではないので何も表示しません。",
+          "correctReason": "正解は B です。\n\n`objects` 配列には、`new A()`、`new B()`、`\"C\"` の3つが入っています。拡張forで順番に取り出し、`test(obj)` に渡します。\n\n`test` メソッドの `if (obj instanceof A b)` は、objがA型として扱える場合にtrueになります。`new A()` は当然trueです。このとき `b.execute()` はAの `execute()` を呼び、「A」を表示します。\n\n`new B()` も、BがAを継承しているためA型として扱えます。したがってinstanceofはtrueです。ただし、実体はBです。`execute()` はBでオーバーライドされているため、実行されるのはBの `execute()` です。Bの `execute()` はprivateメソッド `test()` を呼び、その中で「B」を表示します。\n\n最後の `\"C\"` はStringであり、Aとは継承関係がないためinstanceofはfalseです。何も表示されません。結果はA、Bの順です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "new A() と new B() は instanceof A を満たすため出力があります。"
+              "detail": "`new A()` と `new B()` はどちらも `instanceof A` がtrueなので、何も出力されないことはありません。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正解です。Aのexecute、Bのexecuteの順に呼ばれます。"
+              "detail": "正解です。1つ目のAで「A」、2つ目のBでオーバーライドされた `execute()` が動き「B」を表示します。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "文字列\"C\"はAではないためtest内のifに入りません。"
+              "detail": "文字列 `\"C\"` はA型ではないため、if文の中に入りません。「C」は表示されません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "new A()でもAが出力されます。"
+              "detail": "`new B()` では「B」が表示されますが、その前に `new A()` によって「A」も表示されます。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "文字列\"C\"は出力されません。"
+              "detail": "`\"C\"` は配列内にありますが、printlnで直接表示しているわけではありません。`instanceof A` がfalseなので何も出力しません。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "instanceofパターンマッチングとオーバーライドは合法です。"
+              "detail": "コンパイルエラーは発生しません。パターン変数 `b` はifブロック内でA型として使用でき、`execute()` はAに定義されています。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "不正なキャストはしていないためClassCastException等は起きません。"
+              "detail": "実行時例外は発生しません。`instanceof` でA型か確認してから `execute()` を呼んでいるため、ClassCastExceptionのような例外は起きません。"
             }
           ],
           "relatedKnowledge": [
-            "intなどのプリミティブ値をIntegerなどのラッパークラスへ自動変換することをオートボクシングという。",
-            "Integer、Long、DoubleなどのラッパークラスはいずれもNumberのサブクラス。Number型の引数には、ボクシング後のラッパーインスタンス参照を渡せる。",
-            "instanceofパターンマッチングは、実行時の実体型が対象型に適合した場合にだけ成立し、そのブロック内でパターン変数を使える。"
+            "`instanceof A` はA自身だけでなくAのサブクラスでもtrue。",
+            "パターンマッチングの `instanceof A b` では、trueの範囲内でbをA型変数として使える。",
+            "呼べるメソッドは宣言型で決まり、実行されるオーバーライドメソッドは実体で決まる。",
+            "privateメソッドは外部から呼べなくても、同じクラス内のpublicメソッドからは呼べる。"
           ],
           "examTips": [
-            "0b0110のような2進数表記でも、接尾辞がなければ整数リテラルの型は基本的にint。",
-            "Number型で受けていても、実体がIntegerなのかLongなのかをinstanceofで判定する。",
-            "型名の見た目ではなく、リテラルのデフォルト型とボクシング後の実体型を追う。"
+            "ポリモーフィズム問題では、宣言型と実体を分けて表にする。",
+            "`instanceof` は安全確認なので、falseなら何も起きない分岐もある。",
+            "配列に文字列が入っていても、それが表示されるとは限らない。"
           ],
           "judgeSteps": [
-            "リテラルの値とデフォルト型を確認する。",
-            "メソッド引数に渡すとき、必要ならどのラッパークラスへボクシングされるか確認する。",
-            "受け取り側の宣言型と実体型を分ける。",
-            "instanceofの分岐を上から順に評価する。"
+            "配列要素を順番に列挙する。",
+            "各要素がA型として扱えるか `instanceof` を判定する。",
+            "trueの場合に呼べるメソッドを確認する。",
+            "実体クラスでオーバーライドされているか確認する。",
+            "printlnに到達する文字だけを並べる。"
           ],
           "choiceAnalysis": [],
           "pdfExplanation": "正解は B です。\n\n配列の1つ目 new A() は A型なので `instanceof A b` がtrueとなり、A.execute()でAを表示します。2つ目 new B() もAのサブクラスなのでtrueとなり、変数bのコンパイル時型はAでも実体はBなので、オーバーライドされたB.execute()が呼ばれてBを表示します。3つ目の\"C\"はAではないので何も表示しません。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": "",
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、pattern matching for instanceof とポリモーフィズムの組み合わせです。\n\n`Object[]` には異なる型のオブジェクトを入れられます。取り出した時点の変数 `obj` の型はObjectですが、実体はA、B、Stringのいずれかです。\n\n`obj instanceof A b` は、objの実体がAとして扱えるかを確認します。A自身はtrueです。BはAを継承しているので、BもAとして扱えます。StringはAと無関係なのでfalseです。\n\nAの場合、`b.execute()` はAのメソッドを実行してAを表示します。Bの場合、変数bの型はAですが、実体はBです。Javaのインスタンスメソッドは実体側のオーバーライドが優先されるため、Bの `execute()` が実行されます。Bの `execute()` はprivateな `test()` を同じクラス内から呼び、Bを表示します。\n\nStringの `\"C\"` はif条件を満たさないので、表示されません。",
           "points": []
         },
         "source": "",
@@ -20016,68 +20037,68 @@ window.JAVA_STUDY_DATA = {
           "E"
         ],
         "explanation": {
-          "summary": "setAllメソッドはsetD(x)の戻り値を、a、b、this.c、dに連鎖代入しているため、インスタンス変数を変更します。setAとsetDは同名のローカル変数に代入しているだけでフィールドは変わりません。",
-          "points": [
-            "A: 誤り。引数aがフィールドaを隠しており、a = a は引数自身への代入です。",
-            "B: 誤り。this.b = b はフィールドbにフィールドb自身の値を再代入しているだけです。",
-            "C: 誤り。return c は値を返すだけで、フィールドを書き換えません。",
-            "D: 誤り。引数dがフィールドdを隠しており、d = d は引数自身への代入です。",
-            "E: 正しい。setD(x)の戻り値を右から左へ連鎖代入し、フィールドa、b、c、dが変更されます。",
-            "F: 誤り。setAllがフィールドを変更します。"
-          ],
-          "correctReason": "正解は E です。\n\nsetAllメソッドはsetD(x)の戻り値を、a、b、this.c、dに連鎖代入しているため、インスタンス変数を変更します。setAとsetDは同名のローカル変数に代入しているだけでフィールドは変わりません。",
+          "summary": "フィールド `a, b, c, d` が実際に変更されるのは `setAll` だけです。`setA` と `setD` は引数がフィールド名を隠しているため、`a = a` や `d = d` は引数自身への代入です。`setB` は `this.b = b` ですが、右辺の `b` もフィールドなので値は変わりません。`setAll` は `setD(x)` の戻り値を `a = b = this.c = d = ...` に連鎖代入します。",
+          "correctReason": "正解は E です。\n\nこの問題は、単純名の `a` や `d` がフィールドを指しているのか、引数を指しているのかを見分ける問題です。クラスには `int a, b, c, d;` というフィールドがありますが、メソッドの引数に同じ名前がある場合、単純名では引数が優先されます。\n\n`setA(int a)` の中の `a = a;` は、左辺も右辺も引数 `a` です。フィールド `this.a` には触れていません。`setD(int d)` も同じで、`d = d;` は引数自身への代入です。\n\n一方、`setAll(int x)` では `a = b = this.c = d = setD(x);` と書かれています。`setAll` の中には `a, b, c, d` というローカル変数や引数がないため、単純名の `a, b, d` はフィールドです。`this.c` は明示的にフィールドです。代入演算子は右結合なので、`setD(x)` の戻り値がまず `d` に入り、続いて `this.c`、`b`、`a` に代入されます。したがってインスタンス変数を変更するのは `setAll` です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "A: 誤り。引数aがフィールドaを隠しており、a = a は引数自身への代入です。"
+              "detail": "`setA(int a)` では引数 `a` がフィールド `a` を隠しています。`a = a;` は引数に引数の値を代入しているだけで、`this.a` は変わりません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "B: 誤り。this.b = b はフィールドbにフィールドb自身の値を再代入しているだけです。"
+              "detail": "`this.b = b;` の左辺はフィールドですが、右辺の `b` も同じフィールドです。結果としてフィールド `b` に現在の `b` を再代入するだけなので、値は変更されません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "C: 誤り。return c は値を返すだけで、フィールドを書き換えません。"
+              "detail": "`setC()` は `return c;` でフィールド値を返すだけです。代入をしていないため、フィールドは変更されません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "D: 誤り。引数dがフィールドdを隠しており、d = d は引数自身への代入です。"
+              "detail": "`setD(int d)` も引数 `d` がフィールド `d` を隠しています。`d = d;` は引数自身への代入です。ただし戻り値は `setAll` の中で利用されます。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "E: 正しい。setD(x)の戻り値を右から左へ連鎖代入し、フィールドa、b、c、dが変更されます。"
+              "detail": "`setAll` では `setD(x)` の戻り値を `d`、`this.c`、`b`、`a` に連鎖代入します。このメソッドだけがフィールドを実際に変更します。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "F: 誤り。setAllがフィールドを変更します。"
+              "detail": "`setAll` がフィールドを変更するため、『どのメソッドも変更しない』は誤りです。"
             }
           ],
           "relatedKnowledge": [
-            "ローカル変数は自動初期化されない。宣言しただけのローカル変数を読むとコンパイルエラーになる。",
-            "フィールドは型ごとのデフォルト値で初期化される。intなら0、booleanならfalse、参照型ならnull。ローカル変数とは扱いが違う。",
-            "同名のローカル変数や引数がある場合、単純名ではローカル側が優先される。フィールドを明示したい場合はthis.fieldまたはClassName.staticFieldを使う。"
+            "同名の引数・ローカル変数があると、単純名ではそちらが優先される。",
+            "フィールドを明示したい場合は `this.a` のように書く。",
+            "代入演算子は右結合なので、`a = b = c = value` は右から順に代入される。"
           ],
           "examTips": [
-            "初期化問題では、値が入る可能性ではなく、すべての経路で確実に代入済みかを見る。",
-            "フィールドのデフォルト値の知識をローカル変数へ持ち込まない。ここは試験でよく狙われる。",
-            "thisが付いているか、付いていないかで参照先が変わる。代入式では左辺と右辺を別々に確認する。"
+            "`this` が付いていない名前を見たら、まず同名の引数・ローカル変数がないか確認する。",
+            "`return` は値を返すだけで、代入がなければ状態は変わらない。",
+            "連鎖代入は右から左に値が伝わる。"
           ],
           "judgeSteps": [
-            "対象がフィールドかローカル変数かを確認する。",
-            "ローカル変数なら、使用前に必ず代入されているかを確認する。",
-            "同名の変数がある場合、単純名がローカル側を指していないか確認する。",
-            "フィールドを参照する必要がある場合、thisやクラス名で明示されているかを見る。"
+            "各メソッドの引数名を確認する。",
+            "単純名がフィールドか引数かを決める。",
+            "代入の左辺にフィールドがあるか確認する。",
+            "連鎖代入は右から分解する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は E です。\n\nsetAllメソッドはsetD(x)の戻り値を、a、b、this.c、dに連鎖代入しているため、インスタンス変数を変更します。setAとsetDは同名のローカル変数に代入しているだけでフィールドは変わりません。",
+          "pdfExplanation": "正解は E です。\n\nこの問題は、単純名の `a` や `d` がフィールドを指しているのか、引数を指しているのかを見分ける問題です。クラスには `int a, b, c, d;` というフィールドがありますが、メソッドの引数に同じ名前がある場合、単純名では引数が優先されます。\n\n`setA(int a)` の中の `a = a;` は、左辺も右辺も引数 `a` です。フィールド `this.a` には触れていません。`setD(int d)` も同じで、`d = d;` は引数自身への代入です。\n\n一方、`setAll(int x)` では `a = b = this.c = d = setD(x);` と書かれています。`setAll` の中には `a, b, c, d` というローカル変数や引数がないため、単純名の `a, b, d` はフィールドです。`this.c` は明示的にフィールドです。代入演算子は右結合なので、`setD(x)` の戻り値がまず `d` に入り、続いて `this.c`、`b`、`a` に代入されます。したがってインスタンス変数を変更するのは `setAll` です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題で落ちやすいのは、`a = a;` を見て『フィールドaに代入している』と判断してしまうことです。Javaでは、同じ名前の引数がある場合、メソッド内の単純名 `a` は引数を指します。フィールドを指すには `this.a` と書く必要があります。\n\n`setAll` だけは状況が違います。`setAll(int x)` の引数は `x` だけなので、`a`、`b`、`d` はフィールドを指します。`this.c` は当然フィールドです。したがって `setAll` は4つのフィールドすべてに値を入れる処理になります。",
+          "points": [
+            "A: 誤り。`setA(int a)` では引数 `a` がフィールド `a` を隠しています。`a = a;` は引数に引数の値を代入しているだけで、`this.a` は変わりません。",
+            "B: 誤り。`this.b = b;` の左辺はフィールドですが、右辺の `b` も同じフィールドです。結果としてフィールド `b` に現在の `b` を再代入するだけなので、値は変更されません。",
+            "C: 誤り。`setC()` は `return c;` でフィールド値を返すだけです。代入をしていないため、フィールドは変更されません。",
+            "D: 誤り。`setD(int d)` も引数 `d` がフィールド `d` を隠しています。`d = d;` は引数自身への代入です。ただし戻り値は `setAll` の中で利用されます。",
+            "E: 正しい。`setAll` では `setD(x)` の戻り値を `d`、`this.c`、`b`、`a` に連鎖代入します。このメソッドだけがフィールドを実際に変更します。",
+            "F: 誤り。`setAll` がフィールドを変更するため、『どのメソッドも変更しない』は誤りです。"
+          ]
         },
         "source": "",
         "codeBlocks": [
@@ -20120,54 +20141,56 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "Bにコンストラクタを明示しない場合、コンパイラはB() { super(); } 相当を追加します。しかしAには引数なしコンストラクタがないため、super()を呼び出せずコンパイルエラーになります。",
-          "points": [
-            "A: 誤り。継承元がabstractであること自体は問題ありません。",
-            "B: 誤り。オーバーライドではアクセス修飾子を緩めることができ、defaultからpublicへの変更は可能です。",
-            "C: 正しい。A(int id)を呼び出すBのコンストラクタ、例: B(int id) { super(id); } が必要です。",
-            "D: 誤り。Aはsealedではないため、Bをfinalにする必要はありません。"
-          ],
-          "correctReason": "正解は C です。\n\nBにコンストラクタを明示しない場合、コンパイラはB() { super(); } 相当を追加します。しかしAには引数なしコンストラクタがないため、super()を呼び出せずコンパイルエラーになります。",
+          "summary": "`B` にコンストラクタがないため、コンパイラは暗黙に `B() { super(); }` を入れようとします。しかしスーパークラス `A` には `A(int id)` しかなく、引数なしコンストラクタ `A()` が存在しません。そのため、`B` 側で `super(id)` を呼ぶコンストラクタが必要です。",
+          "correctReason": "正解は C です。\n\nサブクラスのコンストラクタでは、必ず最初にスーパークラスのコンストラクタが呼び出されます。明示的に `super(...)` や `this(...)` を書かない場合、コンパイラは先頭に `super();` を補います。\n\n`A` クラスには `public A(int id)` が定義されています。コンストラクタを1つでも自分で定義すると、引数なしコンストラクタは自動生成されません。つまり `A()` は存在しません。\n\n`B` クラスにはコンストラクタが書かれていないので、コンパイラは `B() { super(); }` のようなデフォルトコンストラクタを作ろうとします。しかし `super()` が呼ぶべき `A()` がないため、コンパイルエラーになります。修正するには、`B` にコンストラクタを定義して `super(id);` のように `A(int)` を呼び出す必要があります。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "A: 誤り。継承元がabstractであること自体は問題ありません。"
+              "detail": "抽象クラスを継承すること自体は可能です。`A` がabstractであることは、このコンパイルエラーの原因ではありません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "B: 誤り。オーバーライドではアクセス修飾子を緩めることができ、defaultからpublicへの変更は可能です。"
+              "detail": "`A.sample()` はアクセス修飾子なし、`B.sample()` はpublicです。オーバーライドではアクセス範囲を広げることは可能なので、これは問題ありません。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "C: 正しい。A(int id)を呼び出すBのコンストラクタ、例: B(int id) { super(id); } が必要です。"
+              "detail": "`A` には引数ありコンストラクタしかないため、`B` のコンストラクタから `super(...)` で呼び出す必要があります。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "D: 誤り。Aはsealedではないため、Bをfinalにする必要はありません。"
+              "detail": "`A` はsealedクラスではありません。`B` をfinalにする必要はありません。final指定はコンストラクタ呼び出し問題を解決しません。"
             }
           ],
           "relatedKnowledge": [
-            "コンストラクタは継承されない。サブクラスのインスタンス生成時には、親クラスのコンストラクタが先に実行され、その後に子クラス側の初期化へ進む。",
-            "this(...)とsuper(...)はコンストラクタの先頭行にしか書けない。両方を同じコンストラクタに並べることはできない。",
-            "明示的にsuper(...)を書かない場合、引数なしのsuper()が暗黙に挿入される。親に引数なしコンストラクタがない場合は注意が必要。"
+            "サブクラスのコンストラクタは必ずスーパークラスのコンストラクタを呼ぶ。",
+            "コンストラクタを自分で定義したクラスには、引数なしコンストラクタは自動生成されない。",
+            "`super()` の暗黙挿入は、呼べる引数なしコンストラクタがある場合にだけ成立する。"
           ],
           "examTips": [
-            "表示順問題では、newされたクラスからではなく、最上位の親コンストラクタから順に出力を並べる。",
-            "this()で同じクラス内の別コンストラクタへ飛んだ場合、その先で最終的にsuper()が呼ばれる流れまで追う。"
+            "継承問題でコンストラクタが出たら、まずスーパークラスに引数なしコンストラクタがあるか見る。",
+            "`abstract` だから生成できない、という雑な判断をしない。サブクラスの定義自体は可能。",
+            "アクセス修飾子の問題とコンストラクタの問題を分ける。"
           ],
           "judgeSteps": [
-            "newしているクラスのコンストラクタを確認する。",
-            "そのコンストラクタの先頭にthis(...)またはsuper(...)があるか確認する。",
-            "親クラスのコンストラクタ実行、フィールド初期化、子クラス側の処理の順に出力を並べる。"
+            "スーパークラスのコンストラクタ一覧を確認する。",
+            "サブクラスにコンストラクタがあるか確認する。",
+            "なければ暗黙の `super()` が入ると考える。",
+            "`super()` に対応するコンストラクタがなければコンパイルエラー。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\nBにコンストラクタを明示しない場合、コンパイラはB() { super(); } 相当を追加します。しかしAには引数なしコンストラクタがないため、super()を呼び出せずコンパイルエラーになります。",
+          "pdfExplanation": "正解は C です。\n\nサブクラスのコンストラクタでは、必ず最初にスーパークラスのコンストラクタが呼び出されます。明示的に `super(...)` や `this(...)` を書かない場合、コンパイラは先頭に `super();` を補います。\n\n`A` クラスには `public A(int id)` が定義されています。コンストラクタを1つでも自分で定義すると、引数なしコンストラクタは自動生成されません。つまり `A()` は存在しません。\n\n`B` クラスにはコンストラクタが書かれていないので、コンパイラは `B() { super(); }` のようなデフォルトコンストラクタを作ろうとします。しかし `super()` が呼ぶべき `A()` がないため、コンパイルエラーになります。修正するには、`B` にコンストラクタを定義して `super(id);` のように `A(int)` を呼び出す必要があります。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\n`B extends A` なので、`new B()` を作るには、まずA部分を初期化し、その後B部分を初期化します。このA部分の初期化に使うのがAのコンストラクタです。\n\n`A` には `A(int id)` しかありません。`B` 側が何も書いていないと、Javaは自動的に `super()` を呼ぼうとします。しかし `A()` は存在しないため失敗します。ここはJava Silverで頻出です。『コンストラクタは継承されない』『暗黙のsuper()が入る』の2点をセットで押さえる必要があります。",
+          "points": [
+            "A: 誤り。抽象クラスを継承すること自体は可能です。`A` がabstractであることは、このコンパイルエラーの原因ではありません。",
+            "B: 誤り。`A.sample()` はアクセス修飾子なし、`B.sample()` はpublicです。オーバーライドではアクセス範囲を広げることは可能なので、これは問題ありません。",
+            "C: 正しい。`A` には引数ありコンストラクタしかないため、`B` のコンストラクタから `super(...)` で呼び出す必要があります。",
+            "D: 誤り。`A` はsealedクラスではありません。`B` をfinalにする必要はありません。final指定はコンストラクタ呼び出し問題を解決しません。"
+          ]
         },
         "source": "",
         "codeBlocks": [
@@ -20216,55 +20239,56 @@ window.JAVA_STUDY_DATA = {
           "A"
         ],
         "explanation": {
-          "summary": "配列の型はA[]ですが、要素にはA、B、Cのインスタンスを入れられます。sampleメソッドはオーバーライドされているため、実行時のインスタンス型に応じてA、B、Cの順に呼ばれます。",
-          "points": [
-            "A: 正しい。動的ディスパッチによりA、B、Cの各sampleが順に実行されます。",
-            "B: 誤り。キャストや範囲外アクセスはなく、例外は発生しません。",
-            "C: 誤り。表示後に例外が発生する処理はありません。",
-            "D: 誤り。BとCはAのサブクラスなのでA[]に格納できます。"
-          ],
-          "correctReason": "正解は A です。\n\n配列の型はA[]ですが、要素にはA、B、Cのインスタンスを入れられます。sampleメソッドはオーバーライドされているため、実行時のインスタンス型に応じてA、B、Cの順に呼ばれます。",
+          "summary": "`A[]` 配列には、`A` のインスタンスだけでなく、サブクラスである `B` や `C` のインスタンスも入れられます。拡張forで取り出した変数 `obj` の型は `A` ですが、`sample()` はオーバーライドされているため、実行時の実体に応じて `A`、`B`、`C` が順に表示されます。",
+          "correctReason": "正解は A です。\n\n`list` の宣言型は `A[]` です。配列の要素型が `A` のため、`A` 型として扱えるインスタンスを格納できます。`new A()` はもちろん、`new B()` と `new C()` も `A` のサブクラスなので格納できます。\n\n拡張for文では、配列の先頭から順に要素を取り出します。1回目の実体は `A`、2回目は `B`、3回目は `C` です。変数 `obj` のコンパイル時の型は常に `A` ですが、`sample()` はインスタンスメソッドであり、`B` と `C` でオーバーライドされています。\n\nJavaでは、オーバーライドされたインスタンスメソッドは実体のクラスで決まります。したがって、1回目はAの `sample()`、2回目はBの `sample()`、3回目はCの `sample()` が呼ばれ、表示は `A`、`B`、`C` の順です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "A: 正しい。動的ディスパッチによりA、B、Cの各sampleが順に実行されます。"
+              "detail": "正しいです。配列の順番どおりに、A実体、B実体、C実体の `sample()` が呼ばれます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "B: 誤り。キャストや範囲外アクセスはなく、例外は発生しません。"
+              "detail": "例外が発生する処理はありません。`new B()` や `new C()` はA型として扱えるため、キャスト失敗も起きません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "C: 誤り。表示後に例外が発生する処理はありません。"
+              "detail": "3つの表示後にも例外を発生させる処理はありません。拡張forは配列の要素数分だけ正常に終了します。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "D: 誤り。BとCはAのサブクラスなのでA[]に格納できます。"
+              "detail": "コンパイルできます。`B` と `C` は `A` のサブクラスなので、`A[]` の要素として代入可能です。"
             }
           ],
           "relatedKnowledge": [
-            "参照型変数で呼び出せるメンバは、原則としてコンパイル時の宣言型で決まる。実体がサブクラスでも、宣言型にないメソッドはそのままでは呼び出せない。",
-            "オーバーライドされたインスタンスメソッドは、実行時の実体型で動的に選ばれる。フィールドはポリモーフィズムの対象外。",
-            "サブクラスのインスタンスはスーパークラス型の変数で扱えるが、逆方向には明示的キャストと実体の整合性が必要。"
+            "サブクラスのインスタンスはスーパークラス型の変数で扱える。",
+            "呼べるメソッドは変数の型で決まるが、オーバーライドされた実行先は実体で決まる。",
+            "拡張forは配列の先頭から末尾まで順に取り出す。"
           ],
           "examTips": [
-            "「呼び出せるか」は宣言型、「実際に動くオーバーライドメソッド」は実体型。ここを分けないと継承問題はほぼ落とす。",
-            "フィールドとメソッドを同じルールで読まない。フィールドアクセスは宣言型側が選ばれる。"
+            "ポリモーフィズム問題では、宣言型と実体を表にする。",
+            "`A[]` に `B` や `C` が入っていても、B/CがAのサブクラスなら合法。",
+            "フィールドではなくメソッド呼び出しなら、オーバーライドの動的解決を疑う。"
           ],
           "judgeSteps": [
-            "変数の宣言型と、newされている実体型を分けて書き出す。",
-            "その宣言型から対象メソッドやフィールドを参照できるかを先に確認する。",
-            "メソッド呼び出しなら、オーバーライドの有無を見て実体型側の実装へ進む。",
-            "フィールドアクセスなら、宣言型側のフィールドとして処理する。"
+            "配列に入っている実体を順に確認する。",
+            "取り出し変数の宣言型でメソッドを呼べるか確認する。",
+            "各実体でメソッドがオーバーライドされているか確認する。",
+            "表示順を配列順に並べる。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A です。\n\n配列の型はA[]ですが、要素にはA、B、Cのインスタンスを入れられます。sampleメソッドはオーバーライドされているため、実行時のインスタンス型に応じてA、B、Cの順に呼ばれます。",
+          "pdfExplanation": "正解は A です。\n\n`list` の宣言型は `A[]` です。配列の要素型が `A` のため、`A` 型として扱えるインスタンスを格納できます。`new A()` はもちろん、`new B()` と `new C()` も `A` のサブクラスなので格納できます。\n\n拡張for文では、配列の先頭から順に要素を取り出します。1回目の実体は `A`、2回目は `B`、3回目は `C` です。変数 `obj` のコンパイル時の型は常に `A` ですが、`sample()` はインスタンスメソッドであり、`B` と `C` でオーバーライドされています。\n\nJavaでは、オーバーライドされたインスタンスメソッドは実体のクラスで決まります。したがって、1回目はAの `sample()`、2回目はBの `sample()`、3回目はCの `sample()` が呼ばれ、表示は `A`、`B`、`C` の順です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、A型配列という見た目に引っ張られると間違えます。配列の型はA[]ですが、中に入っている実体はA、B、Cです。\n\n`obj.sample()` の `obj` はA型なので、Aに定義された `sample()` は呼べます。しかし実行時には、実体がBならBの `sample()`、実体がCならCの `sample()` が動きます。これがポリモーフィズムです。",
+          "points": [
+            "A: 正しい。正しいです。配列の順番どおりに、A実体、B実体、C実体の `sample()` が呼ばれます。",
+            "B: 誤り。例外が発生する処理はありません。`new B()` や `new C()` はA型として扱えるため、キャスト失敗も起きません。",
+            "C: 誤り。3つの表示後にも例外を発生させる処理はありません。拡張forは配列の要素数分だけ正常に終了します。",
+            "D: 誤り。コンパイルできます。`B` と `C` は `A` のサブクラスなので、`A[]` の要素として代入可能です。"
+          ]
         },
         "source": "",
         "codeBlocks": [
@@ -20321,55 +20345,55 @@ window.JAVA_STUDY_DATA = {
           "A"
         ],
         "explanation": {
-          "summary": "拡張for文は配列の0番目から最後の要素まで順に取り出します。通常for文では i = 0 から開始し、条件は i < array.length にする必要があります。",
-          "points": [
-            "A: 正しい。添字0からlength-1までを順に出力します。",
-            "B: 誤り。i <= array.length だと i == array.length のとき範囲外アクセスになります。",
-            "C: 誤り。前置インクリメントでも範囲外アクセスの問題は同じです。",
-            "D: 誤り。条件式で++iしているため、最初にiが1になり0番目の要素を出力できません。"
-          ],
-          "correctReason": "正解は A です。\n\n拡張for文は配列の0番目から最後の要素まで順に取り出します。通常for文では i = 0 から開始し、条件は i < array.length にする必要があります。",
+          "summary": "拡張for文 `for (int num : array)` は、配列の0番目から最後の要素まで順に取り出します。通常forで同じ動きにするなら、添字は `0` から始め、条件は `i < array.length` です。`<= array.length` は最後に範囲外アクセスになります。",
+          "correctReason": "正解は A です。\n\n元の拡張for文は、`array` の各要素を先頭から順に `num` に代入し、その値を表示します。配列 `{1, 2, 3, 4, 5}` の有効な添字は `0` から `4` です。`array.length` は5ですが、添字5は存在しません。\n\n通常for文で同じ処理を書く場合、初期化は `int i = 0`、条件は `i < array.length`、更新は `i++` とします。そして表示するのは `array[i]` です。これにより `array[0]` から `array[4]` までが順に表示され、拡張for文と同じ結果になります。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "A: 正しい。添字0からlength-1までを順に出力します。"
+              "detail": "正しいです。`i` は0,1,2,3,4となり、配列の全要素を先頭から順に表示します。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "B: 誤り。i <= array.length だと i == array.length のとき範囲外アクセスになります。"
+              "detail": "`i <= array.length` では、最後に `i == 5` となり `array[5]` を読もうとします。これは範囲外です。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "C: 誤り。前置インクリメントでも範囲外アクセスの問題は同じです。"
+              "detail": "`++i` か `i++` か以前に、条件が `i <= array.length` なので範囲外アクセスになります。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "D: 誤り。条件式で++iしているため、最初にiが1になり0番目の要素を出力できません。"
+              "detail": "条件式で `++i` しているため、最初の判定時点でiが1になります。`array[0]` を表示できず、元の拡張forと同じ処理ではありません。"
             }
           ],
           "relatedKnowledge": [
-            "配列のlengthは要素数であり、最後の有効添字はlength - 1。添字範囲外アクセスは実行時例外になる。",
-            "多次元配列は配列の配列。行ごとに長さが違うジャグ配列も作れるため、外側と内側のlengthを分けて読む。",
-            "参照型配列の要素の初期値はnull。要素にインスタンスを入れる前にメソッド呼び出しをするとNullPointerExceptionになる。"
+            "配列の有効な添字は0からlength-1まで。",
+            "拡張forは添字を直接使わず、全要素を先頭から順に取り出す。",
+            "通常forへ置き換える場合は、開始値・条件・更新式の3つを見る。"
           ],
           "examTips": [
-            "二次元配列では、array.lengthとarray[i].lengthを同じ意味で読まない。",
-            "拡張for文のループ変数に代入しても、配列要素そのものの差し替えにはならない場合がある。"
+            "`<= array.length` はほぼ危険。配列添字では基本的に `< array.length`。",
+            "前置インクリメントが条件式にあると、最初の要素を飛ばすことがある。",
+            "拡張forは要素値を扱う構文であり、添字を直接得る構文ではない。"
           ],
           "judgeSteps": [
-            "配列の生成式から外側の要素数を確認する。",
-            "二次元以上なら、各行の内側配列の長さを個別に確認する。",
-            "ループごとに参照している添字が有効範囲内かを確認する。",
-            "参照型配列なら、要素がnullのまま使われていないかを確認する。"
+            "元コードが何番目の要素から始めているか確認する。",
+            "配列の最後の有効添字を `length - 1` として確認する。",
+            "各選択肢の最初に表示される要素と最後にアクセスする添字を見る。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A です。\n\n拡張for文は配列の0番目から最後の要素まで順に取り出します。通常for文では i = 0 から開始し、条件は i < array.length にする必要があります。",
+          "pdfExplanation": "正解は A です。\n\n元の拡張for文は、`array` の各要素を先頭から順に `num` に代入し、その値を表示します。配列 `{1, 2, 3, 4, 5}` の有効な添字は `0` から `4` です。`array.length` は5ですが、添字5は存在しません。\n\n通常for文で同じ処理を書く場合、初期化は `int i = 0`、条件は `i < array.length`、更新は `i++` とします。そして表示するのは `array[i]` です。これにより `array[0]` から `array[4]` までが順に表示され、拡張for文と同じ結果になります。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\n配列問題で最初に確認するのは、`length` の値ではなく『最後に使える添字』です。要素数5なら、使える添字は0,1,2,3,4です。\n\nAはこの範囲だけを使います。BとCは `i == array.length` まで進むため範囲外です。Dは範囲外にはなりにくい形ですが、`++i` によって最初の要素を飛ばすため、元のコードと同じではありません。",
+          "points": [
+            "A: 正しい。正しいです。`i` は0,1,2,3,4となり、配列の全要素を先頭から順に表示します。",
+            "B: 誤り。`i <= array.length` では、最後に `i == 5` となり `array[5]` を読もうとします。これは範囲外です。",
+            "C: 誤り。`++i` か `i++` か以前に、条件が `i <= array.length` なので範囲外アクセスになります。",
+            "D: 誤り。条件式で `++i` しているため、最初の判定時点でiが1になります。`array[0]` を表示できず、元の拡張forと同じ処理ではありません。"
+          ]
         },
         "source": "",
         "codeBlocks": [
@@ -20420,67 +20444,68 @@ window.JAVA_STUDY_DATA = {
           "D"
         ],
         "explanation": {
-          "summary": "sは文字列プールのString、tはnewで作られた別インスタンスなので s == t はfalseです。一方、s.equals(t)は内容比較なのでtrueです。Testはequalsをオーバーライドしていないため、a.equals(b)はObjectの同一性比較になりfalseです。",
-          "points": [
-            "A: 誤り。a == b は別インスタンスなのでEではなくFです。",
-            "B: 誤り。s == t はfalseなのでAではなくBです。またa.equals(b)もfalseです。",
-            "C: 誤り。s.equals(t)はtrueなのでDではなくCです。",
-            "D: 正しい。B、C、F、Hの順に表示されます。",
-            "E: 誤り。TestはequalsをオーバーライドしていないためGではなくHです。",
-            "F: 誤り。s == tはfalse、a == bもfalseです。"
-          ],
-          "correctReason": "正解は D です。\n\nsは文字列プールのString、tはnewで作られた別インスタンスなので s == t はfalseです。一方、s.equals(t)は内容比較なのでtrueです。Testはequalsをオーバーライドしていないため、a.equals(b)はObjectの同一性比較になりfalseです。",
+          "summary": "表示は `B`、`C`、`F`、`H` です。`s == t` は別インスタンスなのでfalse、`s.equals(t)` は文字列内容が同じなのでtrueです。`a` と `b` は同じ値17を持つ別インスタンスで、`Test` は `equals` をオーバーライドしていないため、`a.equals(b)` も同一性比較のままfalseになります。",
+          "correctReason": "正解は D です。\n\nまず `String s = \"A\";` は文字列プール上のStringを参照します。`String t = new String(\"A\");` は、内容は同じでも新しいStringインスタンスを作ります。したがって `s == t` は参照先が違うためfalseで、最初は `B` が表示されます。\n\n次に `s.equals(t)` はStringクラスがオーバーライドしている内容比較です。どちらも文字列内容は `A` なのでtrueとなり、`C` が表示されます。\n\n`Test a = new Test(17);` と `Test b = new Test(17);` は、同じ値17を持っていても別々に生成されたインスタンスです。`a == b` は参照比較なのでfalse、`F` が表示されます。\n\n最後の `a.equals(b)` ですが、`Test` クラスは `equals` をオーバーライドしていません。そのためObjectクラスの `equals` が使われ、これは基本的に `==` と同じ参照比較です。別インスタンスなのでfalseとなり、`H` が表示されます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "A: 誤り。a == b は別インスタンスなのでEではなくFです。"
+              "detail": "3つ目の判定 `a == b` は別インスタンスなのでfalseです。`E` ではなく `F` が表示されます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "B: 誤り。s == t はfalseなのでAではなくBです。またa.equals(b)もfalseです。"
+              "detail": "`s == t` はfalseなので最初は `A` ではなく `B` です。また `a.equals(b)` もfalseなので最後は `H` です。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "C: 誤り。s.equals(t)はtrueなのでDではなくCです。"
+              "detail": "`s.equals(t)` は内容比較でtrueです。2つ目は `D` ではなく `C` が表示されます。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "D: 正しい。B、C、F、Hの順に表示されます。"
+              "detail": "正しいです。順に `B`、`C`、`F`、`H` が表示されます。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "E: 誤り。TestはequalsをオーバーライドしていないためGではなくHです。"
+              "detail": "`Test` は `equals` をオーバーライドしていないため、`a.equals(b)` は内容比較になりません。`G` ではなく `H` です。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "F: 誤り。s == tはfalse、a == bもfalseです。"
+              "detail": "`s == t` はfalse、`a == b` もfalseです。`A` や `E` は表示されません。"
             }
           ],
           "relatedKnowledge": [
-            "配列のlengthは要素数であり、最後の有効添字はlength - 1。添字範囲外アクセスは実行時例外になる。",
-            "多次元配列は配列の配列。行ごとに長さが違うジャグ配列も作れるため、外側と内側のlengthを分けて読む。",
-            "参照型配列の要素の初期値はnull。要素にインスタンスを入れる前にメソッド呼び出しをするとNullPointerExceptionになる。"
+            "`==` は参照型では参照先が同じかを比較する。",
+            "Stringの `equals` は文字列内容を比較する。",
+            "自作クラスで `equals` をオーバーライドしなければ、Objectの同一性比較が使われる。"
           ],
           "examTips": [
-            "二次元配列では、array.lengthとarray[i].lengthを同じ意味で読まない。",
-            "拡張for文のループ変数に代入しても、配列要素そのものの差し替えにはならない場合がある。"
+            "Stringだけ特別扱いしすぎない。`new String` は別インスタンス。",
+            "値が同じフィールドを持っていても、自作クラスのequalsは自動で内容比較にならない。",
+            "recordならequalsが自動生成されるが、通常クラスでは自分で書かない限り生成されない。"
           ],
           "judgeSteps": [
-            "配列の生成式から外側の要素数を確認する。",
-            "二次元以上なら、各行の内側配列の長さを個別に確認する。",
-            "ループごとに参照している添字が有効範囲内かを確認する。",
-            "参照型配列なら、要素がnullのまま使われていないかを確認する。"
+            "各変数が同じインスタンスを参照しているか確認する。",
+            "`==` なら参照比較として判定する。",
+            "`equals` なら、そのクラスでオーバーライドされているか確認する。",
+            "表示される文字をif文の順に並べる。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は D です。\n\nsは文字列プールのString、tはnewで作られた別インスタンスなので s == t はfalseです。一方、s.equals(t)は内容比較なのでtrueです。Testはequalsをオーバーライドしていないため、a.equals(b)はObjectの同一性比較になりfalseです。",
+          "pdfExplanation": "正解は D です。\n\nまず `String s = \"A\";` は文字列プール上のStringを参照します。`String t = new String(\"A\");` は、内容は同じでも新しいStringインスタンスを作ります。したがって `s == t` は参照先が違うためfalseで、最初は `B` が表示されます。\n\n次に `s.equals(t)` はStringクラスがオーバーライドしている内容比較です。どちらも文字列内容は `A` なのでtrueとなり、`C` が表示されます。\n\n`Test a = new Test(17);` と `Test b = new Test(17);` は、同じ値17を持っていても別々に生成されたインスタンスです。`a == b` は参照比較なのでfalse、`F` が表示されます。\n\n最後の `a.equals(b)` ですが、`Test` クラスは `equals` をオーバーライドしていません。そのためObjectクラスの `equals` が使われ、これは基本的に `==` と同じ参照比較です。別インスタンスなのでfalseとなり、`H` が表示されます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題はStringと自作クラスの違いを同時に聞いています。Stringでは `equals` が内容比較として実装されていますが、自作クラス `Test` にはその実装がありません。\n\nつまり、`new Test(17)` と `new Test(17)` は、見た目の値が同じでもJavaにとっては別物です。`equals` も特別な実装がない限り、別物として扱います。この区別を曖昧にすると、AやEを選びやすくなります。",
+          "points": [
+            "A: 誤り。3つ目の判定 `a == b` は別インスタンスなのでfalseです。`E` ではなく `F` が表示されます。",
+            "B: 誤り。`s == t` はfalseなので最初は `A` ではなく `B` です。また `a.equals(b)` もfalseなので最後は `H` です。",
+            "C: 誤り。`s.equals(t)` は内容比較でtrueです。2つ目は `D` ではなく `C` が表示されます。",
+            "D: 正しい。正しいです。順に `B`、`C`、`F`、`H` が表示されます。",
+            "E: 誤り。`Test` は `equals` をオーバーライドしていないため、`a.equals(b)` は内容比較になりません。`G` ではなく `H` です。",
+            "F: 誤り。`s == t` はfalse、`a == b` もfalseです。`A` や `E` は表示されません。"
+          ]
         },
         "source": "",
         "codeBlocks": [
@@ -20537,67 +20562,68 @@ window.JAVA_STUDY_DATA = {
           "B"
         ],
         "explanation": {
-          "summary": "switch式でアロー形式を使う場合は、-> の右側に結果となる式を書きます。breakは不要で、defaultも網羅性のため必要です。Bだけが構文として正しく、元コードと同じくdataが0xFF0000なら\"C\"を返します。",
-          "points": [
-            "A: 誤り。switch式のアロー形式で値の後にbreakは書けません。",
-            "B: 正しい。各caseが値を返し、defaultもあるためswitch式として成立します。",
-            "C: 誤り。1つのswitch内でアロー形式とコロン形式を混在できません。",
-            "D: 誤り。switch式は値を返す必要があります。別変数への代入文だけでは式の結果になりません。",
-            "E: 誤り。:= というcase構文はありません。",
-            "F: 誤り。defaultがなく、すべての値を網羅していないためswitch式として不十分です。"
-          ],
-          "correctReason": "正解は B です。\n\nswitch式でアロー形式を使う場合は、-> の右側に結果となる式を書きます。breakは不要で、defaultも網羅性のため必要です。Bだけが構文として正しく、元コードと同じくdataが0xFF0000なら\"C\"を返します。",
+          "summary": "switch式で `->` を使う場合、各caseは値を返す式として書きます。`break` は不要です。Bは `data` に一致するcaseから文字列を返し、defaultもあるため網羅性も満たします。Aはアロー形式に `break` を書いており不正、Cはアロー形式とコロン形式の混在、Dは値を返しておらず、Eは存在しない構文、Fはdefaultがありません。",
+          "correctReason": "正解は B です。\n\n元のコードはswitch文です。`data` が `0xFF0000` なので、`case 0xFF0000` に一致し、`str` には `\"C\"` が代入されます。これと同じ結果をswitch式で書く場合、switch自体が値を返す形にする必要があります。\n\nアロー形式のswitch式では、`case 値 -> 結果;` のように書きます。`break` は書きません。また、switch式はすべての入力値に対して結果を返せる必要があるため、今回のようにint値を対象にする場合は `default` が必要です。\n\nBは各caseが文字列を返し、defaultもあるためswitch式として成立します。`data` が `0xFF0000` なら `\"C\"` を返し、元コードと同じ結果になります。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "A: 誤り。switch式のアロー形式で値の後にbreakは書けません。"
+              "detail": "アロー形式 `case ... ->` では、値を返すだけでよく、`break` は書きません。`-> \"A\"; break;` のような形は不正です。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "B: 正しい。各caseが値を返し、defaultもあるためswitch式として成立します。"
+              "detail": "正しいです。アロー形式のswitch式として構文が正しく、defaultもあるため網羅性を満たします。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "C: 誤り。1つのswitch内でアロー形式とコロン形式を混在できません。"
+              "detail": "同じswitchの中で、アロー形式のcaseとコロン形式のdefaultを混在させています。これは不正です。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "D: 誤り。switch式は値を返す必要があります。別変数への代入文だけでは式の結果になりません。"
+              "detail": "switch式は値を返す必要があります。この選択肢は `color = ...` という代入文を書いているだけで、`str` に返す値になっていません。さらに `color` も文脈上未定義です。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "E: 誤り。:= というcase構文はありません。"
+              "detail": "Javaのswitchに `:=` というcase構文はありません。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "F: 誤り。defaultがなく、すべての値を網羅していないためswitch式として不十分です。"
+              "detail": "コロン形式で `yield` を使う方向性はありますが、defaultがありません。intのswitch式ではすべての値を網羅できないため不十分です。"
             }
           ],
           "relatedKnowledge": [
-            "switch文のコロン形式は、breakがなければ次のcaseへフォールスルーする。switch式のアロー形式は原則フォールスルーしない。",
-            "switch式は値を返す式であり、ブロック形式で値を返す場合はyieldを使う。returnとは役割が違う。",
-            "switchの対象がnullになると、通常は実行時にNullPointerExceptionが発生する。case nullが使えるかどうかは試験範囲・Javaバージョンの扱いに注意する。"
+            "switch文は処理を実行する構文、switch式は値を返す構文。",
+            "アロー形式 `->` では通常breakを書かない。",
+            "switch式では網羅性が必要で、enumなどで全列挙しない限りdefaultが重要になる。"
           ],
           "examTips": [
-            "switch文とswitch式を混同しない。文は処理の流れ、式は値を作る構文。",
-            "caseに入った後、breakがあるまで下へ流れるかを必ず確認する。"
+            "switch式に変換する問題では、構文の見た目だけでなく『値を返しているか』を見る。",
+            "`break` と `yield` の使い分けを混同しない。",
+            "選択肢内の未定義変数にも注意する。"
           ],
           "judgeSteps": [
-            "switchの対象値を先に確定する。",
-            "一致するcaseまたはdefaultを探す。",
-            "コロン形式ならbreakまで、アロー形式ならそのcaseだけを実行する。",
-            "switch式なら最終的に返る値を確認する。"
+            "元のswitch文がどの値を結果にするか確認する。",
+            "選択肢がswitch式として構文的に正しいか確認する。",
+            "全caseで値を返すか確認する。",
+            "defaultまたは網羅性があるか確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は B です。\n\nswitch式でアロー形式を使う場合は、-> の右側に結果となる式を書きます。breakは不要で、defaultも網羅性のため必要です。Bだけが構文として正しく、元コードと同じくdataが0xFF0000なら\"C\"を返します。",
+          "pdfExplanation": "正解は B です。\n\n元のコードはswitch文です。`data` が `0xFF0000` なので、`case 0xFF0000` に一致し、`str` には `\"C\"` が代入されます。これと同じ結果をswitch式で書く場合、switch自体が値を返す形にする必要があります。\n\nアロー形式のswitch式では、`case 値 -> 結果;` のように書きます。`break` は書きません。また、switch式はすべての入力値に対して結果を返せる必要があるため、今回のようにint値を対象にする場合は `default` が必要です。\n\nBは各caseが文字列を返し、defaultもあるためswitch式として成立します。`data` が `0xFF0000` なら `\"C\"` を返し、元コードと同じ結果になります。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nswitch式は『switchの結果を変数に代入する』書き方です。だから各caseは最終的に値を返さなければいけません。\n\nBは `case 0xFF0000 -> \"C\";` のように、そのcaseの結果を直接返します。元のswitch文で `str = \"C\"; break;` としていた処理を、switch式では `\"C\"` という値に置き換えていると考えると分かりやすいです。",
+          "points": [
+            "A: 誤り。アロー形式 `case ... ->` では、値を返すだけでよく、`break` は書きません。`-> \"A\"; break;` のような形は不正です。",
+            "B: 正しい。正しいです。アロー形式のswitch式として構文が正しく、defaultもあるため網羅性を満たします。",
+            "C: 誤り。同じswitchの中で、アロー形式のcaseとコロン形式のdefaultを混在させています。これは不正です。",
+            "D: 誤り。switch式は値を返す必要があります。この選択肢は `color = ...` という代入文を書いているだけで、`str` に返す値になっていません。さらに `color` も文脈上未定義です。",
+            "E: 誤り。Javaのswitchに `:=` というcase構文はありません。",
+            "F: 誤り。コロン形式で `yield` を使う方向性はありますが、defaultがありません。intのswitch式ではすべての値を網羅できないため不十分です。"
+          ]
         },
         "source": "",
         "codeBlocks": [
@@ -20646,60 +20672,62 @@ window.JAVA_STUDY_DATA = {
           "B"
         ],
         "explanation": {
-          "summary": "interface Aのdefault sampleは暗黙的にpublicです。BはAを実装しているにもかかわらず、private void sample()でより狭いアクセスにしているため、Aのsampleを正しく実装・オーバーライドできずコンパイルエラーになります。",
-          "points": [
-            "A: 誤り。privateメソッドはサブクラスでオーバーライドされる対象ではありません。",
-            "B: 正しい。public相当のインタフェースメソッドをprivateで実装することはできません。",
-            "C: 誤り。同一ソース内のサブクラスCを許可する場合、permitsを省略できます。",
-            "D: 誤り。abstractクラスはインタフェースの抽象メソッドを必ず実装しなくてもよいです。",
-            "E: 誤り。インタフェースのメソッドはpublicなので、Cのpublic sample自体はアクセスを狭めていません。"
-          ],
-          "correctReason": "正解は B です。\n\ninterface Aのdefault sampleは暗黙的にpublicです。BはAを実装しているにもかかわらず、private void sample()でより狭いアクセスにしているため、Aのsampleを正しく実装・オーバーライドできずコンパイルエラーになります。",
+          "summary": "`A` のdefaultメソッド `sample()` は、インタフェースのメソッドなので実質publicです。`B implements A` しているにもかかわらず、`B` では同じシグネチャの `sample()` をprivateで宣言しています。これは、public相当のインタフェースメソッドをより狭いprivateで実装しようとしている形になり、コンパイルエラーです。",
+          "correctReason": "正解は B です。\n\nインタフェースのメソッドは、抽象メソッドでもdefaultメソッドでも、外部から呼べるpublicな契約として扱われます。`interface A` の `default void sample()` は、明示されていなくてもpublic相当です。\n\n`abstract sealed class B implements A` は、Aを実装するクラスです。そのBの中に `private void sample()` が定義されています。privateメソッドはそのクラス内からしか見えません。public相当のA.sampleをprivateで実装することはできません。オーバーライド時にアクセス範囲を狭めることは禁止されているためです。\n\nしたがって、Bクラスの `private void sample()` が、Aインタフェースの `sample()` を正しく実装できないことがコンパイルエラーの原因です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "A: 誤り。privateメソッドはサブクラスでオーバーライドされる対象ではありません。"
+              "detail": "privateメソッドはサブクラスでオーバーライドされる対象ではありません。ただし、この問題の直接原因はCでオーバーライドできないことではなく、BがAのpublic相当メソッドをprivateで実装しようとしていることです。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "B: 正しい。public相当のインタフェースメソッドをprivateで実装することはできません。"
+              "detail": "正しいです。インタフェースの `sample()` はpublic相当なので、Bのprivateメソッドでは実装・オーバーライドできません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "C: 誤り。同一ソース内のサブクラスCを許可する場合、permitsを省略できます。"
+              "detail": "sealedの指定自体が主原因ではありません。同じソース内で直接サブクラスが明確な場合、permitsを省略できるケースがあります。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "D: 誤り。abstractクラスはインタフェースの抽象メソッドを必ず実装しなくてもよいです。"
+              "detail": "abstractクラスは、インタフェースのメソッドを未実装のまま残すこと自体は可能です。問題はprivateで同名メソッドを置いてしまっている点です。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "E: 誤り。インタフェースのメソッドはpublicなので、Cのpublic sample自体はアクセスを狭めていません。"
+              "detail": "Cの `public void sample()` はアクセス範囲としては問題ありません。インタフェースメソッドはpublicなので、publicで実装するのは正しい方向です。"
             }
           ],
           "relatedKnowledge": [
-            "privateメンバは同じクラス内からしか直接アクセスできない。継承していてもサブクラスから直接使えるわけではない。",
-            "デフォルトアクセスは同じパッケージ内限定。protectedは同じパッケージに加え、異なるパッケージのサブクラスからも一定条件でアクセスできる。",
-            "オーバーライドでは、親メソッドより狭いアクセス修飾子にできない。"
+            "インタフェースのメソッドは基本的にpublic。",
+            "オーバーライド・実装ではアクセス範囲を狭められない。",
+            "privateメソッドは継承先から見えず、オーバーライド対象にもならない。"
           ],
           "examTips": [
-            "protectedは「どこからでもサブクラスなら自由」ではない。パッケージと参照の型を合わせて確認する。",
-            "privateメソッドはオーバーライドされない。同名メソッドを子に書いても別メソッドとして扱う。"
+            "interfaceが絡むメソッドは、まずpublic相当だと考える。",
+            "privateの同名メソッドが出たら、overrideではなく別メソッド扱いになるか、アクセス違反になるかを確認する。",
+            "abstractだから未実装OK、という判断だけで終わらせない。同名メソッドのアクセスも見る。"
           ],
           "judgeSteps": [
-            "アクセス対象のメンバの修飾子を確認する。",
-            "アクセス元クラスが同じクラス、同じパッケージ、サブクラスのどれに該当するか確認する。",
-            "継承関係がある場合でも、privateやデフォルトアクセスの制限を個別に確認する。"
+            "インタフェース側のメソッドの実質的なアクセス修飾子を確認する。",
+            "実装クラス側に同じシグネチャのメソッドがあるか確認する。",
+            "アクセス範囲が狭くなっていないか確認する。",
+            "sealedやabstractなど他の修飾子の問題と切り分ける。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は B です。\n\ninterface Aのdefault sampleは暗黙的にpublicです。BはAを実装しているにもかかわらず、private void sample()でより狭いアクセスにしているため、Aのsampleを正しく実装・オーバーライドできずコンパイルエラーになります。",
+          "pdfExplanation": "正解は B です。\n\nインタフェースのメソッドは、抽象メソッドでもdefaultメソッドでも、外部から呼べるpublicな契約として扱われます。`interface A` の `default void sample()` は、明示されていなくてもpublic相当です。\n\n`abstract sealed class B implements A` は、Aを実装するクラスです。そのBの中に `private void sample()` が定義されています。privateメソッドはそのクラス内からしか見えません。public相当のA.sampleをprivateで実装することはできません。オーバーライド時にアクセス範囲を狭めることは禁止されているためです。\n\nしたがって、Bクラスの `private void sample()` が、Aインタフェースの `sample()` を正しく実装できないことがコンパイルエラーの原因です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、privateメソッドの扱いとinterfaceメソッドのpublic性を混ぜています。`A` の `sample()` はdefaultメソッドですが、interfaceのメソッドなのでpublicな契約です。\n\n`B` が `implements A` した時点で、Aのsampleを満たす必要があります。ところがBは `private void sample()` と書いています。privateは外から見えないため、Aのpublicなsampleとして扱えません。\n\nCにpublicなsampleがあるからよさそうに見えますが、Bクラスの時点で不正なメソッド宣言になっているため、そこまで進めません。",
+          "points": [
+            "A: 誤り。privateメソッドはサブクラスでオーバーライドされる対象ではありません。ただし、この問題の直接原因はCでオーバーライドできないことではなく、BがAのpublic相当メソッドをprivateで実装しようとしていることです。",
+            "B: 正しい。正しいです。インタフェースの `sample()` はpublic相当なので、Bのprivateメソッドでは実装・オーバーライドできません。",
+            "C: 誤り。sealedの指定自体が主原因ではありません。同じソース内で直接サブクラスが明確な場合、permitsを省略できるケースがあります。",
+            "D: 誤り。abstractクラスは、インタフェースのメソッドを未実装のまま残すこと自体は可能です。問題はprivateで同名メソッドを置いてしまっている点です。",
+            "E: 誤り。Cの `public void sample()` はアクセス範囲としては問題ありません。インタフェースメソッドはpublicなので、publicで実装するのは正しい方向です。"
+          ]
         },
         "source": "",
         "codeBlocks": [
@@ -20762,61 +20790,62 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "オーバーロードは同じクラス内でメソッド名が同じでも、引数の数・型・順序が異なれば成立します。戻り値型、引数名、アクセス修飾子だけの違いではオーバーロードになりません。",
-          "points": [
-            "A: 正しい。引数の数も型も既存のtest(int,int)と異なるためオーバーロードです。",
-            "B: 誤り。引数名が違うだけで、シグネチャはtest(int,int)のままなので重複定義です。",
-            "C: 正しい。引数型がInteger,Integerなのでtest(int,int)とは異なります。",
-            "D: 誤り。戻り値型だけをvoidに変えてもオーバーロードにはならず、さらにreturn a + bもvoidと矛盾します。",
-            "E: 誤り。アクセス修飾子が違ってもシグネチャはtest(int,int)で重複です。"
-          ],
-          "correctReason": "正解は A・C です。\n\nオーバーロードは同じクラス内でメソッド名が同じでも、引数の数・型・順序が異なれば成立します。戻り値型、引数名、アクセス修飾子だけの違いではオーバーロードになりません。",
+          "summary": "既存メソッドは `test(int a, int b)` です。オーバーロードになるには、メソッド名が同じで、引数の数・型・順序のいずれかが異なる必要があります。Aは引数が1つの `Integer`、Cは引数型が `Integer, Integer` なので有効です。戻り値型、引数名、アクセス修飾子だけを変えてもオーバーロードにはなりません。",
+          "correctReason": "正解は A と C です。\n\nメソッドのオーバーロード判定で見るのは、メソッド名と引数リストです。戻り値型はシグネチャに含まれません。引数名もシグネチャに含まれません。アクセス修飾子もシグネチャではありません。\n\n既存メソッドは `public int test(int a, int b)` です。Aの `test(Integer i)` は引数の数が1つで、既存の2引数メソッドとは異なります。したがってオーバーロードとして成立します。\n\nCの `test(Integer i, Integer j)` は引数の数は2つですが、型が `Integer, Integer` です。既存の `int, int` とは異なるため、これもオーバーロードとして成立します。\n\nBとEは引数名やアクセス修飾子が違うだけで、引数型は `int, int` のままです。既存メソッドと重複します。Dも戻り値型をvoidに変えていますが、戻り値型だけでは区別できません。さらに `return a + b;` はvoidメソッドでは不正です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "A: 正しい。引数の数も型も既存のtest(int,int)と異なるためオーバーロードです。"
+              "detail": "正しいです。`test(Integer)` は引数が1つなので、既存の `test(int,int)` と区別できます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "B: 誤り。引数名が違うだけで、シグネチャはtest(int,int)のままなので重複定義です。"
+              "detail": "引数名が `a,b` から `x,y` に変わっただけです。シグネチャは同じ `test(int,int)` なので重複定義です。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "C: 正しい。引数型がInteger,Integerなのでtest(int,int)とは異なります。"
+              "detail": "正しいです。`Integer,Integer` は `int,int` とは引数型が異なるため、オーバーロードになります。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "D: 誤り。戻り値型だけをvoidに変えてもオーバーロードにはならず、さらにreturn a + bもvoidと矛盾します。"
+              "detail": "戻り値型だけを `void` に変えてもオーバーロードにはなりません。またvoidメソッドで値をreturnしている点も不正です。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "E: 誤り。アクセス修飾子が違ってもシグネチャはtest(int,int)で重複です。"
+              "detail": "privateにしてもシグネチャは `test(int,int)` のままです。アクセス修飾子だけでは別メソッドとして定義できません。"
             }
           ],
           "relatedKnowledge": [
-            "オーバーライドは、メソッド名と引数リストが同じであることが前提。戻り値型は同じ型または共変戻り値としてサブクラス型にできる。",
-            "オーバーライド時のアクセス修飾子は、親より狭くできない。publicをprotectedやデフォルトに落とすとコンパイルエラー。",
-            "オーバーロードは引数リスト違いの別メソッド。実行時の動的選択ではなく、コンパイル時の引数型で候補が決まる。"
+            "メソッドシグネチャは、メソッド名と引数リストで決まる。",
+            "戻り値型だけではオーバーロードできない。",
+            "`int` と `Integer` はオーバーロードのシグネチャ上は別の型。"
           ],
           "examTips": [
-            "@Overrideが付いているのに条件を満たさない場合はコンパイルエラーになる。付いていなくても条件を満たせばオーバーライドは成立する。",
-            "戻り値だけ違うメソッドはオーバーロードにならない。戻り値型でメソッドを区別できない。"
+            "オーバーロード問題では、戻り値やアクセス修飾子に釣られない。",
+            "引数名は完全に無視する。",
+            "voidメソッドで値をreturnしていないかも別途確認する。"
           ],
           "judgeSteps": [
-            "親メソッドと子メソッドのメソッド名・引数リストを比較する。",
-            "戻り値型が同じか、親の戻り値型のサブタイプになっているか確認する。",
-            "アクセス修飾子が親と同じか、より広いか確認する。",
-            "throws句が親より広いチェック例外になっていないか確認する。"
+            "既存メソッドの引数リストを書き出す。",
+            "各選択肢の引数の数・型・順序を比較する。",
+            "戻り値型やアクセス修飾子だけの違いを除外する。",
+            "メソッド本体にも明らかなコンパイルエラーがないか確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A・C です。\n\nオーバーロードは同じクラス内でメソッド名が同じでも、引数の数・型・順序が異なれば成立します。戻り値型、引数名、アクセス修飾子だけの違いではオーバーロードになりません。",
+          "pdfExplanation": "正解は A と C です。\n\nメソッドのオーバーロード判定で見るのは、メソッド名と引数リストです。戻り値型はシグネチャに含まれません。引数名もシグネチャに含まれません。アクセス修飾子もシグネチャではありません。\n\n既存メソッドは `public int test(int a, int b)` です。Aの `test(Integer i)` は引数の数が1つで、既存の2引数メソッドとは異なります。したがってオーバーロードとして成立します。\n\nCの `test(Integer i, Integer j)` は引数の数は2つですが、型が `Integer, Integer` です。既存の `int, int` とは異なるため、これもオーバーロードとして成立します。\n\nBとEは引数名やアクセス修飾子が違うだけで、引数型は `int, int` のままです。既存メソッドと重複します。Dも戻り値型をvoidに変えていますが、戻り値型だけでは区別できません。さらに `return a + b;` はvoidメソッドでは不正です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は『オーバーロード』という言葉を知っていても、シグネチャの範囲を誤ると落ちます。Javaはメソッド呼び出し時に、引数を見てどのメソッドを呼ぶか決めます。そのため、戻り値だけが違うメソッドを複数置くと、呼び出し側から区別できません。\n\nAとCは呼び出し時の引数リストが違うため区別できます。B/E/Dは既存の `test(int,int)` と衝突します。",
+          "points": [
+            "A: 正しい。正しいです。`test(Integer)` は引数が1つなので、既存の `test(int,int)` と区別できます。",
+            "B: 誤り。引数名が `a,b` から `x,y` に変わっただけです。シグネチャは同じ `test(int,int)` なので重複定義です。",
+            "C: 正しい。正しいです。`Integer,Integer` は `int,int` とは引数型が異なるため、オーバーロードになります。",
+            "D: 誤り。戻り値型だけを `void` に変えてもオーバーロードにはなりません。またvoidメソッドで値をreturnしている点も不正です。",
+            "E: 誤り。privateにしてもシグネチャは `test(int,int)` のままです。アクセス修飾子だけでは別メソッドとして定義できません。"
+          ]
         },
         "source": "",
         "codeBlocks": [
@@ -20878,78 +20907,81 @@ window.JAVA_STUDY_DATA = {
           "D"
         ],
         "explanation": {
-          "summary": "sealedクラスの直接サブクラスは、final・sealed・non-sealedのいずれかで宣言します。そのためfinalクラスをsealedクラスのサブクラスにできます。またfinalクラスは継承できないため、サブクラスで実装が必要なabstractメソッドを持てません。",
-          "points": [
-            "A: 正しい。sealedクラスの許可されたサブクラスはfinalにできます。",
-            "B: 誤り。finalクラスはsealedクラスのサブクラスでなくても宣言できます。",
-            "C: 誤り。finalクラスがabstractクラスのサブクラスである必要はありません。",
-            "D: 正しい。finalクラスは継承できないため、abstractメソッドを残せません。",
-            "E: 誤り。abstractクラスはfinalメソッドを持てます。",
-            "F: 誤り。finalクラスは継承できないため、そのサブクラスは作れません。",
-            "G: 誤り。sealedクラスはfinalメソッドを持てます。",
-            "H: 誤り。sealedとfinalは継承許可と継承禁止で矛盾するため同時に指定できません。"
-          ],
-          "correctReason": "正解は A・D です。\n\nsealedクラスの直接サブクラスは、final・sealed・non-sealedのいずれかで宣言します。そのためfinalクラスをsealedクラスのサブクラスにできます。またfinalクラスは継承できないため、サブクラスで実装が必要なabstractメソッドを持てません。",
+          "summary": "finalクラスは、sealedクラスに許可されたサブクラスとして宣言できます。またfinalクラスはそれ以上継承できないため、未実装のabstractメソッドを持てません。abstractクラスはfinalメソッドを持てますし、sealedクラスもfinalメソッドを持てます。`sealed` と `final` を同じクラスに同時指定することはできません。",
+          "correctReason": "正解は A と D です。\n\nsealedクラスは、継承を許可するクラスを限定する仕組みです。sealedクラスの直接サブクラスは、`final`、`sealed`、`non-sealed` のいずれかで宣言する必要があります。したがって、finalクラスをsealedクラスのサブクラスとして宣言することは可能です。これがAです。\n\n一方、finalクラスはそれ以上継承できません。abstractメソッドはサブクラスで実装されることを前提にした未実装メソッドです。finalクラスにabstractメソッドを残すと、誰も実装できないため不正です。したがってDも正しいです。\n\nその他の選択肢は、finalやabstractやsealedの関係を過剰に結びつけています。finalクラスはsealedクラスのサブクラスでなくても宣言できますし、abstractクラスはfinalメソッドを持てます。sealedクラスもfinalメソッドを持てます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "A: 正しい。sealedクラスの許可されたサブクラスはfinalにできます。"
+              "detail": "正しいです。sealedクラスの直接サブクラスは、許可されていればfinalとして宣言できます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "B: 誤り。finalクラスはsealedクラスのサブクラスでなくても宣言できます。"
+              "detail": "finalクラスは通常のクラスとしても宣言できます。sealedクラスのサブクラスである必要はありません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "C: 誤り。finalクラスがabstractクラスのサブクラスである必要はありません。"
+              "detail": "finalクラスがabstractクラスのサブクラスである必要はありません。finalは単にそれ以上継承できないことを表します。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "D: 正しい。finalクラスは継承できないため、abstractメソッドを残せません。"
+              "detail": "正しいです。finalクラスは継承できないため、サブクラスで実装すべきabstractメソッドを持てません。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "E: 誤り。abstractクラスはfinalメソッドを持てます。"
+              "detail": "abstractクラスはfinalメソッドを持てます。finalメソッドはオーバーライド禁止なだけで、abstractクラス内に置けます。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "F: 誤り。finalクラスは継承できないため、そのサブクラスは作れません。"
+              "detail": "finalクラスは継承できません。したがってabstractクラスがfinalクラスをextendsすることはできません。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "G: 誤り。sealedクラスはfinalメソッドを持てます。"
+              "detail": "sealedクラスはfinalメソッドを持てます。sealedはクラスの継承先制限、finalメソッドはメソッドのオーバーライド禁止です。対象が違います。"
             },
             {
               "key": "H",
               "isCorrect": false,
-              "detail": "H: 誤り。sealedとfinalは継承許可と継承禁止で矛盾するため同時に指定できません。"
+              "detail": "同じクラスをsealedかつfinalにすることはできません。sealedは限定的に継承を許可する指定、finalは継承を完全に禁止する指定だからです。"
             }
           ],
           "relatedKnowledge": [
-            "sealedは継承・実装できる直接の相手をpermitsで制限する仕組み。許可されていないクラスは継承できない。",
-            "sealedクラスまたはsealedインタフェースを直接継承・実装した側は、final、sealed、non-sealedのいずれかを明示する必要がある。",
-            "finalはそれ以上の継承禁止、sealedはさらに許可制、non-sealedは以降の継承制限解除を意味する。"
+            "sealedクラスの直接サブクラスは `final`、`sealed`、`non-sealed` のいずれかが必要。",
+            "finalクラスは継承できない。",
+            "abstractメソッドは実装される余地が必要。",
+            "finalメソッドはabstractクラスやsealedクラスの中にも定義できる。"
           ],
           "examTips": [
-            "permitsに名前があるかだけでなく、サブクラス側のfinal/sealed/non-sealed指定も確認する。",
-            "non-sealedは、sealedな親を直接継承・実装している場面で意味を持つ。通常クラスに突然付けても成立しない。"
+            "sealedとfinalは似ているようで逆方向。sealedは許可制、finalは継承禁止。",
+            "クラスに付くfinalとメソッドに付くfinalを混同しない。",
+            "abstractメソッドが残ってよいのは、実装するサブクラスを作れる場合だけ。"
           ],
           "judgeSteps": [
-            "親がsealedか、permitsで許可している直接サブクラス名を確認する。",
-            "各サブクラスが許可リストに含まれているかを確認する。",
-            "許可されたサブクラス側にfinal、sealed、non-sealedのいずれかがあるかを確認する。"
+            "各選択肢がクラスの話かメソッドの話か分ける。",
+            "finalが『継承禁止』であることから派生して判断する。",
+            "sealedの直接サブクラスに必要な修飾子を確認する。",
+            "abstractメソッドを実装する余地が残っているかを見る。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A・D です。\n\nsealedクラスの直接サブクラスは、final・sealed・non-sealedのいずれかで宣言します。そのためfinalクラスをsealedクラスのサブクラスにできます。またfinalクラスは継承できないため、サブクラスで実装が必要なabstractメソッドを持てません。",
+          "pdfExplanation": "正解は A と D です。\n\nsealedクラスは、継承を許可するクラスを限定する仕組みです。sealedクラスの直接サブクラスは、`final`、`sealed`、`non-sealed` のいずれかで宣言する必要があります。したがって、finalクラスをsealedクラスのサブクラスとして宣言することは可能です。これがAです。\n\n一方、finalクラスはそれ以上継承できません。abstractメソッドはサブクラスで実装されることを前提にした未実装メソッドです。finalクラスにabstractメソッドを残すと、誰も実装できないため不正です。したがってDも正しいです。\n\nその他の選択肢は、finalやabstractやsealedの関係を過剰に結びつけています。finalクラスはsealedクラスのサブクラスでなくても宣言できますし、abstractクラスはfinalメソッドを持てます。sealedクラスもfinalメソッドを持てます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、`final`、`abstract`、`sealed` を単語の印象で覚えていると混乱します。\n\nfinalクラスは『ここで継承を止める』クラスです。sealedクラスは『誰に継承を許すか決める』クラスです。sealedクラスが許可したサブクラスがfinalになるのは自然です。『ここまでは許可するが、その先は止める』という形です。\n\n一方、abstractメソッドは『まだ本体がないのでサブクラスで実装してほしい』という意味です。finalクラスではサブクラスを作れないため、abstractメソッドを残せません。",
+          "points": [
+            "A: 正しい。正しいです。sealedクラスの直接サブクラスは、許可されていればfinalとして宣言できます。",
+            "B: 誤り。finalクラスは通常のクラスとしても宣言できます。sealedクラスのサブクラスである必要はありません。",
+            "C: 誤り。finalクラスがabstractクラスのサブクラスである必要はありません。finalは単にそれ以上継承できないことを表します。",
+            "D: 正しい。正しいです。finalクラスは継承できないため、サブクラスで実装すべきabstractメソッドを持てません。",
+            "E: 誤り。abstractクラスはfinalメソッドを持てます。finalメソッドはオーバーライド禁止なだけで、abstractクラス内に置けます。",
+            "F: 誤り。finalクラスは継承できません。したがってabstractクラスがfinalクラスをextendsすることはできません。",
+            "G: 誤り。sealedクラスはfinalメソッドを持てます。sealedはクラスの継承先制限、finalメソッドはメソッドのオーバーライド禁止です。対象が違います。",
+            "H: 誤り。同じクラスをsealedかつfinalにすることはできません。sealedは限定的に継承を許可する指定、finalは継承を完全に禁止する指定だからです。"
+          ]
         },
         "source": "",
         "codeBlocks": [],
@@ -21001,72 +21033,74 @@ window.JAVA_STUDY_DATA = {
           "D"
         ],
         "explanation": {
-          "summary": "recordのコンポーネントはprivate finalフィールドとして保持され、アクセサはコンポーネント名と同じname()です。引数なしコンストラクタやgetName()は自動生成されません。",
-          "points": [
-            "A: 正しい。recordのフィールドはfinalであり、外部からa.nameへ直接代入できません。",
-            "B: 正しい。Book(String name)の正準コンストラクタがあり、引数なしコンストラクタは自動生成されません。",
-            "C: 誤り。参照型同士なので==による参照比較はコンパイルできます。",
-            "D: 正しい。recordのアクセサはgetName()ではなくname()です。",
-            "E: 誤り。変数aにnullを再代入すること自体は可能です。",
-            "F: 誤り。正しいコンストラクタ呼び出しです。",
-            "G: 誤り。name()は自動生成されるアクセサなので呼び出せます。"
-          ],
-          "correctReason": "正解は A・B・D です。\n\nrecordのコンポーネントはprivate finalフィールドとして保持され、アクセサはコンポーネント名と同じname()です。引数なしコンストラクタやgetName()は自動生成されません。",
+          "summary": "record `Book(String name)` では、コンポーネント `name` はprivate finalフィールドとして保持され、アクセサ `name()` が自動生成されます。`name` フィールドへ直接代入すること、引数なしコンストラクタを呼ぶこと、存在しない `getName()` を呼ぶことはコンパイルエラーです。`==` 比較、変数へのnull再代入、`new Book(\"C\")`、`a.name()` はコンパイルできます。",
+          "correctReason": "正解は A、B、D です。\n\n`public record Book(String name) {}` と宣言すると、`name` というコンポーネントを持つrecordになります。recordのコンポーネントは内部的にはprivate finalフィールドとして保持されます。外部から `a.name = \"C\";` のように直接代入することはできません。したがってAはコンパイルエラーです。\n\nまた、このrecordには `Book(String name)` という正準コンストラクタがあります。引数なしコンストラクタ `Book()` は自動生成されません。したがってBもコンパイルエラーです。\n\nrecordのアクセサ名はJavaBeans形式の `getName()` ではありません。コンポーネント名と同じ `name()` です。したがって `a.getName()` は存在せず、Dはコンパイルエラーです。\n\n一方、Cの `a == b` は参照比較としてコンパイルできます。Eは変数 `a` 自体にnullを再代入しているだけなので可能です。Fは正準コンストラクタを正しく呼び出しています。Gの `a.name()` はrecordの正しいアクセサ呼び出しです。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "A: 正しい。recordのフィールドはfinalであり、外部からa.nameへ直接代入できません。"
+              "detail": "コンパイルエラーになります。recordのコンポーネントはprivate finalフィールドであり、外部から `a.name` に直接代入できません。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "B: 正しい。Book(String name)の正準コンストラクタがあり、引数なしコンストラクタは自動生成されません。"
+              "detail": "コンパイルエラーになります。`Book(String name)` はありますが、引数なしの `Book()` は自動生成されません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "C: 誤り。参照型同士なので==による参照比較はコンパイルできます。"
+              "detail": "参照型同士なので `==` による参照比較はコンパイルできます。意味としては同じインスタンスかどうかの比較です。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "D: 正しい。recordのアクセサはgetName()ではなくname()です。"
+              "detail": "コンパイルエラーになります。recordのアクセサは `getName()` ではなく、コンポーネント名と同じ `name()` です。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "E: 誤り。変数aにnullを再代入すること自体は可能です。"
+              "detail": "`a` はfinal変数ではありません。変数にnullを再代入すること自体は可能です。recordインスタンスの中身を書き換えているわけではありません。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "F: 誤り。正しいコンストラクタ呼び出しです。"
+              "detail": "`Book(String name)` を正しく呼んでいるため、コンパイルできます。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "G: 誤り。name()は自動生成されるアクセサなので呼び出せます。"
+              "detail": "`name()` はrecordで自動生成される正しいアクセサです。コンパイルできます。"
             }
           ],
           "relatedKnowledge": [
-            "recordはデータを保持するための特殊なクラスで、コンポーネントからフィールド、アクセサ、equals、hashCode、toStringなどが自動生成される。",
-            "recordは暗黙的にfinal。通常のクラスのように継承される前提で考えない。",
-            "recordのフィールド参照はfinalだが、参照先オブジェクトが可変なら、その中身を変更できる場合がある。"
+            "recordのアクセサは `componentName()` 形式。`getComponentName()` ではない。",
+            "recordコンポーネントはprivate finalフィールドとして扱われる。",
+            "recordでも変数自体がfinalでなければ、変数に別の参照やnullを再代入できる。"
           ],
           "examTips": [
-            "recordのコンポーネント名から生成されるアクセサはgetXではなく、コンポーネント名そのもの。",
-            "参照の再代入不可と、参照先オブジェクトの変更不可は別物。"
+            "recordは不変っぽく見えるが、再代入禁止なのはフィールドであって、変数がfinalでなければ変数の参照は変えられる。",
+            "JavaBeansのgetter名をrecordに持ち込まない。",
+            "引数なしコンストラクタが自動であると思い込まない。"
           ],
           "judgeSteps": [
-            "record宣言のコンポーネントを確認する。",
-            "自動生成されるコンストラクタとアクセサ名を確認する。",
-            "finalな参照そのものを変えているのか、参照先の状態を変えているのかを分ける。"
+            "record宣言のコンポーネント一覧を確認する。",
+            "自動生成されるコンストラクタの引数を確認する。",
+            "アクセサ名がコンポーネント名そのものか確認する。",
+            "フィールド変更と変数再代入を区別する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A・B・D です。\n\nrecordのコンポーネントはprivate finalフィールドとして保持され、アクセサはコンポーネント名と同じname()です。引数なしコンストラクタやgetName()は自動生成されません。",
+          "pdfExplanation": "正解は A、B、D です。\n\n`public record Book(String name) {}` と宣言すると、`name` というコンポーネントを持つrecordになります。recordのコンポーネントは内部的にはprivate finalフィールドとして保持されます。外部から `a.name = \"C\";` のように直接代入することはできません。したがってAはコンパイルエラーです。\n\nまた、このrecordには `Book(String name)` という正準コンストラクタがあります。引数なしコンストラクタ `Book()` は自動生成されません。したがってBもコンパイルエラーです。\n\nrecordのアクセサ名はJavaBeans形式の `getName()` ではありません。コンポーネント名と同じ `name()` です。したがって `a.getName()` は存在せず、Dはコンパイルエラーです。\n\n一方、Cの `a == b` は参照比較としてコンパイルできます。Eは変数 `a` 自体にnullを再代入しているだけなので可能です。Fは正準コンストラクタを正しく呼び出しています。Gの `a.name()` はrecordの正しいアクセサ呼び出しです。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nrecordは『データを持つだけのクラスを短く書く仕組み』ですが、通常クラスと同じ感覚でgetterを探すと間違えます。`Book(String name)` なら、自動生成されるアクセサは `name()` です。`getName()` はありません。\n\nまた、recordのコンポーネントはfinalなので、作成後に `name` の中身を直接変更することはできません。ただし、変数 `a` がfinalでないなら、`a = null;` のように変数の参照を変えることはできます。『recordの中身が変えられない』ことと『変数が再代入できない』ことは別問題です。",
+          "points": [
+            "A: 正しい。コンパイルエラーになります。recordのコンポーネントはprivate finalフィールドであり、外部から `a.name` に直接代入できません。",
+            "B: 正しい。コンパイルエラーになります。`Book(String name)` はありますが、引数なしの `Book()` は自動生成されません。",
+            "C: 誤り。参照型同士なので `==` による参照比較はコンパイルできます。意味としては同じインスタンスかどうかの比較です。",
+            "D: 正しい。コンパイルエラーになります。recordのアクセサは `getName()` ではなく、コンポーネント名と同じ `name()` です。",
+            "E: 誤り。`a` はfinal変数ではありません。変数にnullを再代入すること自体は可能です。recordインスタンスの中身を書き換えているわけではありません。",
+            "F: 誤り。`Book(String name)` を正しく呼んでいるため、コンパイルできます。",
+            "G: 誤り。`name()` はrecordで自動生成される正しいアクセサです。コンパイルできます。"
+          ]
         },
         "source": "",
         "codeBlocks": [
@@ -21123,66 +21157,68 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "配列の添字は0始まりです。1、3、5、7、9は、それぞれ添字0、2、4、6、8の要素です。したがって、iを0から始めて偶数の添字だけを出力するCが正しいです。",
-          "points": [
-            "A: 誤り。iを1から始めるため、偶数添字2、4、6、8の要素である3、5、7、9だけが出力され、1が出ません。",
-            "B: 誤り。条件式で++iしてから判定するため、最初にiが1になります。さらに偶数添字だけ出しても1は出ません。",
-            "C: 正しい。iは0、1、2…と進み、i % 2 == 0 のときだけarray[i]を出すため、array[0], [2], [4], [6], [8]、つまり1、3、5、7、9が表示されます。",
-            "D: 誤り。条件式でi++を使い、更新式でもi++を使うため添字の進み方が崩れます。範囲外アクセスの危険もあります。",
-            "E: 誤り。奇数添字を出力するため、2、4、6、8、10が表示されます。",
-            "F: 誤り。iが1始まりでi <= array.lengthなので、最後にarray[10]へアクセスする可能性があります。配列の最後の添字は9です。"
-          ],
-          "correctReason": "正解は C です。\n\n配列の添字は0始まりです。1、3、5、7、9は、それぞれ添字0、2、4、6、8の要素です。したがって、iを0から始めて偶数の添字だけを出力するCが正しいです。",
+          "summary": "配列 `{1,2,3,4,5,6,7,8,9,10}` から 1、3、5、7、9 を表示するには、値そのものではなく「添字」を見る必要があります。これらは添字 0、2、4、6、8 の要素なので、0から始めて偶数添字だけを出力するCが正解です。",
+          "correctReason": "正解は C です。\n\n配列の添字は0から始まります。`array[0]` が1、`array[1]` が2、`array[2]` が3です。したがって、表示したい 1、3、5、7、9 は、添字で見ると 0、2、4、6、8 にあります。\n\nCは `for (int i = 0; i < array.length; i++)` で添字を0から9まで順に動かし、`i % 2 == 0` のときだけ `array[i]` を表示します。偶数添字だけが出力されるため、表示結果は 1、3、5、7、9 になります。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "A: 誤り。iを1から始めるため、偶数添字2、4、6、8の要素である3、5、7、9だけが出力され、1が出ません。"
+              "detail": "`i` が1から始まります。`i % 2 == 0` のときに表示されるのは添字2、4、6、8の要素なので、3、5、7、9です。最初の1が出ません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "B: 誤り。条件式で++iしてから判定するため、最初にiが1になります。さらに偶数添字だけ出しても1は出ません。"
+              "detail": "条件式が `++i < array.length` なので、判定前に `i` が1になります。最初に添字0を調べないため、1を表示できません。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "C: 正しい。iは0、1、2…と進み、i % 2 == 0 のときだけarray[i]を出すため、array[0], [2], [4], [6], [8]、つまり1、3、5、7、9が表示されます。"
+              "detail": "`i` が0から始まり、偶数添字0、2、4、6、8だけを出力します。結果は1、3、5、7、9です。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "D: 誤り。条件式でi++を使い、更新式でもi++を使うため添字の進み方が崩れます。範囲外アクセスの危険もあります。"
+              "detail": "条件式にも更新式にも `i++` があります。1回のループで `i` が複数回進むため、出力対象が崩れます。さらに `array.length + 1` まで判定しており、範囲外アクセスも起こり得ます。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "E: 誤り。奇数添字を出力するため、2、4、6、8、10が表示されます。"
+              "detail": "`i % 2 == 1` なので奇数添字1、3、5、7、9を出力します。表示される値は2、4、6、8、10です。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "F: 誤り。iが1始まりでi <= array.lengthなので、最後にarray[10]へアクセスする可能性があります。配列の最後の添字は9です。"
+              "detail": "`i` が1から始まり、条件が `i <= array.length` です。最後に `i == 10` まで到達し得ますが、配列の最後の添字は9です。`array[10]` は範囲外です。"
             }
           ],
           "relatedKnowledge": [
-            "前置++は値を変更してから式で使い、後置++は現在値を式で使ってから値を変更する。--も同じ考え方。",
-            "&&と||は短絡評価を行うが、&と|はbooleanに対して使った場合でも右辺まで評価する。副作用を伴う++があると結果が変わる。",
-            "複合代入演算子は、演算結果を左辺の型へ暗黙に変換して代入する性質がある。通常の代入とは型変換の扱いが異なる場合がある。"
+            "配列の添字は0始まり。最後の添字は `length - 1`。",
+            "「奇数の値を出す」と「奇数添字を出す」は別問題。",
+            "for文の条件式に前置/後置インクリメントがある場合、値が変わるタイミングを必ず追跡する。"
           ],
           "examTips": [
-            "インクリメント問題は、最終値だけでなく「式に使われた値」を別に書き出す。",
-            "論理演算子問題では、右辺が評価されたかどうかを先に確定する。"
+            "出したい値を先に添字へ変換する。",
+            "`i < length` と `i <= length` の違いを必ず見る。",
+            "条件式や更新式に `++` がある選択肢は、最初の1回だけでも手で追う。"
           ],
           "judgeSteps": [
-            "式を左から読み、各項で式に使われる値と変数の更新後の値を分けて記録する。",
-            "短絡評価がある場合は、右辺に進むかどうかを条件式ごとに判定する。",
-            "数値型が混在する場合は、演算前の型昇格と代入時の型変換を確認する。"
+            "表示したい値と配列の添字を対応させる。",
+            "ループの初期値、条件式、更新式を確認する。",
+            "if文の条件が「添字」を判定しているのか「要素の値」を判定しているのかを確認する。",
+            "範囲外アクセスが起きないか確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\n配列の添字は0始まりです。1、3、5、7、9は、それぞれ添字0、2、4、6、8の要素です。したがって、iを0から始めて偶数の添字だけを出力するCが正しいです。",
+          "pdfExplanation": "正解は C です。\n\n配列の添字は0から始まります。`array[0]` が1、`array[1]` が2、`array[2]` が3です。したがって、表示したい 1、3、5、7、9 は、添字で見ると 0、2、4、6、8 にあります。\n\nCは `for (int i = 0; i < array.length; i++)` で添字を0から9まで順に動かし、`i % 2 == 0` のときだけ `array[i]` を表示します。偶数添字だけが出力されるため、表示結果は 1、3、5、7、9 になります。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、for文そのものよりも「配列の値」と「添字」を混同しないことが中心です。配列の中身は `{1,2,3,4,5,6,7,8,9,10}` ですが、添字は0から始まります。\n\n```\n添字:  0 1 2 3 4 5 6 7 8 9\n値  :  1 2 3 4 5 6 7 8 9 10\n```\n\n1、3、5、7、9を表示したいなら、値が奇数だからといって `i % 2 == 1` にしてはいけません。ここで判定している `i` は値ではなく添字です。必要なのは偶数添字です。",
+          "points": [
+            "A: 誤り。`i` が1から始まります。`i % 2 == 0` のときに表示されるのは添字2、4、6、8の要素なので、3、5、7、9です。最初の1が出ません。",
+            "B: 誤り。条件式が `++i < array.length` なので、判定前に `i` が1になります。最初に添字0を調べないため、1を表示できません。",
+            "C: 正しい。`i` が0から始まり、偶数添字0、2、4、6、8だけを出力します。結果は1、3、5、7、9です。",
+            "D: 誤り。条件式にも更新式にも `i++` があります。1回のループで `i` が複数回進むため、出力対象が崩れます。さらに `array.length + 1` まで判定しており、範囲外アクセスも起こり得ます。",
+            "E: 誤り。`i % 2 == 1` なので奇数添字1、3、5、7、9を出力します。表示される値は2、4、6、8、10です。",
+            "F: 誤り。`i` が1から始まり、条件が `i <= array.length` です。最後に `i == 10` まで到達し得ますが、配列の最後の添字は9です。`array[10]` は範囲外です。"
+          ]
         },
         "source": "",
         "codeBlocks": [
@@ -21234,66 +21270,68 @@ window.JAVA_STUDY_DATA = {
           "B"
         ],
         "explanation": {
-          "summary": "values[1]はnew Value(\"B\")です。printlnにオブジェクト参照を渡すとtoStringが呼ばれるためBが表示されます。values[2].dataはC、values[3]はnull参照なのでprintlnは文字列nullを表示します。",
-          "points": [
-            "A: 誤り。values[0]は出力していません。最初に出力するのはvalues[1]です。",
-            "B: 正しい。values[1]のtoStringでB、values[2].dataでC、values[3]のnull参照でnullが表示されます。",
-            "C: 誤り。ValueはtoStringをオーバーライドしているため、Value@...形式ではなくdataの値が表示されます。",
-            "D: 誤り。toStringがあるためValue@...にはなりません。またvalues[3]はCではなくnullです。",
-            "E: 誤り。コードは構文上問題ありません。",
-            "F: 誤り。values[3].dataのようにnullからメンバ参照していないため、NullPointerExceptionは発生しません。println(null)はnullと表示します。"
-          ],
-          "correctReason": "正解は B です。\n\nvalues[1]はnew Value(\"B\")です。printlnにオブジェクト参照を渡すとtoStringが呼ばれるためBが表示されます。values[2].dataはC、values[3]はnull参照なのでprintlnは文字列nullを表示します。",
+          "summary": "`println` にオブジェクト参照を渡すと、そのオブジェクトの `toString()` の結果が表示されます。ただし参照が `null` そのものなら、メソッド呼び出しではなく `println` 側の処理として `null` と表示されます。",
+          "correctReason": "正解は B です。\n\n`values[1]` は `new Value(\"B\")` への参照です。`System.out.println(values[1]);` では `Value` クラスの `toString()` が呼ばれ、`data` である `B` が表示されます。\n\n次に `values[2].data` は、`new Value(\"C\")` の `data` フィールドを直接参照しているため `C` が表示されます。\n\n最後の `values[3]` は配列要素そのものが `null` です。`values[3].data` のようにメンバへアクセスしているわけではないため、`NullPointerException` にはなりません。`println(null)` として扱われ、`null` と表示されます。\n\nしたがって表示は B、C、null の順です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "A: 誤り。values[0]は出力していません。最初に出力するのはvalues[1]です。"
+              "detail": "`values[0]` は使われていません。最初に表示するのは `values[1]` なので、AではなくBから始まります。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "B: 正しい。values[1]のtoStringでB、values[2].dataでC、values[3]のnull参照でnullが表示されます。"
+              "detail": "`values[1]` の `toString()` がBを返し、`values[2].data` がC、`values[3]` はnull参照そのものなので `null` と表示されます。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "C: 誤り。ValueはtoStringをオーバーライドしているため、Value@...形式ではなくdataの値が表示されます。"
+              "detail": "`Value` クラスでは `toString()` をオーバーライドしています。そのためデフォルトの `Value@...` 形式にはなりません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "D: 誤り。toStringがあるためValue@...にはなりません。またvalues[3]はCではなくnullです。"
+              "detail": "1行目も2行目も `Value@...` にはなりません。2行目はオブジェクトではなく `data` フィールドの文字列Cを直接表示します。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "E: 誤り。コードは構文上問題ありません。"
+              "detail": "コード上の型やメソッド呼び出しにコンパイルエラーはありません。`toString()` も正しく定義されています。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "F: 誤り。values[3].dataのようにnullからメンバ参照していないため、NullPointerExceptionは発生しません。println(null)はnullと表示します。"
+              "detail": "`values[3]` はnullですが、メンバにアクセスしていません。`println` にnullを渡すだけなので例外は発生しません。"
             }
           ],
           "relatedKnowledge": [
-            "Stringは不変オブジェクト。substring、concat、replaceなどは元の文字列を変更せず、新しい結果を戻す。戻り値を受け取らなければ結果は捨てられる。",
-            "==は参照の同一性を比較し、equalsは文字列内容の同値性を比較する。new String(...)は通常、文字列プールとは別のインスタンスを作る。",
-            "intern()は文字列プール上の同じ内容のインスタンス参照を返す。リテラルとintern結果の比較が問われやすい。"
+            "`println(参照型)` は対象がnullでなければ `toString()` の結果を表示する。",
+            "`null` を表示するだけなら例外ではない。`null.メソッド()` や `null.フィールド` が例外になる。",
+            "`toString()` をオーバーライドしているかどうかで表示形式が変わる。"
           ],
           "examTips": [
-            "Stringメソッドを呼んだだけで元の変数が変わると考えない。代入されているかを必ず見る。",
-            "==の問題では、内容ではなく参照先が同じかを図にして追う。"
+            "`Value@...` が選択肢にあるときは、`toString()` のオーバーライド有無を確認する。",
+            "nullが出たら、nullに対してメンバアクセスしているのか、nullをそのまま表示しているのかを分ける。",
+            "配列要素の番号を1始まりで読まない。"
           ],
           "judgeSteps": [
-            "各String変数が、newで作られたヒープ上のインスタンスか、文字列プール上のインスタンスかを分ける。",
-            "メソッド呼び出しの戻り値が変数に代入されているかを確認する。",
-            "==なら参照比較、equalsなら内容比較として判定する。"
+            "配列の各要素が何を参照しているか確認する。",
+            "各printlnの引数を1つずつ見る。",
+            "オブジェクトを表示しているなら `toString()` を確認する。",
+            "null参照にメンバアクセスしていないか確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は B です。\n\nvalues[1]はnew Value(\"B\")です。printlnにオブジェクト参照を渡すとtoStringが呼ばれるためBが表示されます。values[2].dataはC、values[3]はnull参照なのでprintlnは文字列nullを表示します。",
+          "pdfExplanation": "正解は B です。\n\n`values[1]` は `new Value(\"B\")` への参照です。`System.out.println(values[1]);` では `Value` クラスの `toString()` が呼ばれ、`data` である `B` が表示されます。\n\n次に `values[2].data` は、`new Value(\"C\")` の `data` フィールドを直接参照しているため `C` が表示されます。\n\n最後の `values[3]` は配列要素そのものが `null` です。`values[3].data` のようにメンバへアクセスしているわけではないため、`NullPointerException` にはなりません。`println(null)` として扱われ、`null` と表示されます。\n\nしたがって表示は B、C、null の順です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題で一番危ないのは、`values[3]` を見た瞬間に反射的にNullPointerExceptionを選ぶことです。例外になるのは、null参照からフィールドやメソッドへ進もうとしたときです。\n\n今回は `System.out.println(values[3]);` なので、null参照をそのままprintlnに渡しています。この場合は文字列として `null` と表示されます。\n\nまた、`values[1]` はオブジェクト参照ですが、`Value` クラスが `toString()` を定義しているため、デフォルトのクラス名+ハッシュ値形式にはなりません。",
+          "points": [
+            "A: 誤り。`values[0]` は使われていません。最初に表示するのは `values[1]` なので、AではなくBから始まります。",
+            "B: 正しい。`values[1]` の `toString()` がBを返し、`values[2].data` がC、`values[3]` はnull参照そのものなので `null` と表示されます。",
+            "C: 誤り。`Value` クラスでは `toString()` をオーバーライドしています。そのためデフォルトの `Value@...` 形式にはなりません。",
+            "D: 誤り。1行目も2行目も `Value@...` にはなりません。2行目はオブジェクトではなく `data` フィールドの文字列Cを直接表示します。",
+            "E: 誤り。コード上の型やメソッド呼び出しにコンパイルエラーはありません。`toString()` も正しく定義されています。",
+            "F: 誤り。`values[3]` はnullですが、メンバにアクセスしていません。`println` にnullを渡すだけなので例外は発生しません。"
+          ]
         },
         "source": "",
         "codeBlocks": [
@@ -21350,67 +21388,68 @@ window.JAVA_STUDY_DATA = {
           "F"
         ],
         "explanation": {
-          "summary": "Javaの識別子には英字、数字、_、$などを使えますが、@は使えません。また数字から始めることはできません。したがってCとFが正しくない定義です。",
-          "points": [
-            "A: 誤りではありません。sample3は英字で始まり、数字を含むだけなので有効です。",
-            "B: 誤りではありません。$は識別子に使えます。試験では有効と判定します。",
-            "C: 正しくない定義です。@はJavaの識別子に使えません。",
-            "D: 誤りではありません。_nullはキーワードnullそのものではないため有効です。",
-            "E: 誤りではありません。通常のメソッド定義です。",
-            "F: 正しくない定義です。識別子は数字から始めることができません。"
-          ],
-          "correctReason": "正解は C・F です。\n\nJavaの識別子には英字、数字、_、$などを使えますが、@は使えません。また数字から始めることはできません。したがってCとFが正しくない定義です。",
+          "summary": "Javaの識別子は、英字、`_`、`$`、Unicode文字などから始められますが、数字から始めることはできません。また `@` は識別子に使えません。したがって不正なメソッド定義はCとFです。",
+          "correctReason": "正解は C、F です。\n\nメソッド名は識別子です。識別子には使える文字と使えない文字があります。`sample@2` は `@` を含むためメソッド名として不正です。`0_sample` は数字から始まっているため不正です。\n\n一方、`sample3` のように途中や末尾に数字を使うことはできます。`$sample` や `_null` も識別子としては有効です。`sample` は通常の有効なメソッド名です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "A: 誤りではありません。sample3は英字で始まり、数字を含むだけなので有効です。"
+              "detail": "`sample3` は英字で始まり、末尾に数字があるだけなので有効です。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "B: 誤りではありません。$は識別子に使えます。試験では有効と判定します。"
+              "detail": "`$` は識別子に使えます。実務では多用しませんが、試験上は有効な名前です。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "C: 正しくない定義です。@はJavaの識別子に使えません。"
+              "detail": "`@` は識別子に使えません。`sample@2` はメソッド名として不正です。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "D: 誤りではありません。_nullはキーワードnullそのものではないため有効です。"
+              "detail": "`_null` はアンダースコアで始まる識別子です。`null` という予約語そのものではないため有効です。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "E: 誤りではありません。通常のメソッド定義です。"
+              "detail": "`sample` は通常の有効なメソッド名です。"
             },
             {
               "key": "F",
               "isCorrect": true,
-              "detail": "F: 正しくない定義です。識別子は数字から始めることができません。"
+              "detail": "識別子は数字から始められません。`0_sample` は不正です。"
             }
           ],
           "relatedKnowledge": [
-            "参照型変数で呼び出せるメンバは、原則としてコンパイル時の宣言型で決まる。実体がサブクラスでも、宣言型にないメソッドはそのままでは呼び出せない。",
-            "オーバーライドされたインスタンスメソッドは、実行時の実体型で動的に選ばれる。フィールドはポリモーフィズムの対象外。",
-            "サブクラスのインスタンスはスーパークラス型の変数で扱えるが、逆方向には明示的キャストと実体の整合性が必要。"
+            "識別子は数字から始められないが、2文字目以降に数字を含めることはできる。",
+            "`$` と `_` は識別子に使える。",
+            "予約語そのものは使えないが、`_null` のように別の識別子なら使える。"
           ],
           "examTips": [
-            "「呼び出せるか」は宣言型、「実際に動くオーバーライドメソッド」は実体型。ここを分けないと継承問題はほぼ落とす。",
-            "フィールドとメソッドを同じルールで読まない。フィールドアクセスは宣言型側が選ばれる。"
+            "「実務で推奨される名前」と「コンパイル可能な名前」を混同しない。",
+            "`$` は違和感があってもJavaの識別子としては有効。",
+            "数字始まりと記号混入を優先して確認する。"
           ],
           "judgeSteps": [
-            "変数の宣言型と、newされている実体型を分けて書き出す。",
-            "その宣言型から対象メソッドやフィールドを参照できるかを先に確認する。",
-            "メソッド呼び出しなら、オーバーライドの有無を見て実体型側の実装へ進む。",
-            "フィールドアクセスなら、宣言型側のフィールドとして処理する。"
+            "メソッド名だけを抜き出す。",
+            "先頭文字が許可されているか確認する。",
+            "2文字目以降に使えない記号がないか確認する。",
+            "予約語そのものになっていないか確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C・F です。\n\nJavaの識別子には英字、数字、_、$などを使えますが、@は使えません。また数字から始めることはできません。したがってCとFが正しくない定義です。",
+          "pdfExplanation": "正解は C、F です。\n\nメソッド名は識別子です。識別子には使える文字と使えない文字があります。`sample@2` は `@` を含むためメソッド名として不正です。`0_sample` は数字から始まっているため不正です。\n\n一方、`sample3` のように途中や末尾に数字を使うことはできます。`$sample` や `_null` も識別子としては有効です。`sample` は通常の有効なメソッド名です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題はメソッドの戻り値や引数ではなく、名前そのものの問題です。`public void ...() {}` の形はどれも似ていますが、メソッド名が識別子として成立しないものだけがコンパイルエラーになります。\n\n`$sample` や `_null` は見た目が不自然でも有効です。逆に `sample@2` は `@` が使えないため不正、`0_sample` は数字から始まるため不正です。",
+          "points": [
+            "A: 誤り。`sample3` は英字で始まり、末尾に数字があるだけなので有効です。",
+            "B: 誤り。`$` は識別子に使えます。実務では多用しませんが、試験上は有効な名前です。",
+            "C: 正しい。`@` は識別子に使えません。`sample@2` はメソッド名として不正です。",
+            "D: 誤り。`_null` はアンダースコアで始まる識別子です。`null` という予約語そのものではないため有効です。",
+            "E: 誤り。`sample` は通常の有効なメソッド名です。",
+            "F: 正しい。識別子は数字から始められません。`0_sample` は不正です。"
+          ]
         },
         "source": "",
         "codeBlocks": [],
@@ -21448,54 +21487,55 @@ window.JAVA_STUDY_DATA = {
           "D"
         ],
         "explanation": {
-          "summary": "インタフェースに宣言したフィールドは、明示していなくてもpublic static finalです。a、b、cはいずれも定数なので++で変更できません。b + 1のように値を読むだけなら可能です。",
-          "points": [
-            "A: 誤り。cは暗黙的にfinalなので、c++で変更できません。",
-            "B: 誤り。aも暗黙的にfinalなので、a++で変更できません。",
-            "C: 誤り。++aもaを書き換える操作です。finalフィールドにはできません。",
-            "D: 正しい。bは暗黙的にfinalですが、値を読むだけのb + 1は可能です。"
-          ],
-          "correctReason": "正解は D です。\n\nインタフェースに宣言したフィールドは、明示していなくてもpublic static finalです。a、b、cはいずれも定数なので++で変更できません。b + 1のように値を読むだけなら可能です。",
+          "summary": "インタフェースのフィールドは、明示しなくても `public static final` です。つまり `a`、`b`、`c` はすべて定数で、インクリメントの対象にはできません。値を読むだけのDだけが正しいです。",
+          "correctReason": "正解は D です。\n\nインタフェースに宣言したフィールドは、何も書かなくても `public static final` として扱われます。設問の `a`、`b`、`c` はすべてstaticな定数です。\n\n`c++`、`a++`、`++a` は、変数の値を書き換える演算です。しかしfinalなフィールドは再代入できないため、A、B、Cはコンパイルエラーになります。\n\nDの `int i = b + 1;` は、finalフィールド `b` の値を読むだけです。値を変更していないためコンパイルできます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "A: 誤り。cは暗黙的にfinalなので、c++で変更できません。"
+              "detail": "`c++` は `c` の値を書き換えます。インタフェースフィールドはfinalなので変更できません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "B: 誤り。aも暗黙的にfinalなので、a++で変更できません。"
+              "detail": "`a++` が `a` の値を書き換えます。`c + a++` の右側でfinalフィールドを更新しようとしているためエラーです。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "C: 誤り。++aもaを書き換える操作です。finalフィールドにはできません。"
+              "detail": "`++a` も `a` の値を増やしてから使う演算です。finalフィールドは変更できないためエラーです。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "D: 正しい。bは暗黙的にfinalですが、値を読むだけのb + 1は可能です。"
+              "detail": "`b` の値を読んで1を足しているだけです。`b` 自体を書き換えていないためコンパイルできます。"
             }
           ],
           "relatedKnowledge": [
-            "インタフェースの抽象メソッドは暗黙にpublic abstractとして扱われる。実装クラス側ではpublicより狭いアクセス修飾子にはできない。",
-            "defaultメソッドは実装を持つインタフェースメソッド。実装クラスが上書きしなければ、そのまま継承して呼び出せる。",
-            "インタフェース同士はextendsで継承でき、クラスはimplementsで実装する。クラスが複数インタフェースを実装できる点も頻出。"
+            "インタフェースのフィールドは常に `public static final`。",
+            "`final` 変数は値を読むことはできるが、再代入や `++` / `--` はできない。",
+            "`static` フィールドなので、インスタンスごとの値ではない。"
           ],
           "examTips": [
-            "インタフェース実装問題では、メソッド名・引数リスト・戻り値型・アクセス修飾子の4点を必ず確認する。",
-            "defaultメソッドの競合がある場合、実装クラス側で明示的に解決しないとコンパイルエラーになる。"
+            "インタフェースのフィールド問題では、最初にすべてfinal扱いにする。",
+            "`++` が出たら「読む」ではなく「書き換える」処理だと判断する。",
+            "明示的に `final` と書いていなくてもfinalである点を忘れない。"
           ],
           "judgeSteps": [
-            "インタフェースに定義された抽象メソッドを列挙する。",
-            "実装クラスまたは抽象クラスが、それらを実装する必要があるかを判定する。",
-            "実装している場合、public、戻り値型、throws、引数リストが条件を満たすか確認する。"
+            "空欄に入れる候補がフィールドを書き換えていないか確認する。",
+            "インタフェース内のフィールドを `public static final` と読み替える。",
+            "`++`、`--`、`+=`、代入がない選択肢を探す。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は D です。\n\nインタフェースに宣言したフィールドは、明示していなくてもpublic static finalです。a、b、cはいずれも定数なので++で変更できません。b + 1のように値を読むだけなら可能です。",
+          "pdfExplanation": "正解は D です。\n\nインタフェースに宣言したフィールドは、何も書かなくても `public static final` として扱われます。設問の `a`、`b`、`c` はすべてstaticな定数です。\n\n`c++`、`a++`、`++a` は、変数の値を書き換える演算です。しかしfinalなフィールドは再代入できないため、A、B、Cはコンパイルエラーになります。\n\nDの `int i = b + 1;` は、finalフィールド `b` の値を読むだけです。値を変更していないためコンパイルできます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\n設問では `int a = 1;`、`static int b = 2;`、`static final int c = 3;` と書き方が違います。しかし、インタフェース内ではどれも最終的に `public static final` です。\n\nこのため、`a` だけ普通の変数、`c` だけ定数、という読み方をすると落とされます。A〜Cはすべて値の変更を伴います。Dだけは `b` を読み取って計算しているだけです。",
+          "points": [
+            "A: 誤り。`c++` は `c` の値を書き換えます。インタフェースフィールドはfinalなので変更できません。",
+            "B: 誤り。`a++` が `a` の値を書き換えます。`c + a++` の右側でfinalフィールドを更新しようとしているためエラーです。",
+            "C: 誤り。`++a` も `a` の値を増やしてから使う演算です。finalフィールドは変更できないためエラーです。",
+            "D: 正しい。`b` の値を読んで1を足しているだけです。`b` 自体を書き換えていないためコンパイルできます。"
+          ]
         },
         "source": "",
         "codeBlocks": [
@@ -21552,67 +21592,68 @@ window.JAVA_STUDY_DATA = {
           "A"
         ],
         "explanation": {
-          "summary": "switch文のアロー形式では、該当caseだけが実行され、従来のコロン形式のようなフォールスルーは起きません。strは\"A\"なのでcase \"A\"だけでtotalが1増え、1が表示されます。",
-          "points": [
-            "A: 正しい。case \"A\"だけが実行され、totalは1になります。",
-            "B: 誤り。case \"B\", \"C\"には進みません。",
-            "C: 誤り。アロー形式では複数caseへ落ちません。",
-            "D: 誤り。すべてのcaseが実行されるわけではありません。",
-            "E: 誤り。switch文の後ろのセミコロンは空文として扱われ、コンパイルエラーにはなりません。",
-            "F: 誤り。例外が発生する処理はありません。"
-          ],
-          "correctReason": "正解は A です。\n\nswitch文のアロー形式では、該当caseだけが実行され、従来のコロン形式のようなフォールスルーは起きません。strは\"A\"なのでcase \"A\"だけでtotalが1増え、1が表示されます。",
+          "summary": "アロー形式のswitchラベルでは、マッチしたcaseだけが実行され、従来のコロン形式のように次のcaseへ落ちません。`str` は `\"A\"` なので `case \"A\" -> total++;` だけが実行され、結果は1です。",
+          "correctReason": "正解は A です。\n\n`execute(\"A\")` が呼び出されるため、switchの対象値は `\"A\"` です。`case \"A\" -> total++;` に一致し、`total` が0から1になります。\n\nこのswitchはアロー構文です。アロー構文では、該当するcaseの処理だけを実行し、次のcaseへフォールスルーしません。したがって `case \"B\", \"C\"` や `default` は実行されません。\n\n`execute` は1を返し、`System.out.println(result);` により1が表示されます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "A: 正しい。case \"A\"だけが実行され、totalは1になります。"
+              "detail": "`\"A\"` に対応するcaseだけが実行され、`total` は1になります。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "B: 誤り。case \"B\", \"C\"には進みません。"
+              "detail": "2になるには別のcaseにも処理が流れる必要があります。しかしアロー構文ではフォールスルーしません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "C: 誤り。アロー形式では複数caseへ落ちません。"
+              "detail": "4つの分岐すべてが実行されるわけではありません。マッチした `case \"A\"` だけです。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "D: 誤り。すべてのcaseが実行されるわけではありません。"
+              "detail": "各caseの処理が連続実行される構造ではないため、6にはなりません。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "E: 誤り。switch文の後ろのセミコロンは空文として扱われ、コンパイルエラーにはなりません。"
+              "detail": "switchの構文、caseラベル、戻り値の型にコンパイルエラーはありません。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "F: 誤り。例外が発生する処理はありません。"
+              "detail": "`str` は `\"A\"` であり、nullではありません。実行時例外になる処理もありません。"
             }
           ],
           "relatedKnowledge": [
-            "switch文のコロン形式は、breakがなければ次のcaseへフォールスルーする。switch式のアロー形式は原則フォールスルーしない。",
-            "switch式は値を返す式であり、ブロック形式で値を返す場合はyieldを使う。returnとは役割が違う。",
-            "switchの対象がnullになると、通常は実行時にNullPointerExceptionが発生する。case nullが使えるかどうかは試験範囲・Javaバージョンの扱いに注意する。"
+            "`case A ->` のアロー構文はフォールスルーしない。",
+            "コロン形式 `case A:` ではbreakがないと次へ流れる。",
+            "複数ラベルは `case \"B\", \"C\" ->` のようにまとめて書ける。"
           ],
           "examTips": [
-            "switch文とswitch式を混同しない。文は処理の流れ、式は値を作る構文。",
-            "caseに入った後、breakがあるまで下へ流れるかを必ず確認する。"
+            "switchはまず対象値を確定する。",
+            "アロー形式かコロン形式かを必ず確認する。",
+            "breakがないから落ちる、と機械的に考えない。アロー構文では落ちない。"
           ],
           "judgeSteps": [
-            "switchの対象値を先に確定する。",
-            "一致するcaseまたはdefaultを探す。",
-            "コロン形式ならbreakまで、アロー形式ならそのcaseだけを実行する。",
-            "switch式なら最終的に返る値を確認する。"
+            "switchの対象値を確認する。",
+            "一致するcaseを探す。",
+            "アロー形式かコロン形式かを見る。",
+            "実行される文だけを追跡して戻り値を確定する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A です。\n\nswitch文のアロー形式では、該当caseだけが実行され、従来のコロン形式のようなフォールスルーは起きません。strは\"A\"なのでcase \"A\"だけでtotalが1増え、1が表示されます。",
+          "pdfExplanation": "正解は A です。\n\n`execute(\"A\")` が呼び出されるため、switchの対象値は `\"A\"` です。`case \"A\" -> total++;` に一致し、`total` が0から1になります。\n\nこのswitchはアロー構文です。アロー構文では、該当するcaseの処理だけを実行し、次のcaseへフォールスルーしません。したがって `case \"B\", \"C\"` や `default` は実行されません。\n\n`execute` は1を返し、`System.out.println(result);` により1が表示されます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、従来のswitch文の「breakがないと下に流れる」という知識を逆手に取っています。設問のswitchは `case \"A\" -> total++;` というアロー形式です。\n\nアロー形式では、選ばれたラベルの右側だけを実行します。`case \"A\"` が実行されたあと、`case \"B\", \"C\"` や `default` へ進みません。したがって答えは1です。",
+          "points": [
+            "A: 正しい。`\"A\"` に対応するcaseだけが実行され、`total` は1になります。",
+            "B: 誤り。2になるには別のcaseにも処理が流れる必要があります。しかしアロー構文ではフォールスルーしません。",
+            "C: 誤り。4つの分岐すべてが実行されるわけではありません。マッチした `case \"A\"` だけです。",
+            "D: 誤り。各caseの処理が連続実行される構造ではないため、6にはなりません。",
+            "E: 誤り。switchの構文、caseラベル、戻り値の型にコンパイルエラーはありません。",
+            "F: 誤り。`str` は `\"A\"` であり、nullではありません。実行時例外になる処理もありません。"
+          ]
         },
         "source": "",
         "codeBlocks": [
@@ -21669,68 +21710,67 @@ window.JAVA_STUDY_DATA = {
           "D"
         ],
         "explanation": {
-          "summary": "throwsを省略するとコンパイルエラーになるということは、SampleExceptionはチェック例外です。throws SampleExceptionと宣言しているメソッドでは、SampleException自身だけでなく、そのサブクラスもスローできます。",
-          "points": [
-            "A: 正しい。throwsを省略するとコンパイルエラーになる例外はチェック例外です。",
-            "B: 誤り。Error系なら通常チェック例外としてthrows必須にはなりません。",
-            "C: 誤り。非チェック例外ならthrowsを省略してもコンパイルエラーになりません。",
-            "D: 正しい。SampleExceptionのサブクラスはSampleException型として扱えるためスローできます。",
-            "E: 誤り。サブクラスもスローできます。",
-            "F: 誤り。ExceptionはSampleExceptionのスーパークラスであり、throws SampleExceptionではException全般をスローできません。"
-          ],
-          "correctReason": "正解は A・D です。\n\nthrowsを省略するとコンパイルエラーになるということは、SampleExceptionはチェック例外です。throws SampleExceptionと宣言しているメソッドでは、SampleException自身だけでなく、そのサブクラスもスローできます。",
+          "summary": "`throws SampleException` を外すとコンパイルエラーになるなら、`SampleException` はコンパイラが処理を要求するチェック例外です。また `throws SampleException` と宣言したメソッドでは、`SampleException` そのものだけでなく、そのサブクラスもスローできます。",
+          "correctReason": "正解は A、D です。\n\n`throws SampleException` を省略するとコンパイルエラーになる、という条件から、`SampleException` はチェック例外だと判断できます。非チェック例外であれば、throws宣言を省略してもコンパイルエラーにはなりません。\n\nまた、メソッドが `throws SampleException` と宣言している場合、そのメソッド内では `SampleException` 型として扱える例外をスローできます。つまり `SampleException` そのものだけでなく、そのサブクラスもスローできます。\n\n一方、`Exception` は通常 `SampleException` のスーパークラスです。`throws SampleException` としか宣言していないメソッドから、より広い型である `Exception` をそのままスローすることはできません。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "A: 正しい。throwsを省略するとコンパイルエラーになる例外はチェック例外です。"
+              "detail": "throwsを省略するとコンパイルエラーになるという条件から、チェック例外だと判断できます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "B: 誤り。Error系なら通常チェック例外としてthrows必須にはなりません。"
+              "detail": "エラーは `Error` 系の深刻な問題を表す型です。throws省略でコンパイルエラーになることから、ただちにErrorとは判断しません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "C: 誤り。非チェック例外ならthrowsを省略してもコンパイルエラーになりません。"
+              "detail": "非チェック例外なら、throws宣言やcatchを省略してもコンパイルエラーにはなりません。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "D: 正しい。SampleExceptionのサブクラスはSampleException型として扱えるためスローできます。"
+              "detail": "`SampleException` のサブクラスは `SampleException` 型として扱えるため、`throws SampleException` の範囲内です。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "E: 誤り。サブクラスもスローできます。"
+              "detail": "サブクラスもスローできます。「SampleExceptionのみ」という限定は誤りです。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "F: 誤り。ExceptionはSampleExceptionのスーパークラスであり、throws SampleExceptionではException全般をスローできません。"
+              "detail": "`Exception` はより広い型です。`throws SampleException` の宣言だけでは、任意の `Exception` をスローできません。"
             }
           ],
           "relatedKnowledge": [
-            "例外問題では、最初に「コンパイル時に処理が必須のチェック例外か」「実行時に発生する非チェック例外か」を分ける。Exception直下の例外とRuntimeException配下の例外を混同しない。",
-            "catchは上から順に判定される。先に広い型で捕まえると、後ろの狭い型のcatchが到達不能になり、コンパイルエラーになる。",
-            "finallyは、例外が発生しても発生しなくても原則として実行される。try-with-resourcesでは、try本体を抜けるときにリソースのcloseが宣言と逆順に呼ばれ、その後にfinallyへ進む。"
+            "チェック例外は、catchするかthrowsで宣言しないとコンパイルエラーになる。",
+            "非チェック例外は `RuntimeException` とそのサブクラス。",
+            "throwsに書いた型のサブクラスはスローできるが、スーパークラスはそのままでは広すぎる。"
           ],
           "examTips": [
-            "try内で例外が発生した行より後ろのtry内処理は実行されない。出力順を追うときにここを飛ばすと誤答になる。",
-            "「例外が発生する」と「catchで処理されて正常終了する」は別。選択肢に実行時例外がある場合、catchに捕まるかまで確認する。",
-            "catchの並びは、サブクラスからスーパークラスの順が基本。逆順だと後続catchが到達不能になる。"
+            "「重大だからチェック例外」ではない。コンパイラが処理を要求するかで判断する。",
+            "throws宣言は型の上限として読む。",
+            "サブクラス方向とスーパークラス方向を逆にしない。"
           ],
           "judgeSteps": [
-            "例外を投げる可能性があるメソッド呼び出し・配列アクセス・null参照・キャストを探す。",
-            "その例外がチェック例外なら、catchまたはthrowsがあるかを先に確認する。",
-            "実行時は、例外発生地点でtryの残りを捨て、最初に一致したcatchへ移動する。",
-            "最後にfinallyまたはリソースcloseの有無を加えて、表示順を確定する。"
+            "throwsを省略したときのコンパイル可否からチェック例外か判断する。",
+            "throwsに書かれた型を確認する。",
+            "スローできる例外型が、その型自身またはサブクラスかを確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A・D です。\n\nthrowsを省略するとコンパイルエラーになるということは、SampleExceptionはチェック例外です。throws SampleExceptionと宣言しているメソッドでは、SampleException自身だけでなく、そのサブクラスもスローできます。",
+          "pdfExplanation": "正解は A、D です。\n\n`throws SampleException` を省略するとコンパイルエラーになる、という条件から、`SampleException` はチェック例外だと判断できます。非チェック例外であれば、throws宣言を省略してもコンパイルエラーにはなりません。\n\nまた、メソッドが `throws SampleException` と宣言している場合、そのメソッド内では `SampleException` 型として扱える例外をスローできます。つまり `SampleException` そのものだけでなく、そのサブクラスもスローできます。\n\n一方、`Exception` は通常 `SampleException` のスーパークラスです。`throws SampleException` としか宣言していないメソッドから、より広い型である `Exception` をそのままスローすることはできません。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\n問題文の「throws SampleExceptionを省略するとコンパイルエラー」という一文が決定的です。これは、SampleExceptionがチェック例外であることを示しています。\n\n次に、`throws SampleException` は「SampleException型として扱える例外を外へ投げる可能性がある」という宣言です。サブクラスの例外はSampleException型として扱えるためOKです。逆に、より広い `Exception` を投げるなら `throws Exception` が必要になります。",
+          "points": [
+            "A: 正しい。throwsを省略するとコンパイルエラーになるという条件から、チェック例外だと判断できます。",
+            "B: 誤り。エラーは `Error` 系の深刻な問題を表す型です。throws省略でコンパイルエラーになることから、ただちにErrorとは判断しません。",
+            "C: 誤り。非チェック例外なら、throws宣言やcatchを省略してもコンパイルエラーにはなりません。",
+            "D: 正しい。`SampleException` のサブクラスは `SampleException` 型として扱えるため、`throws SampleException` の範囲内です。",
+            "E: 誤り。サブクラスもスローできます。「SampleExceptionのみ」という限定は誤りです。",
+            "F: 誤り。`Exception` はより広い型です。`throws SampleException` の宣言だけでは、任意の `Exception` をスローできません。"
+          ]
         },
         "source": "",
         "codeBlocks": [
@@ -21777,60 +21817,62 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "p1.Aのhelloメソッドはprotectedです。異なるパッケージにあるBから利用するには、BがAのサブクラスとしてアクセスする必要があります。選択肢の中ではCが該当します。",
-          "points": [
-            "A: 誤り。Aはpublicクラスなので暗黙のpublicな引数なしコンストラクタを持ちます。問題の本質はコンストラクタではなくprotectedメソッドです。",
-            "B: 誤り。getInstanceはB内部でnew B()しており、Bのコンストラクタの公開性は外部呼び出しに関係しません。",
-            "C: 正しい。異なるパッケージからprotectedメンバを利用するには、継承関係が必要です。",
-            "D: 誤り。AがBのサブクラスになる必要はありません。",
-            "E: 誤り。Bのhelloメソッドのアクセス修飾子ではなく、Aのprotectedメンバへのアクセス可否が問題です。"
-          ],
-          "correctReason": "正解は C です。\n\np1.Aのhelloメソッドはprotectedです。異なるパッケージにあるBから利用するには、BがAのサブクラスとしてアクセスする必要があります。選択肢の中ではCが該当します。",
+          "summary": "別パッケージの `protected` メンバは、単にインスタンスを作れば呼べるわけではありません。別パッケージから使うには、呼び出し側がサブクラスである必要があります。設問のBはAを継承していないため、`new A().hello()` はアクセス不可です。",
+          "correctReason": "正解は C です。\n\n`A.hello()` は `protected` です。`protected` は「同じパッケージ」または「継承関係にあるサブクラス」からアクセスできます。\n\nしかし、Bクラスは `package p2` にあり、Aクラスは `package p1` にあります。つまり同じパッケージではありません。さらにBはAを継承していません。そのため、Bの中で `new A().hello();` としても、別パッケージのprotectedメソッドにはアクセスできません。\n\nこの問題を修正するには、BがAのサブクラスになる必要があります。したがってCが正しい説明です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "A: 誤り。Aはpublicクラスなので暗黙のpublicな引数なしコンストラクタを持ちます。問題の本質はコンストラクタではなくprotectedメソッドです。"
+              "detail": "Aクラスのコンストラクタの公開範囲が問題の中心ではありません。問題になっているのは `hello()` がprotectedである点です。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "B: 誤り。getInstanceはB内部でnew B()しており、Bのコンストラクタの公開性は外部呼び出しに関係しません。"
+              "detail": "Bのコンストラクタをpublicにしても、`new A().hello()` のprotectedアクセス制限は解決しません。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "C: 正しい。異なるパッケージからprotectedメンバを利用するには、継承関係が必要です。"
+              "detail": "BがAのサブクラスであれば、別パッケージでもprotectedメンバへのアクセス条件を満たせます。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "D: 誤り。AがBのサブクラスになる必要はありません。"
+              "detail": "AがBのサブクラスになる必要はありません。protectedメンバを利用したい側、つまりBがAを継承する必要があります。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "E: 誤り。Bのhelloメソッドのアクセス修飾子ではなく、Aのprotectedメンバへのアクセス可否が問題です。"
+              "detail": "B自身の `hello` メソッドのアクセス修飾子をprotectedにしても、Aのprotectedメソッドへのアクセス可否は変わりません。"
             }
           ],
           "relatedKnowledge": [
-            "publicクラスを含むソースファイル名は、そのpublicクラス名と一致させる必要がある。publicでないトップレベルクラスは同じファイルに複数書ける。",
-            "importのワイルドカードは、そのパッケージ直下の型だけを対象にする。サブパッケージまでは含まない。",
-            "static importはstaticメンバを簡略参照するためのもの。通常のクラス型を使うためのimportとは目的が違う。"
+            "protectedは「どこからでもサブクラスなら自由」ではなく、別パッケージでは継承関係が重要。",
+            "defaultアクセスは同一パッケージだけ。protectedはそれに継承関係でのアクセスが加わる。",
+            "アクセス修飾子の問題では、クラスのパッケージと継承関係を先に確認する。"
           ],
           "examTips": [
-            "ex.* で ex.p1.A は読めない。ドットがあると親子関係に見えるが、importでは別パッケージとして扱う。",
-            "javacはソースファイル名、javaは完全修飾クラス名またはクラス名を指定する。コマンドの対象を混同しない。"
+            "protectedを「publicより少し狭い」程度で覚えると間違える。",
+            "別パッケージで `new A().protectedMethod()` が常に可能なわけではない。",
+            "コンストラクタの公開範囲とメソッドの公開範囲を混同しない。"
           ],
           "judgeSteps": [
-            "package宣言とファイル配置・クラス名の対応を確認する。",
-            "利用している型が同じパッケージか、import済みか、完全修飾名で書かれているか確認する。",
-            "ワイルドカードimportの場合、対象パッケージ直下の型かどうかを確認する。"
+            "AとBのパッケージを確認する。",
+            "問題のメンバのアクセス修飾子を確認する。",
+            "同一パッケージでないなら、継承関係があるか確認する。",
+            "修正選択肢が本当にアクセス条件を満たすか確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\np1.Aのhelloメソッドはprotectedです。異なるパッケージにあるBから利用するには、BがAのサブクラスとしてアクセスする必要があります。選択肢の中ではCが該当します。",
+          "pdfExplanation": "正解は C です。\n\n`A.hello()` は `protected` です。`protected` は「同じパッケージ」または「継承関係にあるサブクラス」からアクセスできます。\n\nしかし、Bクラスは `package p2` にあり、Aクラスは `package p1` にあります。つまり同じパッケージではありません。さらにBはAを継承していません。そのため、Bの中で `new A().hello();` としても、別パッケージのprotectedメソッドにはアクセスできません。\n\nこの問題を修正するには、BがAのサブクラスになる必要があります。したがってCが正しい説明です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\n`protected` はSilverでかなり落とされやすい論点です。同じパッケージなら継承していなくてもアクセスできます。しかし別パッケージになると、継承関係が必要になります。\n\n設問では `p2.B` から `p1.A` のprotectedメソッドを呼んでいます。BはAを継承していないので、このままではアクセスできません。Bを `extends A` にする方向が修正です。",
+          "points": [
+            "A: 誤り。Aクラスのコンストラクタの公開範囲が問題の中心ではありません。問題になっているのは `hello()` がprotectedである点です。",
+            "B: 誤り。Bのコンストラクタをpublicにしても、`new A().hello()` のprotectedアクセス制限は解決しません。",
+            "C: 正しい。BがAのサブクラスであれば、別パッケージでもprotectedメンバへのアクセス条件を満たせます。",
+            "D: 誤り。AがBのサブクラスになる必要はありません。protectedメンバを利用したい側、つまりBがAを継承する必要があります。",
+            "E: 誤り。B自身の `hello` メソッドのアクセス修飾子をprotectedにしても、Aのprotectedメソッドへのアクセス可否は変わりません。"
+          ]
         },
         "source": "",
         "codeBlocks": [
@@ -21886,60 +21928,62 @@ window.JAVA_STUDY_DATA = {
           "B"
         ],
         "explanation": {
-          "summary": "nameはインスタンスごとのフィールドですが、idはstaticフィールドなのでItemクラスで共有されます。最初はA1、次にB1、b.id=\"2\"で共有idが2になり、a.nameをCに変えた後はC2、最後はB2になります。",
-          "points": [
-            "A: 誤り。b.id=\"2\"でstaticフィールドidは共有して2になります。a.idも2として見えます。",
-            "B: 正しい。順にA1、B1、C2、B2です。",
-            "C: 誤り。2回目の出力はb.id=\"2\"より前なのでB1です。",
-            "D: 誤り。1回目と2回目の出力時点ではa.nameはA、b.nameはBです。",
-            "E: 誤り。a.nameがCになるのは9行目以降です。"
-          ],
-          "correctReason": "正解は B です。\n\nnameはインスタンスごとのフィールドですが、idはstaticフィールドなのでItemクラスで共有されます。最初はA1、次にB1、b.id=\"2\"で共有idが2になり、a.nameをCに変えた後はC2、最後はB2になります。",
+          "summary": "`id` は `static` フィールドなので、Itemの全インスタンスで1つだけ共有されます。一方、`name` はインスタンスフィールドなので、aとbで別々に保持されます。この違いを追うと、出力は A1,B1,C2,B2, です。",
+          "correctReason": "正解は B です。\n\nまず `new Item(\"A\")` により、`a.name` はA、staticフィールド `Item.id` は1になります。最初の出力は `a.name + a.id` なので A1 です。\n\n次に `new Item(\"B\")` により、`b.name` はBになります。コンストラクタ内でstaticフィールド `id` に再び1が代入されます。2回目の出力は B1 です。\n\nその後、`b.id = \"2\";` を実行しています。`id` はstaticなので、b専用のidではありません。Itemクラス側の共有フィールドが2になります。\n\n続いて `a.name = \"C\";` により、aのnameだけがCになります。したがって `a.name + a.id` は C2、`b.name + b.id` は B2 です。\n\n出力は A1,B1,C2,B2, です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "A: 誤り。b.id=\"2\"でstaticフィールドidは共有して2になります。a.idも2として見えます。"
+              "detail": "`b.id = \"2\"` の後、staticフィールドidは共有で2になります。aから見てもidは2なので、3つ目はC1ではなくC2です。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "B: 正しい。順にA1、B1、C2、B2です。"
+              "detail": "staticなidは共有、nameはインスタンスごとです。順に追うと A1,B1,C2,B2, になります。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "C: 誤り。2回目の出力はb.id=\"2\"より前なのでB1です。"
+              "detail": "2回目の出力時点では `b.id = \"2\"` はまだ実行されていません。B2ではなくB1です。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "D: 誤り。1回目と2回目の出力時点ではa.nameはA、b.nameはBです。"
+              "detail": "最初の出力時点で `a.name` はAです。Cになるのは後半で `a.name = \"C\"` を実行した後です。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "E: 誤り。a.nameがCになるのは9行目以降です。"
+              "detail": "最初と3回目のname/idの組み合わせが違います。特に3回目のidはstatic共有により2です。"
             }
           ],
           "relatedKnowledge": [
-            "staticメンバはクラスに属し、インスタンスごとには複製されない。全インスタンスから共有される。",
-            "staticメソッドからは、thisを使えず、インスタンスフィールドやインスタンスメソッドへ直接アクセスできない。",
-            "同名のローカル変数や引数がある場合、単純名ではローカル側が優先される。フィールドを指すにはthis.fieldやClassName.fieldを使う。"
+            "staticフィールドはインスタンスではなくクラスに属する。",
+            "インスタンス参照からstaticフィールドへアクセスできても、実体は共有フィールド。",
+            "インスタンスフィールドはオブジェクトごとに別々。"
           ],
           "examTips": [
-            "static問題は「クラスに属するもの」と「インスタンスに属するもの」を表に分ける。",
-            "staticメソッド内で非staticフィールド名が裸で出たら、まずコンパイルエラーを疑う。"
+            "`a.id` や `b.id` と書かれていても、staticなら共有と考える。",
+            "コンストラクタがstaticフィールドを書き換えていないか確認する。",
+            "文字列結合では左から連結されるので、各時点の値を確定してから読む。"
           ],
           "judgeSteps": [
-            "対象メンバがstaticかインスタンスメンバかを確認する。",
-            "呼び出し元のメソッドがstaticかどうかを確認する。",
-            "同名のローカル変数・引数がある場合、名前解決の優先順位を確認する。"
+            "staticフィールドとインスタンスフィールドを分けて表にする。",
+            "コンストラクタ呼び出しごとにフィールド値を更新する。",
+            "代入文の順番通りに値を追う。",
+            "各print時点の値を確定する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は B です。\n\nnameはインスタンスごとのフィールドですが、idはstaticフィールドなのでItemクラスで共有されます。最初はA1、次にB1、b.id=\"2\"で共有idが2になり、a.nameをCに変えた後はC2、最後はB2になります。",
+          "pdfExplanation": "正解は B です。\n\nまず `new Item(\"A\")` により、`a.name` はA、staticフィールド `Item.id` は1になります。最初の出力は `a.name + a.id` なので A1 です。\n\n次に `new Item(\"B\")` により、`b.name` はBになります。コンストラクタ内でstaticフィールド `id` に再び1が代入されます。2回目の出力は B1 です。\n\nその後、`b.id = \"2\";` を実行しています。`id` はstaticなので、b専用のidではありません。Itemクラス側の共有フィールドが2になります。\n\n続いて `a.name = \"C\";` により、aのnameだけがCになります。したがって `a.name + a.id` は C2、`b.name + b.id` は B2 です。\n\n出力は A1,B1,C2,B2, です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、`a.id` と `b.id` という書き方に惑わされると間違えます。`id` は `public static String id;` なので、a用・b用に別々のidがあるわけではありません。\n\n表にすると次のようになります。\n\n```\nnew Item(\"A\") 後: a.name=A, id=1\n1回目出力      : A1\nnew Item(\"B\") 後: b.name=B, id=1\n2回目出力      : B1\nb.id=\"2\" 後    : id=2\na.name=\"C\" 後  : a.name=C\n3回目出力      : C2\n4回目出力      : B2\n```\n\nstaticとインスタンスを同じ表で追うのではなく、共有欄と個別欄に分けるのが安全です。",
+          "points": [
+            "A: 誤り。`b.id = \"2\"` の後、staticフィールドidは共有で2になります。aから見てもidは2なので、3つ目はC1ではなくC2です。",
+            "B: 正しい。staticなidは共有、nameはインスタンスごとです。順に追うと A1,B1,C2,B2, になります。",
+            "C: 誤り。2回目の出力時点では `b.id = \"2\"` はまだ実行されていません。B2ではなくB1です。",
+            "D: 誤り。最初の出力時点で `a.name` はAです。Cになるのは後半で `a.name = \"C\"` を実行した後です。",
+            "E: 誤り。最初と3回目のname/idの組み合わせが違います。特に3回目のidはstatic共有により2です。"
+          ]
         },
         "source": "",
         "codeBlocks": [
@@ -21992,60 +22036,63 @@ window.JAVA_STUDY_DATA = {
           "A"
         ],
         "explanation": {
-          "summary": "argsにはA、B、Cが順に入ります。setValuesで各文字列の後ろに空白を付けてStringBuilderへ追加し、最後にBのsetValueが呼ばれます。BのsetValueは前後にダブルクォーテーションを付けてAのvalueへ保存するため、\"A B C \"が表示されます。",
-          "points": [
-            "A: 正しい。末尾の空白を含むA B C がダブルクォーテーションで囲まれて表示されます。",
-            "B: 誤り。BのsetValueにより前後にダブルクォーテーションが付きます。また末尾空白もあります。",
-            "C: 誤り。argsの内容をStringBuilderに追加しているため空文字ではありません。",
-            "D: 誤り。構文・型ともに問題ありません。",
-            "E: 誤り。配列範囲外アクセスやnull参照はありません。"
-          ],
-          "correctReason": "正解は A です。\n\nargsにはA、B、Cが順に入ります。setValuesで各文字列の後ろに空白を付けてStringBuilderへ追加し、最後にBのsetValueが呼ばれます。BのsetValueは前後にダブルクォーテーションを付けてAのvalueへ保存するため、\"A B C \"が表示されます。",
+          "summary": "起動引数 `A B C` は `args` 配列に順に入ります。`StringBuilder` に各要素と半角スペースを追加し、最後に `B.setValue` がダブルクォーテーションで囲んでからスーパークラスの値へ保存します。表示は `\"A B C \"` です。",
+          "correctReason": "正解は A です。\n\n`java Sample A B C` で実行すると、`args[0]` は `\"A\"`、`args[1]` は `\"B\"`、`args[2]` は `\"C\"` です。クラス名 `Sample` は配列に入りません。\n\n`b.setValues(args);` では、拡張for文で各引数を取り出し、`sb.append(part).append(' ');` により、各文字列の後ろに半角スペースを付けて追加します。したがって `sb.toString()` は `\"A B C \"` になります。最後にもスペースが残る点が重要です。\n\nその後、`this.setValue(sb.toString());` により、Bクラスの `setValue` が呼ばれます。Bの `setValue` は `super.setValue(\"\"\" + value + \"\"\");` により、値全体をダブルクォーテーションで囲んでA側の `value` に保存します。\n\n`System.out.println(b);` では `toString()` が呼ばれ、保存された `\"A B C \"` が表示されます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "A: 正しい。末尾の空白を含むA B C がダブルクォーテーションで囲まれて表示されます。"
+              "detail": "引数A、B、Cをスペース付きで連結した後、Bの `setValue` が全体をダブルクォーテーションで囲むため、この表示になります。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "B: 誤り。BのsetValueにより前後にダブルクォーテーションが付きます。また末尾空白もあります。"
+              "detail": "Bはダブルクォーテーションを考慮していません。また末尾スペースの扱いもAとは異なります。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "C: 誤り。argsの内容をStringBuilderに追加しているため空文字ではありません。"
+              "detail": "起動引数は3つあり、StringBuilderへ追加されます。空文字にはなりません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "D: 誤り。構文・型ともに問題ありません。"
+              "detail": "クラス宣言、継承、メソッド呼び出し、StringBuilderの使い方にコンパイルエラーはありません。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "E: 誤り。配列範囲外アクセスやnull参照はありません。"
+              "detail": "argsにはA、B、Cが入っているため範囲外アクセスはありません。null参照も発生しません。"
             }
           ],
           "relatedKnowledge": [
-            "main(String[] args)とmain(String... args)は、エントリポイントとして同じように扱える。",
-            "コマンドライン引数はクラス名の後ろから順にargs[0]、args[1]へ入る。添字は0始まり。",
-            "argsの各要素はString。数値として使う場合はInteger.parseIntなどで変換されるため、変換できない文字列ならNumberFormatExceptionになる。"
+            "起動引数の配列にクラス名は含まれない。",
+            "拡張for文は配列要素を先頭から順に取り出す。",
+            "オーバーライドされたメソッドは実体クラス側の実装が呼ばれる。",
+            "`println(参照)` では `toString()` が使われる。"
           ],
           "examTips": [
-            "java Sample 5 2 なら、使っているのがargs[0]かargs[1]かを最初に確認する。",
-            "引数が足りない場合はArrayIndexOutOfBoundsException、数値変換不能ならNumberFormatExceptionを疑う。"
+            "末尾スペースを勝手に消さない。コードがappendしているなら残る。",
+            "`this.setValue` はBクラス内からの呼び出しなので、Bのオーバーライドメソッドを呼ぶ。",
+            "`super.setValue` によってA側のprivateフィールドへ間接的に保存している点を見る。"
           ],
           "judgeSteps": [
-            "コマンドのクラス名以降の値をargs[0]から順に割り当てる。",
-            "コードが参照している添字だけを取り出す。",
-            "parseIntなどの変換がある場合、対象文字列が変換可能か確認する。"
+            "起動引数がargsにどう入るか確認する。",
+            "StringBuilderへ追加される文字を順番に追う。",
+            "`this.setValue` がどの実装を呼ぶか確認する。",
+            "printlnで呼ばれる `toString()` の戻り値を確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A です。\n\nargsにはA、B、Cが順に入ります。setValuesで各文字列の後ろに空白を付けてStringBuilderへ追加し、最後にBのsetValueが呼ばれます。BのsetValueは前後にダブルクォーテーションを付けてAのvalueへ保存するため、\"A B C \"が表示されます。",
+          "pdfExplanation": "正解は A です。\n\n`java Sample A B C` で実行すると、`args[0]` は `\"A\"`、`args[1]` は `\"B\"`、`args[2]` は `\"C\"` です。クラス名 `Sample` は配列に入りません。\n\n`b.setValues(args);` では、拡張for文で各引数を取り出し、`sb.append(part).append(' ');` により、各文字列の後ろに半角スペースを付けて追加します。したがって `sb.toString()` は `\"A B C \"` になります。最後にもスペースが残る点が重要です。\n\nその後、`this.setValue(sb.toString());` により、Bクラスの `setValue` が呼ばれます。Bの `setValue` は `super.setValue(\"\"\" + value + \"\"\");` により、値全体をダブルクォーテーションで囲んでA側の `value` に保存します。\n\n`System.out.println(b);` では `toString()` が呼ばれ、保存された `\"A B C \"` が表示されます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、起動引数、StringBuilder、継承、オーバーライド、toStringがまとめて出ています。\n\nまず `args` は `{ \"A\", \"B\", \"C\" }` です。`Sample` は入りません。次に `setValues` で `A `、`B `、`C ` を順に追加するので、文字列は `A B C ` になります。最後の空白も残ります。\n\nさらにBクラスは `setValue` をオーバーライドしており、受け取った文字列を `\"` で囲ってからAクラスの `setValue` に渡します。だから表示は引用符付きです。",
+          "points": [
+            "A: 正しい。引数A、B、Cをスペース付きで連結した後、Bの `setValue` が全体をダブルクォーテーションで囲むため、この表示になります。",
+            "B: 誤り。Bはダブルクォーテーションを考慮していません。また末尾スペースの扱いもAとは異なります。",
+            "C: 誤り。起動引数は3つあり、StringBuilderへ追加されます。空文字にはなりません。",
+            "D: 誤り。クラス宣言、継承、メソッド呼び出し、StringBuilderの使い方にコンパイルエラーはありません。",
+            "E: 誤り。argsにはA、B、Cが入っているため範囲外アクセスはありません。null参照も発生しません。"
+          ]
         },
         "source": "",
         "codeBlocks": [
@@ -22099,54 +22146,56 @@ window.JAVA_STUDY_DATA = {
           "D"
         ],
         "explanation": {
-          "summary": "クラスファイルを生成するのはjavaコマンドではなくjavacコマンドです。A.javaはb.Bをimportして参照しているため、通常はjavac a/A.javaで依存するB.javaも見つかれば一緒にコンパイルされます。その後、実行は拡張子なしの完全修飾クラス名でjava a/Aです。",
-          "points": [
-            "A: 誤り。javaは実行コマンドであり、クラスファイル生成には使いません。",
-            "B: 誤り。javaは実行コマンドです。またBにはmainメソッドもありません。",
-            "C: 誤り。javac b/B.javaだけではA.classを生成しません。さらにjava a/A.javaは実行コマンドの指定として不適切です。",
-            "D: 正しい。javac a/A.javaでAをコンパイルし、必要に応じて参照先Bもコンパイルされます。実行はjava a/Aです。"
-          ],
-          "correctReason": "正解は D です。\n\nクラスファイルを生成するのはjavaコマンドではなくjavacコマンドです。A.javaはb.Bをimportして参照しているため、通常はjavac a/A.javaで依存するB.javaも見つかれば一緒にコンパイルされます。その後、実行は拡張子なしの完全修飾クラス名でjava a/Aです。",
+          "summary": "Javaのコンパイルは `javac` にソースファイルを指定して行います。A.javaは `import b.B;` でBを参照しているため、A.javaをコンパイルすると必要に応じてB.javaも参照され、2つのクラスファイルを生成できます。選択肢の中ではDが正しい流れです。",
+          "correctReason": "正解は D です。\n\nクラスファイルを生成するには `java` ではなく `javac` を使います。`java a/A.java` や `java b/B.java` は、クラスファイル生成のためのコマンドとしては不適切です。\n\n`A.java` は `package a;` に属し、`import b.B;` によって `package b` の `B` クラスを利用しています。A.javaをコンパイルすると、コンパイラは参照先のBクラスも必要に応じて探し、`a/A.class` と `b/B.class` を生成できます。\n\nCは `javac b/B.java` でBだけをコンパイルしており、Aのクラスファイルを生成できません。問題文は「2つのコードのクラスファイルを生成するため」としているため不十分です。\n\nしたがって、選択肢の中ではDが正解です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "A: 誤り。javaは実行コマンドであり、クラスファイル生成には使いません。"
+              "detail": "`java` は基本的に実行用コマンドです。クラスファイルを生成するコマンドではありません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "B: 誤り。javaは実行コマンドです。またBにはmainメソッドもありません。"
+              "detail": "Aと同じく、`java` はコンパイル用ではありません。B.javaだけを指定してもA.classも生成できません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "C: 誤り。javac b/B.javaだけではA.classを生成しません。さらにjava a/A.javaは実行コマンドの指定として不適切です。"
+              "detail": "`javac b/B.java` ではB.classだけが対象です。A.javaをコンパイルしていないため、A.classを生成する目的を満たせません。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "D: 正しい。javac a/A.javaでAをコンパイルし、必要に応じて参照先Bもコンパイルされます。実行はjava a/Aです。"
+              "detail": "`javac a/A.java` によりAをコンパイルし、その参照先であるBも解決できます。選択肢の中で2つのクラスファイル生成の目的に合います。"
             }
           ],
           "relatedKnowledge": [
-            "publicクラスを含むソースファイル名は、そのpublicクラス名と一致させる必要がある。publicでないトップレベルクラスは同じファイルに複数書ける。",
-            "importのワイルドカードは、そのパッケージ直下の型だけを対象にする。サブパッケージまでは含まない。",
-            "static importはstaticメンバを簡略参照するためのもの。通常のクラス型を使うためのimportとは目的が違う。"
+            "`javac` はコンパイル、`java` は実行。",
+            "package宣言があるクラスは、ディレクトリ構造と対応させて扱う。",
+            "importはソース中でクラス名を短く書くための仕組みであり、パッケージ自体を結合するものではない。"
           ],
           "examTips": [
-            "ex.* で ex.p1.A は読めない。ドットがあると親子関係に見えるが、importでは別パッケージとして扱う。",
-            "javacはソースファイル名、javaは完全修飾クラス名またはクラス名を指定する。コマンドの対象を混同しない。"
+            "クラスファイル生成を問われたら、まず `javac` を選ぶ。",
+            "一方のクラスだけをコンパイルして目的を満たすか確認する。",
+            "package付きクラスでは、ファイルの位置とpackage宣言を対応させる。"
           ],
           "judgeSteps": [
-            "package宣言とファイル配置・クラス名の対応を確認する。",
-            "利用している型が同じパッケージか、import済みか、完全修飾名で書かれているか確認する。",
-            "ワイルドカードimportの場合、対象パッケージ直下の型かどうかを確認する。"
+            "問題文がコンパイルを問うのか実行を問うのか確認する。",
+            "`javac` と `java` を切り分ける。",
+            "AがBを参照している関係を確認する。",
+            "2つのclassファイルが生成されるか確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は D です。\n\nクラスファイルを生成するのはjavaコマンドではなくjavacコマンドです。A.javaはb.Bをimportして参照しているため、通常はjavac a/A.javaで依存するB.javaも見つかれば一緒にコンパイルされます。その後、実行は拡張子なしの完全修飾クラス名でjava a/Aです。",
+          "pdfExplanation": "正解は D です。\n\nクラスファイルを生成するには `java` ではなく `javac` を使います。`java a/A.java` や `java b/B.java` は、クラスファイル生成のためのコマンドとしては不適切です。\n\n`A.java` は `package a;` に属し、`import b.B;` によって `package b` の `B` クラスを利用しています。A.javaをコンパイルすると、コンパイラは参照先のBクラスも必要に応じて探し、`a/A.class` と `b/B.class` を生成できます。\n\nCは `javac b/B.java` でBだけをコンパイルしており、Aのクラスファイルを生成できません。問題文は「2つのコードのクラスファイルを生成するため」としているため不十分です。\n\nしたがって、選択肢の中ではDが正解です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、`javac` と `java` の役割を混同していないかを見ています。`javac` は `.java` から `.class` を作るコマンド、`java` は作られたクラスを実行するコマンドです。\n\nBだけをコンパイルしても、Aのクラスファイルはできません。一方でAはBをimportして使っているため、Aをコンパイルする過程でBも必要になります。したがって、選択肢の中ではDが最も目的に合います。\n\nパッケージつきの問題では、`package a;` と書かれたクラスは `a` ディレクトリ配下のクラスとして扱われる、という対応関係もあわせて見る必要があります。",
+          "points": [
+            "A: 誤り。`java` は基本的に実行用コマンドです。クラスファイルを生成するコマンドではありません。",
+            "B: 誤り。Aと同じく、`java` はコンパイル用ではありません。B.javaだけを指定してもA.classも生成できません。",
+            "C: 誤り。`javac b/B.java` ではB.classだけが対象です。A.javaをコンパイルしていないため、A.classを生成する目的を満たせません。",
+            "D: 正しい。`javac a/A.java` によりAをコンパイルし、その参照先であるBも解決できます。選択肢の中で2つのクラスファイル生成の目的に合います。"
+          ]
         },
         "source": "",
         "codeBlocks": [
@@ -22194,51 +22243,52 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "Mainはcomパッケージ、Sampleはcom.sample、Testはcom.sample.testにあります。importのワイルドカードは指定したパッケージ直下の型だけを対象にし、サブパッケージまでは含みません。Sampleを単一型インポートし、Testはcom.sample.test.*で読み込むCが正しいです。java.lang.Integerは自動的に利用できるため、明示importは不要です。",
+          "summary": "Mainはcomパッケージにあり、使いたい型はcom.sample.Sampleとcom.sample.test.Testです。importのワイルドカードは指定したパッケージ直下の型だけを対象にし、サブパッケージまでは読み込みません。したがって、Sampleを明示importし、Testをcom.sample.test.*で読み込むCが正解です。",
           "points": [
-            "Mainはcomパッケージにあり、Sampleはcom.sample、Testはcom.sample.testにある。com.sample.* はcom.sample直下の型だけを取り込むため、com.sample.test.Testまでは取り込まない。CはSampleを明示importし、Testをcom.sample.test.*で取り込むため両方解決できる。java.lang.Integerは自動import対象なので明示importは不要。"
+            "Mainはcomパッケージにあり、使いたい型はcom.sample.Sampleとcom.sample.test.Testです。importのワイルドカードは指定したパッケージ直下の型だけを対象にし、サブパッケージまでは読み込みません。したがって、Sampleを明示importし、Testをcom.sample.test.*で読み込むCが正解です。"
           ],
-          "correctReason": "正解は C です。\n\nMainはcomパッケージ、Sampleはcom.sample、Testはcom.sample.testにあります。importのワイルドカードは指定したパッケージ直下の型だけを対象にし、サブパッケージまでは含みません。Sampleを単一型インポートし、Testはcom.sample.test.*で読み込むCが正しいです。java.lang.Integerは自動的に利用できるため、明示importは不要です。",
+          "correctReason": "正解は C です。\n\nMain.javaは `package com;` なので、同じcomパッケージの型ならimportなしで使えます。しかし、`Sample` は `com.sample`、`Test` は `com.sample.test` にあります。\n\n`import com.sample.*;` は `com.sample` 直下のクラスだけを取り込みます。`com.sample.test.Test` はサブパッケージにあるため対象外です。\n\nCは `com.sample.Sample` を単一型インポートし、`com.sample.test.*` でTestを読み込めるため、Main内の `new Sample()` と `new Test()` の両方が解決できます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。com.* はcom直下の型だけを対象にし、com.sample.Sampleやcom.sample.test.Testは取り込みません。Integerのimportも本質ではありません。"
+              "detail": "誤りです。`java.lang.Integer` は自動的に利用できるため、明示importの有無は本質ではありません。さらに `import com.*;` はcom直下の型だけが対象で、`com.sample.Sample` や `com.sample.test.Test` は読み込めません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。com.sample.* でSampleは読めますが、com.sample.test.Testはサブパッケージなので読めません。"
+              "detail": "誤りです。`com.sample.*` で `Sample` は読めますが、`com.sample.test.Test` はサブパッケージなので対象外です。ワイルドカードは下位パッケージを再帰的に含みません。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。Sampleを直接importし、Testはcom.sample.testパッケージ直下の型としてワイルドカードimportできます。"
+              "detail": "正解です。`Sample` は完全な型名で単一型インポートし、`Test` は `com.sample.test` 直下の型としてワイルドカードインポートできます。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。java.langは自動的に使えますが、SampleとTestは読み込めません。"
+              "detail": "誤りです。`java.lang.*` はもともと自動importされます。`Sample` と `Test` はjava.langではなく、別パッケージの型なので解決できません。"
             }
           ],
           "relatedKnowledge": [
-            "publicクラスを含むソースファイル名は、そのpublicクラス名と一致させる必要がある。publicでないトップレベルクラスは同じファイルに複数書ける。",
-            "importのワイルドカードは、そのパッケージ直下の型だけを対象にする。サブパッケージまでは含まない。",
-            "static importはstaticメンバを簡略参照するためのもの。通常のクラス型を使うためのimportとは目的が違う。"
+            "完全修飾名は `パッケージ名.クラス名` で表す。",
+            "`java.lang` パッケージは自動的にimportされる。",
+            "`import x.y.*;` はx.y直下の型だけを対象にする。"
           ],
           "examTips": [
-            "ex.* で ex.p1.A は読めない。ドットがあると親子関係に見えるが、importでは別パッケージとして扱う。",
-            "javacはソースファイル名、javaは完全修飾クラス名またはクラス名を指定する。コマンドの対象を混同しない。"
+            "import問題では、選択肢の見た目よりも、各クラスの完全修飾名を先に確定する。",
+            "ワイルドカードimportがサブパッケージを含むと思うと失点しやすい。"
           ],
           "judgeSteps": [
-            "package宣言とファイル配置・クラス名の対応を確認する。",
-            "利用している型が同じパッケージか、import済みか、完全修飾名で書かれているか確認する。",
-            "ワイルドカードimportの場合、対象パッケージ直下の型かどうかを確認する。"
+            "各コードのpackage宣言を確認する。",
+            "Mainから単純名で使っている型を洗い出す。",
+            "同じパッケージか、import済みか、完全修飾名かを判定する。",
+            "ワイルドカードimportがサブパッケージを含まないことを確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\nMainはcomパッケージ、Sampleはcom.sample、Testはcom.sample.testにあります。importのワイルドカードは指定したパッケージ直下の型だけを対象にし、サブパッケージまでは含みません。Sampleを単一型インポートし、Testはcom.sample.test.*で読み込むCが正しいです。java.lang.Integerは自動的に利用できるため、明示importは不要です。",
+          "pdfExplanation": "正解は C です。\n\nMain.javaは `package com;` なので、同じcomパッケージの型ならimportなしで使えます。しかし、`Sample` は `com.sample`、`Test` は `com.sample.test` にあります。\n\n`import com.sample.*;` は `com.sample` 直下のクラスだけを取り込みます。`com.sample.test.Test` はサブパッケージにあるため対象外です。\n\nCは `com.sample.Sample` を単一型インポートし、`com.sample.test.*` でTestを読み込めるため、Main内の `new Sample()` と `new Test()` の両方が解決できます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、出力結果ではなく「型名を解決できるimport」を選ぶ問題です。最初に各クラスのpackage宣言を確認します。\n\n`Sample.java` は `package com.sample;` なので完全修飾名は `com.sample.Sample` です。`Test.java` は `package com.sample.test;` なので完全修飾名は `com.sample.test.Test` です。`Main.java` は `package com;` なので、`Sample` や `Test` を単純名で使うにはimportが必要です。\n\nここで引っかけになるのが `*` です。`import com.sample.*;` と書いても、`com.sample.test` の中までは見に行きません。Javaのパッケージ名はドットで階層のように見えますが、importの対象としては別パッケージです。\n\nまた、`Integer.parseInt(args[0])` が出てきますが、`java.lang.Integer` は自動的に使えるため、これをimportする選択肢に惑わされる必要はありません。必要なのはSampleとTestの解決です。"
         },
         "source": "",
         "codeBlocks": [
@@ -22290,53 +22340,52 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "main内の `int num = num;` では、左辺で宣言したローカル変数numが右辺の名前解決でも優先されます。しかし、そのローカル変数はまだ初期化されていません。staticフィールド `Sample.num` の23を読んでいるわけではないため、コンパイルエラーになります。",
+          "summary": "`int num = num;` の右辺numはstaticフィールドではなく、宣言中のローカル変数numとして扱われます。ローカル変数は自動初期化されず、初期化前に読むことはできないため、コンパイルエラーになります。",
           "points": [
-            "ローカル変数宣言 int num = num; の右辺numは、宣言中のローカル変数numとして扱われる。ローカル変数は初期化前に参照できないためコンパイルエラーになる。クラス変数を参照したいなら Sample.num のように修飾する必要がある。"
+            "`int num = num;` の右辺numはstaticフィールドではなく、宣言中のローカル変数numとして扱われます。ローカル変数は自動初期化されず、初期化前に読むことはできないため、コンパイルエラーになります。"
           ],
-          "correctReason": "正解は C です。\n\nmain内の `int num = num;` では、左辺で宣言したローカル変数numが右辺の名前解決でも優先されます。しかし、そのローカル変数はまだ初期化されていません。staticフィールド `Sample.num` の23を読んでいるわけではないため、コンパイルエラーになります。",
+          "correctReason": "正解は C です。\n\n`Sample` には `static int num = 23;` がありますが、mainメソッド内で `int num = num;` と同名のローカル変数を宣言しています。\n\nこのとき右辺の `num` は、クラス変数 `Sample.num` ではなく、今宣言しているローカル変数 `num` と解釈されます。しかし、そのローカル変数はまだ初期化されていません。\n\nローカル変数はフィールドと違ってデフォルト値を持たないため、初期化前に参照するとコンパイルエラーになります。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。右辺のnumはstaticフィールドではなく、宣言中のローカル変数numとして解釈されます。"
+              "detail": "誤りです。`23` が表示されるのは、右辺が `Sample.num` を参照している場合です。このコードでは単純名 `num` がローカル変数を指すため、staticフィールドの23は使われません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。未初期化ローカル変数の参照は、想定外の実行結果ではなくコンパイルエラーです。"
+              "detail": "誤りです。Javaでは未初期化ローカル変数を読もうとすると、想定外の値を出すのではなくコンパイルエラーで止めます。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。ローカル変数numを初期化前に参照しているためコンパイルエラーです。"
+              "detail": "正解です。ローカル変数numを初期化する式の中で、そのnum自身を読もうとしているため、初期化前参照としてコンパイルエラーになります。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実行まで進まないため、実行時例外ではありません。"
+              "detail": "誤りです。実行時例外ではありません。コンパイル段階で検出されるため、プログラムは実行されません。"
             }
           ],
           "relatedKnowledge": [
-            "ローカル変数は自動初期化されない。宣言しただけのローカル変数を読むとコンパイルエラーになる。",
-            "フィールドは型ごとのデフォルト値で初期化される。intなら0、booleanならfalse、参照型ならnull。ローカル変数とは扱いが違う。",
-            "同名のローカル変数や引数がある場合、単純名ではローカル側が優先される。フィールドを明示したい場合はthis.fieldまたはClassName.staticFieldを使う。"
+            "フィールドはデフォルト値で初期化される。",
+            "ローカル変数はデフォルト値を持たない。",
+            "同名の場合、単純名では近いスコープのローカル変数が優先される。"
           ],
           "examTips": [
-            "初期化問題では、値が入る可能性ではなく、すべての経路で確実に代入済みかを見る。",
-            "フィールドのデフォルト値の知識をローカル変数へ持ち込まない。ここは試験でよく狙われる。",
-            "thisが付いているか、付いていないかで参照先が変わる。代入式では左辺と右辺を別々に確認する。"
+            "フィールドの初期値ルールをローカル変数に持ち込まない。",
+            "同名変数がある問題では、`this.` や `ClassName.` が付いているかを必ず見る。"
           ],
           "judgeSteps": [
-            "対象がフィールドかローカル変数かを確認する。",
-            "ローカル変数なら、使用前に必ず代入されているかを確認する。",
-            "同名の変数がある場合、単純名がローカル側を指していないか確認する。",
-            "フィールドを参照する必要がある場合、thisやクラス名で明示されているかを見る。"
+            "フィールドかローカル変数かを見分ける。",
+            "同名のローカル変数宣言があるか確認する。",
+            "右辺の単純名がどの変数を指すか判断する。",
+            "ローカル変数が使用前に初期化済みか確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\nmain内の `int num = num;` では、左辺で宣言したローカル変数numが右辺の名前解決でも優先されます。しかし、そのローカル変数はまだ初期化されていません。staticフィールド `Sample.num` の23を読んでいるわけではないため、コンパイルエラーになります。",
+          "pdfExplanation": "正解は C です。\n\n`Sample` には `static int num = 23;` がありますが、mainメソッド内で `int num = num;` と同名のローカル変数を宣言しています。\n\nこのとき右辺の `num` は、クラス変数 `Sample.num` ではなく、今宣言しているローカル変数 `num` と解釈されます。しかし、そのローカル変数はまだ初期化されていません。\n\nローカル変数はフィールドと違ってデフォルト値を持たないため、初期化前に参照するとコンパイルエラーになります。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、staticフィールドの初期値ではなく、名前解決とローカル変数の確定代入を問う問題です。\n\n一見すると、`static int num = 23;` があるので、`int num = num;` の右辺が23になりそうに見えます。しかし、同じブロック内でローカル変数 `num` を宣言すると、その名前はローカル変数として扱われます。\n\n重要なのは、ローカル変数はフィールドと違って自動初期化されないことです。フィールドならintは0になりますが、ローカル変数は必ず明示的に代入してからでないと読めません。\n\nもしstaticフィールドを明示したいなら `int num = Sample.num;` のようにクラス名で修飾する必要があります。"
         },
         "source": "",
         "codeBlocks": [
@@ -22349,7 +22398,8 @@ window.JAVA_STUDY_DATA = {
           "static",
           "scope",
           "local-variable"
-        ]
+        ],
+        "status": "reviewed"
       },
       {
         "id": "ch07-q33",
@@ -22380,51 +22430,52 @@ window.JAVA_STUDY_DATA = {
           "B"
         ],
         "explanation": {
-          "summary": "Bは抽象クラスで、x()は実装済みですが、抽象メソッドz()を残しています。Cは具象クラスなので、Bから継承した抽象メソッドz()を実装しなければなりません。したがってposition 3に `public void z() {}` を追加するBが正しいです。",
+          "summary": "Cは具象クラスなので、継承した抽象メソッドをすべて実装しなければなりません。Bはx()を実装していますが、z()は未実装のままです。したがってCのposition 3に `public void z() {}` を追加するBが正解です。",
           "points": [
-            "Cは具象クラスなので、継承元Bに残っている抽象メソッドz()を実装しなければならない。Aのx()はBがpublic void x()として実装済みであり、Cで再度実装する必要はない。"
+            "Cは具象クラスなので、継承した抽象メソッドをすべて実装しなければなりません。Bはx()を実装していますが、z()は未実装のままです。したがってCのposition 3に `public void z() {}` を追加するBが正解です。"
           ],
-          "correctReason": "正解は B です。\n\nBは抽象クラスで、x()は実装済みですが、抽象メソッドz()を残しています。Cは具象クラスなので、Bから継承した抽象メソッドz()を実装しなければなりません。したがってposition 3に `public void z() {}` を追加するBが正しいです。",
+          "correctReason": "正解は B です。\n\nAには抽象メソッド `x()` と `z()` が定義されています。Bはabstractクラスなので、Aの抽象メソッドをすべて実装しなくても構いません。Bでは `x()` だけを実装し、`z()` は未実装のまま残しています。\n\nCはabstractではない通常クラスです。通常クラスは継承した抽象メソッドを残せないため、Cで `z()` を実装する必要があります。\n\nそのため、position 3に `public void z() {}` を追加するBが正しい修正です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。x()はBですでにpublicメソッドとして実装されています。Cで必要なのは未実装のz()です。"
+              "detail": "誤りです。`x()` はすでにBで実装済みです。Cで再度x()を実装しても、未実装の `z()` が残るためコンパイルは成功しません。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正解です。Cは具象クラスなので、継承した抽象メソッドz()を実装する必要があります。"
+              "detail": "正解です。Cは具象クラスなので、Bから継承した未実装の抽象メソッド `z()` を実装する必要があります。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。interface Aのx()はpublic扱いです。Bでより狭いアクセスのvoid x()を置くと実装として不適切です。"
+              "detail": "誤りです。position 2はB内です。Bはabstractクラスなのでx()を実装すること自体は可能ですが、問題の未実装メソッドz()を解決していません。さらにアクセス修飾子にも注意が必要です。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。BがAをimplementsしても、Cでz()の実装義務が残る問題は解消しません。"
+              "detail": "誤りです。CはBを継承しており、BはすでにAを実装しています。Cに `implements A` を足しても、未実装の `z()` を実装しない限り具象クラスにはできません。"
             }
           ],
           "relatedKnowledge": [
-            "インタフェースの抽象メソッドは暗黙にpublic abstractとして扱われる。実装クラス側ではpublicより狭いアクセス修飾子にはできない。",
-            "defaultメソッドは実装を持つインタフェースメソッド。実装クラスが上書きしなければ、そのまま継承して呼び出せる。",
-            "インタフェース同士はextendsで継承でき、クラスはimplementsで実装する。クラスが複数インタフェースを実装できる点も頻出。"
+            "abstractクラスは抽象メソッドを残せる。",
+            "具象クラスは抽象メソッドを残せない。",
+            "interfaceの抽象メソッドは暗黙にpublic。実装時はpublicが必要になる。"
           ],
           "examTips": [
-            "インタフェース実装問題では、メソッド名・引数リスト・戻り値型・アクセス修飾子の4点を必ず確認する。",
-            "defaultメソッドの競合がある場合、実装クラス側で明示的に解決しないとコンパイルエラーになる。"
+            "abstractが付いているクラスと付いていないクラスで責任が違う。",
+            "実装済みメソッドを増やすのではなく、未実装メソッドを特定する。"
           ],
           "judgeSteps": [
-            "インタフェースに定義された抽象メソッドを列挙する。",
-            "実装クラスまたは抽象クラスが、それらを実装する必要があるかを判定する。",
-            "実装している場合、public、戻り値型、throws、引数リストが条件を満たすか確認する。"
+            "interfaceまたは抽象クラスの抽象メソッドを列挙する。",
+            "途中のabstractクラスで実装済みのメソッドを消す。",
+            "最後の具象クラスに未実装メソッドが残っていないか確認する。",
+            "override時のアクセス修飾子が狭くなっていないか確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は B です。\n\nBは抽象クラスで、x()は実装済みですが、抽象メソッドz()を残しています。Cは具象クラスなので、Bから継承した抽象メソッドz()を実装しなければなりません。したがってposition 3に `public void z() {}` を追加するBが正しいです。",
+          "pdfExplanation": "正解は B です。\n\nAには抽象メソッド `x()` と `z()` が定義されています。Bはabstractクラスなので、Aの抽象メソッドをすべて実装しなくても構いません。Bでは `x()` だけを実装し、`z()` は未実装のまま残しています。\n\nCはabstractではない通常クラスです。通常クラスは継承した抽象メソッドを残せないため、Cで `z()` を実装する必要があります。\n\nそのため、position 3に `public void z() {}` を追加するBが正しい修正です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、interface、abstractクラス、具象クラスの責任の違いを見ます。\n\nAはinterfaceなので、抽象メソッド `x()` と `z()` を持っています。Bは `implements A` していますが、B自身が `abstract class` なので、Aのメソッドを全部実装しなくてもコンパイル可能です。\n\nBでは `x()` だけを実装しています。つまり、Bから見ると `z()` はまだ未実装です。Cは `class C extends B` であり、abstractが付いていない具象クラスです。具象クラスは抽象メソッドを残せないので、Cで `z()` を実装しなければなりません。\n\nここでAの `x()` を追加したくなりますが、足りないのはxではなくzです。抽象メソッド問題では「どのメソッドがまだ未実装か」を一覧にして消し込むのが安定します。"
         },
         "source": "",
         "codeBlocks": [
@@ -22477,52 +22528,52 @@ window.JAVA_STUDY_DATA = {
           "A"
         ],
         "explanation": {
-          "summary": "mainの引数argsはString配列です。拡張for文では配列の要素を1つずつ取り出すため、`var value` の型は配列型ではなく要素型のStringに推論されます。varという型が存在するわけではありません。",
+          "summary": "`String[] args` はString型の配列です。拡張for文で配列を回すと、ループ変数には配列そのものではなく、要素が1つずつ入ります。したがって `var value` の推論型はStringです。",
           "points": [
-            "mainの仮引数argsはString...と書かれているが、扱いはString[]である。拡張for文でString[]から1要素ずつ取り出すため、valueの推論型はStringになる。varという型が存在するわけではない。"
+            "`String[] args` はString型の配列です。拡張for文で配列を回すと、ループ変数には配列そのものではなく、要素が1つずつ入ります。したがって `var value` の推論型はStringです。"
           ],
-          "correctReason": "正解は A です。\n\nmainの引数argsはString配列です。拡張for文では配列の要素を1つずつ取り出すため、`var value` の型は配列型ではなく要素型のStringに推論されます。varという型が存在するわけではありません。",
+          "correctReason": "正解は A です。\n\nmainメソッドの `args` は `String[]` です。これはStringを複数入れられる配列です。\n\n拡張for文 `for (var value : args)` では、`args` の要素を1つずつ取り出して `value` に代入します。`args` の要素型はStringなので、`value` の型はStringに推論されます。\n\n`var` は型名ではなく、コンパイラにローカル変数の型を推論させるための記法です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。argsの要素型はStringなので、valueはStringに推論されます。"
+              "detail": "正解です。`args` はString配列であり、その要素はStringです。拡張forのループ変数valueは要素型のStringになります。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。args全体はString[]ですが、拡張forで取り出すvalueは各要素です。"
+              "detail": "誤りです。`args` 全体の型はString[]ですが、拡張forで取り出す `value` は配列全体ではなく各要素です。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。Stringの各文字を取り出しているわけではありません。"
+              "detail": "誤りです。Stringは文字列オブジェクトであり、1文字を表すCharacterではありません。`args` の各要素はStringです。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。varは型名ではなく、右辺や反復対象から実際の型を推論するための構文です。"
+              "detail": "誤りです。`var` という型になるわけではありません。コンパイル時に具体的な型、ここではStringへ推論されます。"
             }
           ],
           "relatedKnowledge": [
-            "配列のlengthは要素数であり、最後の有効添字はlength - 1。添字範囲外アクセスは実行時例外になる。",
-            "多次元配列は配列の配列。行ごとに長さが違うジャグ配列も作れるため、外側と内側のlengthを分けて読む。",
-            "参照型配列の要素の初期値はnull。要素にインスタンスを入れる前にメソッド呼び出しをするとNullPointerExceptionになる。"
+            "mainメソッドの引数は `String[] args` または `String... args`。",
+            "varはローカル変数の型推論であり、フィールドやメソッド引数には使えない。",
+            "拡張forのループ変数は配列の要素型になる。"
           ],
           "examTips": [
-            "二次元配列では、array.lengthとarray[i].lengthを同じ意味で読まない。",
-            "拡張for文のループ変数に代入しても、配列要素そのものの差し替えにはならない場合がある。"
+            "配列全体の型と要素型を混同しない。",
+            "`var` を型名として扱う選択肢は疑ってよい。"
           ],
           "judgeSteps": [
-            "配列の生成式から外側の要素数を確認する。",
-            "二次元以上なら、各行の内側配列の長さを個別に確認する。",
-            "ループごとに参照している添字が有効範囲内かを確認する。",
-            "参照型配列なら、要素がnullのまま使われていないかを確認する。"
+            "右側の式 `args` の型を確認する。",
+            "配列全体の型と要素型を分ける。",
+            "拡張forの左側の変数は要素型になると判断する。",
+            "varは最終的に具体的な型へ推論されると考える。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A です。\n\nmainの引数argsはString配列です。拡張for文では配列の要素を1つずつ取り出すため、`var value` の型は配列型ではなく要素型のStringに推論されます。varという型が存在するわけではありません。",
+          "pdfExplanation": "正解は A です。\n\nmainメソッドの `args` は `String[]` です。これはStringを複数入れられる配列です。\n\n拡張for文 `for (var value : args)` では、`args` の要素を1つずつ取り出して `value` に代入します。`args` の要素型はStringなので、`value` の型はStringに推論されます。\n\n`var` は型名ではなく、コンパイラにローカル変数の型を推論させるための記法です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、varそのものよりも、拡張for文のループ変数が何を受け取るかを問う問題です。\n\n`String[] args` は「Stringの配列」です。配列全体の型は `String[]` ですが、中に入っている各要素の型は `String` です。\n\n拡張for文は `for (要素を受け取る変数 : 配列またはIterable)` という形です。右側に配列を書いた場合、左側の変数には配列の要素が1つずつ入ります。\n\nしたがって `for (var value : args)` の `value` は、`args[0]`、`args[1]` のような各要素を受け取る変数です。`args[0]` の型はStringなので、valueもStringになります。"
         },
         "source": "",
         "codeBlocks": [
@@ -22535,7 +22586,8 @@ window.JAVA_STUDY_DATA = {
           "var",
           "enhanced-for",
           "main/args"
-        ]
+        ],
+        "status": "reviewed"
       },
       {
         "id": "ch07-q35",
@@ -22570,56 +22622,58 @@ window.JAVA_STUDY_DATA = {
           "D"
         ],
         "explanation": {
-          "summary": "`indexOf(\"ef\")` は文字列中の開始位置5を返します。`substring(x + 3)` は戻り値を返しますが、Stringは不変なので、戻り値を代入しなければstr自体は変わりません。再度indexOfしても5のままなので、表示は `abcd ef gh 5` です。",
+          "summary": "`indexOf(\"ef\")` は開始位置5を返します。`substring(x + 3)` は新しい文字列を返すだけで、String自身は変更しません。戻り値をstrへ代入していないため、strは元の `abcd ef gh` のままで、最後のindexOfも5になります。",
           "points": [
-            "indexOf(\"ef\")は、文字列\"abcd ef gh\"の中でeが始まる添字5を返す。substring(x + 3)は新しいStringを返すが、戻り値を変数に代入していないためstrは変化しない。再度indexOf(\"ef\")しても5なので、出力は「abcd ef gh 5」。"
+            "`indexOf(\"ef\")` は開始位置5を返します。`substring(x + 3)` は新しい文字列を返すだけで、String自身は変更しません。戻り値をstrへ代入していないため、strは元の `abcd ef gh` のままで、最後のindexOfも5になります。"
           ],
-          "correctReason": "正解は D です。\n\n`indexOf(\"ef\")` は文字列中の開始位置5を返します。`substring(x + 3)` は戻り値を返しますが、Stringは不変なので、戻り値を代入しなければstr自体は変わりません。再度indexOfしても5のままなので、表示は `abcd ef gh 5` です。",
+          "correctReason": "正解は D です。\n\n最初に `str.indexOf(\"ef\")` を実行すると、`ef` は `abcd ef gh` の5文字目から始まるため、xは5になります。\n\n次に `str.substring(x + 3);` を実行しています。xは5なので、`substring(8)` です。ただし、Stringは不変です。substringは切り出した新しい文字列を返しますが、その戻り値をどこにも代入していません。\n\nそのため、strは元の `abcd ef gh` のままです。最後に `str + \" \" + str.indexOf(\"ef\")` を出力するので、`abcd ef gh 5` と表示されます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。substringの戻り値をstrに代入していないため、strは「ef gh」には変わりません。"
+              "detail": "誤りです。substringの結果をstrに代入していないため、strは `ef gh` には変わりません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。strは変わらず、efの開始位置も4ではなく5です。"
+              "detail": "誤りです。`ef` の開始位置は5です。スペースも1文字として数えるため、4ではありません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。strは変わりませんが、efの開始位置は5です。空白も1文字として数えます。"
+              "detail": "誤りです。文字列部分は元のままですが、`ef` のインデックスは5です。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正解です。Stringは不変で、substringの戻り値未使用なら元のstrはそのままです。"
+              "detail": "正解です。Stringは不変で、substringの戻り値を代入していないため、strは元のままです。indexOf(\"ef\") は5を返します。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。x+3は有効な範囲内なので例外は発生しません。"
+              "detail": "誤りです。`substring(8)` はこの文字列の範囲内なので例外にはなりません。仮に戻り値を使っていなくても、呼び出し自体は正常です。"
             }
           ],
           "relatedKnowledge": [
-            "Stringは不変オブジェクト。substring、concat、replaceなどは元の文字列を変更せず、新しい結果を戻す。戻り値を受け取らなければ結果は捨てられる。",
-            "==は参照の同一性を比較し、equalsは文字列内容の同値性を比較する。new String(...)は通常、文字列プールとは別のインスタンスを作る。",
-            "intern()は文字列プール上の同じ内容のインスタンス参照を返す。リテラルとintern結果の比較が問われやすい。"
+            "Stringは不変。replaceやsubstringなどは新しい文字列を返す。",
+            "戻り値を代入しないメソッド呼び出しは、Stringでは結果が残らない。",
+            "indexOfは見つからない場合-1を返す。"
           ],
           "examTips": [
-            "Stringメソッドを呼んだだけで元の変数が変わると考えない。代入されているかを必ず見る。",
-            "==の問題では、内容ではなく参照先が同じかを図にして追う。"
+            "Stringメソッドは戻り値を使っているかを必ず見る。",
+            "空白も1文字として数える。インデックスは0始まり。"
           ],
           "judgeSteps": [
-            "各String変数が、newで作られたヒープ上のインスタンスか、文字列プール上のインスタンスかを分ける。",
-            "メソッド呼び出しの戻り値が変数に代入されているかを確認する。",
-            "==なら参照比較、equalsなら内容比較として判定する。"
+            "文字列の各文字に0始まりのインデックスを振る。",
+            "indexOfの戻り値を確定する。",
+            "substringの引数が範囲内か確認する。",
+            "戻り値が代入されているか確認する。",
+            "Stringは不変なので元の参照先の内容は変わらないと判断する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は D です。\n\n`indexOf(\"ef\")` は文字列中の開始位置5を返します。`substring(x + 3)` は戻り値を返しますが、Stringは不変なので、戻り値を代入しなければstr自体は変わりません。再度indexOfしても5のままなので、表示は `abcd ef gh 5` です。",
+          "pdfExplanation": "正解は D です。\n\n最初に `str.indexOf(\"ef\")` を実行すると、`ef` は `abcd ef gh` の5文字目から始まるため、xは5になります。\n\n次に `str.substring(x + 3);` を実行しています。xは5なので、`substring(8)` です。ただし、Stringは不変です。substringは切り出した新しい文字列を返しますが、その戻り値をどこにも代入していません。\n\nそのため、strは元の `abcd ef gh` のままです。最後に `str + \" \" + str.indexOf(\"ef\")` を出力するので、`abcd ef gh 5` と表示されます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、Stringメソッドの戻り値と不変性を確認する問題です。\n\nまずインデックスを数えます。`abcd ef gh` は、0:a、1:b、2:c、3:d、4:空白、5:e、6:f、7:空白、8:g、9:h です。したがって `indexOf(\"ef\")` は5です。\n\n次に `substring(x + 3)` は `substring(8)` なので、戻り値としては `gh` が作られます。ただし、この戻り値を変数に代入していません。Stringは変更不能なオブジェクトなので、メソッドを呼んでも元のstr自身は変わりません。\n\nこの手の問題では「メソッドが何を返すか」と「元のオブジェクトが変わるか」を分けて見る必要があります。Stringは変わらない、StringBuilderは変わる、という区別が重要です。"
         },
         "source": "",
         "codeBlocks": [
@@ -22632,7 +22686,8 @@ window.JAVA_STUDY_DATA = {
           "String",
           "substring",
           "indexOf"
-        ]
+        ],
+        "status": "reviewed"
       },
       {
         "id": "ch07-q36",
@@ -22663,52 +22718,52 @@ window.JAVA_STUDY_DATA = {
           "D"
         ],
         "explanation": {
-          "summary": "staticフィールドstrの初期値はnullです。switchの式にnullを渡すと、case判定に入る前にNullPointerExceptionが発生します。caseやdefaultの連結処理には進まないため、通常の文字列出力にはなりません。",
+          "summary": "staticフィールドstrは参照型なので初期値はnullです。`switch (str)` の評価対象がnullになるため、caseやdefaultに進む前にNullPointerExceptionが発生します。",
           "points": [
-            "staticフィールドstrは参照型なので初期値はnull。Stringをswitch式に使うこと自体は可能だが、評価対象がnullの場合はcase比較に入る前にNullPointerExceptionが発生する。"
+            "staticフィールドstrは参照型なので初期値はnullです。`switch (str)` の評価対象がnullになるため、caseやdefaultに進む前にNullPointerExceptionが発生します。"
           ],
-          "correctReason": "正解は D です。\n\nstaticフィールドstrの初期値はnullです。switchの式にnullを渡すと、case判定に入る前にNullPointerExceptionが発生します。caseやdefaultの連結処理には進まないため、通常の文字列出力にはなりません。",
+          "correctReason": "正解は D です。\n\n`static String str;` は明示的に代入されていないため、フィールドのデフォルト値としてnullになります。\n\nmainでは `switch (str)` としているので、switchの対象値がnullです。Stringをswitchに使うこと自体は可能ですが、対象がnullの場合はcase判定へ進む前にNullPointerExceptionが発生します。\n\nそのため、`case \"10\"`、`default`、`case \"20\"` のどれにも進まず、文字列は表示されません。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。switch式がnullなので、case \"10\" から処理は始まりません。"
+              "detail": "誤りです。`case \"10\"` から処理が始まるにはstrが\"10\"である必要があります。このコードのstrはnullです。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。defaultへ進む前に、switch(str)でNullPointerExceptionが発生します。"
+              "detail": "誤りです。defaultに進む前に、switchの評価対象がnullであるためNullPointerExceptionが発生します。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。単にnullが表示されるのではなく、switchの評価で実行時例外が発生します。"
+              "detail": "誤りです。`System.out.println(str)` に到達すればnull表示の可能性がありますが、その前のswitchで例外が発生します。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正解です。switch式がnullのためNullPointerExceptionが発生します。"
+              "detail": "正解です。switchの対象がnullなので、実行時にNullPointerExceptionがスローされます。"
             }
           ],
           "relatedKnowledge": [
-            "switch文のコロン形式は、breakがなければ次のcaseへフォールスルーする。switch式のアロー形式は原則フォールスルーしない。",
-            "switch式は値を返す式であり、ブロック形式で値を返す場合はyieldを使う。returnとは役割が違う。",
-            "switchの対象がnullになると、通常は実行時にNullPointerExceptionが発生する。case nullが使えるかどうかは試験範囲・Javaバージョンの扱いに注意する。"
+            "参照型フィールドのデフォルト値はnull。",
+            "Stringはswitch対象にできる。",
+            "switch対象がnullの場合、通常はNullPointerExceptionになる。"
           ],
           "examTips": [
-            "switch文とswitch式を混同しない。文は処理の流れ、式は値を作る構文。",
-            "caseに入った後、breakがあるまで下へ流れるかを必ず確認する。"
+            "switch問題でも、最初に対象値を確定する。",
+            "fall-throughの追跡よりも先に、switchに入れるかを確認する。"
           ],
           "judgeSteps": [
-            "switchの対象値を先に確定する。",
-            "一致するcaseまたはdefaultを探す。",
-            "コロン形式ならbreakまで、アロー形式ならそのcaseだけを実行する。",
-            "switch式なら最終的に返る値を確認する。"
+            "strがフィールドかローカル変数か確認する。",
+            "フィールドのデフォルト値を判断する。",
+            "switch対象値がnullでないか確認する。",
+            "caseやdefaultの流れは、switch評価が正常に終わってから考える。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は D です。\n\nstaticフィールドstrの初期値はnullです。switchの式にnullを渡すと、case判定に入る前にNullPointerExceptionが発生します。caseやdefaultの連結処理には進まないため、通常の文字列出力にはなりません。",
+          "pdfExplanation": "正解は D です。\n\n`static String str;` は明示的に代入されていないため、フィールドのデフォルト値としてnullになります。\n\nmainでは `switch (str)` としているので、switchの対象値がnullです。Stringをswitchに使うこと自体は可能ですが、対象がnullの場合はcase判定へ進む前にNullPointerExceptionが発生します。\n\nそのため、`case \"10\"`、`default`、`case \"20\"` のどれにも進まず、文字列は表示されません。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題では、switchのfall-throughより先に、switchへ渡す値を確認する必要があります。\n\n`static String str;` はフィールドです。参照型フィールドは明示的に初期化しない場合、デフォルト値としてnullになります。ローカル変数なら未初期化でコンパイルエラーになりますが、フィールドなのでnullで初期化されます。\n\n次に `switch (str)` を評価します。Stringをswitchの対象にすることはできます。しかし対象値がnullだと、caseとの比較に入る前にNullPointerExceptionになります。\n\n選択肢AやBは、caseやdefaultに入る前提で考えています。しかしこの問題では、そもそもswitch文の開始時点で止まります。"
         },
         "source": "",
         "codeBlocks": [
@@ -22721,7 +22776,8 @@ window.JAVA_STUDY_DATA = {
           "switch",
           "null",
           "static"
-        ]
+        ],
+        "status": "reviewed"
       },
       {
         "id": "ch07-q37",
@@ -22752,51 +22808,52 @@ window.JAVA_STUDY_DATA = {
           "B"
         ],
         "explanation": {
-          "summary": "package ex15 のクラスを実行するには、パッケージ構造に合った出力先へコンパイルし、その出力先をクラスパスに指定して完全修飾クラス名ex15.Mainを実行します。`javac -d build ...` でbuild/ex15配下にclassファイルを出力し、`java -cp build ex15.Main` とするBが正しいです。",
+          "summary": "`package ex15;` のクラスを `-d build` でコンパイルすると、classファイルはbuildをルートとして `build/ex15` 配下に配置されます。実行時はクラスパスにbuildを指定し、パッケージ名込みで `ex15.Main` を起動する必要があります。",
           "points": [
-            "-d build を付けてコンパイルすると、package ex15に対応したclassファイルがbuild/ex15配下に出力される。実行時はクラスパスにbuildを指定し、完全修飾クラス名ex15.Mainで起動する。"
+            "`package ex15;` のクラスを `-d build` でコンパイルすると、classファイルはbuildをルートとして `build/ex15` 配下に配置されます。実行時はクラスパスにbuildを指定し、パッケージ名込みで `ex15.Main` を起動する必要があります。"
           ],
-          "correctReason": "正解は B です。\n\npackage ex15 のクラスを実行するには、パッケージ構造に合った出力先へコンパイルし、その出力先をクラスパスに指定して完全修飾クラス名ex15.Mainを実行します。`javac -d build ...` でbuild/ex15配下にclassファイルを出力し、`java -cp build ex15.Main` とするBが正しいです。",
+          "correctReason": "正解は B です。\n\n2つのソースファイルはどちらも `package ex15;` に属しています。`javac -d build ex15/Sample.java ex15/Main.java` とすると、パッケージ構造に合わせて `build/ex15/Sample.class` と `build/ex15/Main.class` が作られます。\n\n実行時の `java` コマンドでは、classファイルそのものの場所ではなく、パッケージ階層のルートをクラスパスに指定します。この場合のルートはbuildです。\n\nしたがって `java -cp build ex15.Main` と実行するBが正しいです。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。-d buildを指定していないため、後続の `java -cp build ex15.Main` と出力先が一致しません。"
+              "detail": "誤りです。コンパイル時に `-d build` を指定していないため、classファイルがbuild配下に出力されません。その後の `java -cp build ex15.Main` と噛み合いません。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正解です。-dで出力先buildを作り、実行時にそのbuildをクラスパスへ指定しています。"
+              "detail": "正解です。`-d build` でbuildを出力ルートにし、実行時に `-cp build` を指定して `ex15.Main` を起動しています。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。classファイルをbuild配下に出しているのに、実行時のクラスパスにbuildを指定していません。"
+              "detail": "誤りです。classファイルはbuild配下に出力されていますが、実行時にクラスパスへbuildを指定していません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。buildはクラスパスのルートであり、パッケージ名ではありません。実行名はbuild.ex15.Mainではなくex15.Mainです。"
+              "detail": "誤りです。buildはパッケージ名ではなく、クラスパスのルートです。実行する完全修飾クラス名は `build.ex15.Main` ではなく `ex15.Main` です。"
             }
           ],
           "relatedKnowledge": [
-            "publicクラスを含むソースファイル名は、そのpublicクラス名と一致させる必要がある。publicでないトップレベルクラスは同じファイルに複数書ける。",
-            "importのワイルドカードは、そのパッケージ直下の型だけを対象にする。サブパッケージまでは含まない。",
-            "static importはstaticメンバを簡略参照するためのもの。通常のクラス型を使うためのimportとは目的が違う。"
+            "`javac` はソースファイルを対象にする。",
+            "`java` は実行クラス名を対象にする。",
+            "クラスパスはパッケージ階層のルートを指定する。"
           ],
           "examTips": [
-            "ex.* で ex.p1.A は読めない。ドットがあると親子関係に見えるが、importでは別パッケージとして扱う。",
-            "javacはソースファイル名、javaは完全修飾クラス名またはクラス名を指定する。コマンドの対象を混同しない。"
+            "`build.ex15.Main` のように出力ディレクトリ名をパッケージ名へ混ぜない。",
+            "package付きクラスは実行時もパッケージ名込みで指定する。"
           ],
           "judgeSteps": [
-            "package宣言とファイル配置・クラス名の対応を確認する。",
-            "利用している型が同じパッケージか、import済みか、完全修飾名で書かれているか確認する。",
-            "ワイルドカードimportの場合、対象パッケージ直下の型かどうかを確認する。"
+            "package宣言を確認する。",
+            "javacでどこにclassファイルを出すか確認する。",
+            "-dで指定したディレクトリがクラスパスのルートになると考える。",
+            "javaコマンドでは完全修飾クラス名を指定する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は B です。\n\npackage ex15 のクラスを実行するには、パッケージ構造に合った出力先へコンパイルし、その出力先をクラスパスに指定して完全修飾クラス名ex15.Mainを実行します。`javac -d build ...` でbuild/ex15配下にclassファイルを出力し、`java -cp build ex15.Main` とするBが正しいです。",
+          "pdfExplanation": "正解は B です。\n\n2つのソースファイルはどちらも `package ex15;` に属しています。`javac -d build ex15/Sample.java ex15/Main.java` とすると、パッケージ構造に合わせて `build/ex15/Sample.class` と `build/ex15/Main.class` が作られます。\n\n実行時の `java` コマンドでは、classファイルそのものの場所ではなく、パッケージ階層のルートをクラスパスに指定します。この場合のルートはbuildです。\n\nしたがって `java -cp build ex15.Main` と実行するBが正しいです。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、javacとjavaの指定対象の違いを問う問題です。\n\n`javac` はソースファイルをコンパイルします。`-d build` を付けると、生成されたclassファイルをbuildディレクトリ以下に出力します。package宣言がある場合、パッケージ名に対応したディレクトリ構造も作られます。\n\n一方、`java` はclassファイル名ではなく、実行するクラス名を指定します。packageがあるクラスは、`ex15.Main` のようにパッケージ名込みの完全修飾名で指定します。\n\nさらに、`-cp build` は「buildの中をクラスパスのルートとして探す」という意味です。`build` という名前がパッケージ名に加わるわけではありません。ここを混同するとDを選びやすいです。"
         },
         "source": "",
         "codeBlocks": [
@@ -22849,57 +22906,57 @@ window.JAVA_STUDY_DATA = {
           "D"
         ],
         "explanation": {
-          "summary": "`A a = new B();` により実体はBですが、変数aの宣言型はAです。コンパイル時に呼び出せるメソッドは宣言型Aに存在するものだけです。bye()はBにしかないため、a.bye()はコンパイルエラーになります。",
+          "summary": "`A a = new B();` では実体はBですが、変数aの宣言型はAです。コンパイル時に呼び出せるメソッドは宣言型Aに存在するものだけです。B独自の `bye()` はA型変数から直接呼べないため、コンパイルエラーになります。",
           "points": [
-            "変数aの実体はBだが、変数の宣言型はA。コンパイル時に呼び出せるメソッドは宣言型Aに定義されているものだけである。Aにはbye()がないため、a.bye()はコンパイルエラーになる。"
+            "`A a = new B();` では実体はBですが、変数aの宣言型はAです。コンパイル時に呼び出せるメソッドは宣言型Aに存在するものだけです。B独自の `bye()` はA型変数から直接呼べないため、コンパイルエラーになります。"
           ],
-          "correctReason": "正解は D です。\n\n`A a = new B();` により実体はBですが、変数aの宣言型はAです。コンパイル時に呼び出せるメソッドは宣言型Aに存在するものだけです。bye()はBにしかないため、a.bye()はコンパイルエラーになります。",
+          "correctReason": "正解は D です。\n\n`A a = new B();` は、BインスタンスをA型の変数で扱うポリモーフィズムの形です。実体はBですが、コンパイル時に `a` から呼べるメソッドは、宣言型Aに定義されているメソッドだけです。\n\n`bye()` はBクラスにだけ定義されており、Aクラスにはありません。したがって `a.bye();` はコンパイル時に解決できず、コンパイルエラーになります。\n\n実体がBだからBの全メソッドを呼べる、という判断は誤りです。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実体がBでも、A型変数からB独自のbye()は呼び出せません。"
+              "detail": "誤りです。`bye()` はBにありますが、変数aの型はAです。A型からB独自メソッドは直接呼べません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。nullを表示する処理はありません。そもそもコンパイルできません。"
+              "detail": "誤りです。nullを出力する処理ではありません。そもそも `a.bye()` がコンパイルできません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。何も表示されず正常終了するのではなく、a.bye()でコンパイルエラーです。"
+              "detail": "誤りです。正常に何も表示されず終了するのではなく、コンパイル段階でエラーになります。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正解です。呼べるメソッドは変数の宣言型Aで判定されます。"
+              "detail": "正解です。A型変数から、Aに定義されていないB独自メソッド `bye()` を呼び出しているためコンパイルエラーです。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。実行時のキャスト失敗ではなく、コンパイル時に呼び出し不可です。"
+              "detail": "誤りです。ダウンキャスト失敗などではなく、メソッド呼び出し自体がコンパイル時に拒否されます。"
             }
           ],
           "relatedKnowledge": [
-            "参照型変数で呼び出せるメンバは、原則としてコンパイル時の宣言型で決まる。実体がサブクラスでも、宣言型にないメソッドはそのままでは呼び出せない。",
-            "オーバーライドされたインスタンスメソッドは、実行時の実体型で動的に選ばれる。フィールドはポリモーフィズムの対象外。",
-            "サブクラスのインスタンスはスーパークラス型の変数で扱えるが、逆方向には明示的キャストと実体の整合性が必要。"
+            "ポリモーフィズムでは、宣言型と実体型が異なることがある。",
+            "呼べるメソッドは宣言型で決まる。",
+            "overrideメソッドの実行先は実体で決まる。"
           ],
           "examTips": [
-            "「呼び出せるか」は宣言型、「実際に動くオーバーライドメソッド」は実体型。ここを分けないと継承問題はほぼ落とす。",
-            "フィールドとメソッドを同じルールで読まない。フィールドアクセスは宣言型側が選ばれる。"
+            "実体がサブクラスでも、サブクラス独自メソッドを親型変数から直接呼べるわけではない。",
+            "キャストの有無を確認する。キャストなしなら宣言型で切る。"
           ],
           "judgeSteps": [
-            "変数の宣言型と、newされている実体型を分けて書き出す。",
-            "その宣言型から対象メソッドやフィールドを参照できるかを先に確認する。",
-            "メソッド呼び出しなら、オーバーライドの有無を見て実体型側の実装へ進む。",
-            "フィールドアクセスなら、宣言型側のフィールドとして処理する。"
+            "変数の宣言型を確認する。",
+            "右辺の実体型を確認する。",
+            "呼び出しているメソッドが宣言型に存在するか確認する。",
+            "存在する場合だけ、overrideにより実体側が動くかを考える。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は D です。\n\n`A a = new B();` により実体はBですが、変数aの宣言型はAです。コンパイル時に呼び出せるメソッドは宣言型Aに存在するものだけです。bye()はBにしかないため、a.bye()はコンパイルエラーになります。",
+          "pdfExplanation": "正解は D です。\n\n`A a = new B();` は、BインスタンスをA型の変数で扱うポリモーフィズムの形です。実体はBですが、コンパイル時に `a` から呼べるメソッドは、宣言型Aに定義されているメソッドだけです。\n\n`bye()` はBクラスにだけ定義されており、Aクラスにはありません。したがって `a.bye();` はコンパイル時に解決できず、コンパイルエラーになります。\n\n実体がBだからBの全メソッドを呼べる、という判断は誤りです。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、宣言型と実体を分けて考える典型問題です。\n\n`A a = new B();` の右辺を見ると実体はBです。しかし、左辺の型はAです。Javaでは、メソッド呼び出しを書けるかどうかは、まず宣言型で判定されます。\n\nもしAに `bye()` が定義されていれば、実行時にはB側のoverrideが呼ばれる可能性があります。しかし、Aに `bye()` がない場合、そもそも `a.bye()` という呼び出しを書くことができません。\n\nこの区別は非常に重要です。overrideされたメソッドの実行先は実体で決まりますが、「そのメソッドを呼べるか」は宣言型で決まります。"
         },
         "source": "",
         "codeBlocks": [
@@ -22952,52 +23009,52 @@ window.JAVA_STUDY_DATA = {
           "D"
         ],
         "explanation": {
-          "summary": "Sampleのtestメソッドは `test(char a, int b)` で、引数が2つ必要です。mainでは `app.test('A')` と1つしか渡していないため、該当するメソッドが見つからずコンパイルエラーになります。フィールドbの初期値1が自動で第2引数に使われることはありません。",
+          "summary": "定義されているtestメソッドは `test(char a, int b)` で、引数が2つ必要です。mainでは `app.test('A')` と1つしか渡していないため、該当するメソッドが存在せずコンパイルエラーになります。フィールドbの値が自動的に第2引数として使われることはありません。",
           "points": [
-            "定義されているtestメソッドは test(char a, int b) で、引数が2つ必要。呼び出し側は app.test('A') と1つしか渡していないため、該当するメソッドが見つからずコンパイルエラーになる。フィールドbの値1が自動的に第2引数として使われることはない。"
+            "定義されているtestメソッドは `test(char a, int b)` で、引数が2つ必要です。mainでは `app.test('A')` と1つしか渡していないため、該当するメソッドが存在せずコンパイルエラーになります。フィールドbの値が自動的に第2引数として使われることはありません。"
           ],
-          "correctReason": "正解は D です。\n\nSampleのtestメソッドは `test(char a, int b)` で、引数が2つ必要です。mainでは `app.test('A')` と1つしか渡していないため、該当するメソッドが見つからずコンパイルエラーになります。フィールドbの初期値1が自動で第2引数に使われることはありません。",
+          "correctReason": "正解は D です。\n\nSampleクラスには `void test(char a, int b)` というメソッドがあります。このメソッドを呼び出すには、char型相当の値とint型相当の値の2つを渡す必要があります。\n\nしかしmainメソッドでは `app.test('A');` と、引数を1つしか渡していません。Javaでは、足りない引数をフィールドやデフォルト値で自動補完する仕組みはありません。\n\nそのため、呼び出しに一致するメソッドが見つからず、コンパイルエラーになります。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。第2引数を省略してもフィールドのデフォルト値0が使われるわけではありません。"
+              "detail": "誤りです。第2引数に0が自動的に入ることはありません。Javaにはメソッド引数のデフォルト値はありません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。フィールドbは1ですが、メソッド引数bとして自動的に渡されません。"
+              "detail": "誤りです。フィールドbの値1が自動的に第2引数として渡されるわけではありません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。int型引数にnullが入ることもありません。"
+              "detail": "誤りです。int型の第2引数にnullが入ることもありません。そもそも引数不足でコンパイルエラーです。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正解です。test(char, int)に対して引数が1つだけなのでコンパイルエラーです。"
+              "detail": "正解です。`test(char, int)` に対して引数を1つしか渡していないため、一致するメソッドがありません。"
             }
           ],
           "relatedKnowledge": [
-            "オーバーライドは、メソッド名と引数リストが同じであることが前提。戻り値型は同じ型または共変戻り値としてサブクラス型にできる。",
-            "オーバーライド時のアクセス修飾子は、親より狭くできない。publicをprotectedやデフォルトに落とすとコンパイルエラー。",
-            "オーバーロードは引数リスト違いの別メソッド。実行時の動的選択ではなく、コンパイル時の引数型で候補が決まる。"
+            "Javaにはメソッド引数のデフォルト値はない。",
+            "フィールドと引数は別物。フィールドは自動的に引数へ渡されない。",
+            "オーバーロード解決では、メソッド名と引数リストを見る。戻り値は見ない。"
           ],
           "examTips": [
-            "@Overrideが付いているのに条件を満たさない場合はコンパイルエラーになる。付いていなくても条件を満たせばオーバーライドは成立する。",
-            "戻り値だけ違うメソッドはオーバーロードにならない。戻り値型でメソッドを区別できない。"
+            "出力選択肢があっても、メソッド呼び出しの個数が合わなければ実行前に終了する。",
+            "フィールド名と仮引数名が似ていても、自動補完はされない。"
           ],
           "judgeSteps": [
-            "親メソッドと子メソッドのメソッド名・引数リストを比較する。",
-            "戻り値型が同じか、親の戻り値型のサブタイプになっているか確認する。",
-            "アクセス修飾子が親と同じか、より広いか確認する。",
-            "throws句が親より広いチェック例外になっていないか確認する。"
+            "メソッド宣言の名前と仮引数リストを確認する。",
+            "呼び出し側の実引数の個数を確認する。",
+            "個数が合わなければ、その時点でコンパイルエラーと判断する。",
+            "個数が合う場合だけ型変換やオーバーロード解決を考える。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は D です。\n\nSampleのtestメソッドは `test(char a, int b)` で、引数が2つ必要です。mainでは `app.test('A')` と1つしか渡していないため、該当するメソッドが見つからずコンパイルエラーになります。フィールドbの初期値1が自動で第2引数に使われることはありません。",
+          "pdfExplanation": "正解は D です。\n\nSampleクラスには `void test(char a, int b)` というメソッドがあります。このメソッドを呼び出すには、char型相当の値とint型相当の値の2つを渡す必要があります。\n\nしかしmainメソッドでは `app.test('A');` と、引数を1つしか渡していません。Javaでは、足りない引数をフィールドやデフォルト値で自動補完する仕組みはありません。\n\nそのため、呼び出しに一致するメソッドが見つからず、コンパイルエラーになります。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、メソッド呼び出しの引数リストを見る問題です。\n\nメソッド宣言 `void test(char a, int b)` の `char a, int b` は仮引数です。呼び出す側は、この個数と型に合う実引数を渡す必要があります。\n\n`app.test('A')` では、`'A'` というcharリテラルを1つだけ渡しています。第2引数のintがありません。Javaには、C++やPythonのようなデフォルト引数はありません。フィールド `b` があるからといって、それが勝手に使われることもありません。\n\n選択肢A/B/Cは「足りない第2引数に何かが入る」前提ですが、その前提が誤りです。呼び出し候補がないため、実行結果は存在しません。"
         },
         "source": "",
         "codeBlocks": [
@@ -23010,7 +23067,8 @@ window.JAVA_STUDY_DATA = {
           "method",
           "overload",
           "argument"
-        ]
+        ],
+        "status": "reviewed"
       },
       {
         "id": "ch07-q40",
@@ -23046,64 +23104,66 @@ window.JAVA_STUDY_DATA = {
           "E"
         ],
         "explanation": {
-          "summary": "Aはintの2次元配列として正しい初期化です。Eではint[]を、int[][][]の最下層であるint[]要素に代入しているため有効です。Bは3次元配列の形に対して初期化子の階層が足りず、Cはint[][]にint値を直接並べており、Dは1次元目のサイズを省略したnew式なので不正です。",
+          "summary": "Aはintの2次元配列として正しく初期化しています。Eはint[][][]の最下層の要素がint[]であるため、`array2[0][0] = array;` のようにint[]を代入できます。Bは3次元配列に対して初期化子の階層が足りず、Cは2次元配列にint値を直接入れており、Dは1次元目のサイズを省略したnew式なので不正です。",
           "points": [
-            "Aは2次元配列int[][]に対して、各要素としてint[]を並べているので正しい。Eはarray2[0][0]などがint[]型なので、int[] arrayを代入できる。Bは3次元配列の要素構造になっておらず、Cはint[][]にint要素を直接入れている。Dはnew int[][2]のように先頭次元を省略して後ろだけ指定できない。"
+            "Aはintの2次元配列として正しく初期化しています。Eはint[][][]の最下層の要素がint[]であるため、`array2[0][0] = array;` のようにint[]を代入できます。Bは3次元配列に対して初期化子の階層が足りず、Cは2次元配列にint値を直接入れており、Dは1次元目のサイズを省略したnew式なので不正です。"
           ],
-          "correctReason": "正解は A・E です。\n\nAはintの2次元配列として正しい初期化です。Eではint[]を、int[][][]の最下層であるint[]要素に代入しているため有効です。Bは3次元配列の形に対して初期化子の階層が足りず、Cはint[][]にint値を直接並べており、Dは1次元目のサイズを省略したnew式なので不正です。",
+          "correctReason": "正解は A と E です。\n\nAの `int[][] array = {{1,2,3},{4,5,6}};` は、int配列を2つ並べた2次元配列として正しい形です。\n\nEでは `int[][][] array2 = new int[2][2][2];` により3次元配列を作っています。`array2[0][0]` の型はint[]です。したがって、`int[] array = {0, 1};` を `array2[0][0]` などへ代入できます。\n\nBは3次元配列なのに、初期化子が2次元配列の形です。Cはint[][]にintを直接並べています。Dは `new int[][2]` のように、先頭次元のサイズを省略しているため不正です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正しい選択肢です。`{{1,2,3},{4,5,6}}` はint[][]の初期化子として成立します。"
+              "detail": "正解です。外側の `{ ... }` の中にint配列 `{1,2,3}` と `{4,5,6}` が入っており、int[][]として正しい構造です。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。int[][][]には、さらに1階層深い初期化子が必要です。"
+              "detail": "誤りです。`int[][][]` なら、要素はint[][]です。しかし初期化子は `{1,2}` のようなint[]相当の形で、3次元として階層が足りません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。int[][]の各要素はint[]であり、int値を直接並べることはできません。"
+              "detail": "誤りです。`int[][]` の要素はint[]です。`{0, 1}` のようにint値を直接並べる形はint[]であり、int[][]には合いません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。配列生成式では左側の次元サイズを省略できません。`new int[][2]` は不正です。"
+              "detail": "誤りです。配列生成式では、左側の次元からサイズを指定する必要があります。`new int[][2]` のように1次元目を省略して2次元目だけ指定することはできません。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正しい選択肢です。int[][][]の要素array2[0][0]などはint[]なので、int[] arrayを代入できます。"
+              "detail": "正解です。`array2[0][0]` の型はint[]なので、`int[] array` を代入できます。3次元配列の最下層がint[]であることを見抜く問題です。"
             }
           ],
           "relatedKnowledge": [
-            "配列のlengthは要素数であり、最後の有効添字はlength - 1。添字範囲外アクセスは実行時例外になる。",
-            "多次元配列は配列の配列。行ごとに長さが違うジャグ配列も作れるため、外側と内側のlengthを分けて読む。",
-            "参照型配列の要素の初期値はnull。要素にインスタンスを入れる前にメソッド呼び出しをするとNullPointerExceptionになる。"
+            "多次元配列は配列の配列として扱う。",
+            "`int[][]` の要素型は `int[]`。",
+            "`int[][][]` で2つ添字を付けると `int[]` になる。",
+            "配列生成式では先頭次元を省略して後続次元だけ指定できない。"
           ],
           "examTips": [
-            "二次元配列では、array.lengthとarray[i].lengthを同じ意味で読まない。",
-            "拡張for文のループ変数に代入しても、配列要素そのものの差し替えにはならない場合がある。"
+            "波かっこの階層を数える。型名の `[]` の数と一致しているかを見る。",
+            "添字を付けた後の型を口に出して確認するとミスが減る。"
           ],
           "judgeSteps": [
-            "配列の生成式から外側の要素数を確認する。",
-            "二次元以上なら、各行の内側配列の長さを個別に確認する。",
-            "ループごとに参照している添字が有効範囲内かを確認する。",
-            "参照型配列なら、要素がnullのまま使われていないかを確認する。"
+            "宣言された配列型の次元数を確認する。",
+            "初期化子の `{}` の階層が次元数に合っているか確認する。",
+            "添字を1つ付けるごとに次元が1つ下がると考える。",
+            "new式では左側の次元からサイズ指定されているか確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A・E です。\n\nAはintの2次元配列として正しい初期化です。Eではint[]を、int[][][]の最下層であるint[]要素に代入しているため有効です。Bは3次元配列の形に対して初期化子の階層が足りず、Cはint[][]にint値を直接並べており、Dは1次元目のサイズを省略したnew式なので不正です。",
+          "pdfExplanation": "正解は A と E です。\n\nAの `int[][] array = {{1,2,3},{4,5,6}};` は、int配列を2つ並べた2次元配列として正しい形です。\n\nEでは `int[][][] array2 = new int[2][2][2];` により3次元配列を作っています。`array2[0][0]` の型はint[]です。したがって、`int[] array = {0, 1};` を `array2[0][0]` などへ代入できます。\n\nBは3次元配列なのに、初期化子が2次元配列の形です。Cはint[][]にintを直接並べています。Dは `new int[][2]` のように、先頭次元のサイズを省略しているため不正です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、多次元配列を「配列の配列」として見られるかを問う問題です。\n\n`int[][]` は、intを直接たくさん持つというより、`int[]` を要素として持つ配列です。したがって、初期化子も `{{1,2,3},{4,5,6}}` のように、内側にint[]相当のまとまりが必要です。\n\n`int[][][]` ではさらに1段増えます。`array2` はint[][]の配列、`array2[0]` はint[][]、`array2[0][0]` はint[]、`array2[0][0][0]` はintです。Eはこの型の落ち方に合っています。\n\nDのようなnew式では、左の次元からサイズを指定しなければなりません。`new int[2][]` は可能ですが、`new int[][2]` は不可です。"
         },
         "source": "",
         "codeBlocks": [],
         "tags": [
           "array",
           "multi-dimensional-array"
-        ]
+        ],
+        "status": "reviewed"
       },
       {
         "id": "ch07-q41",
@@ -23134,48 +23194,50 @@ window.JAVA_STUDY_DATA = {
           "A"
         ],
         "explanation": {
-          "summary": "C は B のサブクラスなので、Bから継承した getValue() 内で super.getValue() を呼ぶとBの親であるA側の実装を参照できます。またAのフィールド num はprivateではないため、同一パッケージまたは継承関係の文脈で参照可能です。superは「直近の親クラス側」を明示するためのキーワードで、new や public はメソッド呼び出しの修飾には使えません。",
-          "correctReason": "正解は A です。\n\nC は B のサブクラスなので、Bから継承した getValue() 内で super.getValue() を呼ぶとBの親であるA側の実装を参照できます。またAのフィールド num はprivateではないため、同一パッケージまたは継承関係の文脈で参照可能です。superは「直近の親クラス側」を明示するためのキーワードで、new や public はメソッド呼び出しの修飾には使えません。",
+          "summary": "正解はAです。CはBのサブクラスであり、BはAを継承しています。Aのnumはアクセス修飾子なし、つまり同一パッケージ内で参照できるフィールドです。Cのsuperは直近のスーパークラスBを指しますが、BがAから継承しているnumにも、Cからsuper.numとしてアクセスできます。",
+          "correctReason": "正解は A です。\n\nA、B、Cは A ← B ← C という継承関係です。CクラスのgetValue()内で使っているsuperは、Cから見た直接の親であるBを指します。B自身にnumフィールドはありませんが、BはAを継承しているため、Aから引き継いだnumをB側のメンバとして扱えます。\n\nAのnumはprivateではなくデフォルトアクセスです。設問の各クラスは同一パッケージ前提なので、Cからsuper.numで参照できます。またsuper.getValue()は、CでオーバーライドしたgetValue()ではなく、親クラスB側のgetValue()を呼び出します。したがって「Bクラスのサブクラスでは、getValueメソッドでAクラスのフィールドにアクセスできる」というAが正解です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「Bクラスのサブクラスでは、getValueメソッドでAクラスのフィールドにアクセスすることができる」です。C は B のサブクラスなので、Bから継承した getValue() 内で super.getValue() を呼ぶとBの親であるA側の実装を参照できます。またAのフィールド num はprivateではないため、同一パッケージまたは継承関係の文脈で参照可能です。superは「直近の親クラス側」を明示するためのキーワードで、new や public はメソッド呼び出しの修飾には使えません。"
+              "detail": "正しいです。CはBのサブクラスで、BはAを継承しています。Aのnumはprivateではないため、同一パッケージ内であればCのメソッドからsuper.numとして参照できます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。正しい選択肢は「A」です。"
+              "detail": "前半の「super.getValue()を使える」は正しいですが、「Aクラスのフィールドにはアクセスできない」が誤りです。numはprivateではなくデフォルトアクセスなので、同一パッケージ内ならアクセスできます。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。正しい選択肢は「A」です。"
+              "detail": "new.getValue()という構文は存在しません。newはインスタンス生成に使うキーワードであり、親クラスのメソッド呼び出しを表すものではありません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。正しい選択肢は「A」です。"
+              "detail": "public.getValue()という構文は存在しません。publicはアクセス修飾子であり、メソッド呼び出しの対象にはなりません。親クラス側を明示するならsuperを使います。"
             }
           ],
           "relatedKnowledge": [
-            "privateメンバは同じクラス内からしか直接アクセスできない。継承していてもサブクラスから直接使えるわけではない。",
-            "デフォルトアクセスは同じパッケージ内限定。protectedは同じパッケージに加え、異なるパッケージのサブクラスからも一定条件でアクセスできる。",
-            "オーバーライドでは、親メソッドより狭いアクセス修飾子にできない。"
+            "superは「親クラス側の実装・メンバ」を参照するためのキーワード。ただし常に1つ上の直接の親を起点に考える。",
+            "privateメンバはサブクラスから直接参照できないが、デフォルトアクセスは同一パッケージ内なら参照できる。",
+            "継承関係の問題では、どのクラスがどのメンバを持つことになるかを親から順に追う。"
           ],
           "examTips": [
-            "protectedは「どこからでもサブクラスなら自由」ではない。パッケージと参照の型を合わせて確認する。",
-            "privateメソッドはオーバーライドされない。同名メソッドを子に書いても別メソッドとして扱う。"
+            "superを見たら「newの代わり」ではなく「親クラス側の同名メソッド・フィールドを明示するもの」と判断する。",
+            "アクセス修飾子なしはprivateではない。デフォルトアクセスとして同一パッケージ内から見える。",
+            "選択肢に存在しない構文が混じることがある。new.getValue()やpublic.getValue()のような形は構文として切る。"
           ],
           "judgeSteps": [
-            "アクセス対象のメンバの修飾子を確認する。",
-            "アクセス元クラスが同じクラス、同じパッケージ、サブクラスのどれに該当するか確認する。",
-            "継承関係がある場合でも、privateやデフォルトアクセスの制限を個別に確認する。"
+            "継承関係を A ← B ← C のように整理する。",
+            "参照しているメンバnumがどのクラスで宣言されているか確認する。",
+            "アクセス修飾子がprivateか、protectedか、デフォルトかを確認する。",
+            "super.getValue()がどの実装を呼ぶか確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A です。\n\nC は B のサブクラスなので、Bから継承した getValue() 内で super.getValue() を呼ぶとBの親であるA側の実装を参照できます。またAのフィールド num はprivateではないため、同一パッケージまたは継承関係の文脈で参照可能です。superは「直近の親クラス側」を明示するためのキーワードで、new や public はメソッド呼び出しの修飾には使えません。",
+          "pdfExplanation": "正解は A です。\n\nA、B、Cは A ← B ← C という継承関係です。CクラスのgetValue()内で使っているsuperは、Cから見た直接の親であるBを指します。B自身にnumフィールドはありませんが、BはAを継承しているため、Aから引き継いだnumをB側のメンバとして扱えます。\n\nAのnumはprivateではなくデフォルトアクセスです。設問の各クラスは同一パッケージ前提なので、Cからsuper.numで参照できます。またsuper.getValue()は、CでオーバーライドしたgetValue()ではなく、親クラスB側のgetValue()を呼び出します。したがって「Bクラスのサブクラスでは、getValueメソッドでAクラスのフィールドにアクセスできる」というAが正解です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": "",
+          "additionalExplanation": "正解は A です。\n\nA、B、Cは A ← B ← C という継承関係です。CクラスのgetValue()内で使っているsuperは、Cから見た直接の親であるBを指します。B自身にnumフィールドはありませんが、BはAを継承しているため、Aから引き継いだnumをB側のメンバとして扱えます。\n\nAのnumはprivateではなくデフォルトアクセスです。設問の各クラスは同一パッケージ前提なので、Cからsuper.numで参照できます。またsuper.getValue()は、CでオーバーライドしたgetValue()ではなく、親クラスB側のgetValue()を呼び出します。したがって「Bクラスのサブクラスでは、getValueメソッドでAクラスのフィールドにアクセスできる」というAが正解です。",
           "points": []
         },
         "source": "",
@@ -23235,54 +23297,55 @@ window.JAVA_STUDY_DATA = {
           "E"
         ],
         "explanation": {
-          "summary": "オーバーロードでは、まず変数の宣言型と引数のコンパイル時型から呼び出せるメソッドが決まります。その後、オーバーライドされているメソッドは実体クラス側の実装が実行されます。List引数はCollectionにも一致しますが、B型変数からはより具体的なList版が選ばれるため出力が変わります。",
-          "correctReason": "正解は A・C・E です。\n\nオーバーロードでは、まず変数の宣言型と引数のコンパイル時型から呼び出せるメソッドが決まります。その後、オーバーライドされているメソッドは実体クラス側の実装が実行されます。List引数はCollectionにも一致しますが、B型変数からはより具体的なList版が選ばれるため出力が変わります。",
+          "summary": "正解はA・C・Eです。ポイントは、オーバーロードの選択はコンパイル時の宣言型で決まり、オーバーライドの実行先は実行時の実体で決まることです。",
+          "correctReason": "正解は A・C・E です。\n\nこの問題では、Aにsample(Collection)、Bにsample(Collection)とsample(List)があります。まず、メソッド呼び出し時に候補になるメソッドは、変数の宣言型で決まります。そのあと、選ばれたメソッドがオーバーライドされていれば、実体クラス側の実装が実行されます。\n\n`a1`はA型・実体Aなので、Aのsample(Collection)が呼ばれてAが表示されます。`a2`はA型・実体Bです。宣言型がAなので候補はAのsample(Collection)だけですが、そのメソッドはBでオーバーライドされているためBが表示されます。`b1`はB型・実体Bなので、Bにあるsample(Collection)とsample(List)が候補になり、引数listにより具体的に一致するsample(List)が選ばれてCが表示されます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。オーバーロードでは、まず変数の宣言型と引数のコンパイル時型から呼び出せるメソッドが決まります。その後、オーバーライドされているメソッドは実体クラス側の実装が実行されます。List引数はCollectionにも一致しますが、B型変数からはより具体的なList版が選ばれるため出力が変わります。"
+              "detail": "正しいです。a1はA型で実体もAです。Aにあるsample(Collection)がそのまま実行され、Aが表示されます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "a2はA型変数ですが、Collection版sampleはBでオーバーライドされているためAではなくBが実行されます。"
+              "detail": "誤りです。a2は宣言型Aなので呼び出し候補はAのsample(Collection)ですが、実体はBです。Bがsample(Collection)をオーバーライドしているため、表示はAではなくBです。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。オーバーロードでは、まず変数の宣言型と引数のコンパイル時型から呼び出せるメソッドが決まります。その後、オーバーライドされているメソッドは実体クラス側の実装が実行されます。List引数はCollectionにも一致しますが、B型変数からはより具体的なList版が選ばれるため出力が変わります。"
+              "detail": "正しいです。a2はA型変数ですが実体はBです。A側で選ばれたsample(Collection)の実行先は、オーバーライドによりBのsample(Collection)になります。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "b1はB型なのでList版のオーバーロードが選択され、BではなくCが表示されます。"
+              "detail": "誤りです。b1はB型なので、Bにあるsample(List)も候補になります。引数listはList型なのでCollection版よりList版が優先され、BではなくCが表示されます。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正解です。オーバーロードでは、まず変数の宣言型と引数のコンパイル時型から呼び出せるメソッドが決まります。その後、オーバーライドされているメソッドは実体クラス側の実装が実行されます。List引数はCollectionにも一致しますが、B型変数からはより具体的なList版が選ばれるため出力が変わります。"
+              "detail": "正しいです。b1はB型で、引数listはList型です。Bのsample(List)が最も具体的に一致するため、Cが表示されます。"
             }
           ],
           "relatedKnowledge": [
-            "オーバーライドは、メソッド名と引数リストが同じであることが前提。戻り値型は同じ型または共変戻り値としてサブクラス型にできる。",
-            "オーバーライド時のアクセス修飾子は、親より狭くできない。publicをprotectedやデフォルトに落とすとコンパイルエラー。",
-            "オーバーロードは引数リスト違いの別メソッド。実行時の動的選択ではなく、コンパイル時の引数型で候補が決まる。"
+            "オーバーロードはコンパイル時に、変数の宣言型と引数のコンパイル時型から選ばれる。",
+            "オーバーライドは実行時に、実体クラス側の実装が選ばれる。",
+            "ListはCollectionのサブインタフェースなので、List引数はCollection引数にも渡せる。"
           ],
           "examTips": [
-            "@Overrideが付いているのに条件を満たさない場合はコンパイルエラーになる。付いていなくても条件を満たせばオーバーライドは成立する。",
-            "戻り値だけ違うメソッドはオーバーロードにならない。戻り値型でメソッドを区別できない。"
+            "「宣言型で呼べるか」→「オーバーロード候補」→「オーバーライドで実体側へ」の順に分ける。",
+            "A型変数にBインスタンスを入れると、B独自のオーバーロードは呼び出し候補に出ない。",
+            "List版とCollection版が両方ある場合、List型引数ならList版がより具体的。"
           ],
           "judgeSteps": [
-            "親メソッドと子メソッドのメソッド名・引数リストを比較する。",
-            "戻り値型が同じか、親の戻り値型のサブタイプになっているか確認する。",
-            "アクセス修飾子が親と同じか、より広いか確認する。",
-            "throws句が親より広いチェック例外になっていないか確認する。"
+            "変数a1/a2/b1の宣言型と実体型を表にする。",
+            "各変数から見えるsampleメソッド候補を列挙する。",
+            "引数listの型を確認する。",
+            "選ばれたメソッドがオーバーライドされていれば実体側を実行する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A・C・E です。\n\nオーバーロードでは、まず変数の宣言型と引数のコンパイル時型から呼び出せるメソッドが決まります。その後、オーバーライドされているメソッドは実体クラス側の実装が実行されます。List引数はCollectionにも一致しますが、B型変数からはより具体的なList版が選ばれるため出力が変わります。",
+          "pdfExplanation": "正解は A・C・E です。\n\nこの問題では、Aにsample(Collection)、Bにsample(Collection)とsample(List)があります。まず、メソッド呼び出し時に候補になるメソッドは、変数の宣言型で決まります。そのあと、選ばれたメソッドがオーバーライドされていれば、実体クラス側の実装が実行されます。\n\n`a1`はA型・実体Aなので、Aのsample(Collection)が呼ばれてAが表示されます。`a2`はA型・実体Bです。宣言型がAなので候補はAのsample(Collection)だけですが、そのメソッドはBでオーバーライドされているためBが表示されます。`b1`はB型・実体Bなので、Bにあるsample(Collection)とsample(List)が候補になり、引数listにより具体的に一致するsample(List)が選ばれてCが表示されます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": "",
+          "additionalExplanation": "正解は A・C・E です。\n\nこの問題では、Aにsample(Collection)、Bにsample(Collection)とsample(List)があります。まず、メソッド呼び出し時に候補になるメソッドは、変数の宣言型で決まります。そのあと、選ばれたメソッドがオーバーライドされていれば、実体クラス側の実装が実行されます。\n\n`a1`はA型・実体Aなので、Aのsample(Collection)が呼ばれてAが表示されます。`a2`はA型・実体Bです。宣言型がAなので候補はAのsample(Collection)だけですが、そのメソッドはBでオーバーライドされているためBが表示されます。`b1`はB型・実体Bなので、Bにあるsample(Collection)とsample(List)が候補になり、引数listにより具体的に一致するsample(List)が選ばれてCが表示されます。",
           "points": []
         },
         "source": "",
@@ -23337,48 +23400,49 @@ window.JAVA_STUDY_DATA = {
           "D"
         ],
         "explanation": {
-          "summary": "BとCの両方が同じシグネチャのdefaultメソッドを持つため、Dが両方を実装するとどちらを継承すべきか曖昧になります。D側で明示的にsample()をオーバーライドして衝突を解消しなければコンパイルエラーです。",
-          "correctReason": "正解は D です。\n\nBとCの両方が同じシグネチャのdefaultメソッドを持つため、Dが両方を実装するとどちらを継承すべきか曖昧になります。D側で明示的にsample()をオーバーライドして衝突を解消しなければコンパイルエラーです。",
+          "summary": "正解はDです。Dはsample()をオーバーライドしていますが、メソッド本体のsuper.sample()が不正です。インタフェースのdefaultメソッドを指定して呼ぶには、B.super.sample()やC.super.sample()のようにインタフェース名を明示する必要があります。",
+          "correctReason": "正解は D です。\n\nBとCはどちらもAを継承し、同じシグネチャのdefaultメソッドsample()を持っています。DはBとCを同時にimplementsしているため、本来はどちらのdefault実装を使うかをD側で明示的に解決する必要があります。\n\nこのコードではDがsample()をオーバーライドしているため、defaultメソッドの衝突自体は解消しようとしています。しかし、その中で`super.sample();`と書いている点が誤りです。クラスの親メソッドを呼ぶときはsuper.method()を使えますが、インタフェースのdefaultメソッドを呼ぶ場合は`B.super.sample();`または`C.super.sample();`のように、どのインタフェースのdefaultメソッドを呼ぶのかを明示しなければなりません。したがってコンパイルエラーです。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、この選択肢の説明にはなりません。"
+              "detail": "誤りです。Dはsample()を定義していますが、本文のsuper.sample()が不正なので、Bのsampleメソッドを正しく実装しているとはいえません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、この選択肢の説明にはなりません。"
+              "detail": "誤りです。Cについても同じです。Dのsample()本体がコンパイルできないため、正しい実装とは扱えません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、この選択肢の説明にはなりません。"
+              "detail": "誤りです。Dがsample()を使うかどうかは関係ありません。BとCのdefaultメソッドが衝突する以上、実装クラス側で解消が必要です。さらにこのコードでは解消用に書いたsuper.sample()も不正です。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「コンパイルエラーが発生する」です。BとCの両方が同じシグネチャのdefaultメソッドを持つため、Dが両方を実装するとどちらを継承すべきか曖昧になります。D側で明示的にsample()をオーバーライドして衝突を解消しなければコンパイルエラーです。"
+              "detail": "正しいです。Dのsample()内のsuper.sample()が不正です。インタフェースdefaultメソッドを呼びたいなら、B.super.sample()またはC.super.sample()のように書く必要があります。"
             }
           ],
           "relatedKnowledge": [
-            "インタフェースの抽象メソッドは暗黙にpublic abstractとして扱われる。実装クラス側ではpublicより狭いアクセス修飾子にはできない。",
-            "defaultメソッドは実装を持つインタフェースメソッド。実装クラスが上書きしなければ、そのまま継承して呼び出せる。",
-            "インタフェース同士はextendsで継承でき、クラスはimplementsで実装する。クラスが複数インタフェースを実装できる点も頻出。"
+            "複数インタフェースから同じdefaultメソッドを継承すると、実装クラス側で明示的な解決が必要。",
+            "インタフェースのdefaultメソッドを呼ぶ構文は「インタフェース名.super.メソッド名()」。",
+            "super.method()はクラス継承で親クラスのメソッドを呼ぶ構文。インタフェースdefaultの呼び出しとは区別する。"
           ],
           "examTips": [
-            "インタフェース実装問題では、メソッド名・引数リスト・戻り値型・アクセス修飾子の4点を必ず確認する。",
-            "defaultメソッドの競合がある場合、実装クラス側で明示的に解決しないとコンパイルエラーになる。"
+            "defaultメソッド衝突問題では、まず実装クラスがオーバーライドしているかを見る。",
+            "オーバーライドしていても、本体の呼び出し構文が正しいとは限らない。",
+            "B.super.sample()のような構文はSilverでも落とし穴になりやすい。"
           ],
           "judgeSteps": [
-            "インタフェースに定義された抽象メソッドを列挙する。",
-            "実装クラスまたは抽象クラスが、それらを実装する必要があるかを判定する。",
-            "実装している場合、public、戻り値型、throws、引数リストが条件を満たすか確認する。"
+            "BとCが同じsample()を持つか確認する。",
+            "Dがsample()をオーバーライドして衝突を解消しているか確認する。",
+            "メソッド本体に不正なsuper呼び出しがないか確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は D です。\n\nBとCの両方が同じシグネチャのdefaultメソッドを持つため、Dが両方を実装するとどちらを継承すべきか曖昧になります。D側で明示的にsample()をオーバーライドして衝突を解消しなければコンパイルエラーです。",
+          "pdfExplanation": "正解は D です。\n\nBとCはどちらもAを継承し、同じシグネチャのdefaultメソッドsample()を持っています。DはBとCを同時にimplementsしているため、本来はどちらのdefault実装を使うかをD側で明示的に解決する必要があります。\n\nこのコードではDがsample()をオーバーライドしているため、defaultメソッドの衝突自体は解消しようとしています。しかし、その中で`super.sample();`と書いている点が誤りです。クラスの親メソッドを呼ぶときはsuper.method()を使えますが、インタフェースのdefaultメソッドを呼ぶ場合は`B.super.sample();`または`C.super.sample();`のように、どのインタフェースのdefaultメソッドを呼ぶのかを明示しなければなりません。したがってコンパイルエラーです。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": "",
+          "additionalExplanation": "正解は D です。\n\nBとCはどちらもAを継承し、同じシグネチャのdefaultメソッドsample()を持っています。DはBとCを同時にimplementsしているため、本来はどちらのdefault実装を使うかをD側で明示的に解決する必要があります。\n\nこのコードではDがsample()をオーバーライドしているため、defaultメソッドの衝突自体は解消しようとしています。しかし、その中で`super.sample();`と書いている点が誤りです。クラスの親メソッドを呼ぶときはsuper.method()を使えますが、インタフェースのdefaultメソッドを呼ぶ場合は`B.super.sample();`または`C.super.sample();`のように、どのインタフェースのdefaultメソッドを呼ぶのかを明示しなければなりません。したがってコンパイルエラーです。",
           "points": []
         },
         "source": "",
@@ -23440,53 +23504,54 @@ window.JAVA_STUDY_DATA = {
           "D"
         ],
         "explanation": {
-          "summary": "配列やコレクションに代入できるかは、宣言型と実体型の代入互換性で決まります。抽象クラスA、インタフェースB、実装クラスC、CのサブクラスDの関係を上から順に追うと、選択肢Dだけが型互換性を満たしません。",
-          "correctReason": "正解は D です。\n\n配列やコレクションに代入できるかは、宣言型と実体型の代入互換性で決まります。抽象クラスA、インタフェースB、実装クラスC、CのサブクラスDの関係を上から順に追うと、選択肢Dだけが型互換性を満たしません。",
+          "summary": "正解はDです。DはCのサブクラスです。D型のListにはDまたはDのサブクラスのインスタンスしか追加できません。CはDの親なので、List<D>にnew C()は追加できません。",
+          "correctReason": "正解は D です。\n\nクラス関係は、Aが抽象クラス、Bがインタフェース、CがAを継承してBを実装、DがCを継承しています。つまり、DはCでもあり、Aでもあり、Bでもあります。一方で、CはDとは限りません。\n\n`List<A>`にはA型として扱えるインスタンスを入れられます。CもDもAのサブタイプなので追加できます。`List<B>`にはB型として扱えるインスタンスを入れられます。CはBを実装しており、DもCを継承しているためBとして扱えます。\n\nしかし`List<D>`はD型の要素を入れるリストです。Dの親であるCのインスタンスをDとして扱うことはできません。親型のインスタンスには子クラスDの差分があるとは限らないため、`listD.add(new C())`がコンパイルエラーになります。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。正しい選択肢は「D」です。"
+              "detail": "コンパイルできます。DはCを継承し、CはAを継承しています。したがってnew D()はA型として扱えます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。正しい選択肢は「D」です。"
+              "detail": "コンパイルできます。CはBインタフェースを実装しているため、new C()はB型として扱えます。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。正しい選択肢は「D」です。"
+              "detail": "コンパイルできます。DはCのサブクラスで、CがBを実装しているため、new D()もB型として扱えます。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「」です。配列やコレクションに代入できるかは、宣言型と実体型の代入互換性で決まります。抽象クラスA、インタフェースB、実装クラスC、CのサブクラスDの関係を上から順に追うと、選択肢Dだけが型互換性を満たしません。"
+              "detail": "コンパイルエラーになります。List<D>にはD型として扱えるインスタンスが必要です。new C()はDの親型であり、Dとは限らないため追加できません。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。正しい選択肢は「D」です。"
+              "detail": "コンパイルできます。CはAを継承しているため、new C()はA型として扱えます。"
             }
           ],
           "relatedKnowledge": [
-            "ジェネリクスの型引数は、コレクションへ追加できる要素型や取り出したときの型に影響する。",
-            "List<Super>にSubを追加できる場合でも、List<Sub>をList<Super>として代入できるわけではない。ジェネリクスは不変。",
-            "参照型がインタフェースやスーパークラスの場合、その型に定義されたメソッドだけを直接呼び出せる。"
+            "サブクラスのインスタンスは親型として扱えるが、親クラスのインスタンスを子型として扱えるとは限らない。",
+            "implementsされたクラスのインスタンスは、そのインタフェース型として扱える。",
+            "ジェネリクスのList<T>にaddできるのは、TまたはTのサブタイプの値。"
           ],
           "examTips": [
-            "コレクション問題では、変数の宣言型、型引数、実際に追加する要素型を分けて見る。",
-            "ArrayListの実体であっても、List型で持っているならListにないメソッドは呼べない。"
+            "「DはCである」は真でも、「CはDである」は真ではない。is-a関係は一方向に読む。",
+            "List<D>にCを入れられると考えるのは典型的な逆向きミス。",
+            "抽象クラスA自体はnewできないが、A型の変数やList<A>は使える。"
           ],
           "judgeSteps": [
-            "コレクション変数の宣言型と型引数を確認する。",
-            "addしている値が型引数に代入可能か確認する。",
-            "取り出した値をどの型として扱っているか確認する。"
+            "A/B/C/Dの関係図を作る。",
+            "各選択肢のListの型引数を確認する。",
+            "addしているnewの実体が、その型引数として扱えるか判定する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は D です。\n\n配列やコレクションに代入できるかは、宣言型と実体型の代入互換性で決まります。抽象クラスA、インタフェースB、実装クラスC、CのサブクラスDの関係を上から順に追うと、選択肢Dだけが型互換性を満たしません。",
+          "pdfExplanation": "正解は D です。\n\nクラス関係は、Aが抽象クラス、Bがインタフェース、CがAを継承してBを実装、DがCを継承しています。つまり、DはCでもあり、Aでもあり、Bでもあります。一方で、CはDとは限りません。\n\n`List<A>`にはA型として扱えるインスタンスを入れられます。CもDもAのサブタイプなので追加できます。`List<B>`にはB型として扱えるインスタンスを入れられます。CはBを実装しており、DもCを継承しているためBとして扱えます。\n\nしかし`List<D>`はD型の要素を入れるリストです。Dの親であるCのインスタンスをDとして扱うことはできません。親型のインスタンスには子クラスDの差分があるとは限らないため、`listD.add(new C())`がコンパイルエラーになります。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": "",
+          "additionalExplanation": "正解は D です。\n\nクラス関係は、Aが抽象クラス、Bがインタフェース、CがAを継承してBを実装、DがCを継承しています。つまり、DはCでもあり、Aでもあり、Bでもあります。一方で、CはDとは限りません。\n\n`List<A>`にはA型として扱えるインスタンスを入れられます。CもDもAのサブタイプなので追加できます。`List<B>`にはB型として扱えるインスタンスを入れられます。CはBを実装しており、DもCを継承しているためBとして扱えます。\n\nしかし`List<D>`はD型の要素を入れるリストです。Dの親であるCのインスタンスをDとして扱うことはできません。親型のインスタンスには子クラスDの差分があるとは限らないため、`listD.add(new C())`がコンパイルエラーになります。",
           "points": []
         },
         "source": "",
@@ -23554,58 +23619,60 @@ window.JAVA_STUDY_DATA = {
           "F"
         ],
         "explanation": {
-          "summary": "interfaceはfinalにできません。実装クラスBはabstractにもできます。B implements A なので、BはAのサブタイプです。逆にAがBのサブタイプになるわけではありません。",
-          "correctReason": "正解は A・B・F です。\n\ninterfaceはfinalにできません。実装クラスBはabstractにもできます。B implements A なので、BはAのサブタイプです。逆にAがBのサブタイプになるわけではありません。",
+          "summary": "正解はA・B・Fです。Aはインタフェースなのでfinalにはできません。BはAを実装するクラスなので、Aのサブタイプです。またBは抽象クラスにしても構文上は成立します。",
+          "correctReason": "正解は A・B・F です。\n\nAはインタフェースです。インタフェースは、実装クラスに実装されることを前提にした型なので、継承・実装を禁止するfinalとは両立しません。したがって「Aはfinalにできない」は正しいです。\n\nBはAをimplementsしているクラスです。BはA型として扱えるので、BはAのサブタイプです。向きは必ず「実装クラスB is-a インタフェースA」です。AがBのサブタイプになるわけではありません。\n\nまた、Bは現在Aのbuildメソッドを実装していますが、クラスをabstractにすること自体は可能です。abstractクラスでもインタフェースを実装できますし、実装済みメソッドを持っていても構いません。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。interfaceはfinalにできません。実装クラスBはabstractにもできます。B implements A なので、BはAのサブタイプです。逆にAがBのサブタイプになるわけではありません。"
+              "detail": "正しいです。インタフェースは実装されるための型なのでfinalにはできません。finalにすると実装・拡張を禁止する意味になり、インタフェースの性質と合いません。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正解です。interfaceはfinalにできません。実装クラスBはabstractにもできます。B implements A なので、BはAのサブタイプです。逆にAがBのサブタイプになるわけではありません。"
+              "detail": "正しいです。Bをabstract classにすることは可能です。インタフェースを実装する抽象クラスは、メソッドを実装しても未実装のままでも成立します。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "継承・実装関係の向き、またはinterface/abstract/finalの制約を取り違えています。"
+              "detail": "誤りです。Bは通常のクラスなのでfinalにできます。final class B implements A としても、Aのメソッドを実装していれば構文上問題ありません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "継承・実装関係の向き、またはinterface/abstract/finalの制約を取り違えています。"
+              "detail": "誤りです。サブタイプの向きが逆です。BがAを実装しているので、BはAのサブタイプです。AがBのサブタイプではありません。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "継承・実装関係の向き、またはinterface/abstract/finalの制約を取り違えています。"
+              "detail": "誤りです。インタフェースは暗黙的に抽象的な型です。abstractを明示することは通常不要ですが、「abstractにできない」という説明は不適切です。"
             },
             {
               "key": "F",
               "isCorrect": true,
-              "detail": "正解です。interfaceはfinalにできません。実装クラスBはabstractにもできます。B implements A なので、BはAのサブタイプです。逆にAがBのサブタイプになるわけではありません。"
+              "detail": "正しいです。B implements A なので、BのインスタンスはA型の変数に代入できます。つまりBはAのサブタイプです。"
             }
           ],
           "relatedKnowledge": [
-            "インタフェースの抽象メソッドは暗黙にpublic abstractとして扱われる。実装クラス側ではpublicより狭いアクセス修飾子にはできない。",
-            "defaultメソッドは実装を持つインタフェースメソッド。実装クラスが上書きしなければ、そのまま継承して呼び出せる。",
-            "インタフェース同士はextendsで継承でき、クラスはimplementsで実装する。クラスが複数インタフェースを実装できる点も頻出。"
+            "インタフェースはfinalにできない。実装されることを前提にした型だから。",
+            "クラスはfinalにもabstractにもできるが、finalとabstractを同時には指定できない。",
+            "implements関係では、実装クラスがインタフェースのサブタイプになる。"
           ],
           "examTips": [
-            "インタフェース実装問題では、メソッド名・引数リスト・戻り値型・アクセス修飾子の4点を必ず確認する。",
-            "defaultメソッドの競合がある場合、実装クラス側で明示的に解決しないとコンパイルエラーになる。"
+            "サブタイプの向きは「子・実装クラス → 親・インタフェース」。逆に読まない。",
+            "abstractクラスは未実装メソッドを持てるが、すべて実装済みでもabstractにできる。",
+            "finalは「これ以上継承させない」。インタフェースにfinalを付ける発想は切る。"
           ],
           "judgeSteps": [
-            "インタフェースに定義された抽象メソッドを列挙する。",
-            "実装クラスまたは抽象クラスが、それらを実装する必要があるかを判定する。",
-            "実装している場合、public、戻り値型、throws、引数リストが条件を満たすか確認する。"
+            "Aがinterfaceかclassか確認する。",
+            "BがAをimplementsしていることを確認する。",
+            "final/abstractをどちらに付けられるか判定する。",
+            "サブタイプの向きを確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A・B・F です。\n\ninterfaceはfinalにできません。実装クラスBはabstractにもできます。B implements A なので、BはAのサブタイプです。逆にAがBのサブタイプになるわけではありません。",
+          "pdfExplanation": "正解は A・B・F です。\n\nAはインタフェースです。インタフェースは、実装クラスに実装されることを前提にした型なので、継承・実装を禁止するfinalとは両立しません。したがって「Aはfinalにできない」は正しいです。\n\nBはAをimplementsしているクラスです。BはA型として扱えるので、BはAのサブタイプです。向きは必ず「実装クラスB is-a インタフェースA」です。AがBのサブタイプになるわけではありません。\n\nまた、Bは現在Aのbuildメソッドを実装していますが、クラスをabstractにすること自体は可能です。abstractクラスでもインタフェースを実装できますし、実装済みメソッドを持っていても構いません。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": "",
+          "additionalExplanation": "正解は A・B・F です。\n\nAはインタフェースです。インタフェースは、実装クラスに実装されることを前提にした型なので、継承・実装を禁止するfinalとは両立しません。したがって「Aはfinalにできない」は正しいです。\n\nBはAをimplementsしているクラスです。BはA型として扱えるので、BはAのサブタイプです。向きは必ず「実装クラスB is-a インタフェースA」です。AがBのサブタイプになるわけではありません。\n\nまた、Bは現在Aのbuildメソッドを実装していますが、クラスをabstractにすること自体は可能です。abstractクラスでもインタフェースを実装できますし、実装済みメソッドを持っていても構いません。",
           "points": []
         },
         "source": "",
@@ -23656,48 +23723,50 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "new C()を実行すると、まず親クラス部分から初期化されます。Cのコンストラクタ実行前にB、Bの実行前にAのコンストラクタが呼ばれるため、出力順はA→B→Cです。",
-          "correctReason": "正解は C です。\n\nnew C()を実行すると、まず親クラス部分から初期化されます。Cのコンストラクタ実行前にB、Bの実行前にAのコンストラクタが呼ばれるため、出力順はA→B→Cです。",
+          "summary": "正解はCです。new C()ではCだけが作られるように見えますが、Cインスタンスの中にはB部分とA部分も含まれます。コンストラクタは親から順に実行されるため、表示はABCです。",
+          "correctReason": "正解は C です。\n\n`new C()`を実行すると、Cクラスのインスタンスを作ります。ただし、CはBを継承し、BはAを継承しています。サブクラスのインスタンスを作るときは、先にスーパークラス部分を初期化しなければなりません。\n\nCのコンストラクタの先頭には明示的な`super(...)`がありません。そのため、コンパイラにより`super()`が暗黙的に挿入され、まずBのコンストラクタが呼ばれます。Bのコンストラクタでも同じく暗黙の`super()`によりAのコンストラクタが呼ばれます。\n\n実際の出力順は、AのコンストラクタでA、BのコンストラクタでB、CのコンストラクタでCです。したがってABCと表示されます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「ABC と表示される」であり、「CBA と表示される」ではありません。"
+              "detail": "誤りです。new C()と書いていても、Cのコンストラクタが最初に出力するわけではありません。親クラスA、Bの初期化が先に行われます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「ABC と表示される」であり、「C と表示される」ではありません。"
+              "detail": "誤りです。Cだけが表示されるわけではありません。Cの生成時にはBとAのコンストラクタも実行されます。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「ABC と表示される」です。new C()を実行すると、まず親クラス部分から初期化されます。Cのコンストラクタ実行前にB、Bの実行前にAのコンストラクタが呼ばれるため、出力順はA→B→Cです。"
+              "detail": "正しいです。A→B→Cの順にコンストラクタが実行されるため、ABCと表示されます。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「ABC と表示される」です。"
+              "detail": "誤りです。A、B、Cはいずれも引数なしコンストラクタを持つため、暗黙のsuper()呼び出しで問題なくコンパイルできます。"
             }
           ],
           "relatedKnowledge": [
-            "コンストラクタは継承されない。サブクラスのインスタンス生成時には、親クラスのコンストラクタが先に実行され、その後に子クラス側の初期化へ進む。",
-            "this(...)とsuper(...)はコンストラクタの先頭行にしか書けない。両方を同じコンストラクタに並べることはできない。",
-            "明示的にsuper(...)を書かない場合、引数なしのsuper()が暗黙に挿入される。親に引数なしコンストラクタがない場合は注意が必要。"
+            "コンストラクタは継承されないが、サブクラスの生成時にスーパークラスのコンストラクタは必ず実行される。",
+            "コンストラクタの先頭にthis(...)やsuper(...)がなければ、super()が暗黙的に挿入される。",
+            "出力順はnewしたクラス名からではなく、最上位の親クラスから追う。"
           ],
           "examTips": [
-            "表示順問題では、newされたクラスからではなく、最上位の親コンストラクタから順に出力を並べる。",
-            "this()で同じクラス内の別コンストラクタへ飛んだ場合、その先で最終的にsuper()が呼ばれる流れまで追う。"
+            "new C()ならCから見るのではなく、A→B→Cの初期化順で見る。",
+            "親に引数なしコンストラクタがない場合は暗黙のsuper()でコンパイルエラーになる。",
+            "printとprintlnの違いにも注意。この問題はprintなので改行なしでABCになる。"
           ],
           "judgeSteps": [
-            "newしているクラスのコンストラクタを確認する。",
-            "そのコンストラクタの先頭にthis(...)またはsuper(...)があるか確認する。",
-            "親クラスのコンストラクタ実行、フィールド初期化、子クラス側の処理の順に出力を並べる。"
+            "継承関係をA←B←Cと整理する。",
+            "Cコンストラクタ先頭のsuper/this有無を確認する。",
+            "B、Aにも同じ確認をする。",
+            "親から子へ出力を並べる。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\nnew C()を実行すると、まず親クラス部分から初期化されます。Cのコンストラクタ実行前にB、Bの実行前にAのコンストラクタが呼ばれるため、出力順はA→B→Cです。",
+          "pdfExplanation": "正解は C です。\n\n`new C()`を実行すると、Cクラスのインスタンスを作ります。ただし、CはBを継承し、BはAを継承しています。サブクラスのインスタンスを作るときは、先にスーパークラス部分を初期化しなければなりません。\n\nCのコンストラクタの先頭には明示的な`super(...)`がありません。そのため、コンパイラにより`super()`が暗黙的に挿入され、まずBのコンストラクタが呼ばれます。Bのコンストラクタでも同じく暗黙の`super()`によりAのコンストラクタが呼ばれます。\n\n実際の出力順は、AのコンストラクタでA、BのコンストラクタでB、CのコンストラクタでCです。したがってABCと表示されます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": "",
+          "additionalExplanation": "正解は C です。\n\n`new C()`を実行すると、Cクラスのインスタンスを作ります。ただし、CはBを継承し、BはAを継承しています。サブクラスのインスタンスを作るときは、先にスーパークラス部分を初期化しなければなりません。\n\nCのコンストラクタの先頭には明示的な`super(...)`がありません。そのため、コンパイラにより`super()`が暗黙的に挿入され、まずBのコンストラクタが呼ばれます。Bのコンストラクタでも同じく暗黙の`super()`によりAのコンストラクタが呼ばれます。\n\n実際の出力順は、AのコンストラクタでA、BのコンストラクタでB、CのコンストラクタでCです。したがってABCと表示されます。",
           "points": []
         },
         "source": "",
@@ -23754,48 +23823,50 @@ window.JAVA_STUDY_DATA = {
           "A"
         ],
         "explanation": {
-          "summary": "privateメソッドはオーバーライドされません。Aのa()内で呼ばれるprint()はAのprivate print()、Bのb()内で呼ばれるprint()はBのprivate print()です。したがってA、Bの順に表示されます。",
-          "correctReason": "正解は A です。\n\nprivateメソッドはオーバーライドされません。Aのa()内で呼ばれるprint()はAのprivate print()、Bのb()内で呼ばれるprint()はBのprivate print()です。したがってA、Bの順に表示されます。",
+          "summary": "正解はAです。privateメソッドはオーバーライドされません。Aのa()から呼ばれるprint()はA自身のprivate print()、Bのb()から呼ばれるprint()はB自身のprivate print()です。",
+          "correctReason": "正解は A です。\n\nこの問題は、同じ名前のprivateメソッドをサブクラスに書いたときに、オーバーライドになるかを確認する問題です。結論として、privateメソッドはオーバーライドされません。privateメソッドはそのクラスの内部からしか見えないため、サブクラス側の同名メソッドは別物として扱われます。\n\n`b.a();`では、Bインスタンスに対してAから継承したpublicメソッドa()を呼びます。a()の中の`print();`はAクラス内で解決されるため、Aのprivate print()が呼ばれ、Aが表示されます。\n\n次に`b.b();`では、Bクラスのb()を呼びます。b()の中の`print();`はBクラス内で解決されるため、Bのprivate print()が呼ばれ、Bが表示されます。したがって表示はA、Bの順です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「A\nB と表示される」です。privateメソッドはオーバーライドされません。Aのa()内で呼ばれるprint()はAのprivate print()、Bのb()内で呼ばれるprint()はBのprivate print()です。したがってA、Bの順に表示されます。"
+              "detail": "正しいです。b.a()ではAのprivate print()が呼ばれてA、b.b()ではBのprivate print()が呼ばれてBが表示されます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「A\nB と表示される」であり、「B\nB と表示される」ではありません。"
+              "detail": "誤りです。privateメソッドはオーバーライドされないため、b.a()の中からBのprint()が呼ばれることはありません。最初の出力はBではなくAです。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「A\nB と表示される」です。"
+              "detail": "誤りです。同名のprivateメソッドをサブクラスに定義しても、オーバーライドではなく別メソッドなのでコンパイルエラーにはなりません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実行時例外は発生せず、結果は「A\nB と表示される」です。"
+              "detail": "誤りです。null参照や不正キャストなどはなく、実行時例外は発生しません。"
             }
           ],
           "relatedKnowledge": [
-            "privateメンバは同じクラス内からしか直接アクセスできない。継承していてもサブクラスから直接使えるわけではない。",
-            "デフォルトアクセスは同じパッケージ内限定。protectedは同じパッケージに加え、異なるパッケージのサブクラスからも一定条件でアクセスできる。",
-            "オーバーライドでは、親メソッドより狭いアクセス修飾子にできない。"
+            "privateメソッドは継承先から直接見えないため、オーバーライド対象にならない。",
+            "同じ名前でも、privateメソッド同士は別々のクラス内の独立したメソッドとして扱う。",
+            "publicメソッドの中で呼ばれるprivateメソッドは、そのpublicメソッドが定義されたクラス内で解決される。"
           ],
           "examTips": [
-            "protectedは「どこからでもサブクラスなら自由」ではない。パッケージと参照の型を合わせて確認する。",
-            "privateメソッドはオーバーライドされない。同名メソッドを子に書いても別メソッドとして扱う。"
+            "privateを見たら「オーバーライドされない」と即判断する。",
+            "b.a()のようにBインスタンスからAのメソッドを呼ぶ場合でも、Aメソッド内部のprivate呼び出しはA側で解決される。",
+            "出力問題では、どのクラスのメソッド本体を実行しているかを追う。"
           ],
           "judgeSteps": [
-            "アクセス対象のメンバの修飾子を確認する。",
-            "アクセス元クラスが同じクラス、同じパッケージ、サブクラスのどれに該当するか確認する。",
-            "継承関係がある場合でも、privateやデフォルトアクセスの制限を個別に確認する。"
+            "mainの呼び出し順を確認する。",
+            "a()がどのクラスで定義されているか確認する。",
+            "a()内のprint()がprivateか確認する。",
+            "b()についても同じように確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A です。\n\nprivateメソッドはオーバーライドされません。Aのa()内で呼ばれるprint()はAのprivate print()、Bのb()内で呼ばれるprint()はBのprivate print()です。したがってA、Bの順に表示されます。",
+          "pdfExplanation": "正解は A です。\n\nこの問題は、同じ名前のprivateメソッドをサブクラスに書いたときに、オーバーライドになるかを確認する問題です。結論として、privateメソッドはオーバーライドされません。privateメソッドはそのクラスの内部からしか見えないため、サブクラス側の同名メソッドは別物として扱われます。\n\n`b.a();`では、Bインスタンスに対してAから継承したpublicメソッドa()を呼びます。a()の中の`print();`はAクラス内で解決されるため、Aのprivate print()が呼ばれ、Aが表示されます。\n\n次に`b.b();`では、Bクラスのb()を呼びます。b()の中の`print();`はBクラス内で解決されるため、Bのprivate print()が呼ばれ、Bが表示されます。したがって表示はA、Bの順です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": "",
+          "additionalExplanation": "正解は A です。\n\nこの問題は、同じ名前のprivateメソッドをサブクラスに書いたときに、オーバーライドになるかを確認する問題です。結論として、privateメソッドはオーバーライドされません。privateメソッドはそのクラスの内部からしか見えないため、サブクラス側の同名メソッドは別物として扱われます。\n\n`b.a();`では、Bインスタンスに対してAから継承したpublicメソッドa()を呼びます。a()の中の`print();`はAクラス内で解決されるため、Aのprivate print()が呼ばれ、Aが表示されます。\n\n次に`b.b();`では、Bクラスのb()を呼びます。b()の中の`print();`はBクラス内で解決されるため、Bのprivate print()が呼ばれ、Bが表示されます。したがって表示はA、Bの順です。",
           "points": []
         },
         "source": "",
@@ -23850,54 +23921,54 @@ window.JAVA_STUDY_DATA = {
           "E"
         ],
         "explanation": {
-          "summary": "メソッド定義では、戻り値型、メソッド名、引数リスト、throws句、修飾子の組み合わせが文法的に正しい必要があります。選択肢CとEだけがJavaのメソッド宣言として成立します。",
-          "correctReason": "正解は C・E です。\n\nメソッド定義では、戻り値型、メソッド名、引数リスト、throws句、修飾子の組み合わせが文法的に正しい必要があります。選択肢CとEだけがJavaのメソッド宣言として成立します。",
+          "summary": "正解はC・Eです。メソッドの戻り値型とreturn文の値が一致しているかを確認します。voidメソッドは値を返せず、void以外のメソッドは必ず適切な型の値を返す必要があります。",
+          "correctReason": "正解は C・E です。\n\nメソッド定義を見るときは、戻り値型とreturn文の対応を最初に確認します。`void`は「戻り値なし」を表すため、`return;`だけなら書けますが、`return 値;`は書けません。逆に、戻り値型がStringやbooleanやcharのように指定されている場合は、その型に代入できる値を返す必要があります。\n\nCは`boolean`を返すメソッドで、`a < 0`はboolean式なので正しいです。Eは`void`メソッドで、`return;`により値を返さず終了しているため正しいです。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。正しい選択肢は「C・E」です。"
+              "detail": "誤りです。methodAは戻り値型がvoidです。voidメソッドでは値を返せないため、return ++x; はコンパイルエラーです。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。正しい選択肢は「C・E」です。"
+              "detail": "誤りです。methodBはStringを返す宣言ですが、return文がありません。printlnは表示するだけでStringを返す処理ではありません。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正しい選択肢です。メソッド定義では、戻り値型、メソッド名、引数リスト、throws句、修飾子の組み合わせが文法的に正しい必要があります。選択肢CとEだけがJavaのメソッド宣言として成立します。"
+              "detail": "正しいです。a < 0 はboolean型の式です。戻り値型booleanと一致するため、return a < 0; は正しいです。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。正しい選択肢は「C・E」です。"
+              "detail": "誤りです。methodDはcharを返す宣言ですが、returnしているstrはString型です。Stringをcharにそのまま返すことはできません。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正しい選択肢です。メソッド定義では、戻り値型、メソッド名、引数リスト、throws句、修飾子の組み合わせが文法的に正しい必要があります。選択肢CとEだけがJavaのメソッド宣言として成立します。"
+              "detail": "正しいです。voidメソッドでは値なしのreturn;を使えます。これはメソッドをその場で終了するだけです。"
             }
           ],
           "relatedKnowledge": [
-            "オーバーライドは、メソッド名と引数リストが同じであることが前提。戻り値型は同じ型または共変戻り値としてサブクラス型にできる。",
-            "オーバーライド時のアクセス修飾子は、親より狭くできない。publicをprotectedやデフォルトに落とすとコンパイルエラー。",
-            "オーバーロードは引数リスト違いの別メソッド。実行時の動的選択ではなく、コンパイル時の引数型で候補が決まる。"
+            "voidメソッドではreturn;は可能だがreturn 値;は不可。",
+            "void以外のメソッドでは、すべての実行経路で戻り値型に合う値を返す必要がある。",
+            "printlnは戻り値として表示文字列を返すわけではない。"
           ],
           "examTips": [
-            "@Overrideが付いているのに条件を満たさない場合はコンパイルエラーになる。付いていなくても条件を満たせばオーバーライドは成立する。",
-            "戻り値だけ違うメソッドはオーバーロードにならない。戻り値型でメソッドを区別できない。"
+            "return文の有無だけでなく、返している式の型を見る。",
+            "Stringとcharは別物。文字列1文字でもStringをcharに自動変換しない。",
+            "++xはint値を返す式なので、voidメソッドから返すと不正。"
           ],
           "judgeSteps": [
-            "親メソッドと子メソッドのメソッド名・引数リストを比較する。",
-            "戻り値型が同じか、親の戻り値型のサブタイプになっているか確認する。",
-            "アクセス修飾子が親と同じか、より広いか確認する。",
-            "throws句が親より広いチェック例外になっていないか確認する。"
+            "各選択肢の戻り値型を確認する。",
+            "return文があるか確認する。",
+            "returnしている式の型が戻り値型に代入できるか確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C・E です。\n\nメソッド定義では、戻り値型、メソッド名、引数リスト、throws句、修飾子の組み合わせが文法的に正しい必要があります。選択肢CとEだけがJavaのメソッド宣言として成立します。",
+          "pdfExplanation": "正解は C・E です。\n\nメソッド定義を見るときは、戻り値型とreturn文の対応を最初に確認します。`void`は「戻り値なし」を表すため、`return;`だけなら書けますが、`return 値;`は書けません。逆に、戻り値型がStringやbooleanやcharのように指定されている場合は、その型に代入できる値を返す必要があります。\n\nCは`boolean`を返すメソッドで、`a < 0`はboolean式なので正しいです。Eは`void`メソッドで、`return;`により値を返さず終了しているため正しいです。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": "",
+          "additionalExplanation": "正解は C・E です。\n\nメソッド定義を見るときは、戻り値型とreturn文の対応を最初に確認します。`void`は「戻り値なし」を表すため、`return;`だけなら書けますが、`return 値;`は書けません。逆に、戻り値型がStringやbooleanやcharのように指定されている場合は、その型に代入できる値を返す必要があります。\n\nCは`boolean`を返すメソッドで、`a < 0`はboolean式なので正しいです。Eは`void`メソッドで、`return;`により値を返さず終了しているため正しいです。",
           "points": []
         },
         "source": "",
@@ -23938,48 +24009,50 @@ window.JAVA_STUDY_DATA = {
           "B"
         ],
         "explanation": {
-          "summary": "コマンドライン引数で二重引用符に囲まれた\"AB\"は1つの引数ABとして渡されます。次のABも別の1引数なので、argsは2要素です。順に連結出力されるためABABになります。",
-          "correctReason": "正解は B です。\n\nコマンドライン引数で二重引用符に囲まれた\"AB\"は1つの引数ABとして渡されます。次のABも別の1引数なので、argsは2要素です。順に連結出力されるためABABになります。",
+          "summary": "正解はBです。コマンドの`\"AB\"`は引用符を含む文字列として渡されるのではなく、ABという1つの引数として渡されます。次のABも別の引数なので、順に表示してABABになります。",
+          "correctReason": "正解は B です。\n\n実行コマンドは`java A \"AB\" AB`です。クラス名Aの後ろにある値がmainメソッドのargsに入ります。二重引用符は、空白を含む文字列などを1つの引数として扱うためにシェル側で使われるもので、通常はJavaプログラムに引用符そのものは渡されません。\n\nしたがってargs[0]は`AB`、args[1]も`AB`です。for文ではargsを先頭から順に取り出し、System.out.printで改行せずに出力します。結果は`ABAB`です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「ABAB と表示される」であり、「AABAB と表示される」ではありません。"
+              "detail": "誤りです。先頭に余分なAは付きません。実行クラス名Aはプログラムに渡される引数ではなく、argsには入りません。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「ABAB と表示される」です。コマンドライン引数で二重引用符に囲まれた\"AB\"は1つの引数ABとして渡されます。次のABも別の1引数なので、argsは2要素です。順に連結出力されるためABABになります。"
+              "detail": "正しいです。args[0]がAB、args[1]がABなので、順にprintするとABABになります。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「ABAB と表示される」であり、「TABAB と表示される」ではありません。"
+              "detail": "誤りです。Tが出力される要素はありません。コマンドにもコードにもTを出力する処理はありません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「ABAB と表示される」であり、「\"ABAB\" と表示される」ではありません。"
+              "detail": "誤りです。二重引用符そのものは通常argsに含まれません。表示されるのは\"ABAB\"ではなくABABです。"
             }
           ],
           "relatedKnowledge": [
-            "main(String[] args)とmain(String... args)は、エントリポイントとして同じように扱える。",
-            "コマンドライン引数はクラス名の後ろから順にargs[0]、args[1]へ入る。添字は0始まり。",
-            "argsの各要素はString。数値として使う場合はInteger.parseIntなどで変換されるため、変換できない文字列ならNumberFormatExceptionになる。"
+            "mainメソッドのargsには、javaコマンドのクラス名より後ろの値が入る。",
+            "クラス名自体はargsに入らない。",
+            "System.out.printは改行せずに出力し、printlnは改行する。"
           ],
           "examTips": [
-            "java Sample 5 2 なら、使っているのがargs[0]かargs[1]かを最初に確認する。",
-            "引数が足りない場合はArrayIndexOutOfBoundsException、数値変換不能ならNumberFormatExceptionを疑う。"
+            "コマンドライン引数問題では、まずargs[0]、args[1]に何が入るかを表にする。",
+            "引用符は「1つの引数にまとめる」ために使われるだけで、引用符自体が出力されるとは限らない。",
+            "printとprintlnの違いで出力形式が変わる。"
           ],
           "judgeSteps": [
-            "コマンドのクラス名以降の値をargs[0]から順に割り当てる。",
-            "コードが参照している添字だけを取り出す。",
-            "parseIntなどの変換がある場合、対象文字列が変換可能か確認する。"
+            "javaコマンドのクラス名を除外する。",
+            "残りの引数をargs[0]から順に並べる。",
+            "for文が何回回るか確認する。",
+            "print/printlnを区別して出力を作る。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は B です。\n\nコマンドライン引数で二重引用符に囲まれた\"AB\"は1つの引数ABとして渡されます。次のABも別の1引数なので、argsは2要素です。順に連結出力されるためABABになります。",
+          "pdfExplanation": "正解は B です。\n\n実行コマンドは`java A \"AB\" AB`です。クラス名Aの後ろにある値がmainメソッドのargsに入ります。二重引用符は、空白を含む文字列などを1つの引数として扱うためにシェル側で使われるもので、通常はJavaプログラムに引用符そのものは渡されません。\n\nしたがってargs[0]は`AB`、args[1]も`AB`です。for文ではargsを先頭から順に取り出し、System.out.printで改行せずに出力します。結果は`ABAB`です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": "",
+          "additionalExplanation": "正解は B です。\n\n実行コマンドは`java A \"AB\" AB`です。クラス名Aの後ろにある値がmainメソッドのargsに入ります。二重引用符は、空白を含む文字列などを1つの引数として扱うためにシェル側で使われるもので、通常はJavaプログラムに引用符そのものは渡されません。\n\nしたがってargs[0]は`AB`、args[1]も`AB`です。for文ではargsを先頭から順に取り出し、System.out.printで改行せずに出力します。結果は`ABAB`です。",
           "points": []
         },
         "source": "",
@@ -24025,49 +24098,49 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "Bから継承されるa()の戻り値はCollection、Cから継承されるa()の戻り値はPathです。どちらもAのIterableとは関係を持てますが、BとC同士の戻り値型に互換性がないため、Dで1つのメソッドとして統合できずコンパイルエラーになります。",
-          "correctReason": "正解は C です。\n\nBから継承されるa()の戻り値はCollection、Cから継承されるa()の戻り値はPathです。どちらもAのIterableとは関係を持てますが、BとC同士の戻り値型に互換性がないため、Dで1つのメソッドとして統合できずコンパイルエラーになります。",
+          "summary": "正解はCです。Bのa()はCollectionを返し、Cのa()はPathを返します。DはBとCを同時に継承するため、同じa()について互換性のない戻り値型を同時に受け継ぐことになり、1つのメソッドとして成立しません。",
+          "correctReason": "正解は C です。\n\nAには`Iterable a()`があります。BはAを継承し、戻り値型をCollectionにした`a()`を宣言しています。CollectionはIterableのサブタイプなので、これは共変戻り値として成立します。CもAを継承し、戻り値型をPathにした`a()`を宣言しています。PathもIterableを継承しているため、Aとの関係だけ見れば成立します。\n\n問題はDです。DはBとCを同時に継承します。するとDは、同じ名前・同じ引数リストの`a()`について、B由来のCollection戻り値とC由来のPath戻り値を同時に継承することになります。CollectionとPathは互いにサブタイプ関係ではありません。戻り値だけが異なる同名メソッドはJavaでは区別できないため、Dでコンパイルエラーになります。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。正しい選択肢は「C」です。"
+              "detail": "誤りです。インタフェースが複数のインタフェースをextendsすること自体は可能です。問題は継承数ではなく、継承した同名メソッドの戻り値型の衝突です。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。正しい選択肢は「C」です。"
+              "detail": "誤りです。BのCollectionはAのIterableのサブタイプなので、Aとの関係だけなら共変戻り値として成立します。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「BとCインタフェースから継承したメソッドの戻り値型が異なるため」です。Bから継承されるa()の戻り値はCollection、Cから継承されるa()の戻り値はPathです。どちらもAのIterableとは関係を持てますが、BとC同士の戻り値型に互換性がないため、Dで1つのメソッドとして統合できずコンパイルエラーになります。"
+              "detail": "正しいです。DがBとCから継承するa()の戻り値型はCollectionとPathです。この2つに互換性がないため、Dで1つのメソッドとして統合できません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。正しい選択肢は「C」です。"
+              "detail": "誤りです。単に再定義しなかったことが本質ではありません。仮に再定義しても、継承元の戻り値型衝突を解消できる型関係がなければ成立しません。原因はB由来とC由来の戻り値型が互換でないことです。"
             }
           ],
           "relatedKnowledge": [
-            "オーバーライドは、メソッド名と引数リストが同じであることが前提。戻り値型は同じ型または共変戻り値としてサブクラス型にできる。",
-            "オーバーライド時のアクセス修飾子は、親より狭くできない。publicをprotectedやデフォルトに落とすとコンパイルエラー。",
-            "オーバーロードは引数リスト違いの別メソッド。実行時の動的選択ではなく、コンパイル時の引数型で候補が決まる。"
+            "戻り値だけが異なるメソッドはオーバーロードにならない。メソッド識別ではメソッド名と引数リストが重要。",
+            "オーバーライドの戻り値型は、同じ型またはサブタイプなら共変戻り値として認められる。",
+            "複数インタフェース継承では、同名メソッドの戻り値型の互換性を確認する。"
           ],
           "examTips": [
-            "@Overrideが付いているのに条件を満たさない場合はコンパイルエラーになる。付いていなくても条件を満たせばオーバーライドは成立する。",
-            "戻り値だけ違うメソッドはオーバーロードにならない。戻り値型でメソッドを区別できない。"
+            "Aとの関係だけでBとCを個別に見て終わらない。DがBとCを同時に継承する点が本題。",
+            "CollectionとPathがどちらもIterableのサブタイプでも、CollectionとPath同士が互換とは限らない。",
+            "「戻り値が違うから別メソッド」はJavaでは通らない。"
           ],
           "judgeSteps": [
-            "親メソッドと子メソッドのメソッド名・引数リストを比較する。",
-            "戻り値型が同じか、親の戻り値型のサブタイプになっているか確認する。",
-            "アクセス修飾子が親と同じか、より広いか確認する。",
-            "throws句が親より広いチェック例外になっていないか確認する。"
+            "Aのa()の戻り値型を確認する。",
+            "BとCのa()がAに対して共変戻り値として成立するか確認する。",
+            "DがBとCから同時に継承するメソッド同士の戻り値型が互換か確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\nBから継承されるa()の戻り値はCollection、Cから継承されるa()の戻り値はPathです。どちらもAのIterableとは関係を持てますが、BとC同士の戻り値型に互換性がないため、Dで1つのメソッドとして統合できずコンパイルエラーになります。",
+          "pdfExplanation": "正解は C です。\n\nAには`Iterable a()`があります。BはAを継承し、戻り値型をCollectionにした`a()`を宣言しています。CollectionはIterableのサブタイプなので、これは共変戻り値として成立します。CもAを継承し、戻り値型をPathにした`a()`を宣言しています。PathもIterableを継承しているため、Aとの関係だけ見れば成立します。\n\n問題はDです。DはBとCを同時に継承します。するとDは、同じ名前・同じ引数リストの`a()`について、B由来のCollection戻り値とC由来のPath戻り値を同時に継承することになります。CollectionとPathは互いにサブタイプ関係ではありません。戻り値だけが異なる同名メソッドはJavaでは区別できないため、Dでコンパイルエラーになります。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": "",
+          "additionalExplanation": "正解は C です。\n\nAには`Iterable a()`があります。BはAを継承し、戻り値型をCollectionにした`a()`を宣言しています。CollectionはIterableのサブタイプなので、これは共変戻り値として成立します。CもAを継承し、戻り値型をPathにした`a()`を宣言しています。PathもIterableを継承しているため、Aとの関係だけ見れば成立します。\n\n問題はDです。DはBとCを同時に継承します。するとDは、同じ名前・同じ引数リストの`a()`について、B由来のCollection戻り値とC由来のPath戻り値を同時に継承することになります。CollectionとPathは互いにサブタイプ関係ではありません。戻り値だけが異なる同名メソッドはJavaでは区別できないため、Dでコンパイルエラーになります。",
           "points": []
         },
         "source": "",
@@ -24125,50 +24198,38 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "フィールドは実行時の実体型ではなく、参照変数の宣言型で選ばれます。A型の変数からxを直接参照するとAのpublicフィールドxが選ばれるため、Aが表示されます。",
-          "correctReason": "正解は C です。\n\nフィールドは実行時の実体型ではなく、参照変数の宣言型で選ばれます。A型の変数からxを直接参照するとAのpublicフィールドxが選ばれるため、Aが表示されます。",
+          "summary": "正解は C です。メソッドはオーバーライドされると実体型で決まりますが、フィールドはオーバーライドされません。a の宣言型は A なので、a.x は A クラスの public フィールド x を参照し、「A」が表示されます。",
+          "correctReason": "正解は C です。\n\nこの問題は、ポリモーフィズムで「メソッド」と「フィールド」を同じように考えてしまうと落とされます。\n\n`A a = new B();` によって、変数 a の宣言型は A、実体は B になります。ここで `a.x` と書いている点が重要です。`x` はメソッドではなくフィールドです。Javaでは、フィールドはオーバーライドされません。フィールドアクセスは、実行時の実体型ではなく、コンパイル時の参照変数の型で決まります。\n\nしたがって、`a.x` は B クラスの `x` ではなく、A クラスの `public String x = \"A\";` を参照します。そのため出力は `A` です。\n\nなお、B クラスのコンストラクタから `super();` を呼んでいますが、A のコンストラクタは `protected A() {}` なので、サブクラスである B から呼び出せます。ここでコンパイルエラーにはなりません。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「A が表示される」です。"
+              "detail": "誤りです。`A a = new B();` はアップキャストとして有効です。A のコンストラクタは protected ですが、B は A のサブクラスなので `super();` で呼び出せます。フィールド `x` も A 側は public なので `a.x` は参照できます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実行時例外は発生せず、結果は「A が表示される」です。"
+              "detail": "誤りです。実行時例外が発生する処理はありません。ダウンキャストも配列範囲外アクセスも null 参照も行っていません。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「A が表示される」です。フィールドは実行時の実体型ではなく、参照変数の宣言型で選ばれます。A型の変数からxを直接参照するとAのpublicフィールドxが選ばれるため、Aが表示されます。"
+              "detail": "正解です。`a` の宣言型は A なので、`a.x` は A クラスのフィールドを指します。フィールドは実体型 B によって動的に切り替わりません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「A が表示される」であり、「B が表示される」ではありません。"
+              "detail": "誤りです。B クラスにも `String x = \"B\";` がありますが、`a.x` の `a` は A 型です。フィールドアクセスは宣言型で決まるため、B 側の `x` は選ばれません。"
             }
           ],
           "relatedKnowledge": [
-            "参照型変数で呼び出せるメンバは、原則としてコンパイル時の宣言型で決まる。実体がサブクラスでも、宣言型にないメソッドはそのままでは呼び出せない。",
-            "オーバーライドされたインスタンスメソッドは、実行時の実体型で動的に選ばれる。フィールドはポリモーフィズムの対象外。",
-            "サブクラスのインスタンスはスーパークラス型の変数で扱えるが、逆方向には明示的キャストと実体の整合性が必要。"
+            "フィールドはオーバーライドされない。",
+            "メソッド呼び出しは実体型で動的に解決されるが、フィールドアクセスは宣言型で静的に解決される。",
+            "`Parent p = new Child();` のとき、呼べるメンバは基本的に Parent 型で判断する。"
           ],
-          "examTips": [
-            "「呼び出せるか」は宣言型、「実際に動くオーバーライドメソッド」は実体型。ここを分けないと継承問題はほぼ落とす。",
-            "フィールドとメソッドを同じルールで読まない。フィールドアクセスは宣言型側が選ばれる。"
-          ],
-          "judgeSteps": [
-            "変数の宣言型と、newされている実体型を分けて書き出す。",
-            "その宣言型から対象メソッドやフィールドを参照できるかを先に確認する。",
-            "メソッド呼び出しなら、オーバーライドの有無を見て実体型側の実装へ進む。",
-            "フィールドアクセスなら、宣言型側のフィールドとして処理する。"
-          ],
-          "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\nフィールドは実行時の実体型ではなく、参照変数の宣言型で選ばれます。A型の変数からxを直接参照するとAのpublicフィールドxが選ばれるため、Aが表示されます。",
-          "pdfAlignmentNote": "",
-          "additionalExplanation": "",
-          "points": []
+          "examPoint": "「実体がBだからBのフィールド」と考えるのは誤りです。Java Silverでは、フィールドとメソッドの解決タイミングの違いがよく問われます。",
+          "deepDive": "読み方は、まず `A a = new B();` から宣言型と実体型を分けます。次に、アクセスしているものがメソッドかフィールドかを確認します。今回は `a.x` なのでフィールドです。フィールドなら宣言型 A 側を見る、という順番で判断します。",
+          "howToRead": "読み方は、まず `A a = new B();` から宣言型と実体型を分けます。次に、アクセスしているものがメソッドかフィールドかを確認します。今回は `a.x` なのでフィールドです。フィールドなら宣言型 A 側を見る、という順番で判断します。"
         },
         "source": "",
         "codeBlocks": [
@@ -24190,7 +24251,7 @@ window.JAVA_STUDY_DATA = {
           "polymorphism",
           "access"
         ],
-        "status": "pdf_visual_checked_explanation_checked"
+        "status": "verified"
       },
       {
         "id": "ch07-q52",
@@ -24225,57 +24286,43 @@ window.JAVA_STUDY_DATA = {
           "E"
         ],
         "explanation": {
-          "summary": "正解は E です。SubSampleクラスの3行目と8行目の両方でコンパイルエラーになります。3行目のコンストラクタは先頭に暗黙のsuper()が入りますが、親クラスSampleには引数なしコンストラクタがありません。8行目のthis(price)は、同じコンストラクタ内ですでに7行目でsuper(name, num)を呼んだ後に書かれているため不正です。",
-          "correctReason": "正解は E です。\n\nまず、SubSample(int price) コンストラクタを確認します。3行目から始まるこのコンストラクタには、明示的な super(...) も this(...) もありません。この場合、コンパイラは先頭に super() を暗黙に挿入します。しかし、親クラス Sample には Sample(String name, int num) だけが定義されており、引数なしコンストラクタ Sample() は存在しません。そのため、SubSampleクラスの3行目でコンパイルエラーになります。\n\n次に、SubSample(String name, int num, int price) コンストラクタを確認します。7行目で super(name, num) を呼び出した後、8行目で this(price) を呼び出しています。コンストラクタ内の this(...) または super(...) は、必ずそのコンストラクタの先頭文でなければなりません。また、this(...) と super(...) を同じコンストラクタ内で両方呼ぶこともできません。したがって、8行目もコンパイルエラーです。",
+          "summary": "正解は E です。SubSample の1つ目のコンストラクタでは暗黙の `super()` が必要になりますが、親クラス Sample に引数なしコンストラクタがありません。さらに2つ目のコンストラクタでは `super(name, num)` の後に `this(price)` を呼んでおり、this/super呼び出しのルールに反します。",
+          "correctReason": "正解は E です。\n\nこの問題は、コンストラクタの2つの基本ルールを同時に見抜く問題です。\n\n1つ目は、サブクラスのコンストラクタは、必ず最初にスーパークラスのコンストラクタを呼び出す必要があるというルールです。明示的に `super(...)` または `this(...)` を書かなかった場合、コンパイラは先頭に `super()` を暗黙に挿入します。\n\n`SubSample(int price)` には `super(...)` も `this(...)` もありません。そのため、コンパイラは `super();` を入れようとします。しかし、親クラス Sample には `Sample(String name, int num)` しか定義されていません。コンストラクタを1つでも自分で定義すると、引数なしコンストラクタは自動生成されません。したがって、SubSampleクラスの3行目でコンパイルエラーになります。\n\n2つ目は、`this(...)` または `super(...)` はコンストラクタの先頭文でなければならないというルールです。`SubSample(String name, int num, int price)` では、先に `super(name, num);` を呼び、その後に `this(price);` を呼んでいます。これは不正です。同じコンストラクタの中で `super(...)` と `this(...)` の両方を呼ぶこともできません。したがって、8行目でもコンパイルエラーになります。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。Aの出力は、両方のSubSampleインスタンスが正常に生成できる場合のように見えます。しかし実際にはSubSampleクラス自体がコンパイルできないため、出力処理まで進みません。"
+              "detail": "誤りです。そもそもコンパイルエラーになるため、2行の出力は発生しません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。SubSample(int price) が正常に動けば、nameはnull、numは0、priceは100になりそうに見えます。しかしこのコンストラクタでは暗黙のsuper()呼び出しが必要になり、親Sampleに引数なしコンストラクタがないためコンパイルできません。"
+              "detail": "誤りです。`SubSample(int price)` が正しく実行されれば `name` は null、`num` は 0、`price` は 100 になりそうに見えますが、その前に親の引数なしコンストラクタが存在しないためコンパイルできません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。3行目でコンパイルエラーになる点は正しいですが、それだけではありません。8行目のthis(price)も、7行目のsuper(name, num)の後に書かれているためコンパイルエラーになります。"
+              "detail": "不十分です。3行目だけでなく、8行目の `this(price);` もコンストラクタ呼び出しルールに違反します。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。8行目でコンパイルエラーになる点は正しいですが、それだけではありません。3行目のコンストラクタも、暗黙に呼ばれるsuper()に対応する親の引数なしコンストラクタがないためコンパイルエラーになります。"
+              "detail": "不十分です。8行目だけでなく、3行目のコンストラクタにも暗黙の `super()` 問題があります。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正解です。3行目は暗黙のsuper()に対応するSample()が存在しないためエラーです。8行目はthis(price)がコンストラクタの先頭文ではなく、すでにsuper(name, num)の後に書かれているためエラーです。"
+              "detail": "正解です。3行目は暗黙の `super()` の呼び出し先が存在しないためエラー、8行目は `super(...)` の後に `this(...)` を呼んでいるためエラーです。"
             }
           ],
           "relatedKnowledge": [
-            "コンストラクタは継承されない。親クラスに引数ありコンストラクタだけを定義すると、親の引数なしコンストラクタは自動生成されない。",
-            "サブクラスのコンストラクタでthis(...)またはsuper(...)を明示しない場合、先頭にsuper()が暗黙挿入される。",
-            "this(...)とsuper(...)は、どちらもコンストラクタの先頭文にしか書けない。同じコンストラクタ内で両方を直接呼び出すことはできない。"
+            "コンストラクタを1つでも定義すると、デフォルトコンストラクタは自動生成されない。",
+            "サブクラスのコンストラクタは、最終的にスーパークラスのコンストラクタを先頭で呼ぶ必要がある。",
+            "`this(...)` と `super(...)` はどちらもコンストラクタの先頭文専用で、同じコンストラクタ内で併用できない。"
           ],
-          "examTips": [
-            "出力を追う前に、まずすべてのコンストラクタがコンパイルできるか確認する。出力選択肢に引っ張られてはいけない。",
-            "親クラスに引数ありコンストラクタがある場合は、親の引数なしコンストラクタが存在するかを必ず確認する。",
-            "this(...) と super(...) は「最初の1文だけ」という制約を機械的に確認する。"
-          ],
-          "judgeSteps": [
-            "親クラスSampleにどのコンストラクタが定義されているか確認する。",
-            "SubSampleの各コンストラクタの先頭にthis(...)またはsuper(...)があるか確認する。",
-            "明示的な呼び出しがない場合はsuper()が暗黙に入ると考える。",
-            "this(...)またはsuper(...)が先頭文以外に書かれていないか確認する。",
-            "コンパイルできる場合だけ、Mainの出力を追跡する。"
-          ],
-          "choiceAnalysis": [],
-          "pdfExplanation": "正解は E です。\n\nまず、SubSample(int price) コンストラクタを確認します。3行目から始まるこのコンストラクタには、明示的な super(...) も this(...) もありません。この場合、コンパイラは先頭に super() を暗黙に挿入します。しかし、親クラス Sample には Sample(String name, int num) だけが定義されており、引数なしコンストラクタ Sample() は存在しません。そのため、SubSampleクラスの3行目でコンパイルエラーになります。\n\n次に、SubSample(String name, int num, int price) コンストラクタを確認します。7行目で super(name, num) を呼び出した後、8行目で this(price) を呼び出しています。コンストラクタ内の this(...) または super(...) は、必ずそのコンストラクタの先頭文でなければなりません。また、this(...) と super(...) を同じコンストラクタ内で両方呼ぶこともできません。したがって、8行目もコンパイルエラーです。",
-          "pdfAlignmentNote": "",
-          "additionalExplanation": "",
-          "points": []
+          "examPoint": "「出力結果問題」に見えても、まずコンパイル可否を確認してください。コンストラクタ問題では、暗黙の `super()` が最頻出の落とし穴です。",
+          "deepDive": "読み方は、親クラスのコンストラクタ一覧を先に確認し、次にサブクラスの各コンストラクタの先頭文を見ることです。明示的な `super(...)` / `this(...)` がなければ、先頭に `super()` があるものとして考えます。",
+          "howToRead": "読み方は、親クラスのコンストラクタ一覧を先に確認し、次にサブクラスの各コンストラクタの先頭文を見ることです。明示的な `super(...)` / `this(...)` がなければ、先頭に `super()` があるものとして考えます。"
         },
         "source": "",
         "codeBlocks": [
@@ -24298,7 +24345,7 @@ window.JAVA_STUDY_DATA = {
           "super",
           "compile-error"
         ],
-        "status": "pdf_visual_checked_explanation_checked_q52_fixed"
+        "status": "verified"
       },
       {
         "id": "ch07-q53",
@@ -24333,54 +24380,43 @@ window.JAVA_STUDY_DATA = {
           "E"
         ],
         "explanation": {
-          "summary": "BはAのsample()と自身のtest()を要求します。Cはtest()だけ実装したabstractクラスなので問題ありませんが、具象クラスDは未実装のsample()を実装していないためコンパイルエラーです。",
-          "correctReason": "正解は E です。\n\nBはAのsample()と自身のtest()を要求します。Cはtest()だけ実装したabstractクラスなので問題ありませんが、具象クラスDは未実装のsample()を実装していないためコンパイルエラーです。",
+          "summary": "正解は E です。B は A を継承しているため、B を実装するクラスには `sample()` と `test()` の両方の実装が必要です。C は abstract なので `sample()` 未実装でも許されますが、D は具象クラスなので未実装の `sample()` を残せず、D クラスでコンパイルエラーになります。",
+          "correctReason": "正解は E です。\n\nまず、interface の継承関係を確認します。A には `sample()` があり、B は `extends A` しています。そのため、B 型として必要な抽象メソッドは `sample()` と `test()` の2つです。\n\n次に C クラスを確認します。C は `abstract class C implements B` です。C は `test()` を実装していますが、A 由来の `sample()` は実装していません。ただし、C は abstract クラスなので、未実装の抽象メソッドを残すことができます。したがって C クラスはコンパイルエラーではありません。\n\n最後に D クラスを確認します。D は `class D extends C` であり、abstract ではない具象クラスです。具象クラスは、継承している抽象メソッドをすべて実装しなければなりません。しかし D は `test()` を再定義しているだけで、`sample()` を実装していません。\n\nそのため、D クラスでコンパイルエラーになります。mainメソッドの実行まで到達しないので、A や B は表示されません。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「A と表示される」という出力は発生しません。"
+              "detail": "誤りです。C の `test()` は `A` を表示しますが、D クラスが `sample()` を実装していないため、そもそもコンパイルできません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「B と表示される」という出力は発生しません。"
+              "detail": "誤りです。D の `test()` が実行されれば `B` が表示されそうですが、D は未実装の `sample()` を残した具象クラスなのでコンパイルエラーになります。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、この選択肢の説明にはなりません。"
+              "detail": "誤りです。B インタフェースは A を継承して `test()` を追加しているだけなので問題ありません。インタフェースは抽象メソッドを持てます。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、この選択肢の説明にはなりません。"
+              "detail": "誤りです。C は `sample()` を実装していませんが、abstract クラスなので未実装メソッドを残せます。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「Dクラスでコンパイルエラーが発生する」です。BはAのsample()と自身のtest()を要求します。Cはtest()だけ実装したabstractクラスなので問題ありませんが、具象クラスDは未実装のsample()を実装していないためコンパイルエラーです。"
+              "detail": "正解です。D は具象クラスなので、C から引き継いだ未実装の `sample()` を実装する必要があります。実装していないためコンパイルエラーです。"
             }
           ],
           "relatedKnowledge": [
-            "インタフェースの抽象メソッドは暗黙にpublic abstractとして扱われる。実装クラス側ではpublicより狭いアクセス修飾子にはできない。",
-            "defaultメソッドは実装を持つインタフェースメソッド。実装クラスが上書きしなければ、そのまま継承して呼び出せる。",
-            "インタフェース同士はextendsで継承でき、クラスはimplementsで実装する。クラスが複数インタフェースを実装できる点も頻出。"
+            "インタフェースは他のインタフェースを extends できる。",
+            "abstract クラスは、実装していない抽象メソッドを残せる。",
+            "具象クラスは、継承した抽象メソッドをすべて実装しなければならない。"
           ],
-          "examTips": [
-            "インタフェース実装問題では、メソッド名・引数リスト・戻り値型・アクセス修飾子の4点を必ず確認する。",
-            "defaultメソッドの競合がある場合、実装クラス側で明示的に解決しないとコンパイルエラーになる。"
-          ],
-          "judgeSteps": [
-            "インタフェースに定義された抽象メソッドを列挙する。",
-            "実装クラスまたは抽象クラスが、それらを実装する必要があるかを判定する。",
-            "実装している場合、public、戻り値型、throws、引数リストが条件を満たすか確認する。"
-          ],
-          "choiceAnalysis": [],
-          "pdfExplanation": "正解は E です。\n\nBはAのsample()と自身のtest()を要求します。Cはtest()だけ実装したabstractクラスなので問題ありませんが、具象クラスDは未実装のsample()を実装していないためコンパイルエラーです。",
-          "pdfAlignmentNote": "",
-          "additionalExplanation": "",
-          "points": []
+          "examPoint": "「Cがimplements Bしているのにsample()がない」とだけ見てCを選ぶのは早いです。Cがabstractかどうかを必ず確認してください。",
+          "deepDive": "判断順は、interfaceの継承関係を整理する → abstractクラスか具象クラスかを見る → 最終的な具象クラスに未実装メソッドが残っていないか確認する、です。",
+          "howToRead": "判断順は、interfaceの継承関係を整理する → abstractクラスか具象クラスかを見る → 最終的な具象クラスに未実装メソッドが残っていないか確認する、です。"
         },
         "source": "",
         "codeBlocks": [
@@ -24410,7 +24446,7 @@ window.JAVA_STUDY_DATA = {
           "abstract",
           "compile-error"
         ],
-        "status": "pdf_visual_checked_explanation_checked"
+        "status": "verified"
       },
       {
         "id": "ch07-q54",
@@ -24446,56 +24482,43 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "finallyはtryまたはcatchの直後に置きます。またtryは複数のcatchを持てます。try-with-resourcesではリソースのclose()が実行された後にfinallyが実行されます。catchは特定型から一般型の順に並べます。",
-          "correctReason": "正解は A・C です。\n\nfinallyはtryまたはcatchの直後に置きます。またtryは複数のcatchを持てます。try-with-resourcesではリソースのclose()が実行された後にfinallyが実行されます。catchは特定型から一般型の順に並べます。",
+          "summary": "正解は A・C です。finally は try または catch に続けて配置します。また、1つの try に複数の catch を並べることができます。一方、try-with-resourcesではリソースの close が finally より先に実行され、catchは特定型から一般型の順に並べます。",
+          "correctReason": "正解は A・C です。\n\nAは正しい説明です。`finally` ブロックは、対応する `try` ブロック、または `catch` ブロックの後ろに続けて書きます。`try` から離れた場所に単独で書くことはできません。\n\nCも正しい説明です。1つの `try` ブロックに対して、複数の `catch` ブロックを並べられます。例外の種類ごとに処理を分けたい場合に使います。\n\nBは誤りです。try-with-resourcesでは、tryブロックを抜けるとリソースの `close()` が呼び出され、その後で `finally` ブロックが実行されます。つまり、finallyがcloseより先ではありません。\n\nDも誤りです。catch は、特定の例外型から一般的な例外型へ並べます。逆に `Exception` のような一般型を先に置くと、その後の `RuntimeException` などのcatchが到達不能になり、コンパイルエラーになります。\n\nEも誤りです。try は catch または finally のどちらか一方を持てば成立します。必ず両方必要なわけではありません。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。finallyはtryまたはcatchの直後に置きます。またtryは複数のcatchを持てます。try-with-resourcesではリソースのclose()が実行された後にfinallyが実行されます。catchは特定型から一般型の順に並べます。"
+              "detail": "正解です。finally は try または catch に続けて書くブロックです。独立して離れた場所には書けません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "try-catch-finallyの配置順、catch順序、try-with-resourcesのclose順を取り違えています。"
+              "detail": "誤りです。try-with-resourcesでは、リソースの `close()` が呼ばれた後に finally が実行されます。close順とfinally順を逆にしないでください。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。finallyはtryまたはcatchの直後に置きます。またtryは複数のcatchを持てます。try-with-resourcesではリソースのclose()が実行された後にfinallyが実行されます。catchは特定型から一般型の順に並べます。"
+              "detail": "正解です。1つの try に複数の catch を並べることができます。例外型ごとに処理を分けるための構文です。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "try-catch-finallyの配置順、catch順序、try-with-resourcesのclose順を取り違えています。"
+              "detail": "誤りです。catch は「特定型 → 一般型」の順に並べます。一般型を先に書くと、後続の特定型catchが到達不能になります。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "try-catch-finallyの配置順、catch順序、try-with-resourcesのclose順を取り違えています。"
+              "detail": "誤りです。try-catch、try-finally、try-catch-finally、try-with-resources などがあり、通常のtryが必ずcatchとfinallyの両方を持つ必要はありません。"
             }
           ],
           "relatedKnowledge": [
-            "例外問題では、最初に「コンパイル時に処理が必須のチェック例外か」「実行時に発生する非チェック例外か」を分ける。Exception直下の例外とRuntimeException配下の例外を混同しない。",
-            "catchは上から順に判定される。先に広い型で捕まえると、後ろの狭い型のcatchが到達不能になり、コンパイルエラーになる。",
-            "finallyは、例外が発生しても発生しなくても原則として実行される。try-with-resourcesでは、try本体を抜けるときにリソースのcloseが宣言と逆順に呼ばれ、その後にfinallyへ進む。"
+            "try は catch または finally と組み合わせる。",
+            "複数catchは上から順に評価される。",
+            "try-with-resources の close は finally より前に実行される。"
           ],
-          "examTips": [
-            "try内で例外が発生した行より後ろのtry内処理は実行されない。出力順を追うときにここを飛ばすと誤答になる。",
-            "「例外が発生する」と「catchで処理されて正常終了する」は別。選択肢に実行時例外がある場合、catchに捕まるかまで確認する。",
-            "catchの並びは、サブクラスからスーパークラスの順が基本。逆順だと後続catchが到達不能になる。"
-          ],
-          "judgeSteps": [
-            "例外を投げる可能性があるメソッド呼び出し・配列アクセス・null参照・キャストを探す。",
-            "その例外がチェック例外なら、catchまたはthrowsがあるかを先に確認する。",
-            "実行時は、例外発生地点でtryの残りを捨て、最初に一致したcatchへ移動する。",
-            "最後にfinallyまたはリソースcloseの有無を加えて、表示順を確定する。"
-          ],
-          "choiceAnalysis": [],
-          "pdfExplanation": "正解は A・C です。\n\nfinallyはtryまたはcatchの直後に置きます。またtryは複数のcatchを持てます。try-with-resourcesではリソースのclose()が実行された後にfinallyが実行されます。catchは特定型から一般型の順に並べます。",
-          "pdfAlignmentNote": "",
-          "additionalExplanation": "",
-          "points": []
+          "examPoint": "構文説明問題は、似た表現の違いで落とされます。「必ず」「前に」「一般から特定」のような語に注意してください。",
+          "deepDive": "この問題ではコードを実行するのではなく、構文ルールを1つずつ検証します。finallyの配置、catchの個数、catchの順序、try-with-resourcesのclose順を分けて考えると切りやすいです。",
+          "howToRead": "この問題ではコードを実行するのではなく、構文ルールを1つずつ検証します。finallyの配置、catchの個数、catchの順序、try-with-resourcesのclose順を分けて考えると切りやすいです。"
         },
         "source": "",
         "codeBlocks": [],
@@ -24503,7 +24526,7 @@ window.JAVA_STUDY_DATA = {
           "exception",
           "try-catch-finally"
         ],
-        "status": "pdf_visual_checked_explanation_checked"
+        "status": "verified"
       },
       {
         "id": "ch07-q55",
@@ -24534,51 +24557,38 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "catch(Exception e) が先にあるため、その後の catch(RuntimeException e) は到達不能です。RuntimeExceptionはExceptionのサブクラスなので、先のcatchで捕捉されてしまいます。到達不能なcatchはコンパイルエラーです。",
-          "correctReason": "正解は C です。\n\ncatch(Exception e) が先にあるため、その後の catch(RuntimeException e) は到達不能です。RuntimeExceptionはExceptionのサブクラスなので、先のcatchで捕捉されてしまいます。到達不能なcatchはコンパイルエラーです。",
+          "summary": "正解は C です。`catch (Exception e)` が先にあるため、その後の `catch (RuntimeException e)` には到達できません。RuntimeException は Exception のサブクラスなので、先のcatchで捕捉可能です。到達不能なcatchブロックはコンパイルエラーになります。",
+          "correctReason": "正解は C です。\n\nこのコードは実行時の流れを見る前に、catchブロックの順序でコンパイルエラーになります。\n\n`RuntimeException` は `Exception` のサブクラスです。つまり、`catch (Exception e)` は RuntimeException も含めた多くの例外を受け取れます。\n\nコードでは先に `catch (Exception e)` が書かれ、その後に `catch (RuntimeException e)` が書かれています。この順番だと、RuntimeException が発生しても先の `catch (Exception e)` で捕捉されます。そのため、後ろの `catch (RuntimeException e)` に制御が到達する可能性がありません。\n\nJavaでは、このような到達不能なcatchブロックはコンパイルエラーです。したがって、`throw new Exception()` が実行されるか、finallyで `B` が表示されるか、といった実行時の話には進みません。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「A が表示される」という出力は発生しません。"
+              "detail": "誤りです。`catch (RuntimeException e)` は到達不能なので、そこに書かれた `System.out.println(\"A\")` は実行できません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「B が表示される」という出力は発生しません。"
+              "detail": "誤りです。finallyだけを見ると `B` が表示されそうですが、その前にcatch順序の不正でコンパイルエラーになります。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「コンパイルエラーが発生する」です。catch(Exception e) が先にあるため、その後の catch(RuntimeException e) は到達不能です。RuntimeExceptionはExceptionのサブクラスなので、先のcatchで捕捉されてしまいます。到達不能なcatchはコンパイルエラーです。"
+              "detail": "正解です。`Exception` を先にcatchすると、そのサブクラスである `RuntimeException` のcatchは到達不能になります。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。コンパイル時点で止まるため、実行時例外ではありません。"
+              "detail": "誤りです。到達不能catchは実行時例外ではなくコンパイルエラーです。プログラムは実行されません。"
             }
           ],
           "relatedKnowledge": [
-            "例外問題では、最初に「コンパイル時に処理が必須のチェック例外か」「実行時に発生する非チェック例外か」を分ける。Exception直下の例外とRuntimeException配下の例外を混同しない。",
-            "catchは上から順に判定される。先に広い型で捕まえると、後ろの狭い型のcatchが到達不能になり、コンパイルエラーになる。",
-            "finallyは、例外が発生しても発生しなくても原則として実行される。try-with-resourcesでは、try本体を抜けるときにリソースのcloseが宣言と逆順に呼ばれ、その後にfinallyへ進む。"
+            "catchは特定型から一般型の順に書く。",
+            "`RuntimeException` は `Exception` のサブクラス。",
+            "到達不能なcatchブロックはコンパイルエラー。"
           ],
-          "examTips": [
-            "try内で例外が発生した行より後ろのtry内処理は実行されない。出力順を追うときにここを飛ばすと誤答になる。",
-            "「例外が発生する」と「catchで処理されて正常終了する」は別。選択肢に実行時例外がある場合、catchに捕まるかまで確認する。",
-            "catchの並びは、サブクラスからスーパークラスの順が基本。逆順だと後続catchが到達不能になる。"
-          ],
-          "judgeSteps": [
-            "例外を投げる可能性があるメソッド呼び出し・配列アクセス・null参照・キャストを探す。",
-            "その例外がチェック例外なら、catchまたはthrowsがあるかを先に確認する。",
-            "実行時は、例外発生地点でtryの残りを捨て、最初に一致したcatchへ移動する。",
-            "最後にfinallyまたはリソースcloseの有無を加えて、表示順を確定する。"
-          ],
-          "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\ncatch(Exception e) が先にあるため、その後の catch(RuntimeException e) は到達不能です。RuntimeExceptionはExceptionのサブクラスなので、先のcatchで捕捉されてしまいます。到達不能なcatchはコンパイルエラーです。",
-          "pdfAlignmentNote": "",
-          "additionalExplanation": "",
-          "points": []
+          "examPoint": "finallyがある問題でも、まずコンパイル可否を見ます。catch順序が不正なら、finallyの出力順を考える必要はありません。",
+          "deepDive": "判断手順は、catchに書かれた例外型の継承関係を確認し、上から順に「後続catchが到達可能か」を見ることです。一般型が前にある場合は要注意です。",
+          "howToRead": "判断手順は、catchに書かれた例外型の継承関係を確認し、上から順に「後続catchが到達可能か」を見ることです。一般型が前にある場合は要注意です。"
         },
         "source": "",
         "codeBlocks": [
@@ -24592,7 +24602,7 @@ window.JAVA_STUDY_DATA = {
           "catch",
           "compile-error"
         ],
-        "status": "pdf_visual_checked_explanation_checked"
+        "status": "verified"
       },
       {
         "id": "ch07-q56",
@@ -24627,54 +24637,43 @@ window.JAVA_STUDY_DATA = {
           "A"
         ],
         "explanation": {
-          "summary": "new String(\"Java\")で作ったs1はヒープ上の別インスタンスです。s2は文字列プールの\"Java\"を参照します。s2.intern()は同じプール上の参照を返すためs2==s3はtrue、s1との==比較はfalseです。",
-          "correctReason": "正解は A です。\n\nnew String(\"Java\")で作ったs1はヒープ上の別インスタンスです。s2は文字列プールの\"Java\"を参照します。s2.intern()は同じプール上の参照を返すためs2==s3はtrue、s1との==比較はfalseです。",
+          "summary": "正解は A です。`new String(\"Java\")` は文字列プールとは別のStringインスタンスを作ります。`s2` は文字列リテラルなのでプール上の \"Java\" を参照し、`s2.intern()` も同じプール上の参照を返します。結果は `false, true, false` です。",
+          "correctReason": "正解は A です。\n\nこの問題では、`==` が文字列の内容ではなく参照の同一性を比較する点を押さえます。\n\n`s1 = new String(\"Java\")` は、内容が \"Java\" の新しいStringインスタンスをヒープ上に作ります。文字列リテラル \"Java\" と同じ内容でも、参照先は別です。\n\n`s2 = \"Java\"` は、文字列プール上の \"Java\" を参照します。\n\n`s3 = s2.intern()` は、s2の文字列内容に対応する文字列プール上の参照を返します。s2はすでにプール上の \"Java\" を参照しているため、s3もs2と同じ参照になります。\n\nしたがって、`s1 == s2` は false、`s2 == s3` は true、`s1 == s3` は false です。出力は `false, true, false` になります。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。new String(\"Java\")で作ったs1はヒープ上の別インスタンスです。s2は文字列プールの\"Java\"を参照します。s2.intern()は同じプール上の参照を返すためs2==s3はtrue、s1との==比較はfalseです。"
+              "detail": "正解です。s1だけが `new String` による別インスタンスで、s2とs3は文字列プール上の同じインスタンスを参照します。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "==で文字列内容を比較していると誤解しています。ここでは参照先が同じかどうかを判定します。"
+              "detail": "誤りです。`==` は内容比較ではありません。s1とs2、s1とs3は内容が同じでも参照先が違うため false です。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "==で文字列内容を比較していると誤解しています。ここでは参照先が同じかどうかを判定します。"
+              "detail": "誤りです。`s1 == s2` は true ではありません。また `s2 == s3` は intern により同じプール参照なので true です。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "==で文字列内容を比較していると誤解しています。ここでは参照先が同じかどうかを判定します。"
+              "detail": "誤りです。`s2 == s3` は true ですが、`s1 == s2` は false です。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "==で文字列内容を比較していると誤解しています。ここでは参照先が同じかどうかを判定します。"
+              "detail": "誤りです。`s2` と `s3` はどちらも文字列プール上の \"Java\" を参照するため、`s2 == s3` は true です。"
             }
           ],
           "relatedKnowledge": [
-            "Stringは不変オブジェクト。substring、concat、replaceなどは元の文字列を変更せず、新しい結果を戻す。戻り値を受け取らなければ結果は捨てられる。",
-            "==は参照の同一性を比較し、equalsは文字列内容の同値性を比較する。new String(...)は通常、文字列プールとは別のインスタンスを作る。",
-            "intern()は文字列プール上の同じ内容のインスタンス参照を返す。リテラルとintern結果の比較が問われやすい。"
+            "Stringの `==` は参照比較。内容比較は `equals()`。",
+            "`new String(\"...\")` はリテラルとは別インスタンスを作る。",
+            "`intern()` は文字列プール上の参照を返す。"
           ],
-          "examTips": [
-            "Stringメソッドを呼んだだけで元の変数が変わると考えない。代入されているかを必ず見る。",
-            "==の問題では、内容ではなく参照先が同じかを図にして追う。"
-          ],
-          "judgeSteps": [
-            "各String変数が、newで作られたヒープ上のインスタンスか、文字列プール上のインスタンスかを分ける。",
-            "メソッド呼び出しの戻り値が変数に代入されているかを確認する。",
-            "==なら参照比較、equalsなら内容比較として判定する。"
-          ],
-          "choiceAnalysis": [],
-          "pdfExplanation": "正解は A です。\n\nnew String(\"Java\")で作ったs1はヒープ上の別インスタンスです。s2は文字列プールの\"Java\"を参照します。s2.intern()は同じプール上の参照を返すためs2==s3はtrue、s1との==比較はfalseです。",
-          "pdfAlignmentNote": "",
-          "additionalExplanation": "",
-          "points": []
+          "examPoint": "String問題では、内容が同じかではなく、参照先が同じかを図にして考えてください。`new` が出たら別インスタンスを疑うのが基本です。",
+          "deepDive": "読み方は、各変数がどこを参照しているかを表にします。s1はヒープ、s2は文字列プール、s3はinternにより文字列プール、という整理です。",
+          "howToRead": "読み方は、各変数がどこを参照しているかを表にします。s1はヒープ、s2は文字列プール、s3はinternにより文字列プール、という整理です。"
         },
         "source": "",
         "codeBlocks": [
@@ -24688,7 +24687,7 @@ window.JAVA_STUDY_DATA = {
           "intern",
           "equality"
         ],
-        "status": "pdf_visual_checked_explanation_checked"
+        "status": "verified"
       },
       {
         "id": "ch07-q57",
@@ -24719,50 +24718,38 @@ window.JAVA_STUDY_DATA = {
           "A"
         ],
         "explanation": {
-          "summary": "2次元配列は行ごとにchar[]として取り出されます。外側の拡張for文で各行を取り出し、内側の拡張for文でその行の文字を左から出力します。各行の後に空白を出すため、ad be cf になります。",
-          "correctReason": "正解は A です。\n\n2次元配列は行ごとにchar[]として取り出されます。外側の拡張for文で各行を取り出し、内側の拡張for文でその行の文字を左から出力します。各行の後に空白を出すため、ad be cf になります。",
+          "summary": "正解は A です。配列は `{{'a', 'd'}, {'b', 'e'}, {'c', 'f'}}` なので、外側の拡張for文は `char[]` を1行ずつ取り出します。各行を内側の拡張for文で左から出力し、行ごとに空白を出すため、`ad be cf ` になります。",
+          "correctReason": "正解は A です。\n\n2次元配列は、表のように見ると分かりやすいです。\n\n`char[][] arrays = {{'a', 'd'}, {'b', 'e'}, {'c', 'f'}};` は、次の3つの `char[]` を持つ配列です。\n\n- 1行目: `a`, `d`\n- 2行目: `b`, `e`\n- 3行目: `c`, `f`\n\n外側の `for (char[] array : arrays)` は、1行目、2行目、3行目の順に `char[]` を取り出します。内側の `for (char ch : array)` は、その行の要素を左から順に出力します。\n\nそのため、1行目で `ad`、その後に空白、2行目で `be`、その後に空白、3行目で `cf`、その後に空白が出力されます。結果は `ad be cf ` です。選択肢表記では A が該当します。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「ad be cf と表示される」です。2次元配列は行ごとにchar[]として取り出されます。外側の拡張for文で各行を取り出し、内側の拡張for文でその行の文字を左から出力します。各行の後に空白を出すため、ad be cf になります。"
+              "detail": "正解です。各内側配列を1行として、`ad`、`be`、`cf` の順に出力し、各行の後に空白を出します。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「ad be cf と表示される」であり、「abc def と表示される」ではありません。"
+              "detail": "誤りです。`abc def` は列方向に読んだような並びですが、拡張for文は外側配列の要素である `char[]` を順に取り出すため、行方向に `ad`、`be`、`cf` と出力されます。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「ad be cf と表示される」であり、「a d b e c f と表示される」ではありません。"
+              "detail": "誤りです。文字ごとに空白を出すコードではありません。空白は内側ループが終わった後、つまり各行の後に1回だけ出力されます。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「ad be cf と表示される」であり、「adb ecf と表示される」ではありません。"
+              "detail": "誤りです。`adb ecf` のような区切りにはなりません。配列の行は2要素ずつで、空白は各行の後です。"
             }
           ],
           "relatedKnowledge": [
-            "配列のlengthは要素数であり、最後の有効添字はlength - 1。添字範囲外アクセスは実行時例外になる。",
-            "多次元配列は配列の配列。行ごとに長さが違うジャグ配列も作れるため、外側と内側のlengthを分けて読む。",
-            "参照型配列の要素の初期値はnull。要素にインスタンスを入れる前にメソッド呼び出しをするとNullPointerExceptionになる。"
+            "2次元配列は「配列の配列」。",
+            "拡張for文では、外側の要素型を正しく見る。`char[][]` の要素は `char[]`。",
+            "空白や改行がどのループの内側/外側にあるかで出力が変わる。"
           ],
-          "examTips": [
-            "二次元配列では、array.lengthとarray[i].lengthを同じ意味で読まない。",
-            "拡張for文のループ変数に代入しても、配列要素そのものの差し替えにはならない場合がある。"
-          ],
-          "judgeSteps": [
-            "配列の生成式から外側の要素数を確認する。",
-            "二次元以上なら、各行の内側配列の長さを個別に確認する。",
-            "ループごとに参照している添字が有効範囲内かを確認する。",
-            "参照型配列なら、要素がnullのまま使われていないかを確認する。"
-          ],
-          "choiceAnalysis": [],
-          "pdfExplanation": "正解は A です。\n\n2次元配列は行ごとにchar[]として取り出されます。外側の拡張for文で各行を取り出し、内側の拡張for文でその行の文字を左から出力します。各行の後に空白を出すため、ad be cf になります。",
-          "pdfAlignmentNote": "",
-          "additionalExplanation": "",
-          "points": []
+          "examPoint": "2次元配列では、見た目で縦横を勝手に入れ替えないこと。初期化子の `{...}` のまとまり単位で行を確認してください。",
+          "deepDive": "まず配列を行ごとに書き出します。次に外側ループが行を取り出し、内側ループが行内の文字を出す、と追跡します。最後に空白の出力位置を確認します。",
+          "howToRead": "まず配列を行ごとに書き出します。次に外側ループが行を取り出し、内側ループが行内の文字を出す、と追跡します。最後に空白の出力位置を確認します。"
         },
         "source": "",
         "codeBlocks": [
@@ -24776,7 +24763,7 @@ window.JAVA_STUDY_DATA = {
           "enhanced-for",
           "char"
         ],
-        "status": "pdf_visual_checked_explanation_checked"
+        "status": "verified"
       },
       {
         "id": "ch07-q58",
@@ -24807,49 +24794,38 @@ window.JAVA_STUDY_DATA = {
           "A"
         ],
         "explanation": {
-          "summary": "new B()では、まず暗黙または明示のsuper呼び出しでA側のコンストラクタが動きます。A()はthis(2)でA(int)を呼び2を出力し、その後1を出力します。B()はthis(4)でB(int)を呼び4を出力し、その後3を出力します。結果は2143です。",
-          "correctReason": "正解は A です。\n\nnew B()では、まず暗黙または明示のsuper呼び出しでA側のコンストラクタが動きます。A()はthis(2)でA(int)を呼び2を出力し、その後1を出力します。B()はthis(4)でB(int)を呼び4を出力し、その後3を出力します。結果は2143です。",
+          "summary": "正解は A です。`new B()` では B() が呼ばれますが、B() の先頭で `this(4)` により B(int) が先に実行されます。B(int) の先頭には暗黙の `super()` が入り、A() → A(int) の順に処理されます。出力順は A(int) の `2`、A() の `1`、B(int) の `4`、B() の `3` で、`2143` です。",
+          "correctReason": "正解は A です。\n\nコンストラクタチェインは、表面的な呼び出し順ではなく、`this(...)` と `super(...)` の連鎖をたどる必要があります。\n\n`main` では `new B()` を実行しているため、まず B の引数なしコンストラクタ `B()` が呼ばれます。\n\nただし、B() の先頭には `this(4);` があります。これは同じクラスの `B(int b)` を先に呼ぶという意味です。\n\n次に `B(int b)` を見ると、先頭に明示的な `this(...)` も `super(...)` もありません。そのため、コンパイラが暗黙に `super();` を挿入します。つまり、B(int) の本体で `4` を出力する前に、親クラス A の引数なしコンストラクタ `A()` が呼ばれます。\n\nA() の先頭には `this(2);` があるため、先に `A(int a)` が呼ばれ、`2` が出力されます。その後 A() に戻り、`1` が出力されます。\n\n次に B(int) に戻って `4` が出力され、最後に B() に戻って `3` が出力されます。\n\nしたがって出力は `2143` です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「2143 が表示される」です。new B()では、まず暗黙または明示のsuper呼び出しでA側のコンストラクタが動きます。A()はthis(2)でA(int)を呼び2を出力し、その後1を出力します。B()はthis(4)でB(int)を呼び4を出力し、その後3を出力します。結果は2143です。"
+              "detail": "正解です。A(int) → A() → B(int) → B() の順に本体が実行されるため、出力は `2143` です。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「2143 が表示される」であり、「1234 が表示される」ではありません。"
+              "detail": "誤りです。`1234` はソースコード上の見た目に近い順番ですが、実際は `this(2)` と `this(4)`、暗黙の `super()` によって呼び出し順が変わります。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「2143 が表示される」であり、「4321 が表示される」ではありません。"
+              "detail": "誤りです。B側の `4` や `3` が先に出るわけではありません。サブクラスのコンストラクタ本体より前に、スーパークラス側の初期化が完了します。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「2143 が表示される」であり、「3421 が表示される」ではありません。"
+              "detail": "誤りです。B() の先頭で B(int) に移りますが、B(int) の本体で `4` を出力する前に暗黙の `super()` が実行されるため、A側の `2` と `1` が先に出ます。"
             }
           ],
           "relatedKnowledge": [
-            "コンストラクタは継承されない。サブクラスのインスタンス生成時には、親クラスのコンストラクタが先に実行され、その後に子クラス側の初期化へ進む。",
-            "this(...)とsuper(...)はコンストラクタの先頭行にしか書けない。両方を同じコンストラクタに並べることはできない。",
-            "明示的にsuper(...)を書かない場合、引数なしのsuper()が暗黙に挿入される。親に引数なしコンストラクタがない場合は注意が必要。"
+            "コンストラクタの `this(...)` は同じクラスの別コンストラクタを呼ぶ。",
+            "コンストラクタに `this(...)` / `super(...)` がなければ、先頭に `super()` が暗黙挿入される。",
+            "サブクラスの本体実行前に、スーパークラスの初期化が完了する。"
           ],
-          "examTips": [
-            "表示順問題では、newされたクラスからではなく、最上位の親コンストラクタから順に出力を並べる。",
-            "this()で同じクラス内の別コンストラクタへ飛んだ場合、その先で最終的にsuper()が呼ばれる流れまで追う。"
-          ],
-          "judgeSteps": [
-            "newしているクラスのコンストラクタを確認する。",
-            "そのコンストラクタの先頭にthis(...)またはsuper(...)があるか確認する。",
-            "親クラスのコンストラクタ実行、フィールド初期化、子クラス側の処理の順に出力を並べる。"
-          ],
-          "choiceAnalysis": [],
-          "pdfExplanation": "正解は A です。\n\nnew B()では、まず暗黙または明示のsuper呼び出しでA側のコンストラクタが動きます。A()はthis(2)でA(int)を呼び2を出力し、その後1を出力します。B()はthis(4)でB(int)を呼び4を出力し、その後3を出力します。結果は2143です。",
-          "pdfAlignmentNote": "",
-          "additionalExplanation": "",
-          "points": []
+          "examPoint": "コンストラクタ問題では、ソースコードの上から読むと間違えます。実際に呼ばれるコンストラクタを矢印でたどるのが安全です。",
+          "deepDive": "追跡順は、`new B()` → B() → this(4) → B(int) → 暗黙の super() → A() → this(2) → A(int) → A() → B(int) → B() です。出力する文だけを拾うと 2,1,4,3 になります。",
+          "howToRead": "追跡順は、`new B()` → B() → this(4) → B(int) → 暗黙の super() → A() → this(2) → A(int) → A() → B(int) → B() です。出力する文だけを拾うと 2,1,4,3 になります。"
         },
         "source": "",
         "codeBlocks": [
@@ -24871,7 +24847,7 @@ window.JAVA_STUDY_DATA = {
           "this",
           "super"
         ],
-        "status": "pdf_visual_checked_explanation_checked"
+        "status": "verified"
       },
       {
         "id": "ch07-q59",
@@ -24902,50 +24878,38 @@ window.JAVA_STUDY_DATA = {
           "D"
         ],
         "explanation": {
-          "summary": "2次元配列を行優先で走査し、array[0][0]→array[0][1]→array[1][0]→array[1][1]の順で出力するコードが必要です。正しい入れ子ループを選ぶとabcdになります。",
-          "correctReason": "正解は D です。\n\n2次元配列を行優先で走査し、array[0][0]→array[0][1]→array[1][0]→array[1][1]の順で出力するコードが必要です。正しい入れ子ループを選ぶとabcdになります。",
+          "summary": "正解は D です。配列には `array[0][0]=a`, `array[0][1]=b`, `array[1][0]=c`, `array[1][1]=d` が入っています。`abcd` と表示するには、外側 i を 0→1、内側 j を 0→1 として、各要素を行優先で出力する必要があります。Dだけがこの順序で4要素すべてを出力します。",
+          "correctReason": "正解は D です。\n\nこの問題では、2次元配列の添字を正確に追う必要があります。配列の中身は次の通りです。\n\n- `array[0][0]` = `\"a\"`\n- `array[0][1]` = `\"b\"`\n- `array[1][0]` = `\"c\"`\n- `array[1][1]` = `\"d\"`\n\n`abcd` と表示するには、`array[0][0]` → `array[0][1]` → `array[1][0]` → `array[1][1]` の順で出力すればよいです。\n\nDは、外側の `i` を0から始め、内側の `j` を0から1まで回します。内側ループで `array[i][j]` を出力してから `j++` し、内側ループが終わると `i++` します。\n\nしたがって、i=0のときに `a` と `b`、i=1のときに `c` と `d` が出力され、結果は `abcd` になります。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。正しい選択肢は「D」です。"
+              "detail": "誤りです。iもjも1から始まり、どちらも1のときだけ実行されます。出力されるのは `array[1][1]`、つまり `d` だけです。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。正しい選択肢は「D」です。"
+              "detail": "誤りです。i=0のとき内側の条件 `j < i` は `0 < 0` でfalseなので出力なしです。i=1のときは j=0 だけ実行され、`array[1][0]` の `c` だけが出力されます。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。正しい選択肢は「D」です。"
+              "detail": "誤りです。`array` は `String[][]` なので、拡張for文で取り出される外側要素の型は `String[]` です。`for (String a : array)` は型が合わずコンパイルエラーになります。内側も同じく不正です。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「」です。2次元配列を行優先で走査し、array[0][0]→array[0][1]→array[1][0]→array[1][1]の順で出力するコードが必要です。正しい入れ子ループを選ぶとabcdになります。"
+              "detail": "正解です。i=0, j=0→1 で `a`,`b`、i=1, j=0→1 で `c`,`d` を出力します。改行も空白も出していないため、`abcd` になります。"
             }
           ],
           "relatedKnowledge": [
-            "配列のlengthは要素数であり、最後の有効添字はlength - 1。添字範囲外アクセスは実行時例外になる。",
-            "多次元配列は配列の配列。行ごとに長さが違うジャグ配列も作れるため、外側と内側のlengthを分けて読む。",
-            "参照型配列の要素の初期値はnull。要素にインスタンスを入れる前にメソッド呼び出しをするとNullPointerExceptionになる。"
+            "2次元配列 `String[][]` の外側要素は `String[]`。",
+            "for文の更新式は末尾に書かなくても、ループ本体内で更新できる。",
+            "2次元配列の出力問題では、添字ごとの値を表にしてから選択肢を検証する。"
           ],
-          "examTips": [
-            "二次元配列では、array.lengthとarray[i].lengthを同じ意味で読まない。",
-            "拡張for文のループ変数に代入しても、配列要素そのものの差し替えにはならない場合がある。"
-          ],
-          "judgeSteps": [
-            "配列の生成式から外側の要素数を確認する。",
-            "二次元以上なら、各行の内側配列の長さを個別に確認する。",
-            "ループごとに参照している添字が有効範囲内かを確認する。",
-            "参照型配列なら、要素がnullのまま使われていないかを確認する。"
-          ],
-          "choiceAnalysis": [],
-          "pdfExplanation": "正解は D です。\n\n2次元配列を行優先で走査し、array[0][0]→array[0][1]→array[1][0]→array[1][1]の順で出力するコードが必要です。正しい入れ子ループを選ぶとabcdになります。",
-          "pdfAlignmentNote": "",
-          "additionalExplanation": "",
-          "points": []
+          "examPoint": "Cのような拡張for文は一見それらしく見えますが、型が合っていません。`String[][]` から直接 `String` は取り出せません。",
+          "deepDive": "まず必要な出力順を `array[0][0] → array[0][1] → array[1][0] → array[1][1]` と書き出します。その後、各選択肢のiとjがどの値を取るか確認すれば、Dだけが4要素を正しい順に通ると分かります。",
+          "howToRead": "まず必要な出力順を `array[0][0] → array[0][1] → array[1][0] → array[1][1]` と書き出します。その後、各選択肢のiとjがどの値を取るか確認すれば、Dだけが4要素を正しい順に通ると分かります。"
         },
         "source": "",
         "codeBlocks": [
@@ -24959,7 +24923,7 @@ window.JAVA_STUDY_DATA = {
           "loop",
           "for"
         ],
-        "status": "pdf_visual_checked_explanation_checked"
+        "status": "verified"
       },
       {
         "id": "ch07-q60",
@@ -24990,49 +24954,38 @@ window.JAVA_STUDY_DATA = {
           "D"
         ],
         "explanation": {
-          "summary": "new String[2]で作られた配列の各要素は初期値nullです。拡張for文で取り出したsもnullなので、str[i].concat(...)を呼ぶ時点でNullPointerExceptionが発生します。",
-          "correctReason": "正解は D です。\n\nnew String[2]で作られた配列の各要素は初期値nullです。拡張for文で取り出したsもnullなので、str[i].concat(...)を呼ぶ時点でNullPointerExceptionが発生します。",
+          "summary": "正解は D です。`new String[2]` で作られた配列の各要素は初期値 `null` です。拡張for文で取り出した `s` も null ですが、実際に呼び出しているのは `str[i].concat(...)` です。`str[0]` が null の状態で `concat` を呼ぶため、最初のループで NullPointerException が発生します。",
+          "correctReason": "正解は D です。\n\nこの問題は、配列の初期値とStringの不変性を混同しやすい問題です。\n\n`String[] str = new String[2];` によって、要素数2のString配列が作られます。ただし、Stringオブジェクトが2つ作られるわけではありません。参照型配列の各要素の初期値は `null` です。したがって、最初の状態は `str[0] == null`、`str[1] == null` です。\n\n次に拡張for文 `for (String s : str)` が始まります。1回目に取り出される `s` も null です。ただし、ループ内では `s` を使っているのではなく、`str[i].concat(\"e\" + i);` と書かれています。iは0なので、最初に `str[0].concat(\"e0\")` を呼ぼうとします。\n\nしかし `str[0]` は null です。nullに対してインスタンスメソッド `concat` を呼び出すことはできないため、ここで `NullPointerException` が発生します。\n\nそのため、後半のfor文で `null` を表示するところまでは進みません。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "配列要素の初期値nullに対してメソッド呼び出しをしている点を見落としています。"
+              "detail": "誤りです。`concat` はStringを変更するメソッドではなく、新しい文字列を返します。さらに今回はその前に、nullに対して `concat` を呼んでしまうため実行時例外になります。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "配列要素の初期値nullに対してメソッド呼び出しをしている点を見落としています。"
+              "detail": "誤りです。`null e0` のように結合される処理ではありません。`+` による文字列連結なら null が文字列化される場合がありますが、今回は null 参照に対して `concat` を呼んでいます。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "配列要素の初期値nullに対してメソッド呼び出しをしている点を見落としています。"
+              "detail": "誤りです。後半のfor文まで進めば `null` が表示されそうに見えますが、最初の拡張for文内で NullPointerException が発生するため、そこまで到達しません。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正解です。new String[2]で作られた配列の各要素は初期値nullです。拡張for文で取り出したsもnullなので、str[i].concat(...)を呼ぶ時点でNullPointerExceptionが発生します。"
+              "detail": "正解です。`str[0]` は null なので、`str[0].concat(\"e0\")` の時点で NullPointerException が発生します。"
             }
           ],
           "relatedKnowledge": [
-            "Stringは不変オブジェクト。substring、concat、replaceなどは元の文字列を変更せず、新しい結果を戻す。戻り値を受け取らなければ結果は捨てられる。",
-            "==は参照の同一性を比較し、equalsは文字列内容の同値性を比較する。new String(...)は通常、文字列プールとは別のインスタンスを作る。",
-            "intern()は文字列プール上の同じ内容のインスタンス参照を返す。リテラルとintern結果の比較が問われやすい。"
+            "参照型配列の要素の初期値は null。",
+            "nullに対してインスタンスメソッドを呼ぶと NullPointerException。",
+            "Stringの `concat` は元のStringを変更せず、新しいStringを返す。"
           ],
-          "examTips": [
-            "Stringメソッドを呼んだだけで元の変数が変わると考えない。代入されているかを必ず見る。",
-            "==の問題では、内容ではなく参照先が同じかを図にして追う。"
-          ],
-          "judgeSteps": [
-            "各String変数が、newで作られたヒープ上のインスタンスか、文字列プール上のインスタンスかを分ける。",
-            "メソッド呼び出しの戻り値が変数に代入されているかを確認する。",
-            "==なら参照比較、equalsなら内容比較として判定する。"
-          ],
-          "choiceAnalysis": [],
-          "pdfExplanation": "正解は D です。\n\nnew String[2]で作られた配列の各要素は初期値nullです。拡張for文で取り出したsもnullなので、str[i].concat(...)を呼ぶ時点でNullPointerExceptionが発生します。",
-          "pdfAlignmentNote": "",
-          "additionalExplanation": "",
-          "points": []
+          "examPoint": "配列を作っただけでは、Stringオブジェクトが自動で入るわけではありません。`new String[2]` は「String参照を2つ入れられる箱」を作るだけです。",
+          "deepDive": "読み方は、配列作成直後の各要素を書き出します。`str[0]=null`, `str[1]=null` です。次に最初に実行されるメソッド呼び出し `str[0].concat(...)` を確認し、null参照なので実行時例外と判断します。",
+          "howToRead": "読み方は、配列作成直後の各要素を書き出します。`str[0]=null`, `str[1]=null` です。次に最初に実行されるメソッド呼び出し `str[0].concat(...)` を確認し、null参照なので実行時例外と判断します。"
         },
         "source": "",
         "codeBlocks": [
@@ -25047,7 +25000,7 @@ window.JAVA_STUDY_DATA = {
           "String",
           "exception"
         ],
-        "status": "pdf_visual_checked_explanation_checked"
+        "status": "verified"
       }
     ],
     "ch08": [
@@ -25094,67 +25047,69 @@ window.JAVA_STUDY_DATA = {
           "F"
         ],
         "explanation": {
-          "summary": "ローカル変数cが初期化されないまま参照されるためコンパイルエラー。longリテラルのLは表示結果には出ない。",
+          "summary": "ローカル変数cを初期化しないままprintlnで読んでいるため、実行前にコンパイルエラーになる。",
           "points": [
-            "ローカル変数は使用前に明示的な初期化が必要。",
-            "nullは参照型用の値であり、longには入らない。"
+            "宣言がローカル変数かフィールドかを確認する。",
+            "ローカル変数なら使用前に明示的な代入があるか確認する。",
+            "代入されていない変数が式の中で読まれていないか確認する。"
           ],
-          "correctReason": "正解は F です。\n\nローカル変数cが初期化されないまま参照されるためコンパイルエラー。longリテラルのLは表示結果には出ない。",
+          "correctReason": "正解は F です。`long a, b, c;` は3つのローカル変数を宣言しているだけです。`a` と `b` には代入がありますが、`c` には代入がないまま `System.out.println(... + c)` で読まれています。ローカル変数はフィールドと違って自動初期化されないため、ここでコンパイルエラーになります。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「「1, 10, 0」が表示される」という出力は発生しません。"
+              "detail": "誤りです。`c` はローカル変数なので、longのデフォルト値0は入りません。デフォルト値が入るのはフィールドや配列要素です。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「「1, 10L, null」が表示される」という出力は発生しません。"
+              "detail": "誤りです。`10L` の `L` はソースコード上でlongリテラルであることを示す接尾辞で、表示結果には出ません。また `null` は参照型用で、long型の値ではありません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「「1, 10, null」が表示される」という出力は発生しません。"
+              "detail": "誤りです。`c` はlong型なので `null` にはなりません。そもそも未初期化ローカル変数を読んでいるため、表示まで進みません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「「1, 10L, 0」が表示される」という出力は発生しません。"
+              "detail": "誤りです。`b = 10L;` の値を表示すると `10` です。さらに `c` は0で自動初期化されないので、この出力にはなりません。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。コンパイル時点で止まるため、実行時例外ではありません。"
+              "detail": "誤りです。未初期化ローカル変数の使用はコンパイル時に検出されます。実行時例外ではありません。"
             },
             {
               "key": "F",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「コンパイルエラーが発生する」です。ローカル変数cが初期化されないまま参照されるためコンパイルエラー。longリテラルのLは表示結果には出ない。"
+              "detail": "正解です。`c` が明示的に初期化されていないため、`c` を読む行でコンパイルエラーになります。"
             }
           ],
           "relatedKnowledge": [
-            "ローカル変数は自動初期化されない。宣言しただけのローカル変数を読むとコンパイルエラーになる。",
-            "フィールドは型ごとのデフォルト値で初期化される。intなら0、booleanならfalse、参照型ならnull。ローカル変数とは扱いが違う。",
-            "同名のローカル変数や引数がある場合、単純名ではローカル側が優先される。フィールドを明示したい場合はthis.fieldまたはClassName.staticFieldを使う。"
+            "ローカル変数は自動初期化されない。",
+            "フィールドと配列要素は型ごとのデフォルト値で初期化される。",
+            "整数リテラルの `L` / `l` はlong型を表す接尾辞であり、表示文字列ではない。",
+            "`null` は参照型の値で、プリミティブ型には代入できない。"
           ],
           "examTips": [
-            "初期化問題では、値が入る可能性ではなく、すべての経路で確実に代入済みかを見る。",
-            "フィールドのデフォルト値の知識をローカル変数へ持ち込まない。ここは試験でよく狙われる。",
-            "thisが付いているか、付いていないかで参照先が変わる。代入式では左辺と右辺を別々に確認する。"
+            "「フィールドなら0」をローカル変数に持ち込むと誤答する。",
+            "出力問題でも、まずコンパイルできるかを最初に見る。",
+            "リテラルの表記と実際の表示結果を混同しない。"
           ],
           "judgeSteps": [
-            "対象がフィールドかローカル変数かを確認する。",
-            "ローカル変数なら、使用前に必ず代入されているかを確認する。",
-            "同名の変数がある場合、単純名がローカル側を指していないか確認する。",
-            "フィールドを参照する必要がある場合、thisやクラス名で明示されているかを見る。"
+            "宣言がローカル変数かフィールドかを確認する。",
+            "ローカル変数なら使用前に明示的な代入があるか確認する。",
+            "代入されていない変数が式の中で読まれていないか確認する。",
+            "コンパイルエラーなら出力候補や実行時例外候補を消す。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は F です。\n\nローカル変数cが初期化されないまま参照されるためコンパイルエラー。longリテラルのLは表示結果には出ない。",
+          "pdfExplanation": "正解は F です。`long a, b, c;` は3つのローカル変数を宣言しているだけです。`a` と `b` には代入がありますが、`c` には代入がないまま `System.out.println(... + c)` で読まれています。ローカル変数はフィールドと違って自動初期化されないため、ここでコンパイルエラーになります。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は「longの表示」ではなく、ローカル変数の確定代入を問う問題です。`long a, b, c;` と書くと、a・b・cの3つが宣言されます。ただし宣言しただけでは値は入りません。フィールドならlongの初期値は0ですが、mainメソッド内のローカル変数には自動初期化がありません。\n\n`a = 1;` と `b = 10L;` は代入済みです。一方、`c` は一度も代入されていません。その状態で `println` の中で `c` を使っているので、コンパイラが「初期化されていない変数を使用している」と判断します。\n\n`10L` の `L` は、リテラルの型をlongにするための表記です。実行結果に `L` が表示されるわけではありません。試験では、`0`、`null`、`10L` のようなもっともらしい出力に釣られないことが重要です。"
         },
         "source": "",
-        "status": "pdf_visual_checked",
+        "status": "verified",
         "tags": [
           "field/static/scope",
           "main/args",
@@ -25214,70 +25169,74 @@ window.JAVA_STUDY_DATA = {
           "E"
         ],
         "explanation": {
-          "summary": "publicクラス名がAなのでファイル名A.javaは正しい。AとBの両方にmainがあるため、A.class/B.class生成後はjava Aもjava Bも実行できる。",
+          "summary": "public class Aを含むA.javaはコンパイルでき、生成されたA.classとB.classはどちらもmainを持つためjava Aでもjava Bでも実行できる。",
           "points": [
-            "1つのソースファイルにpublicでないクラスを複数書ける。",
-            "実行時はクラス名を指定する。"
+            "publicなトップレベルクラスがあるか確認する。",
+            "publicクラス名とファイル名が一致しているか確認する。",
+            "コンパイル対象は保存されているソースファイル名で判断する。"
           ],
-          "correctReason": "正解は A・E です。\n\npublicクラス名がAなのでファイル名A.javaは正しい。AとBの両方にmainがあるため、A.class/B.class生成後はjava Aもjava Bも実行できる。",
+          "correctReason": "正解は A と E です。1つのソースファイルにpublicでないクラスを追加で書くことはできます。このファイルのpublicクラスはAなので、ファイル名A.javaは正しいです。`javac A.java` によりA.classとB.classが生成され、AとBのどちらにも正しいmainメソッドがあるため、`java A` と `java B` の両方で実行できます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正しい選択肢です。publicクラス名がAなのでファイル名A.javaは正しい。AとBの両方にmainがあるため、A.class/B.class生成後はjava Aもjava Bも実行できる。"
+              "detail": "正解です。`javac A.java` でA.classとB.classが作られ、Bにもmainがあるため `java B` で実行できます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「このコードは、javac B.javaでコンパイルできるが、javaコマンドで実行できない」ではありません。publicクラス名がAなのでファイル名A.javaは正しい。AとBの両方にmainがあるため、A.class/B.class生成後はjava Aもjava Bも実行できる。"
+              "detail": "誤りです。Bはpublicではないため、ソースファイル名をB.javaにする必要はありません。このコードはA.javaとしてコンパイルします。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「このコードは、javac A.javaでコンパイルできるが、javaコマンドで実行できない」ではありません。publicクラス名がAなのでファイル名A.javaは正しい。AとBの両方にmainがあるため、A.class/B.class生成後はjava Aもjava Bも実行できる。"
+              "detail": "誤りです。AにもBにもmainがあるので、javaコマンドで実行できます。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「このコードは、javac B.javaでコンパイルでき、java Bで実行できる」ではありません。publicクラス名がAなのでファイル名A.javaは正しい。AとBの両方にmainがあるため、A.class/B.class生成後はjava Aもjava Bも実行できる。"
+              "detail": "誤りです。`javac B.java` ではありません。実際の保存ファイルはA.javaです。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正しい選択肢です。publicクラス名がAなのでファイル名A.javaは正しい。AとBの両方にmainがあるため、A.class/B.class生成後はjava Aもjava Bも実行できる。"
+              "detail": "正解です。publicクラスAとファイル名A.javaが一致しており、Aにもmainがあるため `java A` で実行できます。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「このコードは、javac A.javaでコンパイルでき、java Bで実行できる / このコードは、javac A.javaでコンパイルでき、java Aで実行できる」です。"
+              "detail": "誤りです。publicでないトップレベルクラスなら、同じソースファイル内に複数書けます。必ず別ファイルに分ける必要はありません。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「このコードは、javac A.javaでコンパイルでき、java Bで実行できる / このコードは、javac A.javaでコンパイルでき、java Aで実行できる」です。"
+              "detail": "誤りです。ファイル名を決めるのはpublicクラス名です。このコードのpublicクラスはAなのでA.javaが正しいです。"
             }
           ],
           "relatedKnowledge": [
-            "publicクラスを含むソースファイル名は、そのpublicクラス名と一致させる必要がある。publicでないトップレベルクラスは同じファイルに複数書ける。",
-            "importのワイルドカードは、そのパッケージ直下の型だけを対象にする。サブパッケージまでは含まない。",
-            "static importはstaticメンバを簡略参照するためのもの。通常のクラス型を使うためのimportとは目的が違う。"
+            "1ファイルに複数のトップレベルクラスを書ける。",
+            "publicトップレベルクラスは1ファイルに最大1つ。",
+            "publicトップレベルクラス名とファイル名は一致が必要。",
+            "javaコマンドで指定するのはclassファイル名ではなく、実行したいクラス名。"
           ],
           "examTips": [
-            "ex.* で ex.p1.A は読めない。ドットがあると親子関係に見えるが、importでは別パッケージとして扱う。",
-            "javacはソースファイル名、javaは完全修飾クラス名またはクラス名を指定する。コマンドの対象を混同しない。"
+            "「コンパイルできる」と「実行できる」を混同しない。",
+            "B.javaで保存されていないのに `javac B.java` を選ばない。",
+            "publicではないクラスもmainがあれば実行対象になれる。"
           ],
           "judgeSteps": [
-            "package宣言とファイル配置・クラス名の対応を確認する。",
-            "利用している型が同じパッケージか、import済みか、完全修飾名で書かれているか確認する。",
-            "ワイルドカードimportの場合、対象パッケージ直下の型かどうかを確認する。"
+            "publicなトップレベルクラスがあるか確認する。",
+            "publicクラス名とファイル名が一致しているか確認する。",
+            "コンパイル対象は保存されているソースファイル名で判断する。",
+            "実行可能かは、各クラスに正しいmainメソッドがあるかで判断する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A・E です。\n\npublicクラス名がAなのでファイル名A.javaは正しい。AとBの両方にmainがあるため、A.class/B.class生成後はjava Aもjava Bも実行できる。",
+          "pdfExplanation": "正解は A と E です。1つのソースファイルにpublicでないクラスを追加で書くことはできます。このファイルのpublicクラスはAなので、ファイル名A.javaは正しいです。`javac A.java` によりA.classとB.classが生成され、AとBのどちらにも正しいmainメソッドがあるため、`java A` と `java B` の両方で実行できます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は「コンパイルするファイル名」と「実行するクラス名」を分けて考えます。Javaでは、1つのソースファイルに複数のトップレベルクラスを書けます。ただし、publicなトップレベルクラスがある場合、そのクラス名とファイル名は一致していなければなりません。\n\nこのコードではpublicなのはAだけです。したがって保存名A.javaは正しいです。Bはpublicではないため、A.javaの中に一緒に書いても構いません。\n\n`javac A.java` を実行すると、A.classとB.classが作られます。javaコマンドで実行できるかは、そのクラスに正しいmainメソッドがあるかで決まります。AにもBにも `public static void main(String[] args)` があるので、`java A` も `java B` も実行可能です。"
         },
         "source": "",
-        "status": "pdf_visual_checked",
+        "status": "verified",
         "tags": [
           "package/import",
           "main/args",
@@ -25324,54 +25283,59 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "staticメソッドprintから非staticフィールドcontentsを直接参照しているためコンパイルエラー。",
+          "summary": "staticメソッドprintからインスタンスフィールドcontentsを直接参照しているためコンパイルエラーになる。",
           "points": [
-            "staticメソッドから直接扱えるのはstaticメンバーだけ。"
+            "参照しているメンバがstaticかインスタンスかを確認する。",
+            "呼び出し元がstaticメソッドかを確認する。",
+            "staticメソッド内でインスタンスフィールド・インスタンスメソッドを直接使っていないか確認する。"
           ],
-          "correctReason": "正解は C です。\n\nstaticメソッドprintから非staticフィールドcontentsを直接参照しているためコンパイルエラー。",
+          "correctReason": "正解は C です。`contents` はインスタンスフィールドです。一方、`print()` はstaticメソッドなので、特定のValueインスタンスなしで呼び出されます。staticメソッド内からインスタンスフィールドを単純名で直接参照することはできないため、`System.out.println(contents);` でコンパイルエラーになります。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「何も表示されない」という出力は発生しません。"
+              "detail": "誤りです。何も表示されないのではなく、staticメソッド内でインスタンスフィールドを参照しているためコンパイルできません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「「\"\"」が表示される」という出力は発生しません。"
+              "detail": "誤りです。`Value.print()` はコンストラクタを呼び出していません。さらにstaticメソッド内で `contents` を直接読めないため、空文字表示まで進みません。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「コンパイルエラーが発生する」です。staticメソッドprintから非staticフィールドcontentsを直接参照しているためコンパイルエラー。"
+              "detail": "正解です。`contents` は各インスタンスに属するフィールドなので、staticメソッドから直接参照できません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。コンパイル時点で止まるため、実行時例外ではありません。"
+              "detail": "誤りです。実行時に例外が出る前に、コンパイルエラーになります。"
             }
           ],
           "relatedKnowledge": [
-            "staticメンバはクラスに属し、インスタンスごとには複製されない。全インスタンスから共有される。",
-            "staticメソッドからは、thisを使えず、インスタンスフィールドやインスタンスメソッドへ直接アクセスできない。",
-            "同名のローカル変数や引数がある場合、単純名ではローカル側が優先される。フィールドを指すにはthis.fieldやClassName.fieldを使う。"
+            "staticメンバはクラス側に属する。",
+            "インスタンスフィールドは個々のオブジェクトに属する。",
+            "staticメソッドからインスタンスメンバを使うには、対象インスタンスの参照が必要。",
+            "コンストラクタはnewしたときに呼ばれる。staticメソッド呼び出しだけではコンストラクタは動かない。"
           ],
           "examTips": [
-            "static問題は「クラスに属するもの」と「インスタンスに属するもの」を表に分ける。",
-            "staticメソッド内で非staticフィールド名が裸で出たら、まずコンパイルエラーを疑う。"
+            "static問題では「どのインスタンスの値か」を考える。",
+            "空文字が表示されるか以前に、static文脈で読めるかを確認する。",
+            "privateかどうかより、staticかインスタンスかの方が先に問題になることがある。"
           ],
           "judgeSteps": [
-            "対象メンバがstaticかインスタンスメンバかを確認する。",
-            "呼び出し元のメソッドがstaticかどうかを確認する。",
-            "同名のローカル変数・引数がある場合、名前解決の優先順位を確認する。"
+            "参照しているメンバがstaticかインスタンスかを確認する。",
+            "呼び出し元がstaticメソッドかを確認する。",
+            "staticメソッド内でインスタンスフィールド・インスタンスメソッドを直接使っていないか確認する。",
+            "コンパイルエラーなら表示候補を消す。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\nstaticメソッドprintから非staticフィールドcontentsを直接参照しているためコンパイルエラー。",
+          "pdfExplanation": "正解は C です。`contents` はインスタンスフィールドです。一方、`print()` はstaticメソッドなので、特定のValueインスタンスなしで呼び出されます。staticメソッド内からインスタンスフィールドを単純名で直接参照することはできないため、`System.out.println(contents);` でコンパイルエラーになります。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\n`private String contents;` はValueオブジェクトごとに存在するインスタンスフィールドです。`new Value(\"x\")` のようにインスタンスを作ると、その個体がcontentsを持ちます。\n\n一方、`public static void print()` はクラスに属するメソッドです。`Value.print()` のようにインスタンスなしで呼び出せます。ここが重要です。インスタンスなしで呼べるメソッドの中で、どのインスタンスのcontentsを表示すればよいかは決められません。\n\nそのため、staticメソッドからインスタンスフィールドを直接読むコードはコンパイルエラーです。もし表示したいなら、`new Value().contents` のように対象インスタンスを用意するか、contents自体をstaticにする必要があります。ただし、この問題ではそのような修正はされていません。"
         },
         "source": "",
-        "status": "pdf_visual_checked",
+        "status": "verified",
         "tags": [
           "field/static/scope",
           "main/args",
@@ -25426,72 +25390,74 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "0b0110はintリテラルの6。Number型引数に渡すとIntegerへオートボクシングされるため、Integerの分岐に入る。",
+          "summary": "0b0110はintリテラル6であり、Number型引数に渡すとIntegerへオートボクシングされるため、Integer判定に一致してCが表示される。",
           "points": [
-            "intはIntegerにボクシングされる。",
-            "ByteやShortにはならない。"
+            "数値リテラルの値と型を分けて確認する。",
+            "接尾辞がない整数リテラルはintとして扱う。",
+            "参照型引数へ渡すときにオートボクシングが起きるか確認する。"
           ],
-          "correctReason": "正解は C です。\n\n0b0110はintリテラルの6。Number型引数に渡すとIntegerへオートボクシングされるため、Integerの分岐に入る。",
+          "correctReason": "正解は C です。`0b0110` は2進数表記ですが、型は通常の整数リテラルと同じくintです。`test(Number n)` に渡すと、intからIntegerへオートボクシングされます。`Integer` は `Number` のサブクラスなので引数として渡せます。test内では `Byte`、`Short` の判定は外れ、`Integer` の判定に一致するため、戻り値は `\"C\"` です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「A」ではありません。0b0110はintリテラルの6。Number型引数に渡すとIntegerへオートボクシングされるため、Integerの分岐に入る。"
+              "detail": "誤りです。0b0110の値は6ですが、byte型ではなくint型リテラルです。Byteにはなりません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「B」ではありません。0b0110はintリテラルの6。Number型引数に渡すとIntegerへオートボクシングされるため、Integerの分岐に入る。"
+              "detail": "誤りです。short型として宣言・キャストされていないため、Shortにはボクシングされません。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「C」です。0b0110はintリテラルの6。Number型引数に渡すとIntegerへオートボクシングされるため、Integerの分岐に入る。"
+              "detail": "正解です。intリテラルがIntegerにオートボクシングされ、`n instanceof Integer i` がtrueになります。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「D」ではありません。0b0110はintリテラルの6。Number型引数に渡すとIntegerへオートボクシングされるため、Integerの分岐に入る。"
+              "detail": "誤りです。`L` 接尾辞がないのでlongリテラルではありません。Longにはなりません。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「E」ではありません。0b0110はintリテラルの6。Number型引数に渡すとIntegerへオートボクシングされるため、Integerの分岐に入る。"
+              "detail": "誤りです。Integerの条件に一致するためelseまでは進みません。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「C」です。"
+              "detail": "誤りです。IntegerはNumberのサブクラスなので、Number型引数に渡せます。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "誤りです。実行時例外は発生せず、結果は「C」です。"
+              "detail": "誤りです。キャスト失敗やnull参照は起きていません。正常にCが出力されます。"
             }
           ],
           "relatedKnowledge": [
-            "intなどのプリミティブ値をIntegerなどのラッパークラスへ自動変換することをオートボクシングという。",
-            "Integer、Long、DoubleなどのラッパークラスはいずれもNumberのサブクラス。Number型の引数には、ボクシング後のラッパーインスタンス参照を渡せる。",
-            "instanceofパターンマッチングは、実行時の実体型が対象型に適合した場合にだけ成立し、そのブロック内でパターン変数を使える。"
+            "2進数リテラルでも型は自動的にbyteやshortにはならない。",
+            "オートボクシングではintはInteger、longはLongになる。",
+            "Integer、Long、Byte、ShortなどのラッパークラスはNumberのサブクラス。",
+            "instanceofパターン変数は条件がtrueの範囲で使える。"
           ],
           "examTips": [
-            "0b0110のような2進数表記でも、接尾辞がなければ整数リテラルの型は基本的にint。",
-            "Number型で受けていても、実体がIntegerなのかLongなのかをinstanceofで判定する。",
-            "型名の見た目ではなく、リテラルのデフォルト型とボクシング後の実体型を追う。"
+            "「値が6だからbyteに入る」と考えるのは誤り。型はリテラル表記と接尾辞で判断する。",
+            "Number型で受けていても、実体がどのラッパークラスかを追う。",
+            "instanceofの順番は上から確認するが、今回はIntegerで止まる。"
           ],
           "judgeSteps": [
-            "リテラルの値とデフォルト型を確認する。",
-            "メソッド引数に渡すとき、必要ならどのラッパークラスへボクシングされるか確認する。",
-            "受け取り側の宣言型と実体型を分ける。",
-            "instanceofの分岐を上から順に評価する。"
+            "数値リテラルの値と型を分けて確認する。",
+            "接尾辞がない整数リテラルはintとして扱う。",
+            "参照型引数へ渡すときにオートボクシングが起きるか確認する。",
+            "instanceofは実際のオブジェクト型で判定する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\n0b0110はintリテラルの6。Number型引数に渡すとIntegerへオートボクシングされるため、Integerの分岐に入る。",
+          "pdfExplanation": "正解は C です。`0b0110` は2進数表記ですが、型は通常の整数リテラルと同じくintです。`test(Number n)` に渡すと、intからIntegerへオートボクシングされます。`Integer` は `Number` のサブクラスなので引数として渡せます。test内では `Byte`、`Short` の判定は外れ、`Integer` の判定に一致するため、戻り値は `\"C\"` です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\n`0b0110` は2進数で6を表します。ただし、表記が2進数であることと型は別です。整数リテラルは、接尾辞がなければ基本的にintとして扱われます。\n\n`test(Number n)` の引数は参照型です。intをそのまま参照型にはできないので、Javaが自動的にIntegerへ変換します。これがオートボクシングです。IntegerはNumberを継承しているため、Number型の仮引数に渡せます。\n\n`instanceof` の判定は、実際のオブジェクトの型で見ます。nが参照しているのはIntegerオブジェクトなので、ByteでもShortでもLongでもなく、Integerの条件で一致します。"
         },
         "source": "",
-        "status": "pdf_visual_checked",
+        "status": "verified",
         "tags": [
           "boxing/instanceof",
           "inheritance/polymorphism",
@@ -25542,66 +25508,69 @@ window.JAVA_STUDY_DATA = {
           "B"
         ],
         "explanation": {
-          "summary": "test(null)によりstr.equalsIgnoreCase(\"\")でNullPointerExceptionが発生する。これはRuntimeExceptionのサブクラスなのでBが出力される。",
+          "summary": "test(null)によりstrがnullのままequalsIgnoreCaseを呼び出すためNullPointerExceptionが発生し、RuntimeExceptionのcatchでBが出力される。",
           "points": [
-            "catchは上から評価され、最初に互換性のある型で処理される。"
+            "メソッドに渡される実引数を確認する。",
+            "仮引数がnullになるなら、最初にnull参照のメソッド呼び出しを探す。",
+            "throw文に到達する前に別の例外が発生しないか確認する。"
           ],
-          "correctReason": "正解は B です。\n\ntest(null)によりstr.equalsIgnoreCase(\"\")でNullPointerExceptionが発生する。これはRuntimeExceptionのサブクラスなのでBが出力される。",
+          "correctReason": "正解は B です。`test(null)` により、testメソッドの仮引数 `str` はnullになります。その状態で `str.equalsIgnoreCase(\"\")` を呼び出すため、`IllegalStateException` をthrowする前に `NullPointerException` が発生します。NullPointerExceptionはRuntimeExceptionのサブクラスなので、2つ目のcatchで捕まり、`B` が出力されます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「Bが出力される」であり、「Aが出力される」ではありません。"
+              "detail": "誤りです。IllegalStateExceptionは明示的にthrowされる前に、null参照でNullPointerExceptionが発生します。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「Bが出力される」です。test(null)によりstr.equalsIgnoreCase(\"\")でNullPointerExceptionが発生する。これはRuntimeExceptionのサブクラスなのでBが出力される。"
+              "detail": "正解です。NullPointerExceptionはRuntimeExceptionのサブクラスなので、`catch (RuntimeException e)` で捕まりBが出力されます。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「Bが出力される」であり、「Cが出力される」ではありません。"
+              "detail": "誤りです。Exceptionでも受け取れますが、その前にRuntimeExceptionのcatchがあるため、Cまでは進みません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「Bが出力される」であり、「何も出力されない」ではありません。"
+              "detail": "誤りです。例外がcatchされ、そのcatch内でBが出力されます。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「Bが出力される」です。"
+              "detail": "誤りです。catchの順序は狭い型から広い型になっており、コンパイルエラーではありません。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。実行時例外は発生せず、結果は「Bが出力される」です。"
+              "detail": "誤りです。例外は発生しますが、RuntimeExceptionのcatchで処理されます。未処理のまま外へ投げられるわけではありません。"
             }
           ],
           "relatedKnowledge": [
-            "例外問題では、最初に「コンパイル時に処理が必須のチェック例外か」「実行時に発生する非チェック例外か」を分ける。Exception直下の例外とRuntimeException配下の例外を混同しない。",
-            "catchは上から順に判定される。先に広い型で捕まえると、後ろの狭い型のcatchが到達不能になり、コンパイルエラーになる。",
-            "finallyは、例外が発生しても発生しなくても原則として実行される。try-with-resourcesでは、try本体を抜けるときにリソースのcloseが宣言と逆順に呼ばれ、その後にfinallyへ進む。"
+            "NullPointerExceptionはRuntimeExceptionのサブクラス。",
+            "catchは最初に一致した1つだけが実行される。",
+            "サブクラスcatchを後ろに置いて到達不能になる並びはコンパイルエラー。",
+            "明示的なthrow文があっても、そこに到達しなければその例外は発生しない。"
           ],
           "examTips": [
-            "try内で例外が発生した行より後ろのtry内処理は実行されない。出力順を追うときにここを飛ばすと誤答になる。",
-            "「例外が発生する」と「catchで処理されて正常終了する」は別。選択肢に実行時例外がある場合、catchに捕まるかまで確認する。",
-            "catchの並びは、サブクラスからスーパークラスの順が基本。逆順だと後続catchが到達不能になる。"
+            "例外問題では「どの例外が書かれているか」ではなく「最初にどの例外が発生するか」を見る。",
+            "nullに対するメソッド呼び出しは頻出。`\"\".equals(str)` の形ならNPEを避けられるが、このコードは逆。",
+            "catchの最後にExceptionがあっても、前のRuntimeExceptionで捕まればそこで終わる。"
           ],
           "judgeSteps": [
-            "例外を投げる可能性があるメソッド呼び出し・配列アクセス・null参照・キャストを探す。",
-            "その例外がチェック例外なら、catchまたはthrowsがあるかを先に確認する。",
-            "実行時は、例外発生地点でtryの残りを捨て、最初に一致したcatchへ移動する。",
-            "最後にfinallyまたはリソースcloseの有無を加えて、表示順を確定する。"
+            "メソッドに渡される実引数を確認する。",
+            "仮引数がnullになるなら、最初にnull参照のメソッド呼び出しを探す。",
+            "throw文に到達する前に別の例外が発生しないか確認する。",
+            "発生した例外をcatchの上から順に照合する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は B です。\n\ntest(null)によりstr.equalsIgnoreCase(\"\")でNullPointerExceptionが発生する。これはRuntimeExceptionのサブクラスなのでBが出力される。",
+          "pdfExplanation": "正解は B です。`test(null)` により、testメソッドの仮引数 `str` はnullになります。その状態で `str.equalsIgnoreCase(\"\")` を呼び出すため、`IllegalStateException` をthrowする前に `NullPointerException` が発生します。NullPointerExceptionはRuntimeExceptionのサブクラスなので、2つ目のcatchで捕まり、`B` が出力されます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、`throw new IllegalStateException()` に目が行きやすいですが、そこまで到達するかを先に確認する必要があります。\n\nmainから `test(null)` を呼んでいます。つまり、testメソッド内の `str` はnullです。if文の条件で `str.equalsIgnoreCase(\"\")` を実行しようとすると、nullに対してメソッドを呼び出すことになります。この時点でNullPointerExceptionが発生します。\n\nNullPointerExceptionはRuntimeExceptionのサブクラスです。catchは上から順に確認します。IllegalStateExceptionではないので1つ目は一致しません。次のRuntimeExceptionには一致するため、`System.out.println(\"B\")` が実行されます。その後のException catchには進みません。"
         },
         "source": "",
-        "status": "pdf_visual_checked",
+        "status": "verified",
         "tags": [
           "exception",
           "main/args",
@@ -25677,80 +25646,84 @@ window.JAVA_STUDY_DATA = {
           "B"
         ],
         "explanation": {
-          "summary": "B型にはtestメソッドが存在しないため、b.test(1)と(A)b.test(2)がコンパイルエラー。キャストよりメソッド呼び出しが先に解釈される点が罠。",
+          "summary": "変数bの宣言型はBであり、Bにはtestメソッドがないため(1)と(2)がコンパイルエラーになる。明示的にAへキャストした後ならtestを呼べる。",
           "points": [
-            "((A)b).test(3)のように括弧でキャストを先に評価させればよい。",
-            "sealed interface A permits Cとfinal class C implements Aは成立する。"
+            "各変数の宣言型を確認する。",
+            "メソッド呼び出しは、まず宣言型にそのメソッドがあるかを見る。",
+            "キャスト式の括弧がどこにかかっているか確認する。"
           ],
-          "correctReason": "正解は A・B です。\n\nB型にはtestメソッドが存在しないため、b.test(1)と(A)b.test(2)がコンパイルエラー。キャストよりメソッド呼び出しが先に解釈される点が罠。",
+          "correctReason": "正解は A と B です。`b` の宣言型は `B` です。Bクラスには `test` メソッドが定義されていないため、`b.test(1)` はコンパイルエラーです。また `(A)b.test(2)` も、先に `b.test(2)` を呼び出そうと解釈されるため、同じくBにtestがなくコンパイルエラーになります。`((A)b).test(3)` のように、bをA型として扱うことを括弧で明示すれば、Aのtestを呼び出せます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正しい選択肢です。B型にはtestメソッドが存在しないため、b.test(1)と(A)b.test(2)がコンパイルエラー。キャストよりメソッド呼び出しが先に解釈される点が罠。"
+              "detail": "正解です。`b` の宣言型はBで、Bにはtestメソッドがありません。実体がCでも、呼べるメソッドはまず宣言型で決まります。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正しい選択肢です。B型にはtestメソッドが存在しないため、b.test(1)と(A)b.test(2)がコンパイルエラー。キャストよりメソッド呼び出しが先に解釈される点が罠。"
+              "detail": "正解です。`(A)b.test(2)` は、bをAにキャストしてからtestする形ではありません。`b.test(2)` が先に問題になり、Bにtestがないためエラーです。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「(3)」ではありません。B型にはtestメソッドが存在しないため、b.test(1)と(A)b.test(2)がコンパイルエラー。キャストよりメソッド呼び出しが先に解釈される点が罠。"
+              "detail": "誤りです。`((A)b).test(3)` は、bをA型として扱ってからtestを呼んでいるためコンパイルできます。実体はAを実装したCなので実行も可能です。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「(4)」ではありません。B型にはtestメソッドが存在しないため、b.test(1)と(A)b.test(2)がコンパイルエラー。キャストよりメソッド呼び出しが先に解釈される点が罠。"
+              "detail": "誤りです。`t` の宣言型はAで、Aにはtestメソッドがあります。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「(5)」ではありません。B型にはtestメソッドが存在しないため、b.test(1)と(A)b.test(2)がコンパイルエラー。キャストよりメソッド呼び出しが先に解釈される点が罠。"
+              "detail": "誤りです。`t` はもともとA型なので、A型としてtestを呼び出せます。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。「(6)」ではありません。B型にはtestメソッドが存在しないため、b.test(1)と(A)b.test(2)がコンパイルエラー。キャストよりメソッド呼び出しが先に解釈される点が罠。"
+              "detail": "誤りです。`((A)t)` としてもA型のままなのでtestを呼び出せます。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "誤りです。「(7)」ではありません。B型にはtestメソッドが存在しないため、b.test(1)と(A)b.test(2)がコンパイルエラー。キャストよりメソッド呼び出しが先に解釈される点が罠。"
+              "detail": "誤りです。sealed interface A permits C は、Cだけに実装を許可する宣言として成立しています。"
             },
             {
               "key": "H",
               "isCorrect": false,
-              "detail": "誤りです。「(8)」ではありません。B型にはtestメソッドが存在しないため、b.test(1)と(A)b.test(2)がコンパイルエラー。キャストよりメソッド呼び出しが先に解釈される点が罠。"
+              "detail": "誤りです。Bクラス自体にコンパイルエラーはありません。"
             },
             {
               "key": "I",
               "isCorrect": false,
-              "detail": "誤りです。「(9)」ではありません。B型にはtestメソッドが存在しないため、b.test(1)と(A)b.test(2)がコンパイルエラー。キャストよりメソッド呼び出しが先に解釈される点が罠。"
+              "detail": "誤りです。Cはfinalで、Bを継承しAを実装しています。sealed interface Aが許可しているCなので問題ありません。"
             }
           ],
           "relatedKnowledge": [
-            "sealedは継承・実装できる直接の相手をpermitsで制限する仕組み。許可されていないクラスは継承できない。",
-            "sealedクラスまたはsealedインタフェースを直接継承・実装した側は、final、sealed、non-sealedのいずれかを明示する必要がある。",
-            "finalはそれ以上の継承禁止、sealedはさらに許可制、non-sealedは以降の継承制限解除を意味する。"
+            "呼べるメソッドはコンパイル時の宣言型で決まる。",
+            "実行されるoverrideメソッドは実体型で決まる。",
+            "キャストは実体を変える処理ではなく、コンパイラに「この型として扱う」と伝える処理。",
+            "sealed interfaceを実装するクラスは、permitsで許可されている必要がある。"
           ],
           "examTips": [
-            "permitsに名前があるかだけでなく、サブクラス側のfinal/sealed/non-sealed指定も確認する。",
-            "non-sealedは、sealedな親を直接継承・実装している場面で意味を持つ。通常クラスに突然付けても成立しない。"
+            "`(A)b.test()` と `((A)b).test()` は別物として読む。",
+            "実体Cにメソッドがあっても、宣言型Bに見えていなければ呼べない。",
+            "キャスト問題では括弧の位置を雑に読まない。"
           ],
           "judgeSteps": [
-            "親がsealedか、permitsで許可している直接サブクラス名を確認する。",
-            "各サブクラスが許可リストに含まれているかを確認する。",
-            "許可されたサブクラス側にfinal、sealed、non-sealedのいずれかがあるかを確認する。"
+            "各変数の宣言型を確認する。",
+            "メソッド呼び出しは、まず宣言型にそのメソッドがあるかを見る。",
+            "キャスト式の括弧がどこにかかっているか確認する。",
+            "sealedのpermitsと実装クラスの関係を確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A・B です。\n\nB型にはtestメソッドが存在しないため、b.test(1)と(A)b.test(2)がコンパイルエラー。キャストよりメソッド呼び出しが先に解釈される点が罠。",
+          "pdfExplanation": "正解は A と B です。`b` の宣言型は `B` です。Bクラスには `test` メソッドが定義されていないため、`b.test(1)` はコンパイルエラーです。また `(A)b.test(2)` も、先に `b.test(2)` を呼び出そうと解釈されるため、同じくBにtestがなくコンパイルエラーになります。`((A)b).test(3)` のように、bをA型として扱うことを括弧で明示すれば、Aのtestを呼び出せます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題の中心は、実体がCであることよりも「変数の宣言型で何を呼べるか」です。`B b = new C();` により、実体はCですが、変数bの型はBです。コンパイラは `b.test(...)` を見た時点で、B型にtestがあるかを確認します。Bにはtestがないので(1)はエラーです。\n\n(2)は見た目が紛らわしいですが、`(A)b.test(2)` は `((A)b).test(2)` ではありません。キャストしたい対象を明確に括弧で囲まなければ、bをAとして扱ってからtestする形にはなりません。したがって(2)もBにtestがないためエラーです。\n\n(3)は `((A)b)` と書かれているので、bをA型として扱った上でtestを呼びます。実体はCで、CはAを実装しているため問題ありません。`A t = new C();` のtは最初からA型なので、(4)以降のtest呼び出しも成立します。"
         },
         "source": "",
-        "status": "pdf_visual_checked",
+        "status": "verified",
         "tags": [
           "interface/default",
           "sealed",
@@ -25809,66 +25782,69 @@ window.JAVA_STUDY_DATA = {
           "A"
         ],
         "explanation": {
-          "summary": "フィールドアクセスは参照変数の型で決まり、メソッド呼び出しは実体の型で決まる。A型のb.dataはA.data、b.getData()はB側メソッドになる。",
+          "summary": "フィールドはオーバーライドされず宣言型で決まり、メソッドはオーバーライドにより実体型で決まるため、出力は10,11|20,11|11,11|21,21|になる。",
           "points": [
-            "B#getData内のdataはB.dataを指す。",
-            "キャスト後のB型変数ではB.dataに直接アクセスする。"
+            "宣言型と実体型を表にする。",
+            "フィールドアクセスは宣言型で決める。",
+            "メソッド呼び出しはoverrideを考慮して実体型で決める。"
           ],
-          "correctReason": "正解は A です。\n\nフィールドアクセスは参照変数の型で決まり、メソッド呼び出しは実体の型で決まる。A型のb.dataはA.data、b.getData()はB側メソッドになる。",
+          "correctReason": "正解は A です。`A b = new B();` では、フィールドアクセス `b.data` は宣言型Aのdataを見ます。一方、`b.getData()` はメソッド呼び出しなので、実体Bのオーバーライドメソッドが実行され、B側のdataを返します。その後、A側dataとB側dataを別々に変更していくため、出力は `10,11|20,11|11,11|21,21|` になります。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「10,11|20,11|11,11|21,21|」です。フィールドアクセスは参照変数の型で決まり、メソッド呼び出しは実体の型で決まる。A型のb.dataはA.data、b.getData()はB側メソッドになる。"
+              "detail": "正解です。フィールドは宣言型、オーバーライドメソッドは実体型で決まることを正しく追えています。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「10,10|10,10|20,20|21,21|」ではありません。フィールドアクセスは参照変数の型で決まり、メソッド呼び出しは実体の型で決まる。A型のb.dataはA.data、b.getData()はB側メソッドになる。"
+              "detail": "誤りです。`b.getData()` はBのメソッドが実行されるため、最初の2つ目は10ではなく11です。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「10,10|20,20|11,11|21,21|」ではありません。フィールドアクセスは参照変数の型で決まり、メソッド呼び出しは実体の型で決まる。A型のb.dataはA.data、b.getData()はB側メソッドになる。"
+              "detail": "誤りです。`getData()` はB側dataを返すため、`b.data = 20` の後でも `b.getData()` は20ではなく11です。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「10,11|20,20|11,11|21,21|」ではありません。フィールドアクセスは参照変数の型で決まり、メソッド呼び出しは実体の型で決まる。A型のb.dataはA.data、b.getData()はB側メソッドになる。"
+              "detail": "誤りです。2回目の `b.getData()` はB側dataの11を返します。A側dataを20にしてもB側dataは変わりません。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「10,10|10,20|20,20|21,21|」ではありません。フィールドアクセスは参照変数の型で決まり、メソッド呼び出しは実体の型で決まる。A型のb.dataはA.data、b.getData()はB側メソッドになる。"
+              "detail": "誤りです。フィールドとメソッドの解決規則が混ざっています。`b.data` はA側、`b.getData()` はB側です。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。「10,11|10,11|20,11|21,21|」ではありません。フィールドアクセスは参照変数の型で決まり、メソッド呼び出しは実体の型で決まる。A型のb.dataはA.data、b.getData()はB側メソッドになる。"
+              "detail": "誤りです。`b.data = 20` によりA側dataは20になります。2回目の `b.data` が10のままにはなりません。"
             }
           ],
           "relatedKnowledge": [
-            "オーバーライドは、メソッド名と引数リストが同じであることが前提。戻り値型は同じ型または共変戻り値としてサブクラス型にできる。",
-            "オーバーライド時のアクセス修飾子は、親より狭くできない。publicをprotectedやデフォルトに落とすとコンパイルエラー。",
-            "オーバーロードは引数リスト違いの別メソッド。実行時の動的選択ではなく、コンパイル時の引数型で候補が決まる。"
+            "フィールドはオーバーライドされない。サブクラスで同名フィールドを定義するとフィールド隠蔽になる。",
+            "インスタンスメソッドはオーバーライドされる。",
+            "キャストにより、どの型としてフィールドを見るかが変わることがある。",
+            "メソッド内の単純名フィールドは、そのメソッドが定義されたクラス側のフィールドを指す。"
           ],
           "examTips": [
-            "@Overrideが付いているのに条件を満たさない場合はコンパイルエラーになる。付いていなくても条件を満たせばオーバーライドは成立する。",
-            "戻り値だけ違うメソッドはオーバーロードにならない。戻り値型でメソッドを区別できない。"
+            "ポリモーフィズム問題でフィールドが出たら警戒する。",
+            "`変数.フィールド` と `変数.メソッド()` を同じ規則で読まない。",
+            "値を書き換えたとき、A側とB側のどちらが変わったかを表にする。"
           ],
           "judgeSteps": [
-            "親メソッドと子メソッドのメソッド名・引数リストを比較する。",
-            "戻り値型が同じか、親の戻り値型のサブタイプになっているか確認する。",
-            "アクセス修飾子が親と同じか、より広いか確認する。",
-            "throws句が親より広いチェック例外になっていないか確認する。"
+            "宣言型と実体型を表にする。",
+            "フィールドアクセスは宣言型で決める。",
+            "メソッド呼び出しはoverrideを考慮して実体型で決める。",
+            "代入がA側フィールドかB側フィールドかを分けて追う。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A です。\n\nフィールドアクセスは参照変数の型で決まり、メソッド呼び出しは実体の型で決まる。A型のb.dataはA.data、b.getData()はB側メソッドになる。",
+          "pdfExplanation": "正解は A です。`A b = new B();` では、フィールドアクセス `b.data` は宣言型Aのdataを見ます。一方、`b.getData()` はメソッド呼び出しなので、実体Bのオーバーライドメソッドが実行され、B側のdataを返します。その後、A側dataとB側dataを別々に変更していくため、出力は `10,11|20,11|11,11|21,21|` になります。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、フィールドとメソッドを同じように扱うと確実に間違えます。`A b = new B();` の時点で、変数bの宣言型はA、実体はBです。\n\nフィールドアクセス `b.data` は宣言型Aで決まります。したがって最初の `b.data` はA側のdataで10です。一方、`b.getData()` はメソッド呼び出しです。BがgetDataをオーバーライドしているので、実行されるのはBのgetDataです。BのgetData内の単純名 `data` はB側のフィールドを指すため11を返します。最初は `10,11|` です。\n\n次に `b.data = 20;` はA側dataを20にします。B側dataは11のままです。したがって `20,11|`。\n\n`B s = (B)b;` でB型として扱うと、`s.data` はB側dataです。この時点では11なので `11,11|`。最後に `s.data = 21;` でB側dataを21にするため `21,21|` になります。"
         },
         "source": "",
-        "status": "pdf_visual_checked",
+        "status": "verified",
         "tags": [
           "override/overload",
           "inheritance/polymorphism",
@@ -25939,76 +25915,80 @@ window.JAVA_STUDY_DATA = {
           "B"
         ],
         "explanation": {
-          "summary": "ExceptionAがスローされ、最初のcatch(ExceptionA)でAが出力される。その後finallyでEが出力される。",
+          "summary": "test()がExceptionAをスローし、最初のcatch(ExceptionA)でAを出力した後、finallyでEが必ず出力される。",
           "points": [
-            "catch後でもfinallyは実行される。"
+            "throwされる例外の実体型を確認する。",
+            "例外クラスの継承関係を確認する。",
+            "catchを上から順に照合する。"
           ],
-          "correctReason": "正解は B です。\n\nExceptionAがスローされ、最初のcatch(ExceptionA)でAが出力される。その後finallyでEが出力される。",
+          "correctReason": "正解は B です。`test()` は `ExceptionA` をthrowします。catchは上から順に判定され、最初の `catch (ExceptionA e)` に一致するため `A` が出力されます。その後、例外がcatchされた場合でも `finally` は実行されるので、続けて `E` が出力されます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「A、Eの順に表示される」であり、「Aのみ表示される」ではありません。"
+              "detail": "誤りです。Aは出力されますが、finallyがあるためEも出力されます。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「A、Eの順に表示される」です。ExceptionAがスローされ、最初のcatch(ExceptionA)でAが出力される。その後finallyでEが出力される。"
+              "detail": "正解です。ExceptionAのcatchでAを出力し、その後finallyでEを出力します。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「A、Eの順に表示される」であり、「Bのみ表示される」ではありません。"
+              "detail": "誤りです。ExceptionAはSampleExceptionのサブクラスでもありますが、先にcatch(ExceptionA)があるためBのcatchには進みません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「A、Eの順に表示される」であり、「B、Eの順に表示される」ではありません。"
+              "detail": "誤りです。Bは出力されません。最初に一致するcatchはExceptionAです。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「A、Eの順に表示される」であり、「Cのみ表示される」ではありません。"
+              "detail": "誤りです。RuntimeExceptionのcatchに行く前にExceptionAのcatchで処理されます。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「A、Eの順に表示される」であり、「C、Eの順に表示される」ではありません。"
+              "detail": "誤りです。Cは出力されません。finallyのEは出ますが、前半が違います。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「A、Eの順に表示される」であり、「Dのみ表示される」ではありません。"
+              "detail": "誤りです。Exceptionのcatchは最も広い型ですが、前のcatchで処理済みなのでDは出ません。"
             },
             {
               "key": "H",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「A、Eの順に表示される」であり、「D、Eの順に表示される」ではありません。"
+              "detail": "誤りです。Dは出力されません。Eは出ますが、catchされる場所が違います。"
             }
           ],
           "relatedKnowledge": [
-            "例外問題では、最初に「コンパイル時に処理が必須のチェック例外か」「実行時に発生する非チェック例外か」を分ける。Exception直下の例外とRuntimeException配下の例外を混同しない。",
-            "catchは上から順に判定される。先に広い型で捕まえると、後ろの狭い型のcatchが到達不能になり、コンパイルエラーになる。",
-            "finallyは、例外が発生しても発生しなくても原則として実行される。try-with-resourcesでは、try本体を抜けるときにリソースのcloseが宣言と逆順に呼ばれ、その後にfinallyへ進む。"
+            "catchは上から順に評価される。",
+            "サブクラス例外はスーパークラスcatchでも受け取れるが、先に狭い型のcatchがあればそこで処理される。",
+            "finallyは例外発生の有無にかかわらず原則実行される。",
+            "RuntimeException配下の例外は非チェック例外。"
           ],
           "examTips": [
-            "try内で例外が発生した行より後ろのtry内処理は実行されない。出力順を追うときにここを飛ばすと誤答になる。",
-            "「例外が発生する」と「catchで処理されて正常終了する」は別。選択肢に実行時例外がある場合、catchに捕まるかまで確認する。",
-            "catchの並びは、サブクラスからスーパークラスの順が基本。逆順だと後続catchが到達不能になる。"
+            "catch候補を複数実行しない。",
+            "finallyの出力を忘れない。",
+            "例外階層では「どの型でも受けられるか」と「実際にどのcatchに入るか」を分ける。"
           ],
           "judgeSteps": [
-            "例外を投げる可能性があるメソッド呼び出し・配列アクセス・null参照・キャストを探す。",
-            "その例外がチェック例外なら、catchまたはthrowsがあるかを先に確認する。",
-            "実行時は、例外発生地点でtryの残りを捨て、最初に一致したcatchへ移動する。",
-            "最後にfinallyまたはリソースcloseの有無を加えて、表示順を確定する。"
+            "throwされる例外の実体型を確認する。",
+            "例外クラスの継承関係を確認する。",
+            "catchを上から順に照合する。",
+            "最初に一致したcatchだけを実行する。",
+            "finallyの出力を最後に追加する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は B です。\n\nExceptionAがスローされ、最初のcatch(ExceptionA)でAが出力される。その後finallyでEが出力される。",
+          "pdfExplanation": "正解は B です。`test()` は `ExceptionA` をthrowします。catchは上から順に判定され、最初の `catch (ExceptionA e)` に一致するため `A` が出力されます。その後、例外がcatchされた場合でも `finally` は実行されるので、続けて `E` が出力されます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nまず例外クラスの関係を整理します。ExceptionAはSampleExceptionを継承し、SampleExceptionはRuntimeExceptionを継承しています。つまりExceptionAのインスタンスは、ExceptionAでもあり、SampleExceptionでもあり、RuntimeExceptionでもあり、Exceptionでもあります。\n\nしかしcatchは「一致する候補すべてを実行する」のではありません。上から順に見て、最初に一致したcatchだけを実行します。今回は `catch (ExceptionA e)` が最初に一致するので、Aが表示されます。\n\nその後、finallyブロックは例外が発生しても、catchで処理されても、原則として実行されます。したがってEも表示されます。結果はA、Eの順です。"
         },
         "source": "",
-        "status": "pdf_visual_checked",
+        "status": "verified",
         "tags": [
           "exception",
           "main/args",
@@ -26055,60 +26035,64 @@ window.JAVA_STUDY_DATA = {
           "A"
         ],
         "explanation": {
-          "summary": "switch式のアロー形式はフォールスルーしない。70→B、80→A、90→A、95→E、40→C、20→D、10→D、60→B。",
+          "summary": "switch式で各値を分類すると、70→B、80→A、90→A、95→E、40→C、20→D、10→D、60→Bとなる。",
           "points": [
-            "switch式では全分岐が値を返す必要がある。"
+            "switch文かswitch式かを確認する。",
+            "caseラベルに複数値がある場合は、対象値が含まれるか確認する。",
+            "`->` のswitch式ではフォールスルーしない。"
           ],
-          "correctReason": "正解は A です。\n\nswitch式のアロー形式はフォールスルーしない。70→B、80→A、90→A、95→E、40→C、20→D、10→D、60→B。",
+          "correctReason": "正解は A です。配列の値を順にswitch式へ渡します。70はB、80と90はA、95はどのcaseにも一致しないのでE、40はC、20と10はD、60はBです。連結して出力されるので `BAAECDDB` になります。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「BAAECDDB」です。switch式のアロー形式はフォールスルーしない。70→B、80→A、90→A、95→E、40→C、20→D、10→D、60→B。"
+              "detail": "正解です。各値をswitch式に当てはめると、B A A E C D D B の順になります。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「BASECDDB」ではありません。switch式のアロー形式はフォールスルーしない。70→B、80→A、90→A、95→E、40→C、20→D、10→D、60→B。"
+              "detail": "誤りです。70はcase 50,60,70に一致するのでBです。Sではありません。100だけがSです。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「BASEASEASEECDBASEDCDBASEBASE」ではありません。switch式のアロー形式はフォールスルーしない。70→B、80→A、90→A、95→E、40→C、20→D、10→D、60→B。"
+              "detail": "誤りです。switch式は一致したcaseの値だけを返します。従来のswitch文のようなフォールスルーはありません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「BAAECDDB」です。"
+              "detail": "誤りです。switch式として構文は成立しています。各分岐がStringを返しているため問題ありません。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。実行時例外は発生せず、結果は「BAAECDDB」です。"
+              "detail": "誤りです。どのcaseにも一致しない95はdefaultでEになります。例外は発生しません。"
             }
           ],
           "relatedKnowledge": [
-            "switch文のコロン形式は、breakがなければ次のcaseへフォールスルーする。switch式のアロー形式は原則フォールスルーしない。",
-            "switch式は値を返す式であり、ブロック形式で値を返す場合はyieldを使う。returnとは役割が違う。",
-            "switchの対象がnullになると、通常は実行時にNullPointerExceptionが発生する。case nullが使えるかどうかは試験範囲・Javaバージョンの扱いに注意する。"
+            "switch式は値を返す。",
+            "`case 10, 20 -> \"D\";` のように複数ラベルをまとめられる。",
+            "defaultはどのcaseにも一致しない場合に使われる。",
+            "printlnではなくprintなら出力は連続する。"
           ],
           "examTips": [
-            "switch文とswitch式を混同しない。文は処理の流れ、式は値を作る構文。",
-            "caseに入った後、breakがあるまで下へ流れるかを必ず確認する。"
+            "switch式を従来switch文のフォールスルーで読まない。",
+            "配列の値を1つ飛ばすと出力全体がずれる。",
+            "100だけがSであり、90台がSとは限らない。"
           ],
           "judgeSteps": [
-            "switchの対象値を先に確定する。",
-            "一致するcaseまたはdefaultを探す。",
-            "コロン形式ならbreakまで、アロー形式ならそのcaseだけを実行する。",
-            "switch式なら最終的に返る値を確認する。"
+            "switch文かswitch式かを確認する。",
+            "caseラベルに複数値がある場合は、対象値が含まれるか確認する。",
+            "`->` のswitch式ではフォールスルーしない。",
+            "printなので改行なしで連結されることを確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A です。\n\nswitch式のアロー形式はフォールスルーしない。70→B、80→A、90→A、95→E、40→C、20→D、10→D、60→B。",
+          "pdfExplanation": "正解は A です。配列の値を順にswitch式へ渡します。70はB、80と90はA、95はどのcaseにも一致しないのでE、40はC、20と10はD、60はBです。連結して出力されるので `BAAECDDB` になります。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題はswitch式です。`return switch (value) { ... };` の形なので、switch全体が値を返します。`->` を使ったcaseでは、該当した右側の値を返して終わります。フォールスルーは起きません。\n\n配列は `{70, 80, 90, 95, 40, 20, 10, 60}` です。順番に判定します。70は `case 50, 60, 70 -> \"B\"`、80と90は `\"A\"`、95は該当caseがないのでdefaultの `\"E\"`、40は `\"C\"`、20と10は `\"D\"`、60は `\"B\"` です。\n\nfor文の中では `System.out.print(test(i));` なので改行なしで連続して表示されます。したがって `BAAECDDB` です。"
         },
         "source": "",
-        "status": "pdf_visual_checked",
+        "status": "verified",
         "tags": [
           "operator/control",
           "main/args",
@@ -26160,60 +26144,64 @@ window.JAVA_STUDY_DATA = {
           "E"
         ],
         "explanation": {
-          "summary": "record Item(String name)には引数なしコンストラクタがない。ObjectをItemへダウンキャストすると実行時にClassCastException。",
+          "summary": "`new Item()` はrecordのコンストラクタ引数不足でコンパイルエラー、`(Item) new Object()` は実行時にClassCastExceptionになる。",
           "points": [
-            "recordの標準コンストラクタはnullや空文字列自体は拒否しない。",
-            "ArrayListはnull要素を許容する。"
+            "問題文が「失敗するもの」を選ばせていることを確認する。",
+            "recordのコンポーネントから標準コンストラクタの引数を確認する。",
+            "nullや空文字を禁止する処理があるか確認する。"
           ],
-          "correctReason": "正解は D・E です。\n\nrecord Item(String name)には引数なしコンストラクタがない。ObjectをItemへダウンキャストすると実行時にClassCastException。",
+          "correctReason": "正解は D と E です。`Item` は `record Item(String name)` なので、標準コンストラクタは `new Item(String)` です。引数なしの `new Item()` は存在せず、Dはコンパイルエラーになります。Eは `new Object()` をItemへキャストしようとしており、Objectの実体はItemではないため、実行時にClassCastExceptionが発生します。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「list.add(new Item()); / list.add((Item) new Object());」であり、「list.add(new Item(null));」ではありません。"
+              "detail": "誤りです。recordのnameにnullを渡すこと自体は、この定義では禁止されていません。コンパイルエラーにも実行時例外にもなりません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「list.add(new Item(\"\"));」ではありません。record Item(String name)には引数なしコンストラクタがない。ObjectをItemへダウンキャストすると実行時にClassCastException。"
+              "detail": "誤りです。空文字列はStringとして有効です。`new Item(\"\")` は生成できます。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「list.add(new Item()); / list.add((Item) new Object());」であり、「list.add(null);」ではありません。"
+              "detail": "誤りです。List<Item> にnullを追加すること自体は可能です。ジェネリクスはnullを禁止しません。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正しい選択肢です。record Item(String name)には引数なしコンストラクタがない。ObjectをItemへダウンキャストすると実行時にClassCastException。"
+              "detail": "正解です。record Item(String name)には、Stringを受け取る標準コンストラクタがあります。引数なしコンストラクタは自動生成されません。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正しい選択肢です。record Item(String name)には引数なしコンストラクタがない。ObjectをItemへダウンキャストすると実行時にClassCastException。"
+              "detail": "正解です。コンパイル時には明示キャストがあるため通りますが、実体がただのObjectなのでItemへのキャストに失敗し、ClassCastExceptionになります。"
             }
           ],
           "relatedKnowledge": [
-            "recordはデータを保持するための特殊なクラスで、コンポーネントからフィールド、アクセサ、equals、hashCode、toStringなどが自動生成される。",
-            "recordは暗黙的にfinal。通常のクラスのように継承される前提で考えない。",
-            "recordのフィールド参照はfinalだが、参照先オブジェクトが可変なら、その中身を変更できる場合がある。"
+            "recordはコンポーネントに対応する標準コンストラクタを持つ。",
+            "recordに引数なしコンストラクタは自動生成されない。",
+            "ジェネリクスはコンパイル時の型チェックであり、null追加を禁止する仕組みではない。",
+            "不正なダウンキャストは実行時にClassCastExceptionになる。"
           ],
           "examTips": [
-            "recordのコンポーネント名から生成されるアクセサはgetXではなく、コンポーネント名そのもの。",
-            "参照の再代入不可と、参照先オブジェクトの変更不可は別物。"
+            "recordだからnull不可、と決めつけない。",
+            "「コンパイルエラー」と「実行時例外」の両方を選ぶ問題では、Dのような構文・宣言問題とEのような実行時型問題を分けて見る。",
+            "明示キャストがあるとコンパイルは通るが、実体型が合わなければ実行時に落ちる。"
           ],
           "judgeSteps": [
-            "record宣言のコンポーネントを確認する。",
-            "自動生成されるコンストラクタとアクセサ名を確認する。",
-            "finalな参照そのものを変えているのか、参照先の状態を変えているのかを分ける。"
+            "問題文が「失敗するもの」を選ばせていることを確認する。",
+            "recordのコンポーネントから標準コンストラクタの引数を確認する。",
+            "nullや空文字を禁止する処理があるか確認する。",
+            "明示キャストはコンパイル可否と実行時成功を分けて判断する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は D・E です。\n\nrecord Item(String name)には引数なしコンストラクタがない。ObjectをItemへダウンキャストすると実行時にClassCastException。",
+          "pdfExplanation": "正解は D と E です。`Item` は `record Item(String name)` なので、標準コンストラクタは `new Item(String)` です。引数なしの `new Item()` は存在せず、Dはコンパイルエラーになります。Eは `new Object()` をItemへキャストしようとしており、Objectの実体はItemではないため、実行時にClassCastExceptionが発生します。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\n問題文は「コンパイルエラーまたは実行時例外が発生するもの」です。正常に動くものではなく、失敗するものを選ぶ点に注意します。\n\n`record Item(String name)` と定義すると、`Item(String name)` という標準コンストラクタが用意されます。引数なしコンストラクタが自動で追加されるわけではありません。したがってDの `new Item()` はコンパイルエラーです。\n\nAの `new Item(null)` は、recordだからといって自動的にnullを拒否するわけではありません。コンストラクタ内でチェックを書いていないので生成できます。Bの空文字もStringとして有効です。Cの `list.add(null)` も、Listの要素型がItemであってもnullは追加可能です。\n\nEは `(Item) new Object()` という明示キャストがあります。コンパイル時には「ObjectからItemへのキャスト式」として書けます。しかし、実行時の実体はItemではなくObjectなので、キャストに失敗してClassCastExceptionが発生します。"
         },
         "source": "",
-        "status": "pdf_visual_checked",
+        "status": "verified",
         "tags": [
           "collection",
           "record",
@@ -26264,61 +26252,61 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "文字列リテラル\"sample\"はコンスタントプールで1つ共有される。new String(\"sample\")が2回あるため、合計3つ。",
-          "points": [
-            "参照のコピーでは新しいインスタンスは作られない。"
-          ],
-          "correctReason": "正解は C です。\n\n文字列リテラル\"sample\"はコンスタントプールで1つ共有される。new String(\"sample\")が2回あるため、合計3つ。",
+          "summary": "文字列リテラルは文字列プールで共有され、new String(...) は呼び出すたびに別インスタンスを作る。参照コピーでは新しいStringは作られないため、作成数は3つ。",
+          "points": [],
+          "correctReason": "正解は C です。\n\nこのコードで作られるStringインスタンスは、文字列プール上の \"sample\" が1つ、`new String(\"sample\")` によって作られるヒープ上のインスタンスが2つです。`c = \"sample\"` は既存のプール上の文字列を参照し、`e = c` と `f = d` は参照をコピーしているだけなので、新しいStringインスタンスは作りません。したがって合計は3つです。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「1」ではありません。文字列リテラル\"sample\"はコンスタントプールで1つ共有される。new String(\"sample\")が2回あるため、合計3つ。"
+              "detail": "1つだけではありません。`new String(\"sample\")` が2回実行されるため、少なくともリテラル分とは別に2つのStringインスタンスが作られます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「2」ではありません。文字列リテラル\"sample\"はコンスタントプールで1つ共有される。new String(\"sample\")が2回あるため、合計3つ。"
+              "detail": "2つでも足りません。文字列リテラル \"sample\" は文字列プールに1つ作られ、さらに `new String(\"sample\")` が2回あるため、合計は3つです。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「3」です。文字列リテラル\"sample\"はコンスタントプールで1つ共有される。new String(\"sample\")が2回あるため、合計3つ。"
+              "detail": "正しいです。プール上の \"sample\" が1つ、`new String(\"sample\")` によるインスタンスが2つで、合計3つです。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「4」ではありません。文字列リテラル\"sample\"はコンスタントプールで1つ共有される。new String(\"sample\")が2回あるため、合計3つ。"
+              "detail": "`String c = \"sample\";` を新規作成と数えてしまうと4つに見えます。しかし同じリテラルは文字列プール上の既存インスタンスを再利用します。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「5」ではありません。文字列リテラル\"sample\"はコンスタントプールで1つ共有される。new String(\"sample\")が2回あるため、合計3つ。"
+              "detail": "`String e = c;` を新規作成と数えると5つに見えますが、これは参照のコピーです。Stringオブジェクトは作られません。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。「6」ではありません。文字列リテラル\"sample\"はコンスタントプールで1つ共有される。new String(\"sample\")が2回あるため、合計3つ。"
+              "detail": "`String e = c;` と `String f = d;` はどちらも参照コピーです。変数が増えてもStringインスタンスが増えるわけではありません。"
             }
           ],
           "relatedKnowledge": [
-            "Stringは不変オブジェクト。substring、concat、replaceなどは元の文字列を変更せず、新しい結果を戻す。戻り値を受け取らなければ結果は捨てられる。",
-            "==は参照の同一性を比較し、equalsは文字列内容の同値性を比較する。new String(...)は通常、文字列プールとは別のインスタンスを作る。",
-            "intern()は文字列プール上の同じ内容のインスタンス参照を返す。リテラルとintern結果の比較が問われやすい。"
+            "文字列リテラルは文字列プールで共有される。",
+            "`new String(...)` は通常、文字列プールとは別のStringインスタンスを作る。",
+            "参照型変数への代入は、オブジェクト本体のコピーではなく参照のコピー。"
           ],
           "examTips": [
-            "Stringメソッドを呼んだだけで元の変数が変わると考えない。代入されているかを必ず見る。",
-            "==の問題では、内容ではなく参照先が同じかを図にして追う。"
+            "変数が増えたからオブジェクトも増える、という判断は危険です。",
+            "`new` があるか、リテラルが再利用されているか、参照コピーだけかを分けて数えてください。"
           ],
           "judgeSteps": [
-            "各String変数が、newで作られたヒープ上のインスタンスか、文字列プール上のインスタンスかを分ける。",
-            "メソッド呼び出しの戻り値が変数に代入されているかを確認する。",
-            "==なら参照比較、equalsなら内容比較として判定する。"
+            "文字列リテラルを数える。",
+            "`new String(...)` の回数を数える。",
+            "参照コピーだけの代入を除外する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\n文字列リテラル\"sample\"はコンスタントプールで1つ共有される。new String(\"sample\")が2回あるため、合計3つ。",
+          "pdfExplanation": "正解は C です。\n\nこのコードで作られるStringインスタンスは、文字列プール上の \"sample\" が1つ、`new String(\"sample\")` によって作られるヒープ上のインスタンスが2つです。`c = \"sample\"` は既存のプール上の文字列を参照し、`e = c` と `f = d` は参照をコピーしているだけなので、新しいStringインスタンスは作りません。したがって合計は3つです。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、変数の数ではなく、Stringインスタンスが何個作られるかを数える問題です。まず `String a = \"sample\";` により、文字列リテラル \"sample\" が文字列プールに1つ用意されます。次の `new String(\"sample\")` は、プール上の文字列とは別にヒープ上へ新しいStringを作ります。\n\n`String c = \"sample\";` は、すでにプール上にある \"sample\" を再利用します。さらに `String d = new String(\"sample\");` は、もう一度 `new` しているため別のStringインスタンスを作ります。最後の `e = c`、`f = d` は、既存の参照を別の変数に入れているだけです。\n\nしたがって、変数は6個ありますが、Stringインスタンスは3個です。Java Silverでは「変数の数」と「オブジェクトの数」を混同させる問題がよく出ます。",
+          "source": "",
+          "status": "pdf_visual_checked"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -26388,71 +26376,72 @@ window.JAVA_STUDY_DATA = {
           "F"
         ],
         "explanation": {
-          "summary": "tryブロックで例外が発生すると、先にリソースのcloseが呼ばれC、次にcatchでA、最後にfinallyでB。",
-          "points": [
-            "try-with-resourcesはcatchより前にcloseを実行する。"
-          ],
-          "correctReason": "正解は F です。\n\ntryブロックで例外が発生すると、先にリソースのcloseが呼ばれC、次にcatchでA、最後にfinallyでB。",
+          "summary": "try-with-resourcesでは、tryブロックを抜けるときにcatchより先にcloseが実行される。その後catch、最後にfinallyが実行されるため、C、A、Bの順。",
+          "points": [],
+          "correctReason": "正解は F です。\n\ntryブロック内で `SampleException` がthrowされます。try-with-resourcesでは、tryブロックから出るタイミングで、catchに移る前にリソースの `close()` が呼ばれます。`Test.close()` は `C` を出力します。その後、`catch (Exception e)` が `SampleException` を受け取って `A` を出力し、最後にfinallyで `B` を出力します。よって表示順は C、A、B です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「C、A、Bの順に表示される」であり、「A、Bの順に表示される」ではありません。"
+              "detail": "Cが抜けています。try-with-resourcesで宣言された `Test t` は、tryブロックを抜けるときに自動でcloseされます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「C、A、Bの順に表示される」であり、「A、Cの順に表示される」ではありません。"
+              "detail": "Aより前にcloseのCが出ます。catchへ移る前にリソースのcloseが呼ばれる点が重要です。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「C、A、Bの順に表示される」であり、「B、Aの順に表示される」ではありません。"
+              "detail": "finallyのBがcatchのAより先に出るわけではありません。例外発生後はclose、catch、finallyの順です。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「C、A、Bの順に表示される」であり、「A、B、Cの順に表示される」ではありません。"
+              "detail": "Cは最後ではありません。try-with-resourcesのcloseはcatchより前に実行されます。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「C、A、Bの順に表示される」であり、「A、C、Bの順に表示される」ではありません。"
+              "detail": "AがCより先ではありません。例外が発生してtryを抜けると、まずリソースが閉じられます。"
             },
             {
               "key": "F",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「C、A、Bの順に表示される」です。tryブロックで例外が発生すると、先にリソースのcloseが呼ばれC、次にcatchでA、最後にfinallyでB。"
+              "detail": "正しいです。例外発生後、closeでC、catchでA、finallyでBの順に表示されます。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「C、A、Bの順に表示される」です。"
+              "detail": "コンパイルエラーではありません。`close()` は `throws Exception` ですが、try-with-resources全体の例外は `catch (Exception e)` で処理できます。"
             },
             {
               "key": "H",
               "isCorrect": false,
-              "detail": "誤りです。実行時例外は発生せず、結果は「C、A、Bの順に表示される」です。"
+              "detail": "例外はcatchで処理されるため、未処理の例外として外へスローされません。"
             }
           ],
           "relatedKnowledge": [
-            "try-with-resourcesで宣言したリソースは、tryブロック終了時に自動でcloseされる。closeの順序は宣言順ではなく逆順。",
-            "try本体が空でも、tryブロックを抜ける処理としてcloseは実行される。finallyがある場合、リソースのclose後にfinallyへ進む。",
-            "AutoCloseableのcloseは例外を投げられる。main側のthrowsやcatchの有無もコンパイル可否に影響する。"
+            "try-with-resourcesのリソースは、tryブロックを抜けるときに自動でcloseされる。",
+            "closeの実行はcatchブロックより前。",
+            "finallyはcatch処理の後に実行される。"
           ],
           "examTips": [
-            "リソースがA、Bの順で宣言されていたら、出力はBのclose、Aのcloseの順になる。",
-            "finallyの出力を先に置かない。try-with-resourcesではcloseの後にfinallyを読む。"
+            "try-catch-finallyだけの順序と、try-with-resourcesのclose順を分けて覚えてください。",
+            "複数リソースがある場合は、宣言と逆順にcloseされます。"
           ],
           "judgeSteps": [
-            "tryの丸括弧内に宣言されたリソースを左から順に列挙する。",
-            "tryブロックを抜けるタイミングで、その列挙を逆順にしてcloseの出力を並べる。",
-            "finallyがあれば、close後にfinally内の処理を追加する。"
+            "try内で何が出力されるか確認する。",
+            "例外が出たら、catchへ移る前にcloseが呼ばれるか確認する。",
+            "catchで処理されるか確認する。",
+            "最後にfinallyを実行する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は F です。\n\ntryブロックで例外が発生すると、先にリソースのcloseが呼ばれC、次にcatchでA、最後にfinallyでB。",
+          "pdfExplanation": "正解は F です。\n\ntryブロック内で `SampleException` がthrowされます。try-with-resourcesでは、tryブロックから出るタイミングで、catchに移る前にリソースの `close()` が呼ばれます。`Test.close()` は `C` を出力します。その後、`catch (Exception e)` が `SampleException` を受け取って `A` を出力し、最後にfinallyで `B` を出力します。よって表示順は C、A、B です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、try-with-resourcesの実行順を問う問題です。tryブロック内では `throw new SampleException();` によってチェック例外が発生します。ただし、この例外は後続の `catch (Exception e)` で受け取れます。\n\n重要なのは、catchに移る前にリソースのcloseが呼ばれる点です。`try (Test t = new Test())` で作られた `t` はAutoCloseableなので、tryブロックを抜ける時点で `t.close()` が自動実行されます。ここで `C` が出力されます。\n\nその後、catchブロックで `A`、finallyブロックで `B` が出力されます。close、catch、finallyの順を逆に覚えていると間違えます。",
+          "source": "",
+          "status": "pdf_visual_checked"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -26503,57 +26492,57 @@ window.JAVA_STUDY_DATA = {
           "E"
         ],
         "explanation": {
-          "summary": "interfaceの抽象メソッドは暗黙的にpublic。Cは正しく実装し、Eはabstractクラスなので未実装でもよい。",
-          "points": [
-            "privateにするとアクセスを狭めるため不可。",
-            "引数や戻り値が違うとオーバーライドにならない。"
-          ],
-          "correctReason": "正解は C・E です。\n\ninterfaceの抽象メソッドは暗黙的にpublic。Cは正しく実装し、Eはabstractクラスなので未実装でもよい。",
+          "summary": "interfaceの抽象メソッドは暗黙的にpublic。具象クラスが実装するならpublicで同じシグネチャが必要。抽象クラスは未実装のままでもよい。",
+          "points": [],
+          "correctReason": "正解は C と E です。\n\n`interface Test { void execute(); }` の `execute()` は、明示されていなくても `public abstract` として扱われます。具象クラスがこのインタフェースを実装する場合、`public void execute()` を定義しなければなりません。Cはその条件を満たします。Eはabstractクラスなので、インタフェースの抽象メソッドを未実装のまま残せます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。interfaceの抽象メソッドは暗黙的にpublic。Cは正しく実装し、Eはabstractクラスなので未実装でもよい。"
+              "detail": "`execute()` をprivateにしているため誤りです。interfaceの `execute()` はpublicなので、実装メソッドのアクセス範囲をprivateへ狭めることはできません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。interfaceの抽象メソッドは暗黙的にpublic。Cは正しく実装し、Eはabstractクラスなので未実装でもよい。"
+              "detail": "`execute(String str)` は引数があるため、`execute()` の実装ではありません。これはオーバーロードであり、interfaceの抽象メソッドは未実装のままです。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正しい選択肢です。interfaceの抽象メソッドは暗黙的にpublic。Cは正しく実装し、Eはabstractクラスなので未実装でもよい。"
+              "detail": "正しいです。`public void execute()` は、interfaceに定義された `execute()` と同じシグネチャで、アクセス修飾子もpublicです。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。interfaceの抽象メソッドは暗黙的にpublic。Cは正しく実装し、Eはabstractクラスなので未実装でもよい。"
+              "detail": "戻り値型がStringになっているため誤りです。interface側は `void execute()` なので、戻り値型が一致しません。戻り値型だけを変えた実装はできません。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正しい選択肢です。interfaceの抽象メソッドは暗黙的にpublic。Cは正しく実装し、Eはabstractクラスなので未実装でもよい。"
+              "detail": "正しいです。abstractクラスは、interfaceの抽象メソッドをすべて実装しなくてもコンパイルできます。未実装分は、具象サブクラスが最終的に実装します。"
             }
           ],
           "relatedKnowledge": [
-            "インタフェースの抽象メソッドは暗黙にpublic abstractとして扱われる。実装クラス側ではpublicより狭いアクセス修飾子にはできない。",
-            "defaultメソッドは実装を持つインタフェースメソッド。実装クラスが上書きしなければ、そのまま継承して呼び出せる。",
-            "インタフェース同士はextendsで継承でき、クラスはimplementsで実装する。クラスが複数インタフェースを実装できる点も頻出。"
+            "interfaceの抽象メソッドは暗黙的にpublic abstract。",
+            "実装メソッドはアクセス範囲を狭められない。",
+            "abstractクラスはinterfaceメソッドを未実装のまま残せる。"
           ],
           "examTips": [
-            "インタフェース実装問題では、メソッド名・引数リスト・戻り値型・アクセス修飾子の4点を必ず確認する。",
-            "defaultメソッドの競合がある場合、実装クラス側で明示的に解決しないとコンパイルエラーになる。"
+            "interface実装問題では、まずメソッド名、引数、戻り値、アクセス修飾子を確認してください。",
+            "abstractクラスか具象クラスかで、実装義務が変わります。"
           ],
           "judgeSteps": [
-            "インタフェースに定義された抽象メソッドを列挙する。",
-            "実装クラスまたは抽象クラスが、それらを実装する必要があるかを判定する。",
-            "実装している場合、public、戻り値型、throws、引数リストが条件を満たすか確認する。"
+            "interface側のメソッドをpublic abstractとして読み替える。",
+            "各選択肢のメソッドシグネチャを比較する。",
+            "アクセス修飾子がpublicか確認する。",
+            "abstractクラスなら未実装でもよいか確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C・E です。\n\ninterfaceの抽象メソッドは暗黙的にpublic。Cは正しく実装し、Eはabstractクラスなので未実装でもよい。",
+          "pdfExplanation": "正解は C と E です。\n\n`interface Test { void execute(); }` の `execute()` は、明示されていなくても `public abstract` として扱われます。具象クラスがこのインタフェースを実装する場合、`public void execute()` を定義しなければなりません。Cはその条件を満たします。Eはabstractクラスなので、インタフェースの抽象メソッドを未実装のまま残せます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、interfaceのメソッドが暗黙的にpublicであること、そして「実装」と「オーバーロード」を区別できるかがポイントです。interfaceに `void execute();` と書いても、実際には `public abstract void execute();` と同じ意味です。\n\nそのため、実装クラス側では `public void execute()` が必要です。アクセス修飾子を省略するとdefaultアクセスになり、publicより狭いので実装として不正です。privateはさらに狭いため当然不正です。\n\nまた、引数が違う `execute(String)` は別メソッドです。戻り値型が違う `String execute()` も、`void execute()` の実装にはなりません。抽象クラスだけは例外的に、未実装メソッドを残したままでもよいです。",
+          "source": "",
+          "status": "pdf_visual_checked"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -26605,57 +26594,57 @@ window.JAVA_STUDY_DATA = {
           "D"
         ],
         "explanation": {
-          "summary": "testメソッドはbooleanを返す必要があるが、for文の外にreturnがなく、戻り値が保証されないためコンパイルエラー。",
-          "points": [
-            "コンパイラは全経路でreturnがあるかを見る。"
-          ],
-          "correctReason": "正解は D です。\n\ntestメソッドはbooleanを返す必要があるが、for文の外にreturnがなく、戻り値が保証されないためコンパイルエラー。",
+          "summary": "`test` はbooleanを返す宣言だが、for文が実行されない場合やループを抜けた場合にreturnへ到達しない経路があるためコンパイルエラー。",
+          "points": [],
+          "correctReason": "正解は D です。\n\n`private static boolean test(int num) throws Exception` は、必ずboolean値を返さなければなりません。しかし、このメソッドのreturn文はfor文の中にしかありません。`num` が2以下ならfor文自体が実行されず、returnがありません。また、コンパイラはfor文内のreturnが必ず実行されるとは判断しません。したがって「戻り値が返されない可能性がある」と判定され、コンパイルエラーになります。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「1,2,3の順に表示される」という出力は発生しません。"
+              "detail": "実行結果を選ぶ前にコンパイル可否で止まります。`test` メソッドに戻り値が保証されていないため、出力は発生しません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「1,2,3,5の順に表示される」という出力は発生しません。"
+              "detail": "素数判定のように見えますが、このコードは実行まで進みません。booleanメソッドなのにreturnが保証されていません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「1,3,5,7の順に表示される」という出力は発生しません。"
+              "detail": "1,3,5,7のような出力を考える問題ではありません。コンパイル段階で失敗します。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「コンパイルエラーが発生する」です。testメソッドはbooleanを返す必要があるが、for文の外にreturnがなく、戻り値が保証されないためコンパイルエラー。"
+              "detail": "正しいです。`test` メソッドで、どの経路でもbooleanを返すことが保証されていません。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。コンパイル時点で止まるため、実行時例外ではありません。"
+              "detail": "実行時例外ではありません。コンパイル時に「戻り値がない可能性」を検出できます。"
             }
           ],
           "relatedKnowledge": [
-            "オーバーライドは、メソッド名と引数リストが同じであることが前提。戻り値型は同じ型または共変戻り値としてサブクラス型にできる。",
-            "オーバーライド時のアクセス修飾子は、親より狭くできない。publicをprotectedやデフォルトに落とすとコンパイルエラー。",
-            "オーバーロードは引数リスト違いの別メソッド。実行時の動的選択ではなく、コンパイル時の引数型で候補が決まる。"
+            "void以外のメソッドは、正常終了するすべての経路でreturnが必要。",
+            "for文やif文の中だけにreturnがある場合、return不足になりやすい。",
+            "コンパイラは、実行時の具体的な配列値を前提に戻り値保証を判断しない。"
           ],
           "examTips": [
-            "@Overrideが付いているのに条件を満たさない場合はコンパイルエラーになる。付いていなくても条件を満たせばオーバーライドは成立する。",
-            "戻り値だけ違うメソッドはオーバーロードにならない。戻り値型でメソッドを区別できない。"
+            "出力を追う前に、メソッド宣言とreturnの対応を確認してください。",
+            "「一見返していそう」でも、条件分岐やループの外にreturnがない場合は疑うべきです。"
           ],
           "judgeSteps": [
-            "親メソッドと子メソッドのメソッド名・引数リストを比較する。",
-            "戻り値型が同じか、親の戻り値型のサブタイプになっているか確認する。",
-            "アクセス修飾子が親と同じか、より広いか確認する。",
-            "throws句が親より広いチェック例外になっていないか確認する。"
+            "戻り値型がvoid以外か確認する。",
+            "return文がどこにあるか確認する。",
+            "returnに到達しない経路がないか確認する。",
+            "コンパイルできる場合だけ出力を追う。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は D です。\n\ntestメソッドはbooleanを返す必要があるが、for文の外にreturnがなく、戻り値が保証されないためコンパイルエラー。",
+          "pdfExplanation": "正解は D です。\n\n`private static boolean test(int num) throws Exception` は、必ずboolean値を返さなければなりません。しかし、このメソッドのreturn文はfor文の中にしかありません。`num` が2以下ならfor文自体が実行されず、returnがありません。また、コンパイラはfor文内のreturnが必ず実行されるとは判断しません。したがって「戻り値が返されない可能性がある」と判定され、コンパイルエラーになります。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、処理内容より先にメソッドの戻り値を確認するべき問題です。`test` メソッドはboolean型を返すと宣言されています。void以外のメソッドでは、正常終了するすべての経路でreturnが必要です。\n\nコードを見ると、return trueはfor文の中にあります。しかし、for文は条件次第で1回も実行されない可能性があります。たとえば `num` が1や2の場合、`int i = 2; i < num; i++` の条件を満たさず、for文の中に入りません。その場合、メソッド末尾まで到達しますがreturnがありません。\n\nそのため、配列の中身や例外処理を追跡する前にコンパイルエラーと判断します。Java Silverでは、出力問題に見せかけた「戻り値不足」の問題がよくあります。",
+          "source": "",
+          "status": "pdf_visual_checked"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -26713,54 +26702,56 @@ window.JAVA_STUDY_DATA = {
           "B"
         ],
         "explanation": {
-          "summary": "複数インタフェースの同名defaultメソッドが競合するため、Sampleはhelloを実装して明示的に解決する必要がある。default実装の呼び出しはInterfaceName.super.method()。",
+          "summary": "複数のinterfaceから同じシグネチャのdefaultメソッドを継承すると競合する。実装クラス側でoverrideし、必要なら `InterfaceName.super.method()` で片方を呼ぶ。",
           "points": [],
-          "correctReason": "正解は B です。\n\n複数インタフェースの同名defaultメソッドが競合するため、Sampleはhelloを実装して明示的に解決する必要がある。default実装の呼び出しはInterfaceName.super.method()。",
+          "correctReason": "正解は B です。\n\nSampleはAとBの両方をimplementsしており、どちらのinterfaceにも同じ `default void hello()` があります。このままだと、Sampleでhelloを呼んだときにAの実装を使うのかBの実装を使うのか決められません。そのため、Sampleはhelloを明示的に実装して競合を解消する必要があります。defaultメソッドの実装を呼び出す場合は、`B.super.hello()` のように `インタフェース名.super.メソッド名()` と書きます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「Sampleはhelloを実装する必要がある。Aの実装にアクセスするには、A.default.hello()のように記述する」ではありません。複数インタフェースの同名defaultメソッドが競合するため、Sampleはhelloを実装して明示的に解決する必要がある。default実装の呼び出しはInterfaceName.super.method()。"
+              "detail": "Sampleがhelloを実装する必要がある点は正しいですが、`A.default.hello()` という呼び出し方はできません。default実装を呼ぶ構文は `A.super.hello()` です。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「Sampleはhelloを実装する必要がある。Bの実装にアクセスするには、B.super.hello()のように記述する」です。複数インタフェースの同名defaultメソッドが競合するため、Sampleはhelloを実装して明示的に解決する必要がある。default実装の呼び出しはInterfaceName.super.method()。"
+              "detail": "正しいです。Sampleはhelloを実装して競合を解消する必要があり、B側のdefault実装を呼ぶなら `B.super.hello()` と書きます。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「Sampleはhelloを実装する必要はない。helloが呼び出されるとAの実装が使われる」ではありません。複数インタフェースの同名defaultメソッドが競合するため、Sampleはhelloを実装して明示的に解決する必要がある。default実装の呼び出しはInterfaceName.super.method()。"
+              "detail": "実装不要ではありません。AとBに同じdefaultメソッドがあるため競合し、Sample側で明示的に解決する必要があります。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「Sampleはhelloを実装する必要はない。helloが呼び出されるとBの実装が使われる」ではありません。複数インタフェースの同名defaultメソッドが競合するため、Sampleはhelloを実装して明示的に解決する必要がある。default実装の呼び出しはInterfaceName.super.method()。"
+              "detail": "Bの実装が自動的に優先されるわけではありません。複数のinterface defaultメソッド間に自動優先順位はありません。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「Sampleはhelloを実装する必要はない。利用したい実装を持つインタフェース型の変数からアクセスする必要がある」ではありません。複数インタフェースの同名defaultメソッドが競合するため、Sampleはhelloを実装して明示的に解決する必要がある。default実装の呼び出しはInterfaceName.super.method()。"
+              "detail": "変数の型をAやBにしても、Sampleクラス自体がdefaultメソッドの競合を解消していなければコンパイルできません。"
             }
           ],
           "relatedKnowledge": [
-            "インタフェースの抽象メソッドは暗黙にpublic abstractとして扱われる。実装クラス側ではpublicより狭いアクセス修飾子にはできない。",
-            "defaultメソッドは実装を持つインタフェースメソッド。実装クラスが上書きしなければ、そのまま継承して呼び出せる。",
-            "インタフェース同士はextendsで継承でき、クラスはimplementsで実装する。クラスが複数インタフェースを実装できる点も頻出。"
+            "複数interfaceの同名defaultメソッドは競合する。",
+            "競合したdefaultメソッドは実装クラス側でoverrideして解決する。",
+            "default実装を明示的に呼ぶ構文は `InterfaceName.super.method()`。"
           ],
           "examTips": [
-            "インタフェース実装問題では、メソッド名・引数リスト・戻り値型・アクセス修飾子の4点を必ず確認する。",
-            "defaultメソッドの競合がある場合、実装クラス側で明示的に解決しないとコンパイルエラーになる。"
+            "`default` という語に引っ張られて「自動でどちらかが使われる」と考えないでください。",
+            "interface同士の衝突か、クラスメソッドとの優先順位かを分けて判断します。"
           ],
           "judgeSteps": [
-            "インタフェースに定義された抽象メソッドを列挙する。",
-            "実装クラスまたは抽象クラスが、それらを実装する必要があるかを判定する。",
-            "実装している場合、public、戻り値型、throws、引数リストが条件を満たすか確認する。"
+            "AとBに同じシグネチャのdefaultメソッドがあるか確認する。",
+            "実装クラスがそのメソッドをoverrideしているか確認する。",
+            "default実装を呼ぶ構文が正しいか確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は B です。\n\n複数インタフェースの同名defaultメソッドが競合するため、Sampleはhelloを実装して明示的に解決する必要がある。default実装の呼び出しはInterfaceName.super.method()。",
+          "pdfExplanation": "正解は B です。\n\nSampleはAとBの両方をimplementsしており、どちらのinterfaceにも同じ `default void hello()` があります。このままだと、Sampleでhelloを呼んだときにAの実装を使うのかBの実装を使うのか決められません。そのため、Sampleはhelloを明示的に実装して競合を解消する必要があります。defaultメソッドの実装を呼び出す場合は、`B.super.hello()` のように `インタフェース名.super.メソッド名()` と書きます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\ninterfaceのdefaultメソッドは、実装クラスに処理を提供できます。しかし、複数のinterfaceから同じシグネチャのdefaultメソッドを受け継ぐと、どちらを使うかが曖昧になります。Javaはこの曖昧さを自動解決しません。\n\nしたがって、`class Sample implements A, B` とするなら、Sample内で `public void hello()` を実装する必要があります。その中でAのdefault実装を使いたいなら `A.super.hello();`、Bのdefault実装を使いたいなら `B.super.hello();` と書きます。\n\nなお、これは「クラスの具象メソッドがinterfaceのdefaultより優先される」ケースとは別です。今回はクラス側にhelloがなく、interface同士のdefaultが衝突しているため、実装が必須になります。",
+          "source": "",
+          "status": "pdf_visual_checked"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -26813,61 +26804,62 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "sealed interfaceを実装するクラスは、許可されたクラスであり、かつsealed/non-sealed/finalのいずれかで修飾される必要がある。BとCが条件を満たす。",
-          "points": [
-            "sealed classにするならpermits句または許可サブクラスが必要。"
-          ],
-          "correctReason": "正解は B・C です。\n\nsealed interfaceを実装するクラスは、許可されたクラスであり、かつsealed/non-sealed/finalのいずれかで修飾される必要がある。BとCが条件を満たす。",
+          "summary": "sealed interfaceを実装できるのはpermitsで許可された型だけ。さらに直接実装するクラスはfinal、sealed、non-sealedのいずれかで修飾する必要がある。",
+          "points": [],
+          "correctReason": "正解は B と C です。\n\n`public sealed interface A permits B` は、Aを直接実装できる型をBだけに制限しています。そのBは、sealed階層の次の扱いを明示するため、`final`、`sealed`、`non-sealed` のいずれかで修飾されている必要があります。Bは `non-sealed class B implements A` で条件を満たし、Cは `final class B implements A` で条件を満たします。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。sealed interfaceを実装するクラスは、許可されたクラスであり、かつsealed/non-sealed/finalのいずれかで修飾される必要がある。BとCが条件を満たす。"
+              "detail": "`abstract class B implements A` は、sealed階層で必要な `final` / `sealed` / `non-sealed` のいずれも付いていないため不正です。abstractであることだけでは条件を満たしません。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正しい選択肢です。sealed interfaceを実装するクラスは、許可されたクラスであり、かつsealed/non-sealed/finalのいずれかで修飾される必要がある。BとCが条件を満たす。"
+              "detail": "正しいです。permitsで許可されたBがAを実装し、さらにnon-sealedで今後の継承制限を解除することを明示しています。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正しい選択肢です。sealed interfaceを実装するクラスは、許可されたクラスであり、かつsealed/non-sealed/finalのいずれかで修飾される必要がある。BとCが条件を満たす。"
+              "detail": "正しいです。permitsで許可されたBがAを実装し、finalによりこれ以上継承できないことを明示しています。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。sealed interfaceを実装するクラスは、許可されたクラスであり、かつsealed/non-sealed/finalのいずれかで修飾される必要がある。BとCが条件を満たす。"
+              "detail": "単なる `class B implements A` では不正です。sealed interfaceを直接実装するクラスは、final、sealed、non-sealedのいずれかで修飾する必要があります。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。sealed interfaceを実装するクラスは、許可されたクラスであり、かつsealed/non-sealed/finalのいずれかで修飾される必要がある。BとCが条件を満たす。"
+              "detail": "`sealed class B implements A` とするなら、B自身がさらにどのクラスに継承を許可するかをpermitsで示すなど、sealedクラスとしての条件が必要です。この選択肢の形だけでは正しい実装とはいえません。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。sealed interfaceを実装するクラスは、許可されたクラスであり、かつsealed/non-sealed/finalのいずれかで修飾される必要がある。BとCが条件を満たす。"
+              "detail": "メソッドを実装していても、sealed階層の修飾子がありません。abstractかどうか、sampleを実装しているかとは別に、sealedの直接実装クラスとして不正です。"
             }
           ],
           "relatedKnowledge": [
-            "sealedは継承・実装できる直接の相手をpermitsで制限する仕組み。許可されていないクラスは継承できない。",
-            "sealedクラスまたはsealedインタフェースを直接継承・実装した側は、final、sealed、non-sealedのいずれかを明示する必要がある。",
-            "finalはそれ以上の継承禁止、sealedはさらに許可制、non-sealedは以降の継承制限解除を意味する。"
+            "sealed型の直接サブタイプは、permitsで許可されている必要がある。",
+            "sealed型を直接継承・実装するクラスは、final、sealed、non-sealedのいずれかが必要。",
+            "sealedを継続する場合は、その先の許可関係も必要になる。"
           ],
           "examTips": [
-            "permitsに名前があるかだけでなく、サブクラス側のfinal/sealed/non-sealed指定も確認する。",
-            "non-sealedは、sealedな親を直接継承・実装している場面で意味を持つ。通常クラスに突然付けても成立しない。"
+            "sealed問題では、メソッド実装より先にpermitsとサブクラス側の修飾子を確認してください。",
+            "abstractが付いていても、sealed階層の修飾子要件は消えません。"
           ],
           "judgeSteps": [
-            "親がsealedか、permitsで許可している直接サブクラス名を確認する。",
-            "各サブクラスが許可リストに含まれているかを確認する。",
-            "許可されたサブクラス側にfinal、sealed、non-sealedのいずれかがあるかを確認する。"
+            "permitsに対象クラス名が含まれているか確認する。",
+            "サブクラス側にfinal/sealed/non-sealedがあるか確認する。",
+            "抽象メソッドの実装義務を確認する。",
+            "sealedを続ける場合はpermits条件も確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は B・C です。\n\nsealed interfaceを実装するクラスは、許可されたクラスであり、かつsealed/non-sealed/finalのいずれかで修飾される必要がある。BとCが条件を満たす。",
+          "pdfExplanation": "正解は B と C です。\n\n`public sealed interface A permits B` は、Aを直接実装できる型をBだけに制限しています。そのBは、sealed階層の次の扱いを明示するため、`final`、`sealed`、`non-sealed` のいずれかで修飾されている必要があります。Bは `non-sealed class B implements A` で条件を満たし、Cは `final class B implements A` で条件を満たします。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nsealedは「誰が継承・実装してよいか」を制限する仕組みです。`A permits B` とあるので、Aを直接実装できるのはBだけです。この問題ではすべてクラス名がBなので、次に見るべきはB側の修飾子です。\n\nsealedな型を直接継承・実装するクラスは、自分の先の継承方針を明示しなければなりません。選択肢として有効なのは、これ以上継承不可にする `final`、制限を続ける `sealed`、制限を解除する `non-sealed` です。\n\nただし、`sealed class` と書くなら、そのクラス自身についても許可先を示す必要があります。単にsealedと付けただけでは不十分です。この問題では、non-sealedのBとfinalのBが正しい選択肢になります。",
+          "source": "",
+          "status": "pdf_visual_checked"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -26927,61 +26919,62 @@ window.JAVA_STUDY_DATA = {
           "B"
         ],
         "explanation": {
-          "summary": "A型変数でBインスタンスを参照しても、オーバーライドされたB#testが実行される。その中でhelloが呼ばれBが表示される。",
-          "points": [
-            "同一ファイル内のfinal class B extends Aによりsealed Aのpermits省略が成立する。"
-          ],
-          "correctReason": "正解は B です。\n\nA型変数でBインスタンスを参照しても、オーバーライドされたB#testが実行される。その中でhelloが呼ばれBが表示される。",
+          "summary": "A型変数でBインスタンスを参照していても、オーバーライドされたインスタンスメソッドは実体であるB側が実行される。B#test内でhelloが呼ばれ、Bが表示される。",
+          "points": [],
+          "correctReason": "正解は B です。\n\n`A b = new B();` により、変数の宣言型はAですが、実体はBです。`test()` はAに定義され、Bでオーバーライドされています。インスタンスメソッドのオーバーライドは実行時の実体型で決まるため、`b.test()` ではBの `test()` が実行されます。Bの `test()` はprivateメソッド `hello()` を呼び、その中で `B` を表示します。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「Bが表示される」であり、「Aが表示される」ではありません。"
+              "detail": "A型変数で呼んでいる点だけを見るとAが出そうに見えますが、`test()` はBでオーバーライドされています。実行されるのは実体Bのメソッドです。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「Bが表示される」です。A型変数でBインスタンスを参照しても、オーバーライドされたB#testが実行される。その中でhelloが呼ばれBが表示される。"
+              "detail": "正しいです。`b.test()` はB側のオーバーライドメソッドを実行し、その中で `hello()` が呼ばれてBが表示されます。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「Bが表示される」であり、「A、Bが表示される」ではありません。"
+              "detail": "Aの `test()` とBの `test()` の両方が実行されるわけではありません。Bの `test()` 内で `super.test()` を呼んでいないため、Aは表示されません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「Bが表示される」であり、「B、Aが表示される」ではありません。"
+              "detail": "Bの後にAが表示される処理はありません。Bの `test()` は `hello()` だけを呼びます。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「Bが表示される」です。"
+              "detail": "コンパイルエラーではありません。BはAを継承し、`test()` をpublicで正しくオーバーライドしています。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。実行時例外は発生せず、結果は「Bが表示される」です。"
+              "detail": "実行時例外は発生しません。privateメソッド `hello()` はBクラス内部から呼ばれているため問題ありません。"
             }
           ],
           "relatedKnowledge": [
-            "sealedは継承・実装できる直接の相手をpermitsで制限する仕組み。許可されていないクラスは継承できない。",
-            "sealedクラスまたはsealedインタフェースを直接継承・実装した側は、final、sealed、non-sealedのいずれかを明示する必要がある。",
-            "finalはそれ以上の継承禁止、sealedはさらに許可制、non-sealedは以降の継承制限解除を意味する。"
+            "インスタンスメソッドのオーバーライドは実体型で決まる。",
+            "呼べるかどうかは宣言型で決まり、実行されるoverrideメソッドは実体型で決まる。",
+            "privateメソッドは同じクラス内からは呼べる。"
           ],
           "examTips": [
-            "permitsに名前があるかだけでなく、サブクラス側のfinal/sealed/non-sealed指定も確認する。",
-            "non-sealedは、sealedな親を直接継承・実装している場面で意味を持つ。通常クラスに突然付けても成立しない。"
+            "`A b = new B();` のようなコードでは、宣言型と実体型を分けて書き出してください。",
+            "`super.test()` がない限り、親クラスの処理は自動では実行されません。"
           ],
           "judgeSteps": [
-            "親がsealedか、permitsで許可している直接サブクラス名を確認する。",
-            "各サブクラスが許可リストに含まれているかを確認する。",
-            "許可されたサブクラス側にfinal、sealed、non-sealedのいずれかがあるかを確認する。"
+            "変数の宣言型を確認する。",
+            "実体型を確認する。",
+            "呼び出すメソッドがオーバーライドされているか確認する。",
+            "実行されるメソッド内の出力を追う。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は B です。\n\nA型変数でBインスタンスを参照しても、オーバーライドされたB#testが実行される。その中でhelloが呼ばれBが表示される。",
+          "pdfExplanation": "正解は B です。\n\n`A b = new B();` により、変数の宣言型はAですが、実体はBです。`test()` はAに定義され、Bでオーバーライドされています。インスタンスメソッドのオーバーライドは実行時の実体型で決まるため、`b.test()` ではBの `test()` が実行されます。Bの `test()` はprivateメソッド `hello()` を呼び、その中で `B` を表示します。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、宣言型と実体型の違いを確認する問題です。`A b = new B();` では、変数bの型はAですが、実際に作られているインスタンスはBです。\n\nJavaでは、オーバーライドされたインスタンスメソッドは実行時の実体型で決まります。したがって、A型の変数から `test()` を呼んでも、実体がBならBの `test()` が実行されます。\n\nBの `test()` は `hello();` を呼びます。`hello()` はprivateですが、Bクラス自身の中から呼んでいるので問題ありません。privateだから呼べない、という判断をしてはいけません。外部からは呼べませんが、同じクラス内では呼べます。",
+          "source": "",
+          "status": "pdf_visual_checked"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -27035,61 +27028,62 @@ window.JAVA_STUDY_DATA = {
           "A"
         ],
         "explanation": {
-          "summary": "a()でresultは1、b()で3。どちらもtrueなのでa()!=b()はfalseとなりelseで+4、合計7。",
-          "points": [
-            "|と&は右辺も評価する。||は左辺trueなら右辺を評価しない。"
-          ],
-          "correctReason": "正解は A です。\n\na()でresultは1、b()で3。どちらもtrueなのでa()!=b()はfalseとなりelseで+4、合計7。",
+          "summary": "a()とb()はいずれも実行され、それぞれresultに1と2を加える。`a() != b()` はtrue != trueでfalseになりelse側の+4が実行され、合計7になる。",
+          "points": [],
+          "correctReason": "正解は A です。\n\n`a()` はresultに1を加えてtrueを返します。`b()` はresultに2を加えてtrueを返します。Aの `a() != b()` では両方のメソッドが呼ばれるため、まずresultは3になります。戻り値はどちらもtrueなので、`true != true` はfalseです。そのためif本体ではなくelse側が実行され、resultに4が加わります。合計は7です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「a() != b()」です。a()でresultは1、b()で3。どちらもtrueなのでa()!=b()はfalseとなりelseで+4、合計7。"
+              "detail": "正しいです。a()で+1、b()で+2、条件式はfalseなのでelseで+4、合計7になります。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「a() | b()」ではありません。a()でresultは1、b()で3。どちらもtrueなのでa()!=b()はfalseとなりelseで+4、合計7。"
+              "detail": "`|` は非短絡ORなのでa()とb()は両方実行されますが、true | true はtrueです。そのためif本体の+3が実行され、合計6になります。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「a() == b()」ではありません。a()でresultは1、b()で3。どちらもtrueなのでa()!=b()はfalseとなりelseで+4、合計7。"
+              "detail": "`a() == b()` はtrue == trueでtrueです。a()とb()で3、if本体で+3されるため、合計6になります。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「a() & b()」ではありません。a()でresultは1、b()で3。どちらもtrueなのでa()!=b()はfalseとなりelseで+4、合計7。"
+              "detail": "`&` は非短絡ANDなので両方実行されますが、true & true はtrueです。合計は6になります。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「a() || b()」ではありません。a()でresultは1、b()で3。どちらもtrueなのでa()!=b()はfalseとなりelseで+4、合計7。"
+              "detail": "`||` は短絡ORです。a()がtrueを返した時点でb()は呼ばれません。その後if本体で+3され、合計4になります。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。「a() && b()」ではありません。a()でresultは1、b()で3。どちらもtrueなのでa()!=b()はfalseとなりelseで+4、合計7。"
+              "detail": "`&&` はa()がtrueなのでb()も呼ばれ、条件式もtrueです。resultは1+2+3で6になります。"
             }
           ],
           "relatedKnowledge": [
-            "前置++は値を変更してから式で使い、後置++は現在値を式で使ってから値を変更する。--も同じ考え方。",
-            "&&と||は短絡評価を行うが、&と|はbooleanに対して使った場合でも右辺まで評価する。副作用を伴う++があると結果が変わる。",
-            "複合代入演算子は、演算結果を左辺の型へ暗黙に変換して代入する性質がある。通常の代入とは型変換の扱いが異なる場合がある。"
+            "`||` と `&&` は短絡評価を行う。",
+            "`|` と `&` はbooleanに対して使うと両辺を評価する。",
+            "メソッド呼び出しに副作用がある場合、条件式の真偽だけでなく呼ばれた回数も重要。"
           ],
           "examTips": [
-            "インクリメント問題は、最終値だけでなく「式に使われた値」を別に書き出す。",
-            "論理演算子問題では、右辺が評価されたかどうかを先に確定する。"
+            "resultのような共有変数がある問題では、条件式を評価しながら値の変化を書き出してください。",
+            "短絡評価では、右辺が実行されない可能性を必ず確認してください。"
           ],
           "judgeSteps": [
-            "式を左から読み、各項で式に使われる値と変数の更新後の値を分けて記録する。",
-            "短絡評価がある場合は、右辺に進むかどうかを条件式ごとに判定する。",
-            "数値型が混在する場合は、演算前の型昇格と代入時の型変換を確認する。"
+            "各選択肢でa()が呼ばれるか確認する。",
+            "b()が呼ばれるか確認する。",
+            "条件式の結果を判定する。",
+            "if側かelse側かを決め、resultの合計を計算する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A です。\n\na()でresultは1、b()で3。どちらもtrueなのでa()!=b()はfalseとなりelseで+4、合計7。",
+          "pdfExplanation": "正解は A です。\n\n`a()` はresultに1を加えてtrueを返します。`b()` はresultに2を加えてtrueを返します。Aの `a() != b()` では両方のメソッドが呼ばれるため、まずresultは3になります。戻り値はどちらもtrueなので、`true != true` はfalseです。そのためif本体ではなくelse側が実行され、resultに4が加わります。合計は7です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、論理演算子の結果だけでなく、副作用があるメソッドが呼ばれるかを追う問題です。`a()` と `b()` はどちらもbooleanを返すだけでなく、staticフィールド `result` を変更します。\n\nAの `a() != b()` では、左辺と右辺を比較するため両方のメソッドが呼ばれます。a()でresultは1、b()でresultは3になります。戻り値はどちらもtrueなので、条件式全体はfalseです。したがってelseの `result += 4;` が実行され、最終的に7になります。\n\n`||` と `&&` は短絡評価、`|` と `&` はbooleanにも使える非短絡評価です。特に `||` は左辺がtrueなら右辺を評価しないので、b()が呼ばれない点に注意が必要です。",
+          "source": "",
+          "status": "pdf_visual_checked"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -27140,54 +27134,56 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "クラス名.メソッド名で呼べるのはstaticメソッド。さらにprivateは他クラスから呼べないため、aとpublic staticのcが正しい。",
+          "summary": "クラス名で直接呼び出せるのはstaticメソッド。さらに他クラスから呼ぶならprivateは不可。defaultアクセスのaとpublicのcが呼び出せる。",
           "points": [],
-          "correctReason": "正解は A・C です。\n\nクラス名.メソッド名で呼べるのはstaticメソッド。さらにprivateは他クラスから呼べないため、aとpublic staticのcが正しい。",
+          "correctReason": "正解は A と C です。\n\n`Test.a()` のようにクラス名で呼び出すには、そのメソッドがstaticである必要があります。a、b、cはstaticですが、bはprivateなので他のクラスから呼び出せません。aはdefaultアクセスなので同じパッケージ内なら呼び出せます。cはpublic staticなので呼び出せます。dとeはstaticではないため、`Test.d()` や `Test.e()` の形では呼び出せません。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正しい選択肢です。クラス名.メソッド名で呼べるのはstaticメソッド。さらにprivateは他クラスから呼べないため、aとpublic staticのcが正しい。"
+              "detail": "正しいです。aはstaticメソッドで、privateではありません。同じパッケージ内の他クラスからなら `Test.a()` で呼び出せます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「Test.b();」ではありません。クラス名.メソッド名で呼べるのはstaticメソッド。さらにprivateは他クラスから呼べないため、aとpublic staticのcが正しい。"
+              "detail": "bはstaticですがprivateです。privateメソッドはTestクラスの外から呼び出せません。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正しい選択肢です。クラス名.メソッド名で呼べるのはstaticメソッド。さらにprivateは他クラスから呼べないため、aとpublic staticのcが正しい。"
+              "detail": "正しいです。cはpublic staticメソッドなので、他クラスから `Test.c()` と呼び出せます。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「Test.d();」ではありません。クラス名.メソッド名で呼べるのはstaticメソッド。さらにprivateは他クラスから呼べないため、aとpublic staticのcが正しい。"
+              "detail": "dはpublicですがstaticではありません。クラス名 `Test.d()` では呼べず、インスタンスを生成してから呼ぶ必要があります。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「Test.e();」ではありません。クラス名.メソッド名で呼べるのはstaticメソッド。さらにprivateは他クラスから呼べないため、aとpublic staticのcが正しい。"
+              "detail": "eはprotectedですがstaticではありません。`Test.e()` の形では呼び出せません。アクセス修飾子以前にstaticかどうかで不正です。"
             }
           ],
           "relatedKnowledge": [
-            "staticメンバはクラスに属し、インスタンスごとには複製されない。全インスタンスから共有される。",
-            "staticメソッドからは、thisを使えず、インスタンスフィールドやインスタンスメソッドへ直接アクセスできない。",
-            "同名のローカル変数や引数がある場合、単純名ではローカル側が優先される。フィールドを指すにはthis.fieldやClassName.fieldを使う。"
+            "staticメソッドはクラスに属し、クラス名から呼び出せる。",
+            "privateメソッドは同じクラス内からしか呼べない。",
+            "インスタンスメソッドはクラス名から直接呼び出せない。"
           ],
           "examTips": [
-            "static問題は「クラスに属するもの」と「インスタンスに属するもの」を表に分ける。",
-            "staticメソッド内で非staticフィールド名が裸で出たら、まずコンパイルエラーを疑う。"
+            "メソッド呼び出し問題では、まず呼び出し形式を見る。`ClassName.method()` ならstaticが必要です。",
+            "アクセス修飾子とstaticのどちらの問題なのかを分けて判断してください。"
           ],
           "judgeSteps": [
-            "対象メンバがstaticかインスタンスメンバかを確認する。",
-            "呼び出し元のメソッドがstaticかどうかを確認する。",
-            "同名のローカル変数・引数がある場合、名前解決の優先順位を確認する。"
+            "呼び出し形式がクラス名かインスタンスか確認する。",
+            "staticメソッドだけを候補に残す。",
+            "privateなどアクセス不可のものを除外する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A・C です。\n\nクラス名.メソッド名で呼べるのはstaticメソッド。さらにprivateは他クラスから呼べないため、aとpublic staticのcが正しい。",
+          "pdfExplanation": "正解は A と C です。\n\n`Test.a()` のようにクラス名で呼び出すには、そのメソッドがstaticである必要があります。a、b、cはstaticですが、bはprivateなので他のクラスから呼び出せません。aはdefaultアクセスなので同じパッケージ内なら呼び出せます。cはpublic staticなので呼び出せます。dとeはstaticではないため、`Test.d()` や `Test.e()` の形では呼び出せません。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題では、アクセス修飾子とstaticを同時に見ます。`Test.a()` のようにクラス名で呼んでいるため、まずstaticメソッドかどうかを確認します。インスタンスメソッドは、原則として `new Test().d()` のようにインスタンス経由で呼び出します。\n\na、b、cはstaticです。次に、他のクラスから呼べるかをアクセス修飾子で判定します。bはprivateなので、Testクラスの外からは呼べません。aは修飾子なしのdefaultアクセスなので、同じパッケージ内なら呼べます。cはpublicなので呼べます。\n\ndとeはstaticではないため、選択肢の形では不正です。publicやprotectedだから呼べる、という判断をする前に、クラス名で呼んでいるかインスタンスで呼んでいるかを確認する必要があります。",
+          "source": "",
+          "status": "pdf_visual_checked"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -27229,54 +27225,58 @@ window.JAVA_STUDY_DATA = {
           "E"
         ],
         "explanation": {
-          "summary": "abstract classに具象finalメソッドを定義することは可能。finalとabstractの同時指定、sealedのサブクラス修飾不足、抽象メソッドの誤記述は不可。",
+          "summary": "abstractクラスにfinalな具象メソッドを持たせることはできる。finalとabstractの同時指定や、抽象メソッドに本体を書く/本体なしでabstractを書かない形は不可。",
           "points": [],
-          "correctReason": "正解は E です。\n\nabstract classに具象finalメソッドを定義することは可能。finalとabstractの同時指定、sealedのサブクラス修飾不足、抽象メソッドの誤記述は不可。",
+          "correctReason": "正解は E です。\n\n`abstract class A { final void method() {} }` は正しい定義です。抽象クラスは抽象メソッドを持てますが、必ず抽象メソッドを持たなければならないわけではありません。また、抽象クラスの中にfinalな具象メソッドを定義することも可能です。finalメソッドはサブクラスでオーバーライドできないだけで、抽象クラス内に置けないわけではありません。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。abstract classに具象finalメソッドを定義することは可能。finalとabstractの同時指定、sealedのサブクラス修飾不足、抽象メソッドの誤記述は不可。"
+              "detail": "`final abstract class A` は不正です。finalは継承禁止、abstractは継承して実装させる前提なので、クラスに同時指定できません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。abstract classに具象finalメソッドを定義することは可能。finalとabstractの同時指定、sealedのサブクラス修飾不足、抽象メソッドの誤記述は不可。"
+              "detail": "sealedクラスAを継承するBは、final、sealed、non-sealedのいずれかで修飾する必要があります。`abstract class B extends A {}` のままではsealed階層の条件を満たしません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。abstract classに具象finalメソッドを定義することは可能。finalとabstractの同時指定、sealedのサブクラス修飾不足、抽象メソッドの誤記述は不可。"
+              "detail": "`abstract void method() {}` は不正です。abstractメソッドは本体を持てません。また、抽象メソッドを含むクラスはabstractクラスである必要があります。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。abstract classに具象finalメソッドを定義することは可能。finalとabstractの同時指定、sealedのサブクラス修飾不足、抽象メソッドの誤記述は不可。"
+              "detail": "`void method();` のように本体なしのメソッドを書くならabstractが必要です。さらに、そのような抽象メソッドを持つクラスはabstractである必要がありますが、メソッド側のabstract指定が抜けています。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「」です。abstract classに具象finalメソッドを定義することは可能。finalとabstractの同時指定、sealedのサブクラス修飾不足、抽象メソッドの誤記述は不可。"
+              "detail": "正しいです。abstractクラスの中にfinalな具象メソッドを定義できます。finalは「オーバーライド禁止」という意味であり、メソッド本体を持つこととは矛盾しません。"
             }
           ],
           "relatedKnowledge": [
-            "sealedは継承・実装できる直接の相手をpermitsで制限する仕組み。許可されていないクラスは継承できない。",
-            "sealedクラスまたはsealedインタフェースを直接継承・実装した側は、final、sealed、non-sealedのいずれかを明示する必要がある。",
-            "finalはそれ以上の継承禁止、sealedはさらに許可制、non-sealedは以降の継承制限解除を意味する。"
+            "final classは継承不可。abstract classは継承して具体化する前提。",
+            "abstractメソッドは本体を持てない。",
+            "abstractクラスは具象メソッドを持てる。",
+            "sealedクラスの直接サブクラスにはfinal/sealed/non-sealedが必要。"
           ],
           "examTips": [
-            "permitsに名前があるかだけでなく、サブクラス側のfinal/sealed/non-sealed指定も確認する。",
-            "non-sealedは、sealedな親を直接継承・実装している場面で意味を持つ。通常クラスに突然付けても成立しない。"
+            "修飾子問題では、単語の意味を丸暗記するだけではなく、組み合わせが矛盾していないかを見る必要があります。",
+            "abstractクラスは「抽象メソッドだけのクラス」ではありません。"
           ],
           "judgeSteps": [
-            "親がsealedか、permitsで許可している直接サブクラス名を確認する。",
-            "各サブクラスが許可リストに含まれているかを確認する。",
-            "許可されたサブクラス側にfinal、sealed、non-sealedのいずれかがあるかを確認する。"
+            "クラス修飾子の組み合わせを見る。",
+            "メソッドに本体があるか確認する。",
+            "abstractメソッドならセミコロンで終わっているか確認する。",
+            "sealedがあればサブクラス側の修飾子も確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は E です。\n\nabstract classに具象finalメソッドを定義することは可能。finalとabstractの同時指定、sealedのサブクラス修飾不足、抽象メソッドの誤記述は不可。",
+          "pdfExplanation": "正解は E です。\n\n`abstract class A { final void method() {} }` は正しい定義です。抽象クラスは抽象メソッドを持てますが、必ず抽象メソッドを持たなければならないわけではありません。また、抽象クラスの中にfinalな具象メソッドを定義することも可能です。finalメソッドはサブクラスでオーバーライドできないだけで、抽象クラス内に置けないわけではありません。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、修飾子の組み合わせを問う問題です。abstractは「未完成で、サブクラスで完成させる可能性がある」ことを表します。一方finalは「これ以上継承・オーバーライドさせない」ことを表します。そのため、クラスにfinalとabstractを同時に付けることはできません。\n\nメソッドについても、abstractメソッドは本体を持てません。`abstract void method();` のようにセミコロンで終わる必要があります。逆に、本体なしのメソッドをabstract指定なしで書くこともできません。\n\nEは、abstractクラスの中にfinalな具象メソッドを定義しているだけです。抽象クラスだからといって全メソッドがabstractである必要はありません。具象メソッド、staticメソッド、finalメソッドを持つこともできます。",
+          "source": "",
+          "status": "pdf_visual_checked"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -27333,68 +27333,68 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "Bではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。結果はA:C::E:。",
+          "summary": "A, B, C, D, Eを順に処理する。A/C/Eはdefaultで文字を出してから「:」を出す。Bはcontinueでforの次回へ進むため「B」も「:」も出ない。Dはswitch内のbreakでswitchだけを抜け、その後の「:」は出る。したがって出力は「A:C::E:」。",
           "points": [
-            "switch内のbreakはswitchだけを抜ける。",
-            "continueは外側のforの次反復へ進む。"
+            "continueは現在のループの残りを飛ばして次の反復へ進む。switch文の外にある処理も飛ばされる。",
+            "switch内のbreakはswitchだけを抜ける。外側のfor文までは抜けない。"
           ],
-          "correctReason": "正解は C です。\n\nBではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。結果はA:C::E:。",
+          "correctReason": "正解は C です。\n\nA, B, C, D, Eを順に処理する。A/C/Eはdefaultで文字を出してから「:」を出す。Bはcontinueでforの次回へ進むため「B」も「:」も出ない。Dはswitch内のbreakでswitchだけを抜け、その後の「:」は出る。したがって出力は「A:C::E:」。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「A:B:C::E:」ではありません。Bではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。結果はA:C::E:。"
+              "detail": "誤りです。Bではcase \"B\"のcontinueによりfor文の次の繰り返しへ移るため、Bもその後の「:」も出ません。よって「A:B:C::E:」にはなりません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「A::C:E:」ではありません。Bではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。結果はA:C::E:。"
+              "detail": "誤りです。Dではcase \"D\"のbreakによりswitch文だけを抜けます。for文は続いてswitchの外側にあるSystem.out.print(\":\")が実行されるため、Dの位置で「:」が1つ出ます。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「A:C::E:」です。Bではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。結果はA:C::E:。"
+              "detail": "正解です。Aで「A:」、Bは何も出さず、Cで「C:」、Dで「:」、Eで「E:」となるため、全体は「A:C::E:」です。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「A:C:E:」ではありません。Bではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。結果はA:C::E:。"
+              "detail": "誤りです。Dのcaseではbreakしてswitchを抜けた後に「:」が出るため、Cの後ろとDの後ろで「::」になります。「A:C:E:」ではコロンが1つ足りません。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「A::C::E:」ではありません。Bではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。結果はA:C::E:。"
+              "detail": "誤りです。Bではcontinueによってswitch外の「:」も飛ばされるため、Aの後に余分な「:」は付きません。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。「A:B:C:D:E:」ではありません。Bではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。結果はA:C::E:。"
+              "detail": "誤りです。Bはcontinueで出力されず、DはbreakでD自体を出力しません。全要素が文字として表示されるわけではありません。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "誤りです。「A:C:D:E:」ではありません。Bではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。結果はA:C::E:。"
+              "detail": "誤りです。Dではdefaultへ進まないためDは出力されません。case \"D\"でbreakし、その後に「:」だけが出ます。"
             }
           ],
           "relatedKnowledge": [
-            "switch文のコロン形式は、breakがなければ次のcaseへフォールスルーする。switch式のアロー形式は原則フォールスルーしない。",
-            "switch式は値を返す式であり、ブロック形式で値を返す場合はyieldを使う。returnとは役割が違う。",
-            "switchの対象がnullになると、通常は実行時にNullPointerExceptionが発生する。case nullが使えるかどうかは試験範囲・Javaバージョンの扱いに注意する。"
+            "switch文のbreakとループのbreakは、どのブロックから抜けるかを分けて考える。",
+            "continueがswitchの中にあっても、対象はswitchではなく外側のループ。"
           ],
           "examTips": [
-            "switch文とswitch式を混同しない。文は処理の流れ、式は値を作る構文。",
-            "caseに入った後、breakがあるまで下へ流れるかを必ず確認する。"
+            "出力問題では各反復ごとに「switch内の出力」と「switch後の出力」を分けて表にする。",
+            "caseに入った後、break/continue/defaultの位置を必ず確認する。"
           ],
           "judgeSteps": [
-            "switchの対象値を先に確定する。",
-            "一致するcaseまたはdefaultを探す。",
-            "コロン形式ならbreakまで、アロー形式ならそのcaseだけを実行する。",
-            "switch式なら最終的に返る値を確認する。"
+            "wordがA: defaultでA出力、その後:出力。",
+            "wordがB: continueでfor次回へ進むため、switch後の:も出ない。",
+            "wordがC: defaultでC出力、その後:出力。",
+            "wordがD: breakでswitchを抜け、その後:だけ出力。",
+            "wordがE: defaultでE出力、その後:出力。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\nBではcontinueでループ次回へ進み、Dではswitch内break後に「:」だけ出る。結果はA:C::E:。",
+          "pdfExplanation": "正解は C です。\n\nA, B, C, D, Eを順に処理する。A/C/Eはdefaultで文字を出してから「:」を出す。Bはcontinueでforの次回へ進むため「B」も「:」も出ない。Dはswitch内のbreakでswitchだけを抜け、その後の「:」は出る。したがって出力は「A:C::E:」。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は「switch文の中のcontinue」と「switch文の中のbreak」の違いを確認する問題です。continueはswitchを抜ける命令ではなく、外側のfor文の次の繰り返しへ移ります。一方、breakはこの位置ではswitch文だけを抜けます。したがってBでは完全に出力が飛び、Dでは文字Dは出ませんが、switchの外にあるコロンは出ます。ここを混同すると、Bの後ろやDの後ろのコロン数を間違えます。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -27452,65 +27452,62 @@ window.JAVA_STUDY_DATA = {
           "D"
         ],
         "explanation": {
-          "summary": "numは2→3→4→5と増え、num<5がfalseになってwhileを抜けるため5が表示される。",
+          "summary": "numは2から開始する。num=2ではcase 0で3になり、num=3ではcase 1で4になり、num=4ではcase 0で5になる。次にwhile条件num<5がfalseになるためループを抜け、5が表示される。",
           "points": [
-            "switch内breakはwhileを抜けるものではない。"
+            "switch文内のbreakはswitchだけを抜ける。whileを抜けるわけではない。",
+            "case 1にはbreakがないが、この後に別のcase文はないため、実質的にswitchを抜けるのと同じ流れになる。"
           ],
-          "correctReason": "正解は D です。\n\nnumは2→3→4→5と増え、num<5がfalseになってwhileを抜けるため5が表示される。",
+          "correctReason": "正解は D です。\n\nnumは2から開始する。num=2ではcase 0で3になり、num=3ではcase 1で4になり、num=4ではcase 0で5になる。次にwhile条件num<5がfalseになるためループを抜け、5が表示される。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「5が表示される」であり、「2が表示される」ではありません。"
+              "detail": "誤りです。numは初期値2のままではありません。while内で必ずnum++が実行されます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「5が表示される」であり、「3が表示される」ではありません。"
+              "detail": "誤りです。1回目のループ終了時点では3になりますが、num<5を満たすためループは続きます。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「5が表示される」であり、「4が表示される」ではありません。"
+              "detail": "誤りです。2回目のループ終了時点では4ですが、まだnum<5なので3回目のループが実行されます。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「5が表示される」です。numは2→3→4→5と増え、num<5がfalseになってwhileを抜けるため5が表示される。"
+              "detail": "正解です。2→3→4→5と増え、5になった時点でwhile条件がfalseになり、System.out.println(num)で5が表示されます。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「5が表示される」であり、「6が表示される」ではありません。"
+              "detail": "誤りです。numが5になった直後にwhile条件num<5がfalseになるため、6まで増える前にループを抜けます。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「5が表示される」であり、「whileループが終了せずに何も表示されない」ではありません。"
+              "detail": "誤りです。case 0でもcase 1でもnum++が実行されるため、numは増え続けます。無限ループにはなりません。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「5が表示される」です。"
+              "detail": "誤りです。switch対象はint式num % 2で、caseラベルも0と1です。構文上の問題はありません。"
             }
           ],
           "relatedKnowledge": [
-            "switch文のコロン形式は、breakがなければ次のcaseへフォールスルーする。switch式のアロー形式は原則フォールスルーしない。",
-            "switch式は値を返す式であり、ブロック形式で値を返す場合はyieldを使う。returnとは役割が違う。",
-            "switchの対象がnullになると、通常は実行時にNullPointerExceptionが発生する。case nullが使えるかどうかは試験範囲・Javaバージョンの扱いに注意する。"
+            "ループ問題では、1回ごとの変数更新を表にする。",
+            "breakがどの構文を抜けるのかを必ず確認する。"
           ],
           "examTips": [
-            "switch文とswitch式を混同しない。文は処理の流れ、式は値を作る構文。",
-            "caseに入った後、breakがあるまで下へ流れるかを必ず確認する。"
+            "初期値num=2を確認する。",
+            "while条件num<5を判定する。",
+            "num%2で入るcaseを決める。",
+            "num++後の値で次のwhile条件へ戻る。"
           ],
-          "judgeSteps": [
-            "switchの対象値を先に確定する。",
-            "一致するcaseまたはdefaultを探す。",
-            "コロン形式ならbreakまで、アロー形式ならそのcaseだけを実行する。",
-            "switch式なら最終的に返る値を確認する。"
-          ],
+          "judgeSteps": "【詳しい読み解き】\nこの問題はwhileとswitchを組み合わせた追跡問題です。重要なのは、case 0のbreakはwhileではなくswitchだけを抜ける点です。numは2、3、4の3回だけwhile内に入り、それぞれの回で1ずつ増えます。5になった時点で次の条件判定に戻り、num<5がfalseになるため出力へ進みます。",
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は D です。\n\nnumは2→3→4→5と増え、num<5がfalseになってwhileを抜けるため5が表示される。",
+          "pdfExplanation": "正解は D です。\n\nnumは2から開始する。num=2ではcase 0で3になり、num=3ではcase 1で4になり、num=4ではcase 0で5になる。次にwhile条件num<5がfalseになるためループを抜け、5が表示される。",
           "pdfAlignmentNote": "",
           "additionalExplanation": ""
         },
@@ -27570,63 +27567,61 @@ window.JAVA_STUDY_DATA = {
           "A"
         ],
         "explanation": {
-          "summary": "Fは2つ目の配列の3番目の要素。配列添字は0始まりなのでi=1、j=2。",
-          "points": [],
-          "correctReason": "正解は A です。\n\nFは2つ目の配列の3番目の要素。配列添字は0始まりなのでi=1、j=2。",
+          "summary": "配列dataは外側に2要素あり、data[0]が{\"A\",\"B\",\"C\"}、data[1]が{\"D\",\"E\",\"F\"}。Fはdata[1][2]なので、表示されたときのiは1、jは2。",
+          "points": [
+            "配列の添字は0から始まる。3番目の要素は添字2。",
+            "二次元配列は「配列の配列」。外側の添字と内側の添字を分けて読む。"
+          ],
+          "correctReason": "正解は A です。\n\n配列dataは外側に2要素あり、data[0]が{\"A\",\"B\",\"C\"}、data[1]が{\"D\",\"E\",\"F\"}。Fはdata[1][2]なので、表示されたときのiは1、jは2。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「i=1, j=2」です。Fは2つ目の配列の3番目の要素。配列添字は0始まりなのでi=1、j=2。"
+              "detail": "正解です。Fは2行目の3列目、つまりdata[1][2]です。外側の添字iは1、内側の添字jは2です。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「i=1, j=1」ではありません。Fは2つ目の配列の3番目の要素。配列添字は0始まりなのでi=1、j=2。"
+              "detail": "誤りです。data[1][1]はEです。Fではありません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「i=1, j=4」ではありません。Fは2つ目の配列の3番目の要素。配列添字は0始まりなのでi=1、j=2。"
+              "detail": "誤りです。data[1]の長さは3なので、有効なjは0,1,2です。j=4は範囲外です。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「i=0, j=2」ではありません。Fは2つ目の配列の3番目の要素。配列添字は0始まりなのでi=1、j=2。"
+              "detail": "誤りです。data[0][2]はCです。Fは外側2つ目の配列にあります。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「i=0, j=1」ではありません。Fは2つ目の配列の3番目の要素。配列添字は0始まりなのでi=1、j=2。"
+              "detail": "誤りです。data[0][1]はBです。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。「i=0, j=3」ではありません。Fは2つ目の配列の3番目の要素。配列添字は0始まりなのでi=1、j=2。"
+              "detail": "誤りです。data[0]の有効な添字は0,1,2なのでj=3は範囲外です。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "誤りです。「i=1, j=3」ではありません。Fは2つ目の配列の3番目の要素。配列添字は0始まりなのでi=1、j=2。"
+              "detail": "誤りです。data[1]の有効な添字は0,1,2です。j=3は範囲外です。"
             }
           ],
           "relatedKnowledge": [
-            "配列のlengthは要素数であり、最後の有効添字はlength - 1。添字範囲外アクセスは実行時例外になる。",
-            "多次元配列は配列の配列。行ごとに長さが違うジャグ配列も作れるため、外側と内側のlengthを分けて読む。",
-            "参照型配列の要素の初期値はnull。要素にインスタンスを入れる前にメソッド呼び出しをするとNullPointerExceptionになる。"
+            "二次元配列では、見た目の行番号・列番号をそのまま添字にしない。必ず0始まりへ変換する。"
           ],
           "examTips": [
-            "二次元配列では、array.lengthとarray[i].lengthを同じ意味で読まない。",
-            "拡張for文のループ変数に代入しても、配列要素そのものの差し替えにはならない場合がある。"
+            "外側配列data.lengthを確認する。",
+            "各内側配列data[i]の内容を確認する。",
+            "対象の値Fがどの内側配列の何番目かを特定する。",
+            "0始まりの添字へ変換する。"
           ],
-          "judgeSteps": [
-            "配列の生成式から外側の要素数を確認する。",
-            "二次元以上なら、各行の内側配列の長さを個別に確認する。",
-            "ループごとに参照している添字が有効範囲内かを確認する。",
-            "参照型配列なら、要素がnullのまま使われていないかを確認する。"
-          ],
+          "judgeSteps": "【詳しい読み解き】\n`String[][] data = {{\"A\", \"B\", \"C\"}, {\"D\", \"E\", \"F\"}};` は、外側の配列に2つのString配列が入っている形です。1つ目がdata[0]、2つ目がdata[1]です。Fは2つ目の配列の3番目にあるので、data[1][2]です。二重ループでは外側のiが行、内側のjが列に相当します。",
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A です。\n\nFは2つ目の配列の3番目の要素。配列添字は0始まりなのでi=1、j=2。",
+          "pdfExplanation": "正解は A です。\n\n配列dataは外側に2要素あり、data[0]が{\"A\",\"B\",\"C\"}、data[1]が{\"D\",\"E\",\"F\"}。Fはdata[1][2]なので、表示されたときのiは1、jは2。",
           "pdfAlignmentNote": "",
           "additionalExplanation": ""
         },
@@ -27678,57 +27673,51 @@ window.JAVA_STUDY_DATA = {
           "D"
         ],
         "explanation": {
-          "summary": "PDF解説上は、パターン変数strのスコープ外参照としてコンパイルエラー。実際のJavaバージョン差が出やすい論点なので、必要ならコンパイラで確認すること。",
+          "summary": "この問題では、instanceofパターンで宣言したstrをelseブロック側で使用している点が問われている。教材上の正解は、strの有効範囲外で使用しているとしてコンパイルエラー。したがってD。",
           "points": [
-            "PDFの正答はD。",
-            "instanceofパターン変数のフロースコープは試験バージョン依存で要注意。"
+            "パターン変数は、通常のローカル変数と同じように有効範囲がある。",
+            "コンパイルエラーがある場合、出力結果や実行時例外は発生しない。"
           ],
-          "correctReason": "正解は D です。\n\nPDF解説上は、パターン変数strのスコープ外参照としてコンパイルエラー。実際のJavaバージョン差が出やすい論点なので、必要ならコンパイラで確認すること。",
+          "correctReason": "正解は D です。\n\nこの問題では、instanceofパターンで宣言したstrをelseブロック側で使用している点が問われている。教材上の正解は、strの有効範囲外で使用しているとしてコンパイルエラー。したがってD。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「aが表示される」という出力は発生しません。"
+              "detail": "誤りです。この問題の解答上は、strの有効範囲の扱いによりコンパイルエラーとなるため、実行結果としてaは表示されません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「Aが表示される」という出力は発生しません。"
+              "detail": "誤りです。実行結果を問う前に、elseブロックでstrを使用している箇所が問題となります。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「何も表示されない」という出力は発生しません。"
+              "detail": "誤りです。何も表示されない正常終了ではありません。出力処理に到達する前にコンパイルエラーとして扱います。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「コンパイルエラーが発生する」です。PDF解説上は、パターン変数strのスコープ外参照としてコンパイルエラー。実際のJavaバージョン差が出やすい論点なので、必要ならコンパイラで確認すること。"
+              "detail": "正解です。instanceofパターンで宣言したstrを、使用できないスコープで参照しているとしてコンパイルエラーになります。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。コンパイル時点で止まるため、実行時例外ではありません。"
+              "detail": "誤りです。実行時例外ではなく、実行前のコンパイル段階で止まる問題です。"
             }
           ],
           "relatedKnowledge": [
-            "intなどのプリミティブ値をIntegerなどのラッパークラスへ自動変換することをオートボクシングという。",
-            "Integer、Long、DoubleなどのラッパークラスはいずれもNumberのサブクラス。Number型の引数には、ボクシング後のラッパーインスタンス参照を渡せる。",
-            "instanceofパターンマッチングは、実行時の実体型が対象型に適合した場合にだけ成立し、そのブロック内でパターン変数を使える。"
+            "instanceofパターンの問題では、条件式の真偽だけでなく、パターン変数を使っている位置を確認する。",
+            "実行結果を追う前に、まずコンパイル可否を判定する。"
           ],
           "examTips": [
-            "0b0110のような2進数表記でも、接尾辞がなければ整数リテラルの型は基本的にint。",
-            "Number型で受けていても、実体がIntegerなのかLongなのかをinstanceofで判定する。",
-            "型名の見た目ではなく、リテラルのデフォルト型とボクシング後の実体型を追う。"
+            "obj instanceof String str のstrがどこで有効かを確認する。",
+            "strを参照している行が有効範囲内かを確認する。",
+            "コンパイルできる場合だけ、toLowerCaseの出力を追う。"
           ],
-          "judgeSteps": [
-            "リテラルの値とデフォルト型を確認する。",
-            "メソッド引数に渡すとき、必要ならどのラッパークラスへボクシングされるか確認する。",
-            "受け取り側の宣言型と実体型を分ける。",
-            "instanceofの分岐を上から順に評価する。"
-          ],
+          "judgeSteps": "【詳しい読み解き】\nこの問題は、`instanceof` のパターンマッチングで宣言した変数の有効範囲を問う問題です。コードだけを見ると、引数\"A\"はStringなので小文字化されて\"a\"が出るように見えます。しかし、この問題ではその前に、`str` を参照している位置が有効範囲外であるとしてコンパイルエラーと判断します。Java 17の実際のフロー・スコープ仕様と教材上の説明には注意が必要ですが、この問題データではDを正解として扱います。",
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は D です。\n\nPDF解説上は、パターン変数strのスコープ外参照としてコンパイルエラー。実際のJavaバージョン差が出やすい論点なので、必要ならコンパイラで確認すること。",
+          "pdfExplanation": "正解は D です。\n\nこの問題では、instanceofパターンで宣言したstrをelseブロック側で使用している点が問われている。教材上の正解は、strの有効範囲外で使用しているとしてコンパイルエラー。したがってD。",
           "pdfAlignmentNote": "",
           "additionalExplanation": ""
         },
@@ -27783,65 +27772,62 @@ window.JAVA_STUDY_DATA = {
           "E"
         ],
         "explanation": {
-          "summary": "varはローカル変数に使える。Aは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。",
+          "summary": "varはローカル変数で、初期化式から型を推論できる場合に使える。Aはローカル変数として使っておりコンパイルできる。Eもフィールドxとは別に、メソッド内ローカル変数xとして宣言しているため正しい。Bはint推論後にString代入、Cはフィールド、Dはrecordコンポーネント、Fは同じスコープで引数xと重複、Gはnullだけで型推論不可。",
           "points": [
-            "フィールド、recordコンポーネント、引数にはvarを使えない。",
-            "varでnull単独初期化は型推論できない。"
+            "varは型をなくす機能ではなく、右辺から型を推論してコンパイル時に固定する機能。",
+            "varが使えるのは主にローカル変数。フィールド、メソッド引数、戻り値型、recordコンポーネントには使えない。"
           ],
-          "correctReason": "正解は A・E です。\n\nvarはローカル変数に使える。Aは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。",
+          "correctReason": "正解は A・E です。\n\nvarはローカル変数で、初期化式から型を推論できる場合に使える。Aはローカル変数として使っておりコンパイルできる。Eもフィールドxとは別に、メソッド内ローカル変数xとして宣言しているため正しい。Bはint推論後にString代入、Cはフィールド、Dはrecordコンポーネント、Fは同じスコープで引数xと重複、Gはnullだけで型推論不可。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正しい選択肢です。varはローカル変数に使える。Aは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。"
+              "detail": "正解です。varはhelloメソッド内のローカル変数に使われています。new ArrayList<>()から型推論できるため、警告はあり得てもコンパイルエラーではありません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。varはローカル変数に使える。Aは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。"
+              "detail": "誤りです。var a = 0; によりaはint型と推論されます。その後に文字列\"0\"を代入することはできません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。varはローカル変数に使える。Aは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。"
+              "detail": "誤りです。varはフィールド宣言には使えません。ローカル変数専用です。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。varはローカル変数に使える。Aは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。"
+              "detail": "誤りです。recordのコンポーネント型にvarは使えません。record D(int x, int y)のように明示する必要があります。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正しい選択肢です。varはローカル変数に使える。Aは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。"
+              "detail": "正解です。フィールドxとメソッド内のローカル変数xはスコープが異なります。hello内のvar x = \"hello\"はString型として推論され、問題ありません。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。varはローカル変数に使える。Aは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。"
+              "detail": "誤りです。helloメソッドの引数xと同じスコープ内でローカル変数xを再宣言しているためコンパイルエラーです。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。varはローカル変数に使える。Aは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。"
+              "detail": "誤りです。var v = null; では型を推論できません。nullは参照先がないことを表す値で、具体的な型を決められません。"
             }
           ],
           "relatedKnowledge": [
-            "varはローカル変数の型推論に使うための予約型名。フィールド、メソッド引数、戻り値型、コンストラクタ引数には使えない。",
-            "varで宣言するには、右辺から型を一意に推論できる必要がある。null単体、ラムダ式単体、配列初期化子単体では推論できない。",
-            "varは動的型付けではない。コンパイル時に型が決まり、その後に別系統の型へ自由に変わるわけではない。"
+            "var問題では「どこで使っているか」と「右辺から型が決まるか」を分けて見る。",
+            "varで推論された型は後から変わらない。"
           ],
           "examTips": [
-            "varを見たら、使われている場所がローカル変数宣言かを先に見る。場所が違えば即コンパイルエラー。",
-            "右辺がnullや `{...}` だけの場合は型推論できない。"
+            "varがローカル変数に使われているか確認する。",
+            "初期化式があるか確認する。",
+            "null、配列初期化子、ラムダ式だけになっていないか確認する。",
+            "同じスコープで同名変数を宣言していないか確認する。"
           ],
-          "judgeSteps": [
-            "varがフィールド・引数・戻り値型に使われていないか確認する。",
-            "ローカル変数なら、右辺から具体的な型を推論できるか確認する。",
-            "推論された型で、その後の代入やメソッド呼び出しが成立するか確認する。"
-          ],
+          "judgeSteps": "【詳しい読み解き】\nこの問題は、varそのものより「使える場所」と「推論後の型」が中心です。Aはローカル変数なので使用可能です。Eもフィールドと同名ですが、メソッド内のローカル変数として別スコープに宣言されているため使用できます。一方、Bはintに決まった変数へStringを入れようとしており不可です。CとDはそもそもvarを使える場所ではありません。Fは同一スコープの名前重複、Gはnullだけでは型推論できない点が誤りです。",
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A・E です。\n\nvarはローカル変数に使える。Aは警告はあり得るがコンパイル可能、Eはフィールドxとローカル変数xの別スコープなので可能。",
+          "pdfExplanation": "正解は A・E です。\n\nvarはローカル変数で、初期化式から型を推論できる場合に使える。Aはローカル変数として使っておりコンパイルできる。Eもフィールドxとは別に、メソッド内ローカル変数xとして宣言しているため正しい。Bはint推論後にString代入、Cはフィールド、Dはrecordコンポーネント、Fは同じスコープで引数xと重複、Gはnullだけで型推論不可。",
           "pdfAlignmentNote": "",
           "additionalExplanation": ""
         },
@@ -27897,61 +27883,57 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "コンストラクタのi=++iは引数ローカル変数への代入で、フィールドiは0のまま。i++の値で3の倍数判定を行い、j=0,3,6,9を加算して18。",
+          "summary": "コンストラクタの i = ++i; は引数iを更新しているだけで、フィールドiは変更されない。フィールドiはintの初期値0のまま。testではjが0から9まで回り、if条件の i++ % 3 != 0 がfalseになるのは、後置インクリメントで使われる元のiが0,3,6,9のとき。このときだけtotal += jされるため、0+3+6+9=18。",
           "points": [
-            "this.iに代入していない点が罠。"
+            "コンストラクタ引数名とフィールド名が同じ場合、単純名iは引数を指す。フィールドを指すにはthis.iが必要。",
+            "後置インクリメントは、式には元の値を使い、その後に変数を1増やす。"
           ],
-          "correctReason": "正解は C です。\n\nコンストラクタのi=++iは引数ローカル変数への代入で、フィールドiは0のまま。i++の値で3の倍数判定を行い、j=0,3,6,9を加算して18。",
+          "correctReason": "正解は C です。\n\nコンストラクタの i = ++i; は引数iを更新しているだけで、フィールドiは変更されない。フィールドiはintの初期値0のまま。testではjが0から9まで回り、if条件の i++ % 3 != 0 がfalseになるのは、後置インクリメントで使われる元のiが0,3,6,9のとき。このときだけtotal += jされるため、0+3+6+9=18。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「18が表示される」であり、「0が表示される」ではありません。"
+              "detail": "誤りです。j=0のときだけでなく、j=3,6,9でもtotalに加算されます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「18が表示される」であり、「13が表示される」ではありません。"
+              "detail": "誤りです。引数3がフィールドに入るわけではありません。フィールドiは0から始まるため、加算されるjは0,3,6,9です。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「18が表示される」です。コンストラクタのi=++iは引数ローカル変数への代入で、フィールドiは0のまま。i++の値で3の倍数判定を行い、j=0,3,6,9を加算して18。"
+              "detail": "正解です。フィールドiは0のまま始まり、j=0,3,6,9のときにtotalへ加算されるため、合計18になります。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「18が表示される」であり、「無限ループになり何も表示されない」ではありません。"
+              "detail": "誤りです。for文のjは0から9まで増え、j<10がfalseになれば終了します。無限ループではありません。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「18が表示される」です。"
+              "detail": "誤りです。var j = i; はローカル変数宣言で、iはフィールドintとして参照可能です。構文上のコンパイルエラーはありません。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。実行時例外は発生せず、結果は「18が表示される」です。"
+              "detail": "誤りです。配列アクセスやnull参照などの実行時例外は発生しません。正常に18を出力します。"
             }
           ],
           "relatedKnowledge": [
-            "ローカル変数は自動初期化されない。宣言しただけのローカル変数を読むとコンパイルエラーになる。",
-            "フィールドは型ごとのデフォルト値で初期化される。intなら0、booleanならfalse、参照型ならnull。ローカル変数とは扱いが違う。",
-            "同名のローカル変数や引数がある場合、単純名ではローカル側が優先される。フィールドを明示したい場合はthis.fieldまたはClassName.staticFieldを使う。"
+            "同名のフィールドと引数が出たら、thisがあるかを最初に見る。",
+            "後置++を含む条件式は、判定に使った値と判定後の値を分けて表にする。"
           ],
           "examTips": [
-            "初期化問題では、値が入る可能性ではなく、すべての経路で確実に代入済みかを見る。",
-            "フィールドのデフォルト値の知識をローカル変数へ持ち込まない。ここは試験でよく狙われる。",
-            "thisが付いているか、付いていないかで参照先が変わる。代入式では左辺と右辺を別々に確認する。"
+            "コンストラクタでフィールドが変更されるか確認する。",
+            "for文の初期値jを確認する。",
+            "各ループでi++が条件判定に使う値と、判定後のiを分ける。",
+            "continueされない回だけtotalへjを加算する。"
           ],
-          "judgeSteps": [
-            "対象がフィールドかローカル変数かを確認する。",
-            "ローカル変数なら、使用前に必ず代入されているかを確認する。",
-            "同名の変数がある場合、単純名がローカル側を指していないか確認する。",
-            "フィールドを参照する必要がある場合、thisやクラス名で明示されているかを見る。"
-          ],
+          "judgeSteps": "【詳しい読み解き】\n最大のひっかけはコンストラクタです。`public Sample(int i) { i = ++i; }` はフィールドではなく引数iを操作しています。`this.i = ++i;` ではないので、フィールドiは0のままです。testのfor文はj=0から9まで回ります。条件式では後置インクリメントなので、判定に使うのは増える前のiです。iが0,3,6,9の回だけ `i++ % 3 != 0` がfalseになり、continueせずtotalへjを足します。結果は0+3+6+9で18です。",
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\nコンストラクタのi=++iは引数ローカル変数への代入で、フィールドiは0のまま。i++の値で3の倍数判定を行い、j=0,3,6,9を加算して18。",
+          "pdfExplanation": "正解は C です。\n\nコンストラクタの i = ++i; は引数iを更新しているだけで、フィールドiは変更されない。フィールドiはintの初期値0のまま。testではjが0から9まで回り、if条件の i++ % 3 != 0 がfalseになるのは、後置インクリメントで使われる元のiが0,3,6,9のとき。このときだけtotal += jされるため、0+3+6+9=18。",
           "pdfAlignmentNote": "",
           "additionalExplanation": ""
         },
@@ -28019,65 +28001,62 @@ window.JAVA_STUDY_DATA = {
           "A"
         ],
         "explanation": {
-          "summary": "呼び出しているのは常に引数なしprint()で、A側のメソッド。A#printはA.valueを表示するため、B側valueの設定に関係なく100が4回出る。",
+          "summary": "mainで呼んでいるのはすべて引数なしのprint()。Bにはprint(int)しかなく、引数なしprint()はAから継承したものが使われる。A.print()内のvalueはAクラスのフィールドで、Bの同名フィールドではない。BのコンストラクタはB側valueだけを変更し、A側valueはAのデフォルトコンストラクタにより100。したがって4回ともresult=100。",
           "points": [
-            "Bのprint(int)はオーバーロードであり、A#print()のオーバーライドではない。"
+            "オーバーロードでは引数リストが違うメソッドは別メソッド。print()とprint(int)は別物。",
+            "フィールドはオーバーライドされない。同名フィールドがあっても、メソッドが定義されたクラス側のフィールドを参照する。"
           ],
-          "correctReason": "正解は A です。\n\n呼び出しているのは常に引数なしprint()で、A側のメソッド。A#printはA.valueを表示するため、B側valueの設定に関係なく100が4回出る。",
+          "correctReason": "正解は A です。\n\nmainで呼んでいるのはすべて引数なしのprint()。Bにはprint(int)しかなく、引数なしprint()はAから継承したものが使われる。A.print()内のvalueはAクラスのフィールドで、Bの同名フィールドではない。BのコンストラクタはB側valueだけを変更し、A側valueはAのデフォルトコンストラクタにより100。したがって4回ともresult=100。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「result=100 result=100 result=100 result=100」です。呼び出しているのは常に引数なしprint()で、A側のメソッド。A#printはA.valueを表示するため、B側valueの設定に関係なく100が4回出る。"
+              "detail": "正解です。4回ともAクラスの引数なしprint()が実行され、A側フィールドvalueの100を出力します。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「result=200 result=20 result=100 result=100」ではありません。呼び出しているのは常に引数なしprint()で、A側のメソッド。A#printはA.valueを表示するため、B側valueの設定に関係なく100が4回出る。"
+              "detail": "誤りです。Bのvalueに200や20が入っても、呼び出されるA.print()が参照するのはA側valueです。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「result=0 result=0 result=100 result=10」ではありません。呼び出しているのは常に引数なしprint()で、A側のメソッド。A#printはA.valueを表示するため、B側valueの設定に関係なく100が4回出る。"
+              "detail": "誤りです。A側valueはAのデフォルトコンストラクタで100に初期化されます。0ではありません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「result=200 result=20 result=100 result=10」ではありません。呼び出しているのは常に引数なしprint()で、A側のメソッド。A#printはA.valueを表示するため、B側valueの設定に関係なく100が4回出る。"
+              "detail": "誤りです。B側valueの値は、A.print()の出力には使われません。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「result=100 result=100 result=100 result=100」であり、「result=null result=null result=100 result=100」ではありません。"
+              "detail": "誤りです。valueはintなのでnullにはなりません。A側valueは100です。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「result=100 result=100 result=100 result=100」です。"
+              "detail": "誤りです。BはAの抽象メソッドprint(int)を実装しているため、具象クラスとして成立します。"
             },
             {
               "key": "G",
               "isCorrect": false,
-              "detail": "誤りです。実行時例外は発生せず、結果は「result=100 result=100 result=100 result=100」です。"
+              "detail": "誤りです。null参照や不正キャストはなく、正常に出力されます。"
             }
           ],
           "relatedKnowledge": [
-            "オーバーライドは、メソッド名と引数リストが同じであることが前提。戻り値型は同じ型または共変戻り値としてサブクラス型にできる。",
-            "オーバーライド時のアクセス修飾子は、親より狭くできない。publicをprotectedやデフォルトに落とすとコンパイルエラー。",
-            "オーバーロードは引数リスト違いの別メソッド。実行時の動的選択ではなく、コンパイル時の引数型で候補が決まる。"
+            "「宣言型と実体型」だけでなく「どのクラスに定義されたメソッドを実行しているか」を見る。",
+            "同名フィールドは非常に間違えやすい。メソッドと同じ動的解決をすると考えない。"
           ],
           "examTips": [
-            "@Overrideが付いているのに条件を満たさない場合はコンパイルエラーになる。付いていなくても条件を満たせばオーバーライドは成立する。",
-            "戻り値だけ違うメソッドはオーバーロードにならない。戻り値型でメソッドを区別できない。"
+            "呼び出しがprint()なのかprint(int)なのかを確認する。",
+            "Bに引数なしprint()があるか確認する。",
+            "継承したA.print()が実行されると分かったら、そのメソッド内のvalueがA側フィールドであると判断する。",
+            "各コンストラクタでA側valueが何になるか確認する。"
           ],
-          "judgeSteps": [
-            "親メソッドと子メソッドのメソッド名・引数リストを比較する。",
-            "戻り値型が同じか、親の戻り値型のサブタイプになっているか確認する。",
-            "アクセス修飾子が親と同じか、より広いか確認する。",
-            "throws句が親より広いチェック例外になっていないか確認する。"
-          ],
+          "judgeSteps": "【詳しい読み解き】\nこの問題は、オーバーロード、抽象メソッドの実装、フィールド隠蔽が重なっています。Aには`print()`と`print(int)`があり、Bが実装しているのは`print(int)`だけです。mainで呼んでいるのは全て`print()`なので、B側の`print(int)`は一度も呼ばれません。実行されるのはAの`print()`です。さらに、Aの`print()`から見える`value`はAクラスのフィールドです。Bにも同名フィールドがありますが、フィールドはメソッドのようにオーバーライドされません。",
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A です。\n\n呼び出しているのは常に引数なしprint()で、A側のメソッド。A#printはA.valueを表示するため、B側valueの設定に関係なく100が4回出る。",
+          "pdfExplanation": "正解は A です。\n\nmainで呼んでいるのはすべて引数なしのprint()。Bにはprint(int)しかなく、引数なしprint()はAから継承したものが使われる。A.print()内のvalueはAクラスのフィールドで、Bの同名フィールドではない。BのコンストラクタはB側valueだけを変更し、A側valueはAのデフォルトコンストラクタにより100。したがって4回ともresult=100。",
           "pdfAlignmentNote": "",
           "additionalExplanation": ""
         },
@@ -28129,53 +28108,52 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "case 1とcase 5はbreakがないためフォールスルーする。順に処理するとnumは6になる。",
-          "points": [],
-          "correctReason": "正解は C です。\n\ncase 1とcase 5はbreakがないためフォールスルーする。順に処理するとnumは6になる。",
+          "summary": "valuesを1,4,2,5,3の順に処理する。1ではcase1からcase2へフォールスルーしてnumは2。4ではcase4で3。2ではcase2で4。5ではcase5からdefaultへ流れて、+1後に-1で4のまま。3ではcase3からcase4へ流れて、+1,+1で6。よって6が表示される。",
+          "points": [
+            "コロン形式switchではbreakがないcaseから下のcase/defaultへ流れる。",
+            "defaultも、前のcaseから到達すれば実行される。defaultは「一致しなかったときだけの入口」ではあるが、フォールスルー先にもなる。"
+          ],
+          "correctReason": "正解は C です。\n\nvaluesを1,4,2,5,3の順に処理する。1ではcase1からcase2へフォールスルーしてnumは2。4ではcase4で3。2ではcase2で4。5ではcase5からdefaultへ流れて、+1後に-1で4のまま。3ではcase3からcase4へ流れて、+1,+1で6。よって6が表示される。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「6が表示される」であり、「4が表示される」ではありません。"
+              "detail": "誤りです。フォールスルーをすべて追うと最終値は4ではなく6です。特にcase3からcase4へ流れる分を落としています。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「6が表示される」であり、「5が表示される」ではありません。"
+              "detail": "誤りです。最後のvalue=3でcase3とcase4の両方が実行されるため、5ではなく6になります。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「6が表示される」です。case 1とcase 5はbreakがないためフォールスルーする。順に処理するとnumは6になる。"
+              "detail": "正解です。1で+2、4で+1、2で+1、5で+1してdefaultで-1、3で+2となり、最終的に6です。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「6が表示される」です。"
+              "detail": "誤りです。switch対象はintでcaseラベルもint定数です。構文上のコンパイルエラーはありません。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。実行時例外は発生せず、結果は「6が表示される」です。"
+              "detail": "誤りです。配列範囲外アクセスやnull参照はなく、正常に6を出力します。"
             }
           ],
           "relatedKnowledge": [
-            "switch文のコロン形式は、breakがなければ次のcaseへフォールスルーする。switch式のアロー形式は原則フォールスルーしない。",
-            "switch式は値を返す式であり、ブロック形式で値を返す場合はyieldを使う。returnとは役割が違う。",
-            "switchの対象がnullになると、通常は実行時にNullPointerExceptionが発生する。case nullが使えるかどうかは試験範囲・Javaバージョンの扱いに注意する。"
+            "switch文ではcaseごとにbreakの有無を必ず書き込む。",
+            "defaultの位置とフォールスルーを軽視しない。"
           ],
           "examTips": [
-            "switch文とswitch式を混同しない。文は処理の流れ、式は値を作る構文。",
-            "caseに入った後、breakがあるまで下へ流れるかを必ず確認する。"
+            "valueごとに入るcaseを決める。",
+            "breakが出るまで下へ実行する。",
+            "numの増減を各valueごとに記録する。",
+            "最後にprintlnへ到達した値を確認する。"
           ],
-          "judgeSteps": [
-            "switchの対象値を先に確定する。",
-            "一致するcaseまたはdefaultを探す。",
-            "コロン形式ならbreakまで、アロー形式ならそのcaseだけを実行する。",
-            "switch式なら最終的に返る値を確認する。"
-          ],
+          "judgeSteps": "【詳しい読み解き】\nこの問題はswitch文のフォールスルーを正確に追えるかがすべてです。value=1ではcase1に入り、breakがないためcase2も実行されて+2。value=5ではcase5に入り、breakがないためdefaultも実行され、+1と-1で差し引き0。value=3ではcase3からcase4へ流れて+2です。defaultは「一致しなかった時だけに実行される」と雑に覚えていると、case5からdefaultへ流れる処理を見落とします。",
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\ncase 1とcase 5はbreakがないためフォールスルーする。順に処理するとnumは6になる。",
+          "pdfExplanation": "正解は C です。\n\nvaluesを1,4,2,5,3の順に処理する。1ではcase1からcase2へフォールスルーしてnumは2。4ではcase4で3。2ではcase2で4。5ではcase5からdefaultへ流れて、+1後に-1で4のまま。3ではcase3からcase4へ流れて、+1,+1で6。よって6が表示される。",
           "pdfAlignmentNote": "",
           "additionalExplanation": ""
         },
@@ -28237,60 +28215,58 @@ window.JAVA_STUDY_DATA = {
           "F"
         ],
         "explanation": {
-          "summary": "addはfinalなのでTrashの実装を継承し、listに追加する。flushはsuper.delete(tmp)を呼ぶ。コンストラクタsuper(null)によりnullがaddされる。",
+          "summary": "CacheTrashはTrashを継承する。addはTrashでfinalなのでオーバーライドできず、CacheTrashでもTrash.addが使われ、listへ引数を追加する。flushはsuper.delete(tmp)でTrash.deleteを明示的に呼ぶ。CacheTrashのコンストラクタはsuper(null)を呼び、Trashコンストラクタ内でadd(null)が実行される。よってC・E・Fが正しい。",
           "points": [
-            "パッケージアクセスのlistは、異なるパッケージのサブクラスからは参照できない。"
+            "finalメソッドはサブクラスでオーバーライドできない。継承してそのまま使う。",
+            "super.method()はスーパークラス側の実装を明示的に呼び出す。",
+            "アクセス修飾子なしは同一パッケージ内だけ。protectedとは違う。"
           ],
-          "correctReason": "正解は C・E・F です。\n\naddはfinalなのでTrashの実装を継承し、listに追加する。flushはsuper.delete(tmp)を呼ぶ。コンストラクタsuper(null)によりnullがaddされる。",
+          "correctReason": "正解は C・E・F です。\n\nCacheTrashはTrashを継承する。addはTrashでfinalなのでオーバーライドできず、CacheTrashでもTrash.addが使われ、listへ引数を追加する。flushはsuper.delete(tmp)でTrash.deleteを明示的に呼ぶ。CacheTrashのコンストラクタはsuper(null)を呼び、Trashコンストラクタ内でadd(null)が実行される。よってC・E・Fが正しい。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「CacheTrashクラスのaddメソッドは、引数をlistに追加する / CacheTrashクラスのflushメソッドは、Trashクラスのdeleteメソッドを呼び出す / CacheTrashクラスのコンストラクタは、nullをlistに追加する」であり、「CacheTrashクラスのtestメソッドは常にtrueを戻す」ではありません。"
+              "detail": "誤りです。CacheTrash.testはlist.contains(val)を返します。listにvalが含まれるかどうかで結果が変わるため、常にtrueではありません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「CacheTrashクラスのdeleteメソッドは、Trashクラスのdeleteメソッドを呼び出す」ではありません。addはfinalなのでTrashの実装を継承し、listに追加する。flushはsuper.delete(tmp)を呼ぶ。コンストラクタsuper(null)によりnullがaddされる。"
+              "detail": "誤りです。CacheTrash.deleteはthis.tmp = val; を実行するだけです。Trash.deleteを呼び出すのはdeleteではなくflushです。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正しい選択肢です。addはfinalなのでTrashの実装を継承し、listに追加する。flushはsuper.delete(tmp)を呼ぶ。コンストラクタsuper(null)によりnullがaddされる。"
+              "detail": "正解です。addはTrashでfinalとして定義されており、CacheTrashで上書きされません。したがってTrash.addの処理により、引数はlistに追加されます。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「Trashクラスのlistは、Trashクラスのすべてのサブクラスで参照できる」ではありません。addはfinalなのでTrashの実装を継承し、listに追加する。flushはsuper.delete(tmp)を呼ぶ。コンストラクタsuper(null)によりnullがaddされる。"
+              "detail": "誤りです。listはアクセス修飾子なし、つまりパッケージアクセスです。異なるパッケージのサブクラスからは参照できないため、「すべてのサブクラスで参照できる」は言い過ぎです。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正しい選択肢です。addはfinalなのでTrashの実装を継承し、listに追加する。flushはsuper.delete(tmp)を呼ぶ。コンストラクタsuper(null)によりnullがaddされる。"
+              "detail": "正解です。flushの本体はsuper.delete(tmp); です。superによりスーパークラスTrashのdeleteメソッドを呼び出します。"
             },
             {
               "key": "F",
               "isCorrect": true,
-              "detail": "正しい選択肢です。addはfinalなのでTrashの実装を継承し、listに追加する。flushはsuper.delete(tmp)を呼ぶ。コンストラクタsuper(null)によりnullがaddされる。"
+              "detail": "正解です。CacheTrashコンストラクタはsuper(null)を呼びます。Trash(String val)内でadd(val)が呼ばれるため、nullがlistに追加されます。"
             }
           ],
           "relatedKnowledge": [
-            "参照型変数で呼び出せるメンバは、原則としてコンパイル時の宣言型で決まる。実体がサブクラスでも、宣言型にないメソッドはそのままでは呼び出せない。",
-            "オーバーライドされたインスタンスメソッドは、実行時の実体型で動的に選ばれる。フィールドはポリモーフィズムの対象外。",
-            "サブクラスのインスタンスはスーパークラス型の変数で扱えるが、逆方向には明示的キャストと実体の整合性が必要。"
+            "「継承して使える」と「どこからでもアクセスできる」は別問題。",
+            "コンストラクタ内で呼ばれるメソッドも通常のメソッド呼び出しとして処理される。"
           ],
           "examTips": [
-            "「呼び出せるか」は宣言型、「実際に動くオーバーライドメソッド」は実体型。ここを分けないと継承問題はほぼ落とす。",
-            "フィールドとメソッドを同じルールで読まない。フィールドアクセスは宣言型側が選ばれる。"
+            "各メソッドがどのクラスに定義されているか確認する。",
+            "finalメソッドかどうか確認する。",
+            "superが付いている呼び出しはスーパークラス側へ進む。",
+            "コンストラクタ呼び出しで何がlistに入るか確認する。"
           ],
-          "judgeSteps": [
-            "変数の宣言型と、newされている実体型を分けて書き出す。",
-            "その宣言型から対象メソッドやフィールドを参照できるかを先に確認する。",
-            "メソッド呼び出しなら、オーバーライドの有無を見て実体型側の実装へ進む。",
-            "フィールドアクセスなら、宣言型側のフィールドとして処理する。"
-          ],
+          "judgeSteps": "【詳しい読み解き】\nこの問題は継承、final、super、アクセス修飾子が混ざった説明選択問題です。まずTrash.addはfinalなので、CacheTrashはaddをオーバーライドできません。つまりCacheTrashのインスタンスでもaddはTrashの実装を使い、list.add(val)を行います。次にCacheTrash.deleteはtmpへ値を保持するだけで、削除処理はしません。実際にTrash.deleteを呼ぶのはflushです。また、CacheTrash()の先頭でsuper(null)が実行されるため、Trashコンストラクタ経由でnullがlistへ追加されます。",
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C・E・F です。\n\naddはfinalなのでTrashの実装を継承し、listに追加する。flushはsuper.delete(tmp)を呼ぶ。コンストラクタsuper(null)によりnullがaddされる。",
+          "pdfExplanation": "正解は C・E・F です。\n\nCacheTrashはTrashを継承する。addはTrashでfinalなのでオーバーライドできず、CacheTrashでもTrash.addが使われ、listへ引数を追加する。flushはsuper.delete(tmp)でTrash.deleteを明示的に呼ぶ。CacheTrashのコンストラクタはsuper(null)を呼び、Trashコンストラクタ内でadd(null)が実行される。よってC・E・Fが正しい。",
           "pdfAlignmentNote": "",
           "additionalExplanation": ""
         },
@@ -28342,49 +28318,48 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "setValue内のvalueは引数ローカル変数であり、フィールドvalueは変更されない。toStringはフィールドを返すのでnull。",
-          "points": [],
-          "correctReason": "正解は C です。\n\nsetValue内のvalueは引数ローカル変数であり、フィールドvalueは変更されない。toStringはフィールドを返すのでnull。",
+          "summary": "setValueの引数名valueがフィールドvalueと同じ名前になっている。メソッド内で単にvalueと書くと引数を指すため、value = \"Hello, \" + value; は引数ローカル変数を書き換えるだけ。フィールドthis.valueは一度も代入されず、参照型フィールドの初期値nullのまま。toStringはフィールドvalueを返すので「null」と表示される。",
+          "points": [
+            "同名の引数・ローカル変数がある場合、単純名はローカル側を指す。フィールドを指すにはthisを使う。",
+            "参照型フィールドは自動的にnullで初期化される。ローカル変数とは違う。",
+            "System.out.printlnにnull参照を渡しても、それ自体ではNullPointerExceptionにならず、文字列nullとして表示される。"
+          ],
+          "correctReason": "正解は C です。\n\nsetValueの引数名valueがフィールドvalueと同じ名前になっている。メソッド内で単にvalueと書くと引数を指すため、value = \"Hello, \" + value; は引数ローカル変数を書き換えるだけ。フィールドthis.valueは一度も代入されず、参照型フィールドの初期値nullのまま。toStringはフィールドvalueを返すので「null」と表示される。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「null」と表示される」であり、「「Hello, Java」と表示される」ではありません。"
+              "detail": "誤りです。フィールドへ代入するにはthis.value = \"Hello, \" + value; のように書く必要があります。このコードでは引数valueを書き換えているだけです。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「null」と表示される」であり、「「Hello, null」と表示される」ではありません。"
+              "detail": "誤りです。\"Hello, null\"を作る処理ではありません。引数には\"Java\"が渡されていますが、その結果はフィールドへ保存されません。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「「null」と表示される」です。setValue内のvalueは引数ローカル変数であり、フィールドvalueは変更されない。toStringはフィールドを返すのでnull。"
+              "detail": "正解です。フィールドvalueは参照型フィールドなので初期値はnullです。setValueではフィールドが変更されないため、toStringはnullを返します。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実行時例外は発生せず、結果は「「null」と表示される」です。"
+              "detail": "誤りです。nullをprintlnで表示してもNullPointerExceptionにはなりません。Stringとして\"null\"が表示されます。"
             }
           ],
           "relatedKnowledge": [
-            "ローカル変数は自動初期化されない。宣言しただけのローカル変数を読むとコンパイルエラーになる。",
-            "フィールドは型ごとのデフォルト値で初期化される。intなら0、booleanならfalse、参照型ならnull。ローカル変数とは扱いが違う。",
-            "同名のローカル変数や引数がある場合、単純名ではローカル側が優先される。フィールドを明示したい場合はthis.fieldまたはClassName.staticFieldを使う。"
+            "thisの有無を見るだけで結果が変わる典型問題。",
+            "setter風のメソッド名でも、実際にフィールドへ代入しているとは限らない。"
           ],
           "examTips": [
-            "初期化問題では、値が入る可能性ではなく、すべての経路で確実に代入済みかを見る。",
-            "フィールドのデフォルト値の知識をローカル変数へ持ち込まない。ここは試験でよく狙われる。",
-            "thisが付いているか、付いていないかで参照先が変わる。代入式では左辺と右辺を別々に確認する。"
+            "フィールドvalueと引数valueを分ける。",
+            "setValue内の左辺valueがどちらを指すか確認する。",
+            "toStringが返すvalueがフィールドであることを確認する。",
+            "printlnがnullをどう表示するか確認する。"
           ],
-          "judgeSteps": [
-            "対象がフィールドかローカル変数かを確認する。",
-            "ローカル変数なら、使用前に必ず代入されているかを確認する。",
-            "同名の変数がある場合、単純名がローカル側を指していないか確認する。",
-            "フィールドを参照する必要がある場合、thisやクラス名で明示されているかを見る。"
-          ],
+          "judgeSteps": "【詳しい読み解き】\nこの問題は、setterのような名前に引っ張られると落とします。`setValue(String value)` のvalueは引数です。メソッド内で `value = \"Hello, \" + value;` と書いても、これは引数valueに新しい文字列参照を代入しているだけです。フィールドを更新するには `this.value = ...` が必要です。したがってフィールドvalueは初期値nullのままです。`System.out.println(s.toString())` はnullを表示するだけで、例外にはなりません。",
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\nsetValue内のvalueは引数ローカル変数であり、フィールドvalueは変更されない。toStringはフィールドを返すのでnull。",
+          "pdfExplanation": "正解は C です。\n\nsetValueの引数名valueがフィールドvalueと同じ名前になっている。メソッド内で単にvalueと書くと引数を指すため、value = \"Hello, \" + value; は引数ローカル変数を書き換えるだけ。フィールドthis.valueは一度も代入されず、参照型フィールドの初期値nullのまま。toStringはフィールドvalueを返すので「null」と表示される。",
           "pdfAlignmentNote": "",
           "additionalExplanation": ""
         },
@@ -28440,62 +28415,62 @@ window.JAVA_STUDY_DATA = {
           "D"
         ],
         "explanation": {
-          "summary": "classファイルがない状態でも、単一ファイルのソースファイルモードとしてjava Sample.javaで実行できる。",
+          "summary": "classファイルが存在しない状態でも、単一のソースファイルなら `java Sample.java` でコンパイルと実行をまとめて行える。通常の `java Sample` は事前にclassファイルが必要。",
           "points": [
-            "javacには拡張子付きファイル名が必要。",
-            "javaの通常実行はクラス名を指定する。"
+            "`javac` はソースファイル名を指定する。",
+            "通常の `java` 実行はクラス名を指定する。",
+            "単一ファイルのソースファイルモードでは `java ファイル名.java` で実行できる。"
           ],
-          "correctReason": "正解は D です。\n\nclassファイルがない状態でも、単一ファイルのソースファイルモードとしてjava Sample.javaで実行できる。",
+          "correctReason": "正解は D です。\n\nこの設問は、従来の「javacでコンパイルしてからjavaで実行する方法」ではなく、単一ファイルのソースファイルモードを問う問題です。カレントディレクトリにclassファイルはない条件なので、`java Sample.java` としてソースファイルを指定すれば、その場でコンパイルされて実行されます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「javac Sample\njava Sample」ではありません。classファイルがない状態でも、単一ファイルのソースファイルモードとしてjava Sample.javaで実行できる。"
+              "detail": "誤りです。`javac` に渡すのはソースファイル名なので、`javac Sample` ではなく `javac Sample.java` が必要です。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「javac Sample.java\njava Sample.class」ではありません。classファイルがない状態でも、単一ファイルのソースファイルモードとしてjava Sample.javaで実行できる。"
+              "detail": "誤りです。前半の `javac Sample.java` は正しいですが、実行時に `java Sample.class` とは指定しません。通常実行では拡張子なしのクラス名 `Sample` を指定します。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「javac Sample.java\njava -p. -m Sample」ではありません。classファイルがない状態でも、単一ファイルのソースファイルモードとしてjava Sample.javaで実行できる。"
+              "detail": "誤りです。`-p` や `-m` はモジュール関連の指定です。このコードはモジュール宣言を持つモジュールとして実行する問題ではありません。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「java Sample.java」です。classファイルがない状態でも、単一ファイルのソースファイルモードとしてjava Sample.javaで実行できる。"
+              "detail": "正解です。単一のソースファイルを直接 `java Sample.java` と指定すると、ソースファイルモードで実行できます。classファイルがないという条件にも合います。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「java -m Sample.java」ではありません。classファイルがない状態でも、単一ファイルのソースファイルモードとしてjava Sample.javaで実行できる。"
+              "detail": "誤りです。`-m` はモジュールを指定するオプションであり、`Sample.java` というソースファイルをモジュールとして実行する指定ではありません。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。「java Sample」ではありません。classファイルがない状態でも、単一ファイルのソースファイルモードとしてjava Sample.javaで実行できる。"
+              "detail": "誤りです。`java Sample` はコンパイル済みの `Sample.class` を探して実行する通常実行です。設問ではclassファイルがないため、この選択肢は条件に合いません。"
             }
           ],
           "relatedKnowledge": [
-            "publicクラスを含むソースファイル名は、そのpublicクラス名と一致させる必要がある。publicでないトップレベルクラスは同じファイルに複数書ける。",
-            "importのワイルドカードは、そのパッケージ直下の型だけを対象にする。サブパッケージまでは含まない。",
-            "static importはstaticメンバを簡略参照するためのもの。通常のクラス型を使うためのimportとは目的が違う。"
+            "publicクラスを含むソースファイル名は、そのpublicクラス名と一致させる必要がある。",
+            "`java Sample.class` のようにclassファイル名を指定するのは誤り。通常は拡張子なしの完全修飾クラス名を指定する。"
           ],
           "examTips": [
-            "ex.* で ex.p1.A は読めない。ドットがあると親子関係に見えるが、importでは別パッケージとして扱う。",
-            "javacはソースファイル名、javaは完全修飾クラス名またはクラス名を指定する。コマンドの対象を混同しない。"
+            "コマンド問題では「ソースファイルを指定する場面」か「クラス名を指定する場面」かを分ける。",
+            "classファイルがない条件があるときは、ソースファイルモードが選択肢にないか確認する。"
           ],
           "judgeSteps": [
-            "package宣言とファイル配置・クラス名の対応を確認する。",
-            "利用している型が同じパッケージか、import済みか、完全修飾名で書かれているか確認する。",
-            "ワイルドカードimportの場合、対象パッケージ直下の型かどうかを確認する。"
+            "classファイルがないという条件を確認する。",
+            "単一ファイルの `Sample.java` でmainメソッドがあることを確認する。",
+            "ソースファイルモードの `java Sample.java` が使えると判断する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は D です。\n\nclassファイルがない状態でも、単一ファイルのソースファイルモードとしてjava Sample.javaで実行できる。",
+          "pdfExplanation": "正解は D です。\n\nこの設問は、従来の「javacでコンパイルしてからjavaで実行する方法」ではなく、単一ファイルのソースファイルモードを問う問題です。カレントディレクトリにclassファイルはない条件なので、`java Sample.java` としてソースファイルを指定すれば、その場でコンパイルされて実行されます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題で引っかかりやすいのは、`javac Sample.java` → `java Sample` という通常手順だけで考えてしまうことです。通常手順なら2コマンド必要ですが、選択肢Dは `java Sample.java` でソースファイルそのものを指定しています。これはclassファイルがまだない状態でも使える実行方法です。一方、`java Sample.class` のようにclassファイル名を直接指定することはありません。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -28541,49 +28516,53 @@ window.JAVA_STUDY_DATA = {
           "A"
         ],
         "explanation": {
-          "summary": "97と98をcharへキャストすると、それぞれaとbになる。文字列連結によりabと表示される。",
-          "points": [],
-          "correctReason": "正解は A です。\n\n97と98をcharへキャストすると、それぞれaとbになる。文字列連結によりabと表示される。",
+          "summary": "`97` と `98` を `char` に明示的キャストすると、それぞれ文字 `a` と `b` になる。最初の出力は文字列連結を含むため、結果はそのまま `ab` と続けて表示される。",
+          "points": [
+            "`char` は文字を表す型だが、内部的には数値コードと対応する。",
+            "数値から `char` へ変換する場合は明示的キャストを使う。",
+            "`print` は改行しない。"
+          ],
+          "correctReason": "正解は A です。\n\n`short a = 97;` と `int b = 98;` はどちらも数値です。`(char) a` は文字コード97に対応する `a`、`(char) b` は文字コード98に対応する `b` になります。`System.out.print` は改行しないため、2回の出力が続いて `ab` と表示されます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「「ab」と表示される」です。97と98をcharへキャストすると、それぞれaとbになる。文字列連結によりabと表示される。"
+              "detail": "正解です。`(char)97` が `a`、`(char)98` が `b` になり、`print` は改行しないため `ab` と表示されます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「ab」と表示される」であり、「「a」と表示された後に例外が発生する」ではありません。"
+              "detail": "誤りです。`int` から `char` へのキャストは明示されているので、98をcharに変換する処理で例外は発生しません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「「ab」と表示される」です。"
+              "detail": "誤りです。`short` から `char`、`int` から `char` の変換はいずれも明示的キャストが書かれているため、コンパイルできます。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「ClassCastExceptionがスローされる」ではありません。97と98をcharへキャストすると、それぞれaとbになる。文字列連結によりabと表示される。"
+              "detail": "誤りです。`ClassCastException` は参照型の不正なダウンキャストなどで発生する実行時例外です。この問題はプリミティブ型の数値変換なので該当しません。"
             }
           ],
           "relatedKnowledge": [
-            "小さい範囲の数値型から大きい範囲への変換は暗黙に行えるが、大きい範囲から小さい範囲へは明示的キャストが必要。",
-            "整数リテラルは通常int、浮動小数点リテラルは通常doubleとして扱われる。byteやshortへ代入する場合、定数値が範囲内かが問われる。",
-            "参照型のキャストは、コンパイル時に型の関連が必要で、実行時には実体がその型として扱えるかが必要。"
+            "`char` と数値型は演算では数値として扱われることがある。",
+            "プリミティブ型のキャストと参照型のキャストを混同しない。"
           ],
           "examTips": [
-            "キャストを書けば常に安全になるわけではない。参照型では実体が合わなければClassCastExceptionになる。",
-            "charと数値の変換は、明示的キャストの有無と範囲を確認する。"
+            "`ClassCastException` を見たら、まず参照型キャストの問題かどうかを確認する。",
+            "出力問題では `print` と `println` の違いを必ず見る。"
           ],
           "judgeSteps": [
-            "変換元と変換先の型を確認する。",
-            "プリミティブなら範囲とリテラルのデフォルト型を確認する。",
-            "参照型なら継承関係と実体型を確認する。"
+            "`a` の値97を `char` に変換して `a` と読む。",
+            "`+ \"\"` により文字列として出力される。",
+            "`b` の値98を `char` に変換して `b` と読む。",
+            "2つの `print` が改行なしで続くため `ab` になる。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A です。\n\n97と98をcharへキャストすると、それぞれaとbになる。文字列連結によりabと表示される。",
+          "pdfExplanation": "正解は A です。\n\n`short a = 97;` と `int b = 98;` はどちらも数値です。`(char) a` は文字コード97に対応する `a`、`(char) b` は文字コード98に対応する `b` になります。`System.out.print` は改行しないため、2回の出力が続いて `ab` と表示されます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は「数値を文字として出す」問題です。`char` は単なる文字列ではなく、1文字を表すプリミティブ型です。`97` は文字コード上 `a` に対応し、`98` は `b` に対応します。また、2つとも `System.out.print` なので改行されません。`println` ではない点も出力問題では重要です。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -28633,49 +28612,53 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "A#aはパッケージアクセスなので別パッケージのBからアクセス不可。protectedのbとpublicのcはアクセス可能。",
-          "points": [],
-          "correctReason": "正解は C です。\n\nA#aはパッケージアクセスなので別パッケージのBからアクセス不可。protectedのbとpublicのcはアクセス可能。",
+          "summary": "`a` はパッケージアクセスなので、別パッケージ `ex06.b` の `B` からはアクセスできない。一方、`b` はprotected、`c` はpublicなので、Bのインスタンス経由のアクセスは可能。",
+          "points": [
+            "defaultアクセスは同じパッケージ内からだけアクセスできる。",
+            "protectedは「同じパッケージ」または「継承関係」の文脈でアクセスできる。",
+            "publicはどのパッケージからでもアクセスできる。"
+          ],
+          "correctReason": "正解は C です。\n\n`A` クラスの `a` はアクセス修飾子がないためパッケージアクセスです。`A` は `ex06.a`、`B` は `ex06.b` にあるので、`B` から `a` にはアクセスできません。`b` は `protected`、`c` は `public` なので、この設問の文脈ではアクセス可能です。したがって、コンパイルエラーになるのは `new B().a` だけです。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「new B().b と new B().c の両方でコンパイルエラーが発生する」ではありません。A#aはパッケージアクセスなので別パッケージのBからアクセス不可。protectedのbとpublicのcはアクセス可能。"
+              "detail": "誤りです。`new B().c` はpublicフィールドなのでアクセスできます。また、`new B().b` もBの継承関係上アクセス可能です。両方エラーにはなりません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「new B().b のみでコンパイルエラーが発生する」ではありません。A#aはパッケージアクセスなので別パッケージのBからアクセス不可。protectedのbとpublicのcはアクセス可能。"
+              "detail": "誤りです。`b` はprotectedで、BはAのサブクラスです。設問のBクラス内からB型のインスタンスを通じてアクセスする形なら、`new B().b` はエラーではありません。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「new B().a のみでコンパイルエラーが発生する」です。A#aはパッケージアクセスなので別パッケージのBからアクセス不可。protectedのbとpublicのcはアクセス可能。"
+              "detail": "正解です。`a` はパッケージアクセスで、AとBは別パッケージなのでアクセスできません。`b` と `c` はアクセス可能です。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「new B().a と new B().b の両方でコンパイルエラーが発生する」ではありません。A#aはパッケージアクセスなので別パッケージのBからアクセス不可。protectedのbとpublicのcはアクセス可能。"
+              "detail": "誤りです。`new B().a` はエラーですが、`new B().b` までエラーとはいえません。protectedは別パッケージでも継承関係があれば扱える場合があります。"
             }
           ],
           "relatedKnowledge": [
-            "publicクラスを含むソースファイル名は、そのpublicクラス名と一致させる必要がある。publicでないトップレベルクラスは同じファイルに複数書ける。",
-            "importのワイルドカードは、そのパッケージ直下の型だけを対象にする。サブパッケージまでは含まない。",
-            "static importはstaticメンバを簡略参照するためのもの。通常のクラス型を使うためのimportとは目的が違う。"
+            "protectedは単純に「サブクラスなら何でもどこからでもOK」と覚えると危険。別パッケージではアクセスの仕方も問われる。",
+            "アクセス修飾子の問題では、パッケージ名と継承関係の両方を見る。"
           ],
           "examTips": [
-            "ex.* で ex.p1.A は読めない。ドットがあると親子関係に見えるが、importでは別パッケージとして扱う。",
-            "javacはソースファイル名、javaは完全修飾クラス名またはクラス名を指定する。コマンドの対象を混同しない。"
+            "`package` 宣言がある問題では、クラスが同じパッケージか別パッケージかを先に確認する。",
+            "defaultアクセスとprotectedを混同しない。"
           ],
           "judgeSteps": [
-            "package宣言とファイル配置・クラス名の対応を確認する。",
-            "利用している型が同じパッケージか、import済みか、完全修飾名で書かれているか確認する。",
-            "ワイルドカードimportの場合、対象パッケージ直下の型かどうかを確認する。"
+            "Aは `ex06.a`、Bは `ex06.b` にあると確認する。",
+            "`a` は修飾子なしなのでパッケージアクセスと判断する。",
+            "`b` はprotected、`c` はpublicと分ける。",
+            "別パッケージからアクセス不可なのは `a` だけと判断する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\nA#aはパッケージアクセスなので別パッケージのBからアクセス不可。protectedのbとpublicのcはアクセス可能。",
+          "pdfExplanation": "正解は C です。\n\n`A` クラスの `a` はアクセス修飾子がないためパッケージアクセスです。`A` は `ex06.a`、`B` は `ex06.b` にあるので、`B` から `a` にはアクセスできません。`b` は `protected`、`c` は `public` なので、この設問の文脈ではアクセス可能です。したがって、コンパイルエラーになるのは `new B().a` だけです。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は「protected」と「パッケージアクセス」を混同させる問題です。修飾子がない `String a` はサブクラスだから自動的に見えるわけではありません。defaultアクセスは同一パッケージ限定です。`B extends A` であっても、`A` と `B` は別パッケージなので `a` は見えません。一方、`protected b` は継承関係があるため、Bクラス内では扱えます。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -28715,53 +28698,53 @@ window.JAVA_STUDY_DATA = {
           "D"
         ],
         "explanation": {
-          "summary": "varでは右辺から型推論できる必要がある。配列生成式new Float[]やnew double[]なら推論できる。",
+          "summary": "`var` は右辺だけで型を一意に推論できる場合に使える。配列初期化子 `{...}` だけでは型が決まらないが、`new Float[] {...}` や `new double[] {...}` は配列型が明示されているため推論できる。",
           "points": [
-            "配列初期化子だけではvarの型推論はできない。",
-            "new Double{...}は[]がないため不正。"
+            "`var` は型を省略する機能であり、型が存在しないわけではない。",
+            "配列初期化子だけでは `var` の型推論に使えない。",
+            "配列生成式 `new 型[] { ... }` なら推論できる。"
           ],
-          "correctReason": "正解は C・D です。\n\nvarでは右辺から型推論できる必要がある。配列生成式new Float[]やnew double[]なら推論できる。",
+          "correctReason": "正解は C・D です。\n\n`var` はローカル変数の型推論ですが、右辺に型情報が必要です。`var a = { ... };` のような配列初期化子だけでは型を推論できないためエラーです。`new Double{...}` は配列生成式としての `[]` がないため文法エラーです。`new Float[] {...}` と `new double[] {...}` は右辺からそれぞれ `Float[]`、`double[]` と推論できるためコンパイルできます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「var a = {1.0, 2.0, 3.0, 4.0};」ではありません。varでは右辺から型推論できる必要がある。配列生成式new Float[]やnew double[]なら推論できる。"
+              "detail": "誤りです。配列初期化子 `{...}` は、左辺の型が明示されているときに使える書き方です。`var` では左辺に型がないため、配列型を推論できません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「var b = new Double{1.0, 2.0, 3.0, 4.0};」ではありません。varでは右辺から型推論できる必要がある。配列生成式new Float[]やnew double[]なら推論できる。"
+              "detail": "誤りです。配列を生成するなら `new Double[] { ... }` のように `[]` が必要です。`new Double{...}` は文法として不正です。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正しい選択肢です。varでは右辺から型推論できる必要がある。配列生成式new Float[]やnew double[]なら推論できる。"
+              "detail": "正解です。`new Float[] {1.0F, ...}` により右辺が `Float[]` だと分かるため、`var c` は `Float[]` と推論されます。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正しい選択肢です。varでは右辺から型推論できる必要がある。配列生成式new Float[]やnew double[]なら推論できる。"
+              "detail": "正解です。`new double[] {1.0, ...}` により右辺が `double[]` だと分かるため、`var d` は `double[]` と推論されます。"
             }
           ],
           "relatedKnowledge": [
-            "配列のlengthは要素数であり、最後の有効添字はlength - 1。添字範囲外アクセスは実行時例外になる。",
-            "多次元配列は配列の配列。行ごとに長さが違うジャグ配列も作れるため、外側と内側のlengthを分けて読む。",
-            "参照型配列の要素の初期値はnull。要素にインスタンスを入れる前にメソッド呼び出しをするとNullPointerExceptionになる。"
+            "`var b = null;` も型が決まらないため不可。",
+            "`var` はフィールド、引数、戻り値型には使えない。"
           ],
           "examTips": [
-            "二次元配列では、array.lengthとarray[i].lengthを同じ意味で読まない。",
-            "拡張for文のループ変数に代入しても、配列要素そのものの差し替えにはならない場合がある。"
+            "`var` 問題では「右辺から型が一意に決まるか」を最初に見る。",
+            "配列問題では `{}` だけか、`new 型[]` があるかを区別する。"
           ],
           "judgeSteps": [
-            "配列の生成式から外側の要素数を確認する。",
-            "二次元以上なら、各行の内側配列の長さを個別に確認する。",
-            "ループごとに参照している添字が有効範囲内かを確認する。",
-            "参照型配列なら、要素がnullのまま使われていないかを確認する。"
+            "Aは右辺が配列初期化子だけなので不可。",
+            "Bは配列生成式の文法が不正。",
+            "Cは `new Float[]` により型推論可能。",
+            "Dは `new double[]` により型推論可能。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C・D です。\n\nvarでは右辺から型推論できる必要がある。配列生成式new Float[]やnew double[]なら推論できる。",
+          "pdfExplanation": "正解は C・D です。\n\n`var` はローカル変数の型推論ですが、右辺に型情報が必要です。`var a = { ... };` のような配列初期化子だけでは型を推論できないためエラーです。`new Double{...}` は配列生成式としての `[]` がないため文法エラーです。`new Float[] {...}` と `new double[] {...}` は右辺からそれぞれ `Float[]`、`double[]` と推論できるためコンパイルできます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\n`var` は「何でも自動でいい感じに決める」機能ではありません。コンパイラが右辺を見て型を確定できる必要があります。`{1.0, 2.0}` だけでは、左辺が `double[]` なのか `Double[]` なのか、あるいは別の文脈なのかを決められません。だから `var` と配列初期化子だけの組み合わせは不可です。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -28817,57 +28800,58 @@ window.JAVA_STUDY_DATA = {
           "E"
         ],
         "explanation": {
-          "summary": "変数aの型はAなので、呼び出せるのはAに定義されたメソッドだけ。AにはString[]を受け取るsetValue(String...)がない。",
+          "summary": "変数 `a` の宣言型は `A` なので、コンパイル時に呼び出せるのはAクラスに定義されたメソッドだけ。実体はBでも、Aに `setValue(String... values)` がないため `a.setValue(args)` はコンパイルエラーになる。",
           "points": [
-            "実体がBでも、コンパイル時のメソッド解決は参照変数の型で行う。"
+            "呼び出せるメソッドは、変数の宣言型で決まる。",
+            "実行されるoverrideメソッドは、実体型で決まる。",
+            "可変長引数 `String...` は、メソッド宣言上は `String[]` と近いが、宣言型にそのメソッドが必要。"
           ],
-          "correctReason": "正解は E です。\n\n変数aの型はAなので、呼び出せるのはAに定義されたメソッドだけ。AにはString[]を受け取るsetValue(String...)がない。",
+          "correctReason": "正解は E です。\n\n`A a = new B();` により、実体はBですが、変数の宣言型はAです。メソッド呼び出しがコンパイルできるかどうかは、まず宣言型Aにそのメソッドがあるかで判断されます。`args` は `String[]` であり、Bには `setValue(String... values)` がありますが、Aには `setValue(String)` しかありません。そのため、A型の変数 `a` から `setValue(String... values)` を呼ぶことはできません。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「BのインスタンスをA型で扱ったため」ではありません。変数aの型はAなので、呼び出せるのはAに定義されたメソッドだけ。AにはString[]を受け取るsetValue(String...)がない。"
+              "detail": "誤りです。BのインスタンスをA型で扱うこと自体はポリモーフィズムとして合法です。問題は、A型の変数からAにないメソッドを呼んでいる点です。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「AクラスのtoStringメソッドをBクラスでオーバーライドしていないため」ではありません。変数aの型はAなので、呼び出せるのはAに定義されたメソッドだけ。AにはString[]を受け取るsetValue(String...)がない。"
+              "detail": "誤りです。`toString()` をBでオーバーライドしていないことは、このコンパイルエラーとは関係ありません。`toString()` はAに定義されており、今回呼び出しているのは `setValue(args)` です。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「Bクラスのtestメソッドがprivateであるため」ではありません。変数aの型はAなので、呼び出せるのはAに定義されたメソッドだけ。AにはString[]を受け取るsetValue(String...)がない。"
+              "detail": "誤りです。`test` はBクラス内部の `setValue(String... values)` から呼ばれているprivateメソッドです。外部から直接呼んでいるわけではないため、このエラーの原因ではありません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「BクラスからAクラスのvalueにアクセスできないため」ではありません。変数aの型はAなので、呼び出せるのはAに定義されたメソッドだけ。AにはString[]を受け取るsetValue(String...)がない。"
+              "detail": "誤りです。BはAのprivateフィールド `value` に直接アクセスしていません。`super.setValue(...)` を通してAのpublicメソッドを呼んでいるため、この点は問題ありません。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「AクラスにはsetValue(String... values)というメソッドがないため」です。変数aの型はAなので、呼び出せるのはAに定義されたメソッドだけ。AにはString[]を受け取るsetValue(String...)がない。"
+              "detail": "正解です。`a` の宣言型はAなので、Aに存在しない `setValue(String... values)` は呼べません。実体がBであることは、コンパイル時の呼び出し可能メソッドの判定を変えません。"
             }
           ],
           "relatedKnowledge": [
-            "参照型変数で呼び出せるメンバは、原則としてコンパイル時の宣言型で決まる。実体がサブクラスでも、宣言型にないメソッドはそのままでは呼び出せない。",
-            "オーバーライドされたインスタンスメソッドは、実行時の実体型で動的に選ばれる。フィールドはポリモーフィズムの対象外。",
-            "サブクラスのインスタンスはスーパークラス型の変数で扱えるが、逆方向には明示的キャストと実体の整合性が必要。"
+            "ポリモーフィズムでは「コンパイル時に呼べるか」と「実行時にどの実装が動くか」を分ける。",
+            "privateメソッドは外部から呼び出せないが、同じクラス内からの呼び出しなら問題ない。"
           ],
           "examTips": [
-            "「呼び出せるか」は宣言型、「実際に動くオーバーライドメソッド」は実体型。ここを分けないと継承問題はほぼ落とす。",
-            "フィールドとメソッドを同じルールで読まない。フィールドアクセスは宣言型側が選ばれる。"
+            "`A a = new B();` を見たら、左辺のA型で呼べるメソッドだけをまず確認する。",
+            "独自メソッドをサブクラスに追加しても、親型変数からはそのまま呼べない。"
           ],
           "judgeSteps": [
-            "変数の宣言型と、newされている実体型を分けて書き出す。",
-            "その宣言型から対象メソッドやフィールドを参照できるかを先に確認する。",
-            "メソッド呼び出しなら、オーバーライドの有無を見て実体型側の実装へ進む。",
-            "フィールドアクセスなら、宣言型側のフィールドとして処理する。"
+            "`a` の宣言型がAであることを確認する。",
+            "`a.setValue(args)` の引数 `args` は `String[]` と判断する。",
+            "Aにある `setValue` は `String` 引数だけと確認する。",
+            "Aに `String...` / `String[]` 対応のメソッドがないためコンパイルエラーと判断する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は E です。\n\n変数aの型はAなので、呼び出せるのはAに定義されたメソッドだけ。AにはString[]を受け取るsetValue(String...)がない。",
+          "pdfExplanation": "正解は E です。\n\n`A a = new B();` により、実体はBですが、変数の宣言型はAです。メソッド呼び出しがコンパイルできるかどうかは、まず宣言型Aにそのメソッドがあるかで判断されます。`args` は `String[]` であり、Bには `setValue(String... values)` がありますが、Aには `setValue(String)` しかありません。そのため、A型の変数 `a` から `setValue(String... values)` を呼ぶことはできません。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、実体がBであることに引っ張られると間違えます。`new B()` で作られたインスタンスであっても、変数 `a` はA型です。Javaでは、変数を通してメソッドを呼べるかどうかは宣言型を基準にコンパイル時にチェックされます。Bに便利な `setValue(String... values)` があっても、A型の変数からは見えません。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -28921,49 +28905,52 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "aの型はAなのでa.numはAのpublicフィールドを参照する。Bにもnumはあるが、フィールドはポリモーフィックに解決されない。",
-          "points": [],
-          "correctReason": "正解は C です。\n\naの型はAなのでa.numはAのpublicフィールドを参照する。Bにもnumはあるが、フィールドはポリモーフィックに解決されない。",
+          "summary": "フィールドはメソッドのようにオーバーライドされない。`A a = new B();` でも、`a.num` は宣言型Aのフィールドを参照するため、表示されるのは10。",
+          "points": [
+            "フィールドはオーバーライドされない。",
+            "同名フィールドをサブクラスで宣言すると、フィールドの隠蔽になる。",
+            "フィールドアクセスは宣言型で決まる。"
+          ],
+          "correctReason": "正解は C です。\n\n`B` は `A` を継承し、同じ名前の `num` フィールドを持っています。しかし、フィールドアクセスはメソッド呼び出しと違い、実体型ではなく変数の宣言型で決まります。`A a = new B();` の `a` はA型なので、`a.num` はAクラスのpublicフィールド `num` を参照し、10が表示されます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「10が表示される」です。"
+              "detail": "誤りです。BクラスでAと同名のフィールド `num` を宣言すること自体は可能です。これはフィールドの隠蔽であり、コンパイルエラーではありません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「10が表示される」です。"
+              "detail": "誤りです。Mainクラスでは `A a = new B();` としており、BはAのサブクラスなので代入可能です。`a.num` もAのpublicフィールドとしてアクセスできます。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「10が表示される」です。aの型はAなのでa.numはAのpublicフィールドを参照する。Bにもnumはあるが、フィールドはポリモーフィックに解決されない。"
+              "detail": "正解です。`a` の宣言型はAなので、`a.num` はA側のフィールドを参照します。したがって10が表示されます。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「10が表示される」であり、「20が表示される」ではありません。"
+              "detail": "誤りです。20はBクラスの `num` ですが、`a.num` は宣言型Aに基づいて解決されるため、B側のフィールドは参照されません。"
             }
           ],
           "relatedKnowledge": [
-            "privateメンバは同じクラス内からしか直接アクセスできない。継承していてもサブクラスから直接使えるわけではない。",
-            "デフォルトアクセスは同じパッケージ内限定。protectedは同じパッケージに加え、異なるパッケージのサブクラスからも一定条件でアクセスできる。",
-            "オーバーライドでは、親メソッドより狭いアクセス修飾子にできない。"
+            "メソッドならoverrideにより実体型Bの実装が呼ばれる場合がある。",
+            "フィールドとメソッドの解決規則は違う。"
           ],
           "examTips": [
-            "protectedは「どこからでもサブクラスなら自由」ではない。パッケージと参照の型を合わせて確認する。",
-            "privateメソッドはオーバーライドされない。同名メソッドを子に書いても別メソッドとして扱う。"
+            "`a.num` のようなフィールド直接アクセスでは、左辺の変数の宣言型を見る。",
+            "`a.getNum()` のようなメソッド呼び出しなら、overrideの有無を確認する。"
           ],
           "judgeSteps": [
-            "アクセス対象のメンバの修飾子を確認する。",
-            "アクセス元クラスが同じクラス、同じパッケージ、サブクラスのどれに該当するか確認する。",
-            "継承関係がある場合でも、privateやデフォルトアクセスの制限を個別に確認する。"
+            "`A a = new B();` で宣言型A、実体型Bと分ける。",
+            "アクセスしているのがメソッドではなくフィールド `num` だと確認する。",
+            "フィールドは宣言型Aで解決されるためAの `num=10` を読む。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\naの型はAなのでa.numはAのpublicフィールドを参照する。Bにもnumはあるが、フィールドはポリモーフィックに解決されない。",
+          "pdfExplanation": "正解は C です。\n\n`B` は `A` を継承し、同じ名前の `num` フィールドを持っています。しかし、フィールドアクセスはメソッド呼び出しと違い、実体型ではなく変数の宣言型で決まります。`A a = new B();` の `a` はA型なので、`a.num` はAクラスのpublicフィールド `num` を参照し、10が表示されます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nポリモーフィズムの問題で最も危険なのが、「メソッドのルール」をフィールドにも当てはめることです。overrideされるのはメソッドです。フィールドは同じ名前をサブクラスに書けますが、実行時に自動で差し替わるわけではありません。`a.num` の `a` がA型なので、Aの `num` を読んで10になります。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -29018,56 +29005,58 @@ window.JAVA_STUDY_DATA = {
           "E"
         ],
         "explanation": {
-          "summary": "varはローカル変数宣言専用。4行目のフィールド宣言、5行目の戻り値型には使えない。",
+          "summary": "`var` はローカル変数宣言にだけ使える。4行目はフィールド宣言、5行目はメソッドの戻り値型なのでコンパイルエラーになる。6行目、7行目、10行目の `var` はローカル変数なので使える。",
           "points": [
-            "for (var s : samples) はローカル変数なので使用可能。"
+            "`var` はローカル変数型推論。",
+            "フィールド、メソッドの戻り値型、仮引数、コンストラクタ引数には使えない。",
+            "拡張for文の変数には `var` を使える。"
           ],
-          "correctReason": "正解は A・E です。\n\nvarはローカル変数宣言専用。4行目のフィールド宣言、5行目の戻り値型には使えない。",
+          "correctReason": "正解は A・E です。\n\n4行目の `var sample = ...` はクラス直下にあるフィールド宣言です。`var` はフィールドには使えません。5行目の `public var test()` はメソッドの戻り値型に `var` を使っているため、これもコンパイルエラーです。一方、6行目と7行目はメソッド内のローカル変数、10行目は拡張for文のローカル変数なので使用できます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正しい選択肢です。varはローカル変数宣言専用。4行目のフィールド宣言、5行目の戻り値型には使えない。"
+              "detail": "正解です。5行目ではメソッドの戻り値型に `var` を使っています。`var` は戻り値型には使えないためコンパイルエラーです。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「10行目」ではありません。varはローカル変数宣言専用。4行目のフィールド宣言、5行目の戻り値型には使えない。"
+              "detail": "誤りです。10行目の `for (var s : samples)` は拡張for文のローカル変数なので、`var` を使えます。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「7行目」ではありません。varはローカル変数宣言専用。4行目のフィールド宣言、5行目の戻り値型には使えない。"
+              "detail": "誤りです。7行目の `var samples = new ArrayList<>();` はメソッド内のローカル変数宣言です。右辺から `ArrayList<Object>` 相当の型を推論できるため、ここ自体は `var` の使用箇所としては問題ありません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「6行目」ではありません。varはローカル変数宣言専用。4行目のフィールド宣言、5行目の戻り値型には使えない。"
+              "detail": "誤りです。6行目の `var sample = new Sample();` はローカル変数宣言で、右辺からSample型を推論できます。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正しい選択肢です。varはローカル変数宣言専用。4行目のフィールド宣言、5行目の戻り値型には使えない。"
+              "detail": "正解です。4行目はクラス直下のフィールド宣言です。`var` はローカル変数専用なので、フィールドには使えません。"
             }
           ],
           "relatedKnowledge": [
-            "varはローカル変数の型推論に使うための予約型名。フィールド、メソッド引数、戻り値型、コンストラクタ引数には使えない。",
-            "varで宣言するには、右辺から型を一意に推論できる必要がある。null単体、ラムダ式単体、配列初期化子単体では推論できない。",
-            "varは動的型付けではない。コンパイル時に型が決まり、その後に別系統の型へ自由に変わるわけではない。"
+            "`var` は予約語ではなく、制限付き識別子として扱われる。",
+            "`var` を使っても型がなくなるわけではなく、コンパイル時に具体的な型が決まる。"
           ],
           "examTips": [
-            "varを見たら、使われている場所がローカル変数宣言かを先に見る。場所が違えば即コンパイルエラー。",
-            "右辺がnullや `{...}` だけの場合は型推論できない。"
+            "`var` 問題では、まずその宣言がメソッド内のローカル変数かどうかを見る。",
+            "戻り値型やフィールドにある `var` は即エラー候補。"
           ],
           "judgeSteps": [
-            "varがフィールド・引数・戻り値型に使われていないか確認する。",
-            "ローカル変数なら、右辺から具体的な型を推論できるか確認する。",
-            "推論された型で、その後の代入やメソッド呼び出しが成立するか確認する。"
+            "4行目はクラス直下なのでフィールド。var不可。",
+            "5行目はメソッド戻り値型。var不可。",
+            "6・7行目はローカル変数。var可。",
+            "10行目は拡張forのローカル変数。var可。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A・E です。\n\nvarはローカル変数宣言専用。4行目のフィールド宣言、5行目の戻り値型には使えない。",
+          "pdfExplanation": "正解は A・E です。\n\n4行目の `var sample = ...` はクラス直下にあるフィールド宣言です。`var` はフィールドには使えません。5行目の `public var test()` はメソッドの戻り値型に `var` を使っているため、これもコンパイルエラーです。一方、6行目と7行目はメソッド内のローカル変数、10行目は拡張for文のローカル変数なので使用できます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\n`var` は便利ですが、使える場所はかなり限定されています。名前の通り「ローカル変数型推論」であり、クラスのフィールドやメソッドの戻り値型を推論する機能ではありません。この問題では `var` という文字だけを見て全部怪しむのではなく、「そのvarがどこに書かれているか」を見る必要があります。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -29121,54 +29110,57 @@ window.JAVA_STUDY_DATA = {
           "B"
         ],
         "explanation": {
-          "summary": "BはAを継承しており、Aにはint引数のコンストラクタしかない。サブクラスのコンストラクタ先頭でsuper(num)を呼ぶ必要がある。",
-          "points": [],
-          "correctReason": "正解は B です。\n\nBはAを継承しており、Aにはint引数のコンストラクタしかない。サブクラスのコンストラクタ先頭でsuper(num)を呼ぶ必要がある。",
+          "summary": "Aには引数なしコンストラクタがなく、`A(int num)` だけがある。Bのコンストラクタでは、先頭でスーパークラスAのコンストラクタ `super(num)` を呼ぶ必要がある。",
+          "points": [
+            "コンストラクタは継承されない。",
+            "サブクラスのコンストラクタ先頭では `this(...)` または `super(...)` のどちらか一方を呼べる。",
+            "明示しない場合は `super();` が暗黙に入る。"
+          ],
+          "correctReason": "正解は B です。\n\nサブクラスのコンストラクタでは、最初にスーパークラスのコンストラクタを呼び出します。明示的に書かなければ `super();` が暗黙に挿入されますが、Aクラスには引数なしコンストラクタがありません。Aにあるのは `A(int num)` なので、Bのコンストラクタでは `super(num);` を先頭に書く必要があります。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「this(num);」ではありません。BはAを継承しており、Aにはint引数のコンストラクタしかない。サブクラスのコンストラクタ先頭でsuper(num)を呼ぶ必要がある。"
+              "detail": "誤りです。`this(num);` は同じBクラス内の別コンストラクタを呼ぶ記述です。しかしBには `B(int)` コンストラクタが定義されていません。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「super(num);」です。BはAを継承しており、Aにはint引数のコンストラクタしかない。サブクラスのコンストラクタ先頭でsuper(num)を呼ぶ必要がある。"
+              "detail": "正解です。スーパークラスAには `A(int num)` があるため、Bのコンストラクタから `super(num);` で呼び出します。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「this(val);」ではありません。BはAを継承しており、Aにはint引数のコンストラクタしかない。サブクラスのコンストラクタ先頭でsuper(num)を呼ぶ必要がある。"
+              "detail": "誤りです。`this(val);` はBクラス内の `B(String)` コンストラクタを呼ぶ記述ですが、そのようなコンストラクタはありません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「super(val);」ではありません。BはAを継承しており、Aにはint引数のコンストラクタしかない。サブクラスのコンストラクタ先頭でsuper(num)を呼ぶ必要がある。"
+              "detail": "誤りです。Aクラスには `A(String)` コンストラクタはありません。`val` はStringなので `super(val);` は適合しません。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「super();」ではありません。BはAを継承しており、Aにはint引数のコンストラクタしかない。サブクラスのコンストラクタ先頭でsuper(num)を呼ぶ必要がある。"
+              "detail": "誤りです。Aクラスには引数なしコンストラクタ `A()` がありません。`super();` を呼ぶとコンパイルエラーになります。"
             }
           ],
           "relatedKnowledge": [
-            "コンストラクタは継承されない。サブクラスのインスタンス生成時には、親クラスのコンストラクタが先に実行され、その後に子クラス側の初期化へ進む。",
-            "this(...)とsuper(...)はコンストラクタの先頭行にしか書けない。両方を同じコンストラクタに並べることはできない。",
-            "明示的にsuper(...)を書かない場合、引数なしのsuper()が暗黙に挿入される。親に引数なしコンストラクタがない場合は注意が必要。"
+            "スーパークラスに引数付きコンストラクタだけがある場合、サブクラス側で適切な `super(引数)` を書かないとコンパイルエラーになる。",
+            "`this(...)` は同じクラスの別コンストラクタ、`super(...)` は親クラスのコンストラクタ呼び出し。"
           ],
           "examTips": [
-            "表示順問題では、newされたクラスからではなく、最上位の親コンストラクタから順に出力を並べる。",
-            "this()で同じクラス内の別コンストラクタへ飛んだ場合、その先で最終的にsuper()が呼ばれる流れまで追う。"
+            "コンストラクタ問題では、親クラスに引数なしコンストラクタがあるかを最初に見る。",
+            "`this` と `super` の呼び出し先を混同しない。"
           ],
           "judgeSteps": [
-            "newしているクラスのコンストラクタを確認する。",
-            "そのコンストラクタの先頭にthis(...)またはsuper(...)があるか確認する。",
-            "親クラスのコンストラクタ実行、フィールド初期化、子クラス側の処理の順に出力を並べる。"
+            "Aのコンストラクタは `A(int)` のみと確認する。",
+            "Bのコンストラクタ引数に `int num` があると確認する。",
+            "Aの `A(int)` に対応する `super(num);` が必要と判断する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は B です。\n\nBはAを継承しており、Aにはint引数のコンストラクタしかない。サブクラスのコンストラクタ先頭でsuper(num)を呼ぶ必要がある。",
+          "pdfExplanation": "正解は B です。\n\nサブクラスのコンストラクタでは、最初にスーパークラスのコンストラクタを呼び出します。明示的に書かなければ `super();` が暗黙に挿入されますが、Aクラスには引数なしコンストラクタがありません。Aにあるのは `A(int num)` なので、Bのコンストラクタでは `super(num);` を先頭に書く必要があります。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、暗黙の `super()` を理解しているかを問います。サブクラスBのインスタンスを作るには、まずスーパークラスAの部分を初期化する必要があります。Aには `A(int)` しかないため、B側から数値を渡してAのコンストラクタを呼ばなければいけません。`this(...)` は親ではなく同じBクラス内の別コンストラクタ呼び出しなので、この問題では合いません。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -29214,49 +29206,53 @@ window.JAVA_STUDY_DATA = {
           "A"
         ],
         "explanation": {
-          "summary": "floatからintへの代入はデータ欠損の可能性があるため暗黙変換できない。明示的キャストが必要。",
-          "points": [],
-          "correctReason": "正解は A です。\n\nfloatからintへの代入はデータ欠損の可能性があるため暗黙変換できない。明示的キャストが必要。",
+          "summary": "唯一のコンパイルエラーは `a = b;`。`float` から `int` への代入は縮小変換であり、明示的キャストが必要。`int` から `float`、`float` から `double`、`int` から `double` は暗黙変換できる。",
+          "points": [
+            "小さい範囲から大きい範囲への数値変換は暗黙に行える。",
+            "大きい範囲から小さい範囲、または小数型から整数型への変換には明示的キャストが必要。",
+            "`float` から `int` では小数部が失われる可能性がある。"
+          ],
+          "correctReason": "正解は A です。\n\n6行目の `a = b;` は、`float` 型の値を `int` 型の変数へ代入しようとしています。小数部が失われる可能性があるため、暗黙変換はできません。`a = (int) b;` のように明示的キャストが必要です。7行目以降は、より広い型への変換なのでコンパイルエラーにはなりません。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「6行目を「a = (int) b;」に置き換える」です。floatからintへの代入はデータ欠損の可能性があるため暗黙変換できない。明示的キャストが必要。"
+              "detail": "正解です。6行目は `float` から `int` への縮小変換なので、`(int)` の明示的キャストが必要です。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「7行目を「b = (float) a;」に置き換える」ではありません。floatからintへの代入はデータ欠損の可能性があるため暗黙変換できない。明示的キャストが必要。"
+              "detail": "誤りです。7行目の `b = a;` は `int` から `float` への変換で、暗黙に行えます。キャストを書いてもよいですが、コンパイルエラーの修正箇所ではありません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「8行目を「c = (double) b;」に置き換える」ではありません。floatからintへの代入はデータ欠損の可能性があるため暗黙変換できない。明示的キャストが必要。"
+              "detail": "誤りです。8行目の `c = b;` は `float` から `double` への拡大変換なので、暗黙に行えます。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「9行目を「c = (double) a;」に置き換える」ではありません。floatからintへの代入はデータ欠損の可能性があるため暗黙変換できない。明示的キャストが必要。"
+              "detail": "誤りです。9行目の `c = a;` は `int` から `double` への拡大変換なので、暗黙に行えます。"
             }
           ],
           "relatedKnowledge": [
-            "小さい範囲の数値型から大きい範囲への変換は暗黙に行えるが、大きい範囲から小さい範囲へは明示的キャストが必要。",
-            "整数リテラルは通常int、浮動小数点リテラルは通常doubleとして扱われる。byteやshortへ代入する場合、定数値が範囲内かが問われる。",
-            "参照型のキャストは、コンパイル時に型の関連が必要で、実行時には実体がその型として扱えるかが必要。"
+            "数値型の代入では、代入先の型に安全に収まるかを見る。",
+            "`int` から `float` は精度の問題はあり得るが、言語仕様上は暗黙変換可能。"
           ],
           "examTips": [
-            "キャストを書けば常に安全になるわけではない。参照型では実体が合わなければClassCastExceptionになる。",
-            "charと数値の変換は、明示的キャストの有無と範囲を確認する。"
+            "代入問題では右辺の型から左辺の型へ変換できるかを1行ずつ見る。",
+            "不要なキャストを追加する選択肢は、修正として正しいとは限らない。"
           ],
           "judgeSteps": [
-            "変換元と変換先の型を確認する。",
-            "プリミティブなら範囲とリテラルのデフォルト型を確認する。",
-            "参照型なら継承関係と実体型を確認する。"
+            "6行目: float → int なので不可。",
+            "7行目: int → float なので可。",
+            "8行目: float → double なので可。",
+            "9行目: int → double なので可。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A です。\n\nfloatからintへの代入はデータ欠損の可能性があるため暗黙変換できない。明示的キャストが必要。",
+          "pdfExplanation": "正解は A です。\n\n6行目の `a = b;` は、`float` 型の値を `int` 型の変数へ代入しようとしています。小数部が失われる可能性があるため、暗黙変換はできません。`a = (int) b;` のように明示的キャストが必要です。7行目以降は、より広い型への変換なのでコンパイルエラーにはなりません。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、全部の行を怪しむのではなく、代入の向きを1行ずつ見る問題です。`a = b;` は `float` の値を `int` に入れるので、小数部を切り捨てる可能性があります。Javaはこの変換を勝手には行いません。一方、`b = a;` や `c = b;` は広い型へ入れる方向なのでコンパイルできます。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -29302,50 +29298,53 @@ window.JAVA_STUDY_DATA = {
           "B"
         ],
         "explanation": {
-          "summary": "String配列の未代入要素はnull。要素数5の0番目と4番目はnullのまま表示される。",
-          "points": [],
-          "correctReason": "正解は B です。\n\nString配列の未代入要素はnull。要素数5の0番目と4番目はnullのまま表示される。",
+          "summary": "`new String[5]` で作られた配列の各要素の初期値は `null`。1〜3番目だけに文字列を代入しているため、拡張for文では `null`, `A`, `B`, `C`, `null` の順に表示される。",
+          "points": [
+            "参照型配列の要素の初期値は `null`。",
+            "拡張for文は配列の全要素を順番に取り出す。",
+            "`println(null)` は例外ではなく `null` と表示される。"
+          ],
+          "correctReason": "正解は B です。\n\n`String[] array = new String[5];` により、要素数5の参照型配列が作られます。参照型配列の未代入要素は `null` で初期化されます。代入しているのは `array[1]`、`array[2]`、`array[3]` だけなので、`array[0]` と `array[4]` は `null` のままです。`println` は `null` 参照をそのまま渡されると文字列 `null` と表示します。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「null」「A」「B」「C」「null」と表示される」であり、「「A」「B」「C」と表示される」ではありません。"
+              "detail": "誤りです。代入したA/B/Cだけが表示されるわけではありません。拡張for文は配列の全要素、つまり0番目から4番目までを順に処理します。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「「null」「A」「B」「C」「null」と表示される」です。String配列の未代入要素はnull。要素数5の0番目と4番目はnullのまま表示される。"
+              "detail": "正解です。0番目と4番目は未代入なので `null`、1〜3番目はそれぞれA/B/Cです。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「null」「A」「B」「C」「null」と表示される」であり、「「Error」と表示される」ではありません。"
+              "detail": "誤りです。`null` を `System.out.println(str)` に渡しても、それだけでは例外になりません。`str.toString()` のようにメソッドを呼べばNullPointerExceptionになりますが、このコードでは呼んでいません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「「null」「A」「B」「C」「null」と表示される」です。"
+              "detail": "誤りです。配列生成、代入、拡張for文、try-catchの構文にコンパイルエラーはありません。"
             }
           ],
           "relatedKnowledge": [
-            "配列のlengthは要素数であり、最後の有効添字はlength - 1。添字範囲外アクセスは実行時例外になる。",
-            "多次元配列は配列の配列。行ごとに長さが違うジャグ配列も作れるため、外側と内側のlengthを分けて読む。",
-            "参照型配列の要素の初期値はnull。要素にインスタンスを入れる前にメソッド呼び出しをするとNullPointerExceptionになる。"
+            "プリミティブ配列なら初期値は数値型で0、booleanでfalse、charで\u0000。",
+            "参照型配列では、要素にオブジェクトが自動生成されるわけではない。"
           ],
           "examTips": [
-            "二次元配列では、array.lengthとarray[i].lengthを同じ意味で読まない。",
-            "拡張for文のループ変数に代入しても、配列要素そのものの差し替えにはならない場合がある。"
+            "配列問題では、要素数と代入済みの添字を表にする。",
+            "`null` が出たら、メソッド呼び出しをしているのか、単に出力しているだけかを分ける。"
           ],
           "judgeSteps": [
-            "配列の生成式から外側の要素数を確認する。",
-            "二次元以上なら、各行の内側配列の長さを個別に確認する。",
-            "ループごとに参照している添字が有効範囲内かを確認する。",
-            "参照型配列なら、要素がnullのまま使われていないかを確認する。"
+            "配列長5なので添字は0〜4。",
+            "代入済みは1,2,3だけ。",
+            "0と4はnullのまま。",
+            "拡張for文で0から順に表示する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は B です。\n\nString配列の未代入要素はnull。要素数5の0番目と4番目はnullのまま表示される。",
+          "pdfExplanation": "正解は B です。\n\n`String[] array = new String[5];` により、要素数5の参照型配列が作られます。参照型配列の未代入要素は `null` で初期化されます。代入しているのは `array[1]`、`array[2]`、`array[3]` だけなので、`array[0]` と `array[4]` は `null` のままです。`println` は `null` 参照をそのまま渡されると文字列 `null` と表示します。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、参照型配列の初期値と `println` の扱いを確認する問題です。`new String[5]` はStringオブジェクトを5個作るわけではありません。Stringを入れる箱を5個作るだけで、各箱の初期値は `null` です。ただし、`println(str)` でstrがnullでも例外にはならず、画面には `null` と表示されます。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -29403,59 +29402,59 @@ window.JAVA_STUDY_DATA = {
           "E"
         ],
         "explanation": {
-          "summary": "headerはstaticでパッケージアクセス、getValue()はpublic static。privateなvalueへは外部から直接アクセスできない。",
+          "summary": "staticフィールド、privateフィールド、staticメソッドの参照可否を分ける問題です。`header`は外部から参照できますが、`value`はprivateなのでMainから直接参照できません。",
           "points": [],
-          "correctReason": "正解は E です。\n\nheaderはstaticでパッケージアクセス、getValue()はpublic static。privateなvalueへは外部から直接アクセスできない。",
+          "correctReason": "正解は E です。`Sample.header` はstaticフィールドなのでクラス名から参照できます。`value` はprivateフィールドですが、`Sample`クラス内のpublic staticメソッド `getValue()` が新しいSampleインスタンスを作ってその`value`を返しています。したがって `Sample.header + Sample.getValue()` は `\"A:\" + \"B\"` となり、「A:B」と表示されます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「System.out.println(Sample.getValue + s.header);」ではありません。headerはstaticでパッケージアクセス、getValue()はpublic static。privateなvalueへは外部から直接アクセスできない。"
+              "detail": "`Sample.getValue` と書いており、メソッド呼び出しの `()` がありません。`getValue` はフィールドではなくメソッドなので、この形では参照できずコンパイルエラーです。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「System.out.println(Sample.header + Sample.value);」ではありません。headerはstaticでパッケージアクセス、getValue()はpublic static。privateなvalueへは外部から直接アクセスできない。"
+              "detail": "`Sample.value` がprivateフィールドへの外部アクセスになっています。`value` はSampleクラス内からしか直接参照できません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「System.out.println(new Sample().header + new Sample().value);」ではありません。headerはstaticでパッケージアクセス、getValue()はpublic static。privateなvalueへは外部から直接アクセスできない。"
+              "detail": "`new Sample().value` がprivateフィールドへの外部アクセスです。インスタンスを作っても、privateメンバを別クラスMainから直接読むことはできません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「System.out.println(s.header + Sample.value);」ではありません。headerはstaticでパッケージアクセス、getValue()はpublic static。privateなvalueへは外部から直接アクセスできない。"
+              "detail": "`s.header` はstaticフィールドをインスタンス経由で参照しているだけなので許容されますが、`Sample.value` がprivateアクセス違反です。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「System.out.println(Sample.header + Sample.getValue());」です。headerはstaticでパッケージアクセス、getValue()はpublic static。privateなvalueへは外部から直接アクセスできない。"
+              "detail": "`Sample.header` で「A:」を取得し、`Sample.getValue()` でSample内部からprivateフィールド「B」を返します。連結結果は「A:B」です。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。「System.out.println(s.header + s.value);」ではありません。headerはstaticでパッケージアクセス、getValue()はpublic static。privateなvalueへは外部から直接アクセスできない。"
+              "detail": "`s.value` がprivateフィールドへの外部アクセスです。`s`がSampleのインスタンスでも、Mainクラスからprivateフィールドへ直接アクセスすることはできません。"
             }
           ],
           "relatedKnowledge": [
-            "staticメンバはクラスに属し、インスタンスごとには複製されない。全インスタンスから共有される。",
-            "staticメソッドからは、thisを使えず、インスタンスフィールドやインスタンスメソッドへ直接アクセスできない。",
-            "同名のローカル変数や引数がある場合、単純名ではローカル側が優先される。フィールドを指すにはthis.fieldやClassName.fieldを使う。"
+            "privateは同じインスタンスからなら見える、ではなく「同じクラス内のコードから見える」という意味です。",
+            "staticメンバはクラスに属するため、通常はクラス名で参照します。",
+            "メソッド呼び出しには必ず `()` が必要です。"
           ],
           "examTips": [
-            "static問題は「クラスに属するもの」と「インスタンスに属するもの」を表に分ける。",
-            "staticメソッド内で非staticフィールド名が裸で出たら、まずコンパイルエラーを疑う。"
+            "privateフィールドを見たら、外部クラスから直接触っていないかを最初に確認する。",
+            "staticメソッドがprivateフィールドを返す場合、そのアクセスはメソッド内部で完結しているので合法です。"
           ],
           "judgeSteps": [
-            "対象メンバがstaticかインスタンスメンバかを確認する。",
-            "呼び出し元のメソッドがstaticかどうかを確認する。",
-            "同名のローカル変数・引数がある場合、名前解決の優先順位を確認する。"
+            "空欄に入る式の各メンバを、フィールドかメソッドかに分ける。",
+            "それぞれのアクセス修飾子を確認する。",
+            "最終的に文字列連結の結果が「A:B」になるか確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は E です。\n\nheaderはstaticでパッケージアクセス、getValue()はpublic static。privateなvalueへは外部から直接アクセスできない。",
+          "pdfExplanation": "正解は E です。`Sample.header` はstaticフィールドなのでクラス名から参照できます。`value` はprivateフィールドですが、`Sample`クラス内のpublic staticメソッド `getValue()` が新しいSampleインスタンスを作ってその`value`を返しています。したがって `Sample.header + Sample.getValue()` は `\"A:\" + \"B\"` となり、「A:B」と表示されます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は「staticだから使えるか」だけではなく、「privateをどこから読んでいるか」が中心です。`header` は修飾子なしのstaticフィールドなので、同じパッケージのMainから `Sample.header` として参照できます。一方、`value` はprivateなので、Mainから `Sample.value` や `s.value` と書くとコンパイルエラーです。\n\nただし、`getValue()` はSampleクラスの中にあるメソッドです。Sampleクラス内のコードならprivateフィールド `value` を読めます。`return new Sample().value;` はSampleクラス内部でprivateにアクセスしているため合法です。したがって、Main側はpublic staticな `getValue()` を呼び出せば「B」を受け取れます。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -29509,55 +29508,54 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "int[]はObjectとして扱えるが、Object[]やlong[]とは互換性がない。最も適用可能なのはtest(Object)。",
+          "summary": "配列型のオーバーロード解決です。`int[]` はプリミティブ配列なので `Object[]` には代入できませんが、配列そのものはObjectのサブタイプです。",
           "points": [],
-          "correctReason": "正解は C です。\n\nint[]はObjectとして扱えるが、Object[]やlong[]とは互換性がない。最も適用可能なのはtest(Object)。",
+          "correctReason": "正解は C です。`new int[3]` の型は `int[]` です。`int[]` は `Object[]` ではありません。`long[]` にも変換できません。一方、Javaの配列はすべてObjectのサブタイプなので、`test(Object val)` が選ばれ、「C」が表示されます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「Cが表示される」であり、「Aが表示される」ではありません。"
+              "detail": "`Object[]` は参照型配列のスーパータイプとして使えますが、`int[]` のようなプリミティブ配列は `Object[]` には入りません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「Cが表示される」であり、「Bが表示される」ではありません。"
+              "detail": "`int[]` は `long[]` に変換されません。配列では要素型の数値昇格のような変換は行われません。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「Cが表示される」です。int[]はObjectとして扱えるが、Object[]やlong[]とは互換性がない。最も適用可能なのはtest(Object)。"
+              "detail": "配列型はObjectのサブタイプです。`int[]` は `Object` として受け取れるため、`test(Object val)` が呼ばれます。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「Cが表示される」です。"
+              "detail": "Sampleクラス内の3つのオーバーロード宣言自体は合法です。重複シグネチャでもありません。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「Cが表示される」です。"
+              "detail": "Main側でも呼び出し可能な `test(Object)` が存在するため、コンパイルエラーにはなりません。"
             }
           ],
           "relatedKnowledge": [
-            "オーバーライドは、メソッド名と引数リストが同じであることが前提。戻り値型は同じ型または共変戻り値としてサブクラス型にできる。",
-            "オーバーライド時のアクセス修飾子は、親より狭くできない。publicをprotectedやデフォルトに落とすとコンパイルエラー。",
-            "オーバーロードは引数リスト違いの別メソッド。実行時の動的選択ではなく、コンパイル時の引数型で候補が決まる。"
+            "プリミティブ配列 `int[]` は `Object` には代入できるが、`Object[]` には代入できません。",
+            "配列型同士の変換では、`int`から`long`へのような要素単位の数値変換はされません。",
+            "オーバーロードはコンパイル時の引数型で決まります。"
           ],
           "examTips": [
-            "@Overrideが付いているのに条件を満たさない場合はコンパイルエラーになる。付いていなくても条件を満たせばオーバーライドは成立する。",
-            "戻り値だけ違うメソッドはオーバーロードにならない。戻り値型でメソッドを区別できない。"
+            "配列の問題では「要素がプリミティブか参照型か」を分ける。",
+            "`Object[]` と `Object` は別物です。混同すると落とされます。"
           ],
           "judgeSteps": [
-            "親メソッドと子メソッドのメソッド名・引数リストを比較する。",
-            "戻り値型が同じか、親の戻り値型のサブタイプになっているか確認する。",
-            "アクセス修飾子が親と同じか、より広いか確認する。",
-            "throws句が親より広いチェック例外になっていないか確認する。"
+            "実引数 `new int[3]` の型を確定する。",
+            "候補メソッドに代入可能かを1つずつ見る。",
+            "最も具体的な適用可能メソッドを選ぶ。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\nint[]はObjectとして扱えるが、Object[]やlong[]とは互換性がない。最も適用可能なのはtest(Object)。",
+          "pdfExplanation": "正解は C です。`new int[3]` の型は `int[]` です。`int[]` は `Object[]` ではありません。`long[]` にも変換できません。一方、Javaの配列はすべてObjectのサブタイプなので、`test(Object val)` が選ばれ、「C」が表示されます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題でありがちな誤答は「intはlongに変換できるからlong[]」と考えることです。単体の `int` 値は `long` に拡大変換できますが、`int[]` 全体が `long[]` になるわけではありません。配列型の変換は要素を1個ずつ変換する処理ではありません。\n\nまた、`Object[]` は「Object型の配列」ではなく「参照型要素を持つ配列の上位型」と考えるべきです。`String[]` なら `Object[]` にできますが、`int[]` は参照型要素ではないためできません。残る `Object` が適用されます。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -29607,54 +29605,54 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "staticメソッドtestから非staticフィールドnumを直接参照しているためコンパイルエラー。",
+          "summary": "staticメソッドからインスタンスフィールドを直接参照しているため、testメソッドでコンパイルエラーになります。",
           "points": [],
-          "correctReason": "正解は C です。\n\nstaticメソッドtestから非staticフィールドnumを直接参照しているためコンパイルエラー。",
+          "correctReason": "正解は C です。`num` はインスタンスフィールドです。一方、`test()` はstaticメソッドです。staticメソッドは特定のインスタンスに属していないため、`num++` や `System.out.println(num)` のようにインスタンスフィールドを直接参照できません。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「「1」「2」と表示される」という出力は発生しません。"
+              "detail": "1回目が実行される前にコンパイルエラーになります。staticメソッド内で `num` を直接使えません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。コンパイルエラーになるため、「1回表示される」という出力は発生しません。"
+              "detail": "2回表示される以前に、`test()` の中身がコンパイルできません。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「testメソッドでコンパイルエラーが発生する」です。staticメソッドtestから非staticフィールドnumを直接参照しているためコンパイルエラー。"
+              "detail": "`test()` はstaticなのに、インスタンスフィールド `num` をインスタンスなしで参照しています。ここでコンパイルエラーです。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「mainメソッドでコンパイルエラーが発生する」ではありません。staticメソッドtestから非staticフィールドnumを直接参照しているためコンパイルエラー。"
+              "detail": "mainメソッドから `Main.test()` と呼ぶこと自体は、privateメソッドであっても同じクラス内なので合法です。問題はtestメソッドの中身です。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。コンパイル時点で止まるため、実行時例外ではありません。"
+              "detail": "コンパイルできないため実行時例外には進みません。"
             }
           ],
           "relatedKnowledge": [
-            "staticメンバはクラスに属し、インスタンスごとには複製されない。全インスタンスから共有される。",
-            "staticメソッドからは、thisを使えず、インスタンスフィールドやインスタンスメソッドへ直接アクセスできない。",
-            "同名のローカル変数や引数がある場合、単純名ではローカル側が優先される。フィールドを指すにはthis.fieldやClassName.fieldを使う。"
+            "staticメソッドから直接使えるのは、staticメンバとローカル変数です。",
+            "インスタンスフィールドを使うには、`new Main().num` のようにインスタンス参照が必要です。",
+            "同じクラス内でも、static/インスタンスの区別はなくなりません。"
           ],
           "examTips": [
-            "static問題は「クラスに属するもの」と「インスタンスに属するもの」を表に分ける。",
-            "staticメソッド内で非staticフィールド名が裸で出たら、まずコンパイルエラーを疑う。"
+            "staticメソッド内で裸のフィールド名が出たら、まずそのフィールドがstaticか確認する。",
+            "privateかどうかより先に、static文脈かどうかを見る。"
           ],
           "judgeSteps": [
-            "対象メンバがstaticかインスタンスメンバかを確認する。",
-            "呼び出し元のメソッドがstaticかどうかを確認する。",
-            "同名のローカル変数・引数がある場合、名前解決の優先順位を確認する。"
+            "`num` の宣言位置を確認する。",
+            "`test()` がstaticか確認する。",
+            "static文脈からインスタンスフィールドを直接参照していないか確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\nstaticメソッドtestから非staticフィールドnumを直接参照しているためコンパイルエラー。",
+          "pdfExplanation": "正解は C です。`num` はインスタンスフィールドです。一方、`test()` はstaticメソッドです。staticメソッドは特定のインスタンスに属していないため、`num++` や `System.out.println(num)` のようにインスタンスフィールドを直接参照できません。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\n`num` は `int num;` とだけ宣言されているので、各Mainインスタンスが持つフィールドです。ところが `private static void test()` はクラスに属するメソッドです。staticメソッドの中では、どのMainインスタンスの `num` を増やせばよいか決まりません。\n\n`Main.test()` という呼び出し自体は問題ありません。同じMainクラス内からprivate staticメソッドを呼んでいるだけです。エラー箇所はmainではなく、testメソッド内の `num++` と `println(num)` です。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -29700,49 +29698,49 @@ window.JAVA_STUDY_DATA = {
           "B"
         ],
         "explanation": {
-          "summary": "Stringのreplaceやsubstringは新しい文字列を返すだけで、元のStringは変更しない。戻り値を代入していないためabcdeのまま。",
+          "summary": "Stringは不変です。`replace` や `substring` は新しいStringを返しますが、戻り値を代入していないため `str` は変わりません。",
           "points": [],
-          "correctReason": "正解は B です。\n\nStringのreplaceやsubstringは新しい文字列を返すだけで、元のStringは変更しない。戻り値を代入していないためabcdeのまま。",
+          "correctReason": "正解は B です。`str.replace('c', 'x')` は「abxde」という新しい文字列を返しますが、戻り値を捨てています。`str.substring(2, 4)` も「cd」を返しますが、これも代入していません。したがって `str` は最初の「abcde」のままです。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「abcde」と表示される」であり、「「abxde」と表示される」ではありません。"
+              "detail": "`replace` の戻り値を `str` に代入していないため、「abxde」には変わりません。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「「abcde」と表示される」です。Stringのreplaceやsubstringは新しい文字列を返すだけで、元のStringは変更しない。戻り値を代入していないためabcdeのまま。"
+              "detail": "Stringは不変で、replaceやsubstringの戻り値を代入していないため、元の `str` は「abcde」のままです。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「abcde」と表示される」であり、「「cde」と表示される」ではありません。"
+              "detail": "`substring(2, 4)` の戻り値は「cd」であり、そもそも「cde」ではありません。また戻り値も代入していません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「abcde」と表示される」であり、「「xde」と表示される」ではありません。"
+              "detail": "replaceとsubstringを連続しているように見えても、どちらも結果を代入していません。`str` は変化しません。"
             }
           ],
           "relatedKnowledge": [
-            "Stringは不変オブジェクト。substring、concat、replaceなどは元の文字列を変更せず、新しい結果を戻す。戻り値を受け取らなければ結果は捨てられる。",
-            "==は参照の同一性を比較し、equalsは文字列内容の同値性を比較する。new String(...)は通常、文字列プールとは別のインスタンスを作る。",
-            "intern()は文字列プール上の同じ内容のインスタンス参照を返す。リテラルとintern結果の比較が問われやすい。"
+            "Stringのメソッドは元の文字列を変更せず、新しい文字列を返します。",
+            "`substring(begin, end)` のendは含まれません。",
+            "戻り値を代入しているかどうかがString問題の最重要確認点です。"
           ],
           "examTips": [
-            "Stringメソッドを呼んだだけで元の変数が変わると考えない。代入されているかを必ず見る。",
-            "==の問題では、内容ではなく参照先が同じかを図にして追う。"
+            "StringBuilderと違い、Stringは不変。戻り値の代入有無を見る。",
+            "`replace`、`substring`、`concat` は戻り値を使って初めて変数の参照先が変わります。"
           ],
           "judgeSteps": [
-            "各String変数が、newで作られたヒープ上のインスタンスか、文字列プール上のインスタンスかを分ける。",
-            "メソッド呼び出しの戻り値が変数に代入されているかを確認する。",
-            "==なら参照比較、equalsなら内容比較として判定する。"
+            "各メソッドの戻り値が代入されているか確認する。",
+            "元の変数 `str` の参照先が変わった行があるか確認する。",
+            "最後のprintlnに渡される値を決める。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は B です。\n\nStringのreplaceやsubstringは新しい文字列を返すだけで、元のStringは変更しない。戻り値を代入していないためabcdeのまま。",
+          "pdfExplanation": "正解は B です。`str.replace('c', 'x')` は「abxde」という新しい文字列を返しますが、戻り値を捨てています。`str.substring(2, 4)` も「cd」を返しますが、これも代入していません。したがって `str` は最初の「abcde」のままです。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\n`str.replace('c', 'x')` は、`str` 自体の中身を書き換える処理ではありません。戻り値として「abxde」を返すだけです。戻り値を受け取るなら `str = str.replace(...)` のように書く必要があります。\n\n同じく `substring(2, 4)` も新しい文字列を返すだけです。しかもこの戻り値も捨てています。結果として、println時点の `str` は初期値「abcde」から一度も変わっていません。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -29788,49 +29786,49 @@ window.JAVA_STUDY_DATA = {
           "A"
         ],
         "explanation": {
-          "summary": "num++ + numは0+1で1。その後文字列連結になり、++numで2、最後のnumも2なので「1,22」。",
+          "summary": "インクリメントの前置・後置と、途中からString連結になる点を追跡する問題です。",
           "points": [],
-          "correctReason": "正解は A です。\n\nnum++ + numは0+1で1。その後文字列連結になり、++numで2、最後のnumも2なので「1,22」。",
+          "correctReason": "正解は A です。最初に `num++ + num` が数値加算として評価されます。`num++` は0を使ってからnumを1にし、次の `num` は1なので、数値部分は1です。その後 `\",\"` が出た時点で文字列連結に変わります。`++num` でnumは2になり値2を使い、最後の `num` も2なので、後半は文字列として「22」になります。結果は「1,22」です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「「1,22」と表示される」です。num++ + numは0+1で1。その後文字列連結になり、++numで2、最後のnumも2なので「1,22」。"
+              "detail": "`num++ + num` は `0 + 1` で1。`,`以降は文字列連結になり、`++num` と `num` はどちらも2として連結されます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「1,22」と表示される」であり、「「2,22」と表示される」ではありません。"
+              "detail": "前半の数値加算を2と見ている可能性がありますが、`num++` は増える前の0を式に使います。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「1,22」と表示される」であり、「「2,4」と表示される」ではありません。"
+              "detail": "`,`以降は数値加算ではなく文字列連結です。`2 + 2` として4にはなりません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「「1,22」と表示される」です。"
+              "detail": "式はすべて合法です。インクリメントと文字列連結の組み合わせであり、コンパイルエラーではありません。"
             }
           ],
           "relatedKnowledge": [
-            "Stringは不変オブジェクト。substring、concat、replaceなどは元の文字列を変更せず、新しい結果を戻す。戻り値を受け取らなければ結果は捨てられる。",
-            "==は参照の同一性を比較し、equalsは文字列内容の同値性を比較する。new String(...)は通常、文字列プールとは別のインスタンスを作る。",
-            "intern()は文字列プール上の同じ内容のインスタンス参照を返す。リテラルとintern結果の比較が問われやすい。"
+            "後置インクリメントは「現在値を使ってから増やす」、前置インクリメントは「増やしてから使う」です。",
+            "`+` は片方がStringになると以降の結合が文字列連結として進みます。",
+            "式は左から評価されますが、前置・後置の値の使われ方を別に考える必要があります。"
           ],
           "examTips": [
-            "Stringメソッドを呼んだだけで元の変数が変わると考えない。代入されているかを必ず見る。",
-            "==の問題では、内容ではなく参照先が同じかを図にして追う。"
+            "インクリメント問題は、各項目の使用値と変数の更新後の値を分けて書く。",
+            "String連結が始まる位置を見落とすと数値加算として誤答します。"
           ],
           "judgeSteps": [
-            "各String変数が、newで作られたヒープ上のインスタンスか、文字列プール上のインスタンスかを分ける。",
-            "メソッド呼び出しの戻り値が変数に代入されているかを確認する。",
-            "==なら参照比較、equalsなら内容比較として判定する。"
+            "初期値num=0を置く。",
+            "`num++` の使用値と更新後の値を分ける。",
+            "`,`が出た位置から文字列連結として読む。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A です。\n\nnum++ + numは0+1で1。その後文字列連結になり、++numで2、最後のnumも2なので「1,22」。",
+          "pdfExplanation": "正解は A です。最初に `num++ + num` が数値加算として評価されます。`num++` は0を使ってからnumを1にし、次の `num` は1なので、数値部分は1です。その後 `\",\"` が出た時点で文字列連結に変わります。`++num` でnumは2になり値2を使い、最後の `num` も2なので、後半は文字列として「22」になります。結果は「1,22」です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\n式は `num++ + num + \",\" + ++num + num` です。最初の2項はどちらもintなので数値加算です。`num++` は0を使い、その直後にnumは1になります。次の `num` は1です。よって前半は `0 + 1` で1です。\n\n次に `\",\"` と連結されるため、ここから結果はStringになります。その後の `++num` はnumを2にしてから2を使います。最後の `num` も2です。String連結なので「2」と「2」が並び、「1,22」と表示されます。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -29880,55 +29878,54 @@ window.JAVA_STUDY_DATA = {
           "A"
         ],
         "explanation": {
-          "summary": "Bはcontinueで表示されず、Cを表示した後にbreakでループ終了。表示されるのはAとC。",
+          "summary": "拡張for文で各要素を順に処理し、`continue` と `break` の動作を追跡する問題です。",
           "points": [],
-          "correctReason": "正解は A です。\n\nBはcontinueで表示されず、Cを表示した後にbreakでループ終了。表示されるのはAとC。",
+          "correctReason": "正解は A です。配列はA, B, C, D, Eの順に処理されます。Aはそのまま出力されます。Bでは `continue` によりprintlnを飛ばして次の要素へ進みます。Cは出力されたあと、`break` によりfor文を終了します。したがって出力は「A」「C」です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「「A」「C」と表示される」です。Bはcontinueで表示されず、Cを表示した後にbreakでループ終了。表示されるのはAとC。"
+              "detail": "Aは出力、Bはcontinueで出力されず、Cは出力後にbreakで終了します。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「A」「C」と表示される」であり、「「A」「C」「D」と表示される」ではありません。"
+              "detail": "Cでbreakするため、Dは処理されません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「A」「C」と表示される」であり、「「B」「C」と表示される」ではありません。"
+              "detail": "Bはcontinueにより出力されません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「A」「C」と表示される」であり、「「C」と表示される」ではありません。"
+              "detail": "Aは最初の要素であり、条件に該当しないので出力されます。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「「A」「C」と表示される」です。"
+              "detail": "拡張for文、continue、breakの使い方は合法です。コンパイルエラーではありません。"
             }
           ],
           "relatedKnowledge": [
-            "配列のlengthは要素数であり、最後の有効添字はlength - 1。添字範囲外アクセスは実行時例外になる。",
-            "多次元配列は配列の配列。行ごとに長さが違うジャグ配列も作れるため、外側と内側のlengthを分けて読む。",
-            "参照型配列の要素の初期値はnull。要素にインスタンスを入れる前にメソッド呼び出しをするとNullPointerExceptionになる。"
+            "`continue` はその周回の残り処理を飛ばして次の周回へ進みます。",
+            "`break` はループ自体を終了します。",
+            "拡張for文でもcontinue/breakは通常のfor文と同じように使えます。"
           ],
           "examTips": [
-            "二次元配列では、array.lengthとarray[i].lengthを同じ意味で読まない。",
-            "拡張for文のループ変数に代入しても、配列要素そのものの差し替えにはならない場合がある。"
+            "ループ問題は表にして、要素ごとに出力したか・continueしたか・breakしたかを書く。",
+            "continue後のprintlnは実行されません。"
           ],
           "judgeSteps": [
-            "配列の生成式から外側の要素数を確認する。",
-            "二次元以上なら、各行の内側配列の長さを個別に確認する。",
-            "ループごとに参照している添字が有効範囲内かを確認する。",
-            "参照型配列なら、要素がnullのまま使われていないかを確認する。"
+            "配列要素を順に並べる。",
+            "各要素で最初のifに入るか確認する。",
+            "println後のbreak条件を確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A です。\n\nBはcontinueで表示されず、Cを表示した後にbreakでループ終了。表示されるのはAとC。",
+          "pdfExplanation": "正解は A です。配列はA, B, C, D, Eの順に処理されます。Aはそのまま出力されます。Bでは `continue` によりprintlnを飛ばして次の要素へ進みます。Cは出力されたあと、`break` によりfor文を終了します。したがって出力は「A」「C」です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nAの周回では、`\"B\".equals(\"A\")` はfalseなのでcontinueされず、Aが出力されます。次に `\"C\".equals(\"A\")` もfalseなので継続します。\n\nBの周回では、最初のifがtrueなのでcontinueします。この時点でprintlnも後半のifも実行されません。\n\nCの周回では、最初のifはfalseなのでCを出力します。その後、`\"C\".equals(str)` がtrueになりbreakします。したがってDとEには到達しません。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -29978,55 +29975,54 @@ window.JAVA_STUDY_DATA = {
           "A"
         ],
         "explanation": {
-          "summary": "int[2][4]で作った2次元目の配列を、それぞれ長さ4と長さ2の配列に差し替えている。拡張for文は実際の配列長だけ回る。",
+          "summary": "二次元配列は「配列の配列」です。各行の配列は別の長さの配列に差し替えられます。",
           "points": [],
-          "correctReason": "正解は A です。\n\nint[2][4]で作った2次元目の配列を、それぞれ長さ4と長さ2の配列に差し替えている。拡張for文は実際の配列長だけ回る。",
+          "correctReason": "正解は A です。`new int[2][4]` で2行4列の配列を作っていますが、その後 `array[0]` を `{1,2,3,4}` に、`array[1]` を `{1,2}` に差し替えています。拡張for文は各行の現在の配列を順に取り出すため、1行目は1234、2行目は12と表示されます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「「1234」「12」と表示される」です。int[2][4]で作った2次元目の配列を、それぞれ長さ4と長さ2の配列に差し替えている。拡張for文は実際の配列長だけ回る。"
+              "detail": "array[0]は長さ4の配列、array[1]は長さ2の配列に差し替えられています。出力は「1234」「12」です。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「1234」「12」と表示される」であり、「「12」「12」と表示される」ではありません。"
+              "detail": "1行目の `array[0]` は `{1,2,3,4}` なので「12」だけではありません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「1234」「12」と表示される」であり、「「12」「1200」と表示される」ではありません。"
+              "detail": "`array[1] = new int[]{1, 2};` によって2行目は長さ2の配列になります。元の長さ4の残り要素が残るわけではありません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「「1234」「12」と表示される」です。"
+              "detail": "二次元配列の各要素に別のint配列を代入することは合法です。行ごとに長さが異なっても構いません。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。実行時例外は発生せず、結果は「「1234」「12」と表示される」です。"
+              "detail": "範囲外アクセスはしていません。拡張for文は各配列の実際の長さに従って走査します。"
             }
           ],
           "relatedKnowledge": [
-            "配列のlengthは要素数であり、最後の有効添字はlength - 1。添字範囲外アクセスは実行時例外になる。",
-            "多次元配列は配列の配列。行ごとに長さが違うジャグ配列も作れるため、外側と内側のlengthを分けて読む。",
-            "参照型配列の要素の初期値はnull。要素にインスタンスを入れる前にメソッド呼び出しをするとNullPointerExceptionになる。"
+            "Javaの多次元配列は真の行列ではなく、配列の要素として配列参照を持ちます。",
+            "各行の配列は異なる長さにできます。",
+            "配列変数に別の配列参照を代入すると、参照先が差し替わります。"
           ],
           "examTips": [
-            "二次元配列では、array.lengthとarray[i].lengthを同じ意味で読まない。",
-            "拡張for文のループ変数に代入しても、配列要素そのものの差し替えにはならない場合がある。"
+            "`new int[2][4]` の初期形だけで判断しない。後続の代入で行配列が差し替えられていないか確認する。",
+            "拡張forでは現在の参照先配列が走査されます。"
           ],
           "judgeSteps": [
-            "配列の生成式から外側の要素数を確認する。",
-            "二次元以上なら、各行の内側配列の長さを個別に確認する。",
-            "ループごとに参照している添字が有効範囲内かを確認する。",
-            "参照型配列なら、要素がnullのまま使われていないかを確認する。"
+            "二次元配列の初期状態を確認する。",
+            "`array[0]` と `array[1]` の再代入を反映する。",
+            "各行の要素を順に出力する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A です。\n\nint[2][4]で作った2次元目の配列を、それぞれ長さ4と長さ2の配列に差し替えている。拡張for文は実際の配列長だけ回る。",
+          "pdfExplanation": "正解は A です。`new int[2][4]` で2行4列の配列を作っていますが、その後 `array[0]` を `{1,2,3,4}` に、`array[1]` を `{1,2}` に差し替えています。拡張for文は各行の現在の配列を順に取り出すため、1行目は1234、2行目は12と表示されます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\n`int[][] array` は「int配列を要素に持つ配列」と考えると分かりやすいです。`array[0]` と `array[1]` には、それぞれint配列への参照が入っています。\n\n最初に `new int[2][4]` としているため、初期状態では2つの行がそれぞれ長さ4です。しかし直後に `array[1] = new int[]{1, 2};` と代入しているので、2行目は長さ2の新しい配列を参照します。元の長さ4の配列の一部が残るわけではありません。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -30076,54 +30072,54 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "concatの戻り値は代入しているが、replaceの戻り値は捨てているためABCのまま。最後にCを連結してABCC。",
+          "summary": "Stringの`concat`と`replace`は新しい文字列を返します。戻り値を代入した行だけ変数aが変わります。",
           "points": [],
-          "correctReason": "正解は C です。\n\nconcatの戻り値は代入しているが、replaceの戻り値は捨てているためABCのまま。最後にCを連結してABCC。",
+          "correctReason": "正解は C です。最初aは「A」。`a = a.concat(\"B\")` で「AB」。bは「C」。`a = a.concat(b)` で「ABC」。次の `a.replace('C', 'D')` は「ABD」を返しますが、代入していないためaは「ABC」のままです。最後に `a = a.concat(b)` で「ABCC」となります。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「ABCCと表示される」であり、「ABCDと表示される」ではありません。"
+              "detail": "`replace` の戻り値を代入していないためDには変わりません。最後もbの「C」を連結するので「ABCD」ではありません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「ABCCと表示される」であり、「ACDと表示される」ではありません。"
+              "detail": "`concat(b)` を2回代入しているため、最後にもう一つCが付きます。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「ABCCと表示される」です。concatの戻り値は代入しているが、replaceの戻り値は捨てているためABCのまま。最後にCを連結してABCC。"
+              "detail": "代入されたconcatだけがaを更新し、replaceの戻り値は捨てられます。結果は「ABCC」です。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「ABCCと表示される」であり、「ABDと表示される」ではありません。"
+              "detail": "replaceの戻り値を使っていないため「D」は出ません。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「ABCCと表示される」であり、「ABDcと表示される」ではありません。"
+              "detail": "文字リテラルの小文字cを出力する処理はありません。選択肢の「c」はコード上の結果と合いません。"
             }
           ],
           "relatedKnowledge": [
-            "Stringは不変オブジェクト。substring、concat、replaceなどは元の文字列を変更せず、新しい結果を戻す。戻り値を受け取らなければ結果は捨てられる。",
-            "==は参照の同一性を比較し、equalsは文字列内容の同値性を比較する。new String(...)は通常、文字列プールとは別のインスタンスを作る。",
-            "intern()は文字列プール上の同じ内容のインスタンス参照を返す。リテラルとintern結果の比較が問われやすい。"
+            "Stringは不変です。`concat`も`replace`も元のStringを変更しません。",
+            "戻り値を変数に代入したときだけ、その変数が新しいStringを参照します。",
+            "char指定のreplaceでも戻り値はStringです。"
           ],
           "examTips": [
-            "Stringメソッドを呼んだだけで元の変数が変わると考えない。代入されているかを必ず見る。",
-            "==の問題では、内容ではなく参照先が同じかを図にして追う。"
+            "String問題は「戻り値を代入している行」にだけ印をつける。",
+            "メソッド名から副作用がありそうに見えても、Stringでは元の文字列は変わりません。"
           ],
           "judgeSteps": [
-            "各String変数が、newで作られたヒープ上のインスタンスか、文字列プール上のインスタンスかを分ける。",
-            "メソッド呼び出しの戻り値が変数に代入されているかを確認する。",
-            "==なら参照比較、equalsなら内容比較として判定する。"
+            "aとbの値を行ごとに表にする。",
+            "代入ありのメソッド呼び出しだけaを更新する。",
+            "代入なしのreplaceは結果を捨てる。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\nconcatの戻り値は代入しているが、replaceの戻り値は捨てているためABCのまま。最後にCを連結してABCC。",
+          "pdfExplanation": "正解は C です。最初aは「A」。`a = a.concat(\"B\")` で「AB」。bは「C」。`a = a.concat(b)` で「ABC」。次の `a.replace('C', 'D')` は「ABD」を返しますが、代入していないためaは「ABC」のままです。最後に `a = a.concat(b)` で「ABCC」となります。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題はStringの不変性そのものです。`concat` は連結後の新しい文字列を返します。1回目は代入しているのでaは「AB」になります。2回目も代入しているのでaは「ABC」になります。\n\n次の `a.replace('C', 'D')` は一見aを変更しそうですが、Stringは変更されません。戻り値「ABD」を受け取っていないので捨てられます。したがってaはまだ「ABC」です。最後にb、つまり「C」を連結して「ABCC」です。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -30173,49 +30169,49 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "try内で例外が発生した場合、リソースのcloseでC、catchでA、finallyでBの順に出力される。",
+          "summary": "try-with-resourcesでは、tryブロックを抜けるときにcloseが呼ばれ、その後catch、finallyの順に進みます。",
           "points": [],
-          "correctReason": "正解は C です。\n\ntry内で例外が発生した場合、リソースのcloseでC、catchでA、finallyでBの順に出力される。",
+          "correctReason": "正解は C です。tryブロック内で `throw new Exception();` により例外が発生します。try-with-resourcesのリソース `s` はcatchへ移る前にcloseされるため、まずclose内の「C」が表示されます。その後catchで「A」、最後にfinallyで「B」が表示されます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「C、A、Bと表示される」であり、「A、B、Cと表示される」ではありません。"
+              "detail": "catchとfinallyの出力だけを見ており、try-with-resourcesのcloseによる「C」を落としています。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「C、A、Bと表示される」であり、「A、C、Bと表示される」ではありません。"
+              "detail": "closeはcatchより前に実行されます。AがCより先に出ることはありません。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「C、A、Bと表示される」です。try内で例外が発生した場合、リソースのcloseでC、catchでA、finallyでBの順に出力される。"
+              "detail": "例外発生後、catchへ移る前にリソースがcloseされて「C」、次にcatchで「A」、最後にfinallyで「B」です。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「C、A、Bと表示される」です。"
+              "detail": "finallyのBが最後です。try-with-resourcesのcloseより先にfinallyが実行されるわけではありません。"
             }
           ],
           "relatedKnowledge": [
-            "try-with-resourcesで宣言したリソースは、tryブロック終了時に自動でcloseされる。closeの順序は宣言順ではなく逆順。",
-            "try本体が空でも、tryブロックを抜ける処理としてcloseは実行される。finallyがある場合、リソースのclose後にfinallyへ進む。",
-            "AutoCloseableのcloseは例外を投げられる。main側のthrowsやcatchの有無もコンパイル可否に影響する。"
+            "try-with-resourcesのcloseは、tryブロック終了時に自動実行されます。",
+            "例外が発生してもcloseは実行されます。",
+            "実行順は、try内例外発生 → close → catch → finally です。"
           ],
           "examTips": [
-            "リソースがA、Bの順で宣言されていたら、出力はBのclose、Aのcloseの順になる。",
-            "finallyの出力を先に置かない。try-with-resourcesではcloseの後にfinallyを読む。"
+            "try-with-resources問題では、catchより前にcloseがあると考える。",
+            "複数リソースならcloseは宣言と逆順です。この問題は1つだけです。"
           ],
           "judgeSteps": [
-            "tryの丸括弧内に宣言されたリソースを左から順に列挙する。",
-            "tryブロックを抜けるタイミングで、その列挙を逆順にしてcloseの出力を並べる。",
-            "finallyがあれば、close後にfinally内の処理を追加する。"
+            "tryブロック内で例外が発生する位置を確認する。",
+            "リソースcloseの出力を先に反映する。",
+            "catch、finallyの順に出力を追加する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\ntry内で例外が発生した場合、リソースのcloseでC、catchでA、finallyでBの順に出力される。",
+          "pdfExplanation": "正解は C です。tryブロック内で `throw new Exception();` により例外が発生します。try-with-resourcesのリソース `s` はcatchへ移る前にcloseされるため、まずclose内の「C」が表示されます。その後catchで「A」、最後にfinallyで「B」が表示されます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\ntryブロックで明示的に `throw new Exception();` しているので、tryブロックの正常終了ではありません。しかしtry-with-resourcesでは、正常終了でも例外終了でもリソースを閉じます。\n\nそのため、catchに入る前に `Sample.close()` が呼ばれ、「C」が表示されます。その後、発生したExceptionはcatchで受け取られ、「A」が表示されます。finallyは例外の有無にかかわらず最後に実行されるので「B」です。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -30261,50 +30257,49 @@ window.JAVA_STUDY_DATA = {
           "D"
         ],
         "explanation": {
-          "summary": "continueの直後にあるcnt++は到達不能コードになるためコンパイルエラー。",
+          "summary": "continue直後の文は到達不能になるため、実行結果ではなくコンパイルエラーを選ぶ問題です。",
           "points": [],
-          "correctReason": "正解は D です。\n\ncontinueの直後にあるcnt++は到達不能コードになるためコンパイルエラー。",
+          "correctReason": "正解は D です。`if (i != key)` の中で `continue;` の直後に `cnt++;` が書かれています。`continue` が実行されると、その周回の残り処理は飛ばされるため、直後の `cnt++` には絶対に到達できません。Javaでは到達不能文はコンパイルエラーです。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「3」ではありません。continueの直後にあるcnt++は到達不能コードになるためコンパイルエラー。"
+              "detail": "実行できれば数える問題に見えますが、`continue`直後の到達不能文があるため実行結果は出ません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「2」ではありません。continueの直後にあるcnt++は到達不能コードになるためコンパイルエラー。"
+              "detail": "コンパイルエラーになるため、cntの最終値を計算する段階に進みません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「1」ではありません。continueの直後にあるcnt++は到達不能コードになるためコンパイルエラー。"
+              "detail": "`key`と一致した回数を数える処理にもなっていません。そもそもコンパイルできません。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「コンパイルエラーが発生する」です。continueの直後にあるcnt++は到達不能コードになるためコンパイルエラー。"
+              "detail": "`continue;` の直後に同じブロック内で `cnt++;` があるため、その文は到達不能です。"
             }
           ],
           "relatedKnowledge": [
-            "配列のlengthは要素数であり、最後の有効添字はlength - 1。添字範囲外アクセスは実行時例外になる。",
-            "多次元配列は配列の配列。行ごとに長さが違うジャグ配列も作れるため、外側と内側のlengthを分けて読む。",
-            "参照型配列の要素の初期値はnull。要素にインスタンスを入れる前にメソッド呼び出しをするとNullPointerExceptionになる。"
+            "Javaでは到達不能文はコンパイルエラーです。",
+            "`continue` は現在の周回の残りを飛ばして次の周回へ進みます。",
+            "`break`、`continue`、`return`、`throw` の直後の文には注意が必要です。"
           ],
           "examTips": [
-            "二次元配列では、array.lengthとarray[i].lengthを同じ意味で読まない。",
-            "拡張for文のループ変数に代入しても、配列要素そのものの差し替えにはならない場合がある。"
+            "ループ問題でも、まずコンパイル可否を見る。",
+            "出力計算に入る前に、到達不能文がないか確認する。"
           ],
           "judgeSteps": [
-            "配列の生成式から外側の要素数を確認する。",
-            "二次元以上なら、各行の内側配列の長さを個別に確認する。",
-            "ループごとに参照している添字が有効範囲内かを確認する。",
-            "参照型配列なら、要素がnullのまま使われていないかを確認する。"
+            "ifブロック内の制御文を確認する。",
+            "`continue` の後に同じブロック内で文が残っていないか見る。",
+            "到達不能なら実行結果ではなくコンパイルエラーを選ぶ。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は D です。\n\ncontinueの直後にあるcnt++は到達不能コードになるためコンパイルエラー。",
+          "pdfExplanation": "正解は D です。`if (i != key)` の中で `continue;` の直後に `cnt++;` が書かれています。`continue` が実行されると、その周回の残り処理は飛ばされるため、直後の `cnt++` には絶対に到達できません。Javaでは到達不能文はコンパイルエラーです。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\n一見すると「keyと違う値を数えるのか」「keyと同じ値を数えるのか」を追跡する問題に見えます。しかし、その前にコンパイル可否を確認しなければいけません。\n\n`if (i != key)` に入った場合、最初に `continue;` が実行されます。continueは次の周回へ進む命令なので、その下の `cnt++;` は絶対に実行されません。Javaコンパイラはこのような到達不能コードをエラーにします。したがって選択肢Dです。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -30359,62 +30354,60 @@ window.JAVA_STUDY_DATA = {
           "F"
         ],
         "explanation": {
-          "summary": "Fは引数が同じで戻り値がList<Number>のサブタイプなのでオーバーライド可能。Bは引数がTreeSetで別シグネチャのオーバーロードになるため定義可能。",
-          "points": [
-            "ジェネリクスの型引数が違うだけのSet<String>は型消去後の衝突に注意。"
-          ],
-          "correctReason": "正解は B・F です。\n\nFは引数が同じで戻り値がList<Number>のサブタイプなのでオーバーライド可能。Bは引数がTreeSetで別シグネチャのオーバーロードになるため定義可能。",
+          "summary": "ジェネリクスを含むメソッド宣言で、オーバーライドになるのか、オーバーロードになるのか、型消去で衝突するのかを分ける問題です。正しく定義できるのはBとFです。",
+          "points": [],
+          "correctReason": "正解は B・F です。\n\n親クラスAには `public List<Number> test(Set<CharSequence> s)` が定義されています。サブクラスで同じシグネチャのメソッドを定義するならオーバーライドになります。このとき戻り値型は元の戻り値型と同じか、そのサブタイプでなければいけません。Fの `ArrayList<Number>` は `List<Number>` のサブタイプなのでオーバーライドとして成立します。\n\nBは引数が `TreeSet<String>` なので、親クラスの `Set<CharSequence>` とはシグネチャが異なります。つまりオーバーライドではなくオーバーロードです。戻り値型だけで判定する問題ではなく、引数リストが違うため別メソッドとして定義できます。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「public ArrayList<Integer> test(Set<String> s) { ... }」ではありません。Fは引数が同じで戻り値がList<Number>のサブタイプなのでオーバーライド可能。Bは引数がTreeSetで別シグネチャのオーバーロードになるため定義可能。"
+              "detail": "`Set<String>` は `Set<CharSequence>` と型引数だけが違います。ジェネリクスは型消去されるため、どちらも実行時の形は `test(Set)` のように扱われ、親クラスのメソッドと消去後シグネチャが衝突します。戻り値も `ArrayList<Integer>` で `List<Number>` のサブタイプではないため、正しいオーバーライドにもなりません。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正しい選択肢です。Fは引数が同じで戻り値がList<Number>のサブタイプなのでオーバーライド可能。Bは引数がTreeSetで別シグネチャのオーバーロードになるため定義可能。"
+              "detail": "`TreeSet<String>` は `Set<CharSequence>` とは引数の型そのものが異なります。これはオーバーライドではなくオーバーロードとして定義できます。戻り値型が `List<Integer>` でも、別シグネチャのメソッドなので成立します。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「public List<Integer> test(Set<String> s) { ... }」ではありません。Fは引数が同じで戻り値がList<Number>のサブタイプなのでオーバーライド可能。Bは引数がTreeSetで別シグネチャのオーバーロードになるため定義可能。"
+              "detail": "`Set<String>` は型消去後に `Set` となり、親クラスの `Set<CharSequence>` と消去後シグネチャが衝突します。さらに戻り値 `List<Integer>` は `List<Number>` のサブタイプではありません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「public List<Object> test(Set<CharSequence> s) { ... }」ではありません。Fは引数が同じで戻り値がList<Number>のサブタイプなのでオーバーライド可能。Bは引数がTreeSetで別シグネチャのオーバーロードになるため定義可能。"
+              "detail": "引数が `Set<CharSequence>` なので親クラスのメソッドをオーバーライドしようとしています。しかし戻り値 `List<Object>` は `List<Number>` のサブタイプではありません。ObjectはNumberのスーパークラスですが、`List<Object>` は `List<Number>` のサブタイプではありません。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「public List<Integer> test(Set<CharSequence> s) { ... }」ではありません。Fは引数が同じで戻り値がList<Number>のサブタイプなのでオーバーライド可能。Bは引数がTreeSetで別シグネチャのオーバーロードになるため定義可能。"
+              "detail": "引数が親と同じ `Set<CharSequence>` なのでオーバーライド判定になります。戻り値 `List<Integer>` は `List<Number>` のサブタイプではないため不正です。ジェネリクスでは `Integer extends Number` でも `List<Integer>` は `List<Number>` のサブタイプではありません。"
             },
             {
               "key": "F",
               "isCorrect": true,
-              "detail": "正しい選択肢です。Fは引数が同じで戻り値がList<Number>のサブタイプなのでオーバーライド可能。Bは引数がTreeSetで別シグネチャのオーバーロードになるため定義可能。"
+              "detail": "引数が親と同じ `Set<CharSequence>` なのでオーバーライドです。戻り値 `ArrayList<Number>` は `List<Number>` の実装クラスなので、共変戻り値として許可されます。"
             }
           ],
           "relatedKnowledge": [
-            "オーバーライドは、メソッド名と引数リストが同じであることが前提。戻り値型は同じ型または共変戻り値としてサブクラス型にできる。",
-            "オーバーライド時のアクセス修飾子は、親より狭くできない。publicをprotectedやデフォルトに落とすとコンパイルエラー。",
-            "オーバーロードは引数リスト違いの別メソッド。実行時の動的選択ではなく、コンパイル時の引数型で候補が決まる。"
+            "オーバーライド判定では、まずメソッド名と引数リストを見る。戻り値型だけではオーバーロードできません。",
+            "ジェネリクスの型引数だけが違うメソッドは、型消去後に衝突することがあります。",
+            "`List<Integer>` は `List<Number>` のサブタイプではありません。"
           ],
           "examTips": [
-            "@Overrideが付いているのに条件を満たさない場合はコンパイルエラーになる。付いていなくても条件を満たせばオーバーライドは成立する。",
-            "戻り値だけ違うメソッドはオーバーロードにならない。戻り値型でメソッドを区別できない。"
+            "「IntegerはNumberの子だからList<Integer>もList<Number>の子」と考えると落とされます。",
+            "ジェネリクス問題では、型引数の継承関係と、コレクション型そのものの継承関係を分けてください。"
           ],
           "judgeSteps": [
-            "親メソッドと子メソッドのメソッド名・引数リストを比較する。",
-            "戻り値型が同じか、親の戻り値型のサブタイプになっているか確認する。",
-            "アクセス修飾子が親と同じか、より広いか確認する。",
-            "throws句が親より広いチェック例外になっていないか確認する。"
+            "親メソッドの名前と引数型を確認する。",
+            "各選択肢が同じシグネチャか、別シグネチャかを分ける。",
+            "同じなら戻り値型が共変戻り値として成立するか確認する。",
+            "型引数だけ違う場合は型消去による衝突を疑う。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は B・F です。\n\nFは引数が同じで戻り値がList<Number>のサブタイプなのでオーバーライド可能。Bは引数がTreeSetで別シグネチャのオーバーロードになるため定義可能。",
+          "pdfExplanation": "正解は B・F です。\n\n親クラスAには `public List<Number> test(Set<CharSequence> s)` が定義されています。サブクラスで同じシグネチャのメソッドを定義するならオーバーライドになります。このとき戻り値型は元の戻り値型と同じか、そのサブタイプでなければいけません。Fの `ArrayList<Number>` は `List<Number>` のサブタイプなのでオーバーライドとして成立します。\n\nBは引数が `TreeSet<String>` なので、親クラスの `Set<CharSequence>` とはシグネチャが異なります。つまりオーバーライドではなくオーバーロードです。戻り値型だけで判定する問題ではなく、引数リストが違うため別メソッドとして定義できます。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、見た目はジェネリクスですが、実際には「オーバーライド・オーバーロード・型消去」の複合問題です。親の `test(Set<CharSequence>)` と同じ引数ならオーバーライド扱いです。その場合、戻り値は `List<Number>` と同じか、そのサブタイプでなければいけません。\n\n一方、引数が `TreeSet<String>` のように型自体が違えば、別メソッドとして追加できます。ここで `Set<String>` のように型引数だけ変えたものは危険です。型消去後には `Set` になり、親メソッドとぶつかります。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -30460,50 +30453,48 @@ window.JAVA_STUDY_DATA = {
           "A"
         ],
         "explanation": {
-          "summary": "配列変数は[]で宣言し、new 型[要素数]でインスタンスを生成する。要素数は変数宣言側には書かない。",
+          "summary": "配列変数の宣言と、配列インスタンスの生成構文を確認する問題です。正しい形は `int[] array = new int[2];` です。",
           "points": [],
-          "correctReason": "正解は A です。\n\n配列変数は[]で宣言し、new 型[要素数]でインスタンスを生成する。要素数は変数宣言側には書かない。",
+          "correctReason": "正解は A です。\n\n`array[0]` と `array[1]` に値を代入しているので、空欄では `int` 型の配列変数 `array` を宣言し、要素数2の配列インスタンスを生成しておく必要があります。Javaの配列生成は `new 型[要素数]` の形です。したがって `int[] array = new int[2];` が正しいコードです。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「」です。配列変数は[]で宣言し、new 型[要素数]でインスタンスを生成する。要素数は変数宣言側には書かない。"
+              "detail": "正しい宣言と生成です。`int[] array` でint配列型の変数を宣言し、`new int[2]` で要素数2の配列を作っています。`array[0]` と `array[1]` が使えます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。配列変数は[]で宣言し、new 型[要素数]でインスタンスを生成する。要素数は変数宣言側には書かない。"
+              "detail": "`array = int[2];` が不正です。配列インスタンスを生成するときは `new int[2]` と書く必要があります。`int[2]` だけでは生成式になりません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。配列変数は[]で宣言し、new 型[要素数]でインスタンスを生成する。要素数は変数宣言側には書かない。"
+              "detail": "左辺が `int array` なので、arrayはint型の通常変数になります。右辺の `new int[2]` はint配列型なので、int型変数へ代入できません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。配列変数は[]で宣言し、new 型[要素数]でインスタンスを生成する。要素数は変数宣言側には書かない。"
+              "detail": "Javaでは変数宣言側に `int array[2];` のように要素数を書けません。要素数を書くのは `new int[2]` の生成側です。"
             }
           ],
           "relatedKnowledge": [
-            "配列のlengthは要素数であり、最後の有効添字はlength - 1。添字範囲外アクセスは実行時例外になる。",
-            "多次元配列は配列の配列。行ごとに長さが違うジャグ配列も作れるため、外側と内側のlengthを分けて読む。",
-            "参照型配列の要素の初期値はnull。要素にインスタンスを入れる前にメソッド呼び出しをするとNullPointerExceptionになる。"
+            "配列変数は参照型変数です。変数には配列そのものではなく、配列インスタンスへの参照が入ります。",
+            "配列の要素数は生成時に決まり、後から変更できません。"
           ],
           "examTips": [
-            "二次元配列では、array.lengthとarray[i].lengthを同じ意味で読まない。",
-            "拡張for文のループ変数に代入しても、配列要素そのものの差し替えにはならない場合がある。"
+            "C言語風の `int array[2]` はJavaでは不正です。",
+            "`new` がない配列生成式は疑ってください。"
           ],
           "judgeSteps": [
-            "配列の生成式から外側の要素数を確認する。",
-            "二次元以上なら、各行の内側配列の長さを個別に確認する。",
-            "ループごとに参照している添字が有効範囲内かを確認する。",
-            "参照型配列なら、要素がnullのまま使われていないかを確認する。"
+            "必要な変数名が `array` であることを確認する。",
+            "`array[0]` と `array[1]` を使うので配列型が必要だと判断する。",
+            "宣言は `int[] array`、生成は `new int[2]` の形にする。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A です。\n\n配列変数は[]で宣言し、new 型[要素数]でインスタンスを生成する。要素数は変数宣言側には書かない。",
+          "pdfExplanation": "正解は A です。\n\n`array[0]` と `array[1]` に値を代入しているので、空欄では `int` 型の配列変数 `array` を宣言し、要素数2の配列インスタンスを生成しておく必要があります。Javaの配列生成は `new 型[要素数]` の形です。したがって `int[] array = new int[2];` が正しいコードです。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\n配列問題では、まず「変数の型」と「生成するインスタンス」を分けます。`int[] array` は、int配列を参照する変数を作る宣言です。`new int[2]` は、要素を2つ持つint配列インスタンスを作る式です。この2つを代入で結び付けて初めて、`array[0]` や `array[1]` が使える状態になります。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -30549,50 +30540,50 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "二次元配列array1.clone()は1次元目だけ新しい配列を作り、内側のchar[]参照は共有する。したがってarray1[1]とarray2[1]は同じ。",
+          "summary": "二次元配列で `clone()` したとき、外側の配列だけがコピーされ、内側の配列は共有されることを問う問題です。trueになるのはCです。",
           "points": [],
-          "correctReason": "正解は C です。\n\n二次元配列array1.clone()は1次元目だけ新しい配列を作り、内側のchar[]参照は共有する。したがってarray1[1]とarray2[1]は同じ。",
+          "correctReason": "正解は C です。\n\n`array1` は `char[][]`、つまり「char配列への参照を要素に持つ配列」です。`array1.clone()` は外側の配列だけを新しく作りますが、要素として入っている内側の `char[]` までは複製しません。したがって `array1[1]` と `array2[1]` は同じ `char[]` を参照しています。よって `array1[1] == array2[1]` はtrueです。\n\n一方、`array3 = array1[1].clone()` は内側の `char[]` を明示的にcloneしているため、`array3` は `array1[1]` とは別の配列です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「array1[1] == array3」ではありません。二次元配列array1.clone()は1次元目だけ新しい配列を作り、内側のchar[]参照は共有する。したがってarray1[1]とarray2[1]は同じ。"
+              "detail": "`array3` は `array1[1].clone()` で作った新しい `char[]` です。中身は同じでも、配列インスタンスは別なので `array1[1] == array3` はfalseです。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「array1[1] == array3[1]」ではありません。二次元配列array1.clone()は1次元目だけ新しい配列を作り、内側のchar[]参照は共有する。したがってarray1[1]とarray2[1]は同じ。"
+              "detail": "`array1[1]` は `char[]`、`array3[1]` は `char` です。配列参照とchar値を `==` で比較しようとしており、型が合いません。trueを戻す式として不適切です。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「array1[1] == array2[1]」です。二次元配列array1.clone()は1次元目だけ新しい配列を作り、内側のchar[]参照は共有する。したがってarray1[1]とarray2[1]は同じ。"
+              "detail": "`array2` は `array1.clone()` で作られた外側配列のコピーです。外側は別インスタンスですが、内側の `char[]` 参照は共有されます。したがって `array1[1]` と `array2[1]` は同じ配列を指します。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「array1.equals(array2)」ではありません。二次元配列array1.clone()は1次元目だけ新しい配列を作り、内側のchar[]参照は共有する。したがってarray1[1]とarray2[1]は同じ。"
+              "detail": "配列の `equals()` は要素の同値比較ではなく、Objectの参照比較と同じ動きです。`array1.clone()` により外側配列は別インスタンスなので、`array1.equals(array2)` はfalseです。"
             }
           ],
           "relatedKnowledge": [
-            "配列のlengthは要素数であり、最後の有効添字はlength - 1。添字範囲外アクセスは実行時例外になる。",
-            "多次元配列は配列の配列。行ごとに長さが違うジャグ配列も作れるため、外側と内側のlengthを分けて読む。",
-            "参照型配列の要素の初期値はnull。要素にインスタンスを入れる前にメソッド呼び出しをするとNullPointerExceptionになる。"
+            "多次元配列は「配列の配列」です。二次元配列全体が一枚の表として丸ごと複製されるわけではありません。",
+            "配列の `clone()` は浅いコピーです。",
+            "配列の `equals()` は中身比較ではありません。中身比較には `Arrays.equals` や `Arrays.deepEquals` を使います。"
           ],
           "examTips": [
-            "二次元配列では、array.lengthとarray[i].lengthを同じ意味で読まない。",
-            "拡張for文のループ変数に代入しても、配列要素そのものの差し替えにはならない場合がある。"
+            "二次元配列のcloneでは、外側だけ新しくなると考える。",
+            "`==` は参照が同じかどうかを見るため、中身が同じかどうかとは別です。"
           ],
           "judgeSteps": [
-            "配列の生成式から外側の要素数を確認する。",
-            "二次元以上なら、各行の内側配列の長さを個別に確認する。",
-            "ループごとに参照している添字が有効範囲内かを確認する。",
-            "参照型配列なら、要素がnullのまま使われていないかを確認する。"
+            "`array1`、`array2`、`array3` の型を確認する。",
+            "`array1.clone()` が外側だけコピーすることを確認する。",
+            "`array1[1].clone()` は内側配列を新しく作ることを確認する。",
+            "各選択肢の左右の型と参照先を比べる。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\n二次元配列array1.clone()は1次元目だけ新しい配列を作り、内側のchar[]参照は共有する。したがってarray1[1]とarray2[1]は同じ。",
+          "pdfExplanation": "正解は C です。\n\n`array1` は `char[][]`、つまり「char配列への参照を要素に持つ配列」です。`array1.clone()` は外側の配列だけを新しく作りますが、要素として入っている内側の `char[]` までは複製しません。したがって `array1[1]` と `array2[1]` は同じ `char[]` を参照しています。よって `array1[1] == array2[1]` はtrueです。\n\n一方、`array3 = array1[1].clone()` は内側の `char[]` を明示的にcloneしているため、`array3` は `array1[1]` とは別の配列です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\n`char[][]` は、外側の配列の各要素が `char[]` を参照している構造です。`array1.clone()` は外側の箱だけをコピーします。箱の中に入っている内側配列への参照はそのままコピーされるので、`array2[0]` や `array2[1]` は `array1` 側と同じ内側配列を指します。\n\n一方、`array3` は `array1[1]` そのものをcloneしているため、新しい内側配列です。ここを混同するとAを選びます。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -30649,49 +30640,48 @@ window.JAVA_STUDY_DATA = {
           "A"
         ],
         "explanation": {
-          "summary": "C生成時にスーパークラスのコンストラクタが先に実行される。A→B→Cの順に表示。",
+          "summary": "サブクラスのインスタンス生成時に、スーパークラスのコンストラクタから先に実行されることを確認する問題です。出力はABCです。",
           "points": [],
-          "correctReason": "正解は A です。\n\nC生成時にスーパークラスのコンストラクタが先に実行される。A→B→Cの順に表示。",
+          "correctReason": "正解は A です。\n\n`new C()` を実行すると、Cのインスタンスを作る前提として、スーパークラス部分も初期化されます。CはBを継承し、BはAを継承しているため、コンストラクタの実行順は A → B → C です。各コンストラクタが `System.out.print` で文字を出力するため、結果は `ABC` になります。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「ABCと表示される」です。C生成時にスーパークラスのコンストラクタが先に実行される。A→B→Cの順に表示。"
+              "detail": "正解です。`new C()` により、Aのコンストラクタ、Bのコンストラクタ、Cのコンストラクタの順に実行され、`ABC` と表示されます。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「ABCと表示される」であり、「Cと表示される」ではありません。"
+              "detail": "Cのコンストラクタだけが実行されるわけではありません。サブクラスのインスタンス生成時には、スーパークラスのコンストラクタも必ず実行されます。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「ABCと表示される」であり、「CBAと表示される」ではありません。"
+              "detail": "C→B→Aの順ではありません。コンストラクタの実行はスーパークラスからサブクラスへ進みます。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「ABCと表示される」です。"
+              "detail": "各クラスには引数なしコンストラクタがあり、暗黙または明示的な `super()` 呼び出しも問題ありません。コンパイルエラーにはなりません。"
             }
           ],
           "relatedKnowledge": [
-            "コンストラクタは継承されない。サブクラスのインスタンス生成時には、親クラスのコンストラクタが先に実行され、その後に子クラス側の初期化へ進む。",
-            "this(...)とsuper(...)はコンストラクタの先頭行にしか書けない。両方を同じコンストラクタに並べることはできない。",
-            "明示的にsuper(...)を書かない場合、引数なしのsuper()が暗黙に挿入される。親に引数なしコンストラクタがない場合は注意が必要。"
+            "サブクラスのインスタンスは、スーパークラス部分を含んでいます。だからスーパークラスの初期化が先に必要です。",
+            "コンストラクタの先頭には、明示しなければ `super()` が暗黙に入ります。"
           ],
           "examTips": [
-            "表示順問題では、newされたクラスからではなく、最上位の親コンストラクタから順に出力を並べる。",
-            "this()で同じクラス内の別コンストラクタへ飛んだ場合、その先で最終的にsuper()が呼ばれる流れまで追う。"
+            "コンストラクタ問題では、クラス階層を上からたどる。",
+            "`print` は改行しないので、表示順がそのまま連結されます。"
           ],
           "judgeSteps": [
-            "newしているクラスのコンストラクタを確認する。",
-            "そのコンストラクタの先頭にthis(...)またはsuper(...)があるか確認する。",
-            "親クラスのコンストラクタ実行、フィールド初期化、子クラス側の処理の順に出力を並べる。"
+            "`new C()` でCの生成が始まる。",
+            "Cの親がB、Bの親がAであることを確認する。",
+            "A→B→Cの順にコンストラクタ出力を並べる。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A です。\n\nC生成時にスーパークラスのコンストラクタが先に実行される。A→B→Cの順に表示。",
+          "pdfExplanation": "正解は A です。\n\n`new C()` を実行すると、Cのインスタンスを作る前提として、スーパークラス部分も初期化されます。CはBを継承し、BはAを継承しているため、コンストラクタの実行順は A → B → C です。各コンストラクタが `System.out.print` で文字を出力するため、結果は `ABC` になります。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\n`new C()` と書いてあるため、ついCのコンストラクタだけを見がちですが、Javaではサブクラスのオブジェクトはスーパークラス部分を含んでいます。そのため、先にA部分、次にB部分、最後にC部分が初期化されます。各コンストラクタの1行目には明示的に書かれていなくても `super()` が入る、と考えると追跡しやすいです。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -30743,56 +30733,55 @@ window.JAVA_STUDY_DATA = {
           "E"
         ],
         "explanation": {
-          "summary": "抽象クラスには、通常の具象メソッド、abstractメソッド、staticメソッドを定義できます。Bは本体を持つ通常のインスタンスメソッド、Dは本体を持たないabstractメソッド、Eは本体を持つstaticメソッドなので成立します。Aは本体がないのにabstractが付いていないため不正です。Cはabstractメソッドなのに本体を持っているため不正です。",
+          "summary": "抽象クラスの中に定義できるメソッドの形を問う問題です。具象メソッド、abstractメソッド、staticメソッドはいずれも定義できます。正解はB・D・Eです。",
           "points": [],
-          "correctReason": "正解は B・D・E です。\n\n抽象クラスには、通常の具象メソッド、abstractメソッド、staticメソッドを定義できます。Bは本体を持つ通常のインスタンスメソッド、Dは本体を持たないabstractメソッド、Eは本体を持つstaticメソッドなので成立します。Aは本体がないのにabstractが付いていないため不正です。Cはabstractメソッドなのに本体を持っているため不正です。",
+          "correctReason": "正解は B・D・E です。\n\n抽象クラスは、未完成の抽象メソッドだけでなく、通常の具象メソッドやstaticメソッドも持てます。Bは本体を持つ通常メソッド、Dは本体を持たないabstractメソッド、Eは本体を持つstaticメソッドなので正しいです。\n\nAは本体がないのに `abstract` が付いていません。Cは `abstract` メソッドなのに本体を持っています。どちらも不正です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「public void print();」ではありません。抽象クラスには、通常の具象メソッド、abstractメソッド、staticメソッドを定義できます。Bは本体を持つ通常のインスタンスメソッド、Dは本体を持たないabstractメソッド、Eは本体を持つstaticメソッドなので成立します。Aは本体がないのにabstractが付いていないため不正です。Cはabstractメソッドなのに本体を持っているため不正です。"
+              "detail": "本体のないメソッドを宣言するなら `abstract` を付ける必要があります。`public void print();` はabstractでもnativeでもないのに本体がないため不正です。"
             },
             {
               "key": "B",
               "isCorrect": true,
-              "detail": "正しい選択肢です。抽象クラスには、通常の具象メソッド、abstractメソッド、staticメソッドを定義できます。Bは本体を持つ通常のインスタンスメソッド、Dは本体を持たないabstractメソッド、Eは本体を持つstaticメソッドなので成立します。Aは本体がないのにabstractが付いていないため不正です。Cはabstractメソッドなのに本体を持っているため不正です。"
+              "detail": "抽象クラスには通常の具象メソッドを定義できます。`calculate()` は本体を持ち、`num * 2` を返す通常メソッドなので正しいです。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。抽象クラスには、通常の具象メソッド、abstractメソッド、staticメソッドを定義できます。Bは本体を持つ通常のインスタンスメソッド、Dは本体を持たないabstractメソッド、Eは本体を持つstaticメソッドなので成立します。Aは本体がないのにabstractが付いていないため不正です。Cはabstractメソッドなのに本体を持っているため不正です。"
+              "detail": "`abstract` メソッドは本体を持てません。`public abstract int getNum() { return num; }` はabstractとメソッド本体を同時に書いているため不正です。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正しい選択肢です。抽象クラスには、通常の具象メソッド、abstractメソッド、staticメソッドを定義できます。Bは本体を持つ通常のインスタンスメソッド、Dは本体を持たないabstractメソッド、Eは本体を持つstaticメソッドなので成立します。Aは本体がないのにabstractが付いていないため不正です。Cはabstractメソッドなのに本体を持っているため不正です。"
+              "detail": "抽象クラスには本体のないabstractメソッドを宣言できます。抽象メソッドを持つクラスはabstractクラスでなければならず、設問のItemはすでにabstractです。"
             },
             {
               "key": "E",
               "isCorrect": true,
-              "detail": "正しい選択肢です。抽象クラスには、通常の具象メソッド、abstractメソッド、staticメソッドを定義できます。Bは本体を持つ通常のインスタンスメソッド、Dは本体を持たないabstractメソッド、Eは本体を持つstaticメソッドなので成立します。Aは本体がないのにabstractが付いていないため不正です。Cはabstractメソッドなのに本体を持っているため不正です。"
+              "detail": "抽象クラスにもstaticメソッドを定義できます。staticメソッドはインスタンスではなくクラスに属するメソッドであり、本体を持つので正しいです。"
             }
           ],
           "relatedKnowledge": [
-            "抽象クラスには、通常のインスタンスメソッド、abstractメソッド、staticメソッドを定義できる。",
-            "abstractメソッドは本体を持てない。本体を持つならabstractを外す必要がある。",
-            "本体のないメソッド宣言を通常メソッドとして書くことはできない。抽象クラス内でもabstractが必要。"
+            "抽象クラスは「抽象メソッドしか書けないクラス」ではありません。完成済みの処理も持てます。",
+            "abstractメソッドは本体なし、具象メソッドは本体ありです。",
+            "staticメソッドはオーバーライド対象ではありませんが、抽象クラス内に定義できます。"
           ],
           "examTips": [
-            "抽象クラスは「未完成のメソッドを含められるクラス」であって、通常メソッドを書けないクラスではない。",
-            "メソッドの末尾がセミコロンだけならabstractの有無を確認する。",
-            "abstractとメソッド本体は同時に成立しない。"
+            "セミコロンで終わるメソッド宣言を見たら、abstractが付いているか確認する。",
+            "`abstract` と `{}` の同時使用は基本的に疑ってください。"
           ],
           "judgeSteps": [
-            "各選択肢のメソッドに本体があるか確認する。",
-            "本体がない場合はabstractが付いているか確認する。",
-            "abstractが付いている場合は本体が書かれていないか確認する。",
-            "staticやreturn文など通常のメソッド規則も満たすか確認する。"
+            "各選択肢にメソッド本体があるか見る。",
+            "本体なしならabstractが必要か確認する。",
+            "abstract付きなのに本体がないか、あるかを確認する。",
+            "staticメソッドは本体があれば定義可能と判断する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は B・D・E です。\n\n抽象クラスには、通常の具象メソッド、abstractメソッド、staticメソッドを定義できます。Bは本体を持つ通常のインスタンスメソッド、Dは本体を持たないabstractメソッド、Eは本体を持つstaticメソッドなので成立します。Aは本体がないのにabstractが付いていないため不正です。Cはabstractメソッドなのに本体を持っているため不正です。",
+          "pdfExplanation": "正解は B・D・E です。\n\n抽象クラスは、未完成の抽象メソッドだけでなく、通常の具象メソッドやstaticメソッドも持てます。Bは本体を持つ通常メソッド、Dは本体を持たないabstractメソッド、Eは本体を持つstaticメソッドなので正しいです。\n\nAは本体がないのに `abstract` が付いていません。Cは `abstract` メソッドなのに本体を持っています。どちらも不正です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\n抽象クラスは「一部未完成でもよいクラス」です。未完成部分はabstractメソッドとして宣言できますが、完成済みの通常メソッドも同時に持てます。ここを「abstract classだから全部abstract」と誤解するとBやEを落とします。\n\n逆に、メソッド本体の有無は厳密です。メソッド本体がないならabstractが必要、abstractなら本体を付けない。この対応を見ればAとCは切れます。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -30835,51 +30824,50 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "コンストラクタでフィールドa,bは二乗されるが、mainで表示しているのはローカル変数a,b。したがって2,3が表示される。",
+          "summary": "フィールドとローカル変数が同じ名前でも別物であることを問う問題です。コンストラクタでフィールドは変更されますが、mainで表示しているのはローカル変数なので「2,3」です。",
           "points": [],
-          "correctReason": "正解は C です。\n\nコンストラクタでフィールドa,bは二乗されるが、mainで表示しているのはローカル変数a,b。したがって2,3が表示される。",
+          "correctReason": "正解は C です。\n\n`main` メソッド内の `int a = 2, b = 3;` はローカル変数です。`new Sample(a, b)` によってコンストラクタへ値2と3が渡され、`init` メソッドでは `this.a = a * a;`、`this.b = b * b;` によりインスタンスフィールドは4と9になります。\n\nしかし最後の `System.out.println(a + \",\" + b);` で参照している `a` と `b` は、main内のローカル変数です。フィールド `s.a` や `s.b` を表示しているわけではありません。したがって表示は「2,3」です。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「2,3」と表示される」であり、「「4,9」と表示される」ではありません。"
+              "detail": "4と9になるのはSampleインスタンスのフィールド `this.a` と `this.b` です。最後に表示しているのはmain内のローカル変数 `a` と `b` なので、この出力にはなりません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。実際の結果は「「2,3」と表示される」であり、「「0,0」と表示される」ではありません。"
+              "detail": "フィールド `a` と `b` は初期値0から4と9に更新されますし、表示対象のローカル変数も2と3です。「0,0」にはなりません。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「「2,3」と表示される」です。コンストラクタでフィールドa,bは二乗されるが、mainで表示しているのはローカル変数a,b。したがって2,3が表示される。"
+              "detail": "正解です。`println(a + \",\" + b)` の `a` と `b` はmainメソッド内のローカル変数です。コンストラクタやinitでフィールドが更新されても、ローカル変数は2と3のままです。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「「2,3」と表示される」です。"
+              "detail": "同名のローカル変数、引数、フィールドは、スコープに従って区別されます。`this.a` のように書けばフィールドを指せるため、コンパイルエラーにはなりません。"
             }
           ],
           "relatedKnowledge": [
-            "ローカル変数は自動初期化されない。宣言しただけのローカル変数を読むとコンパイルエラーになる。",
-            "フィールドは型ごとのデフォルト値で初期化される。intなら0、booleanならfalse、参照型ならnull。ローカル変数とは扱いが違う。",
-            "同名のローカル変数や引数がある場合、単純名ではローカル側が優先される。フィールドを明示したい場合はthis.fieldまたはClassName.staticFieldを使う。"
+            "`this.a` は現在のインスタンスのフィールドを表します。",
+            "メソッド引数やローカル変数がフィールドと同名の場合、単に `a` と書くと近いスコープの変数が優先されます。",
+            "Javaの引数渡しは値渡しです。渡したローカル変数そのものが書き換わるわけではありません。"
           ],
           "examTips": [
-            "初期化問題では、値が入る可能性ではなく、すべての経路で確実に代入済みかを見る。",
-            "フィールドのデフォルト値の知識をローカル変数へ持ち込まない。ここは試験でよく狙われる。",
-            "thisが付いているか、付いていないかで参照先が変わる。代入式では左辺と右辺を別々に確認する。"
+            "同名変数問題では、各行の `a` がローカル変数かフィールドかを必ず分ける。",
+            "`System.out.println` の行が何を表示しているかを最後に確認する。"
           ],
           "judgeSteps": [
-            "対象がフィールドかローカル変数かを確認する。",
-            "ローカル変数なら、使用前に必ず代入されているかを確認する。",
-            "同名の変数がある場合、単純名がローカル側を指していないか確認する。",
-            "フィールドを参照する必要がある場合、thisやクラス名で明示されているかを見る。"
+            "main内のローカル変数a,bを表に書く。",
+            "Sampleインスタンスのフィールドa,bを別表に書く。",
+            "コンストラクタとinitでフィールドだけが4,9になることを確認する。",
+            "printlnがローカル変数を参照していることを確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\nコンストラクタでフィールドa,bは二乗されるが、mainで表示しているのはローカル変数a,b。したがって2,3が表示される。",
+          "pdfExplanation": "正解は C です。\n\n`main` メソッド内の `int a = 2, b = 3;` はローカル変数です。`new Sample(a, b)` によってコンストラクタへ値2と3が渡され、`init` メソッドでは `this.a = a * a;`、`this.b = b * b;` によりインスタンスフィールドは4と9になります。\n\nしかし最後の `System.out.println(a + \",\" + b);` で参照している `a` と `b` は、main内のローカル変数です。フィールド `s.a` や `s.b` を表示しているわけではありません。したがって表示は「2,3」です。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題では、同じ `a` という名前が複数の場所に登場します。mainのローカル変数、コンストラクタ引数、initメソッド引数、インスタンスフィールドです。名前が同じでも同一の入れ物ではありません。`this.a` と書かれたものだけがフィールドです。\n\n最後の出力行は `s.a` でも `s.b` でもなく、単に `a` と `b` です。mainメソッド内なので、mainのローカル変数を表示します。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -30947,74 +30935,70 @@ window.JAVA_STUDY_DATA = {
           "H"
         ],
         "explanation": {
-          "summary": "t.numに直接0を代入すればよい。modifyは加算なので、現在値100の符号反転値-100を渡せば0になる。",
-          "points": [
-            "static main内でthisは使えない。",
-            "戻り値に代入することはできない。"
-          ],
-          "correctReason": "正解は D・G・H です。\n\nt.numに直接0を代入すればよい。modifyは加算なので、現在値100の符号反転値-100を渡せば0になる。",
+          "summary": "publicフィールドとメソッドを使って、インスタンスの状態を0にするコードを選ぶ問題です。直接代入するD、現在値のマイナスを加算するG・Hが正解です。",
+          "points": [],
+          "correctReason": "正解は D・G・H です。\n\n`t` は `new Test(100)` により、`num` が100のTestインスタンスを参照しています。`num` はpublicフィールドなので、`t.num = 0;` と直接代入できます。\n\nまた、`modify(int x)` は `num += x;` を実行します。現在値100に対して `-t.num`、または `-t.getNum()` を渡せば `100 + (-100)` となり、結果は0になります。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「this.num = 0;」ではありません。t.numに直接0を代入すればよい。modifyは加算なので、現在値100の符号反転値-100を渡せば0になる。"
+              "detail": "`main` はstaticメソッドなので `this` は使えません。`this` はインスタンスメソッドやコンストラクタ内で、現在のインスタンスを指すためのキーワードです。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「num = 0;」ではありません。t.numに直接0を代入すればよい。modifyは加算なので、現在値100の符号反転値-100を渡せば0になる。"
+              "detail": "`num` というローカル変数はmain内にありません。また、Mainクラスのフィールドとしても宣言されていません。変更したいのは `t.num` です。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「t(0);」ではありません。t.numに直接0を代入すればよい。modifyは加算なので、現在値100の符号反転値-100を渡せば0になる。"
+              "detail": "`t` はTest型の変数であり、メソッド名ではありません。`t(0);` のように変数を関数のように呼び出すことはできません。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正しい選択肢です。t.numに直接0を代入すればよい。modifyは加算なので、現在値100の符号反転値-100を渡せば0になる。"
+              "detail": "`num` はpublicフィールドなので、`t.num = 0;` でTestインスタンスのnumへ直接0を代入できます。その後の `getNum()` は0を返します。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。「t.getNum() = 0;」ではありません。t.numに直接0を代入すればよい。modifyは加算なので、現在値100の符号反転値-100を渡せば0になる。"
+              "detail": "`t.getNum()` はint値を返すメソッド呼び出しです。メソッドの戻り値は代入の左辺にできません。"
             },
             {
               "key": "F",
               "isCorrect": false,
-              "detail": "誤りです。「t.modify(0);」ではありません。t.numに直接0を代入すればよい。modifyは加算なので、現在値100の符号反転値-100を渡せば0になる。"
+              "detail": "`modify(0)` は `num += 0` なので、numは100のままです。0を渡しても0に変更されるわけではありません。"
             },
             {
               "key": "G",
               "isCorrect": true,
-              "detail": "正しい選択肢です。t.numに直接0を代入すればよい。modifyは加算なので、現在値100の符号反転値-100を渡せば0になる。"
+              "detail": "`t.num` は現在100なので、`-t.num` は-100です。`modify(-100)` により `num += -100` となり、numは0になります。"
             },
             {
               "key": "H",
               "isCorrect": true,
-              "detail": "正しい選択肢です。t.numに直接0を代入すればよい。modifyは加算なので、現在値100の符号反転値-100を渡せば0になる。"
+              "detail": "`t.getNum()` は現在100を返します。`-t.getNum()` は-100なので、`modify(-100)` と同じ結果になり、numは0になります。"
             }
           ],
           "relatedKnowledge": [
-            "ローカル変数は自動初期化されない。宣言しただけのローカル変数を読むとコンパイルエラーになる。",
-            "フィールドは型ごとのデフォルト値で初期化される。intなら0、booleanならfalse、参照型ならnull。ローカル変数とは扱いが違う。",
-            "同名のローカル変数や引数がある場合、単純名ではローカル側が優先される。フィールドを明示したい場合はthis.fieldまたはClassName.staticFieldを使う。"
+            "フィールドがpublicなら、別クラスからでも `参照.フィールド名` で直接アクセスできます。",
+            "メソッドの戻り値は値であり、変数そのものではありません。左辺にはできません。",
+            "`num += x` は「xにする」ではなく「xを加える」です。"
           ],
           "examTips": [
-            "初期化問題では、値が入る可能性ではなく、すべての経路で確実に代入済みかを見る。",
-            "フィールドのデフォルト値の知識をローカル変数へ持ち込まない。ここは試験でよく狙われる。",
-            "thisが付いているか、付いていないかで参照先が変わる。代入式では左辺と右辺を別々に確認する。"
+            "modifyという名前だけで「変更できそう」と判断しない。中身が加算なのか代入なのかを見る。",
+            "static main内で `this` を見たら原則コンパイルエラーを疑う。"
           ],
           "judgeSteps": [
-            "対象がフィールドかローカル変数かを確認する。",
-            "ローカル変数なら、使用前に必ず代入されているかを確認する。",
-            "同名の変数がある場合、単純名がローカル側を指していないか確認する。",
-            "フィールドを参照する必要がある場合、thisやクラス名で明示されているかを見る。"
+            "初期状態として `t.num = 100` を確認する。",
+            "各選択肢がコンパイル可能か確認する。",
+            "コンパイル可能なものについて、実行後のnumを計算する。",
+            "最後に `getNum()` が0を返すものだけを選ぶ。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は D・G・H です。\n\nt.numに直接0を代入すればよい。modifyは加算なので、現在値100の符号反転値-100を渡せば0になる。",
+          "pdfExplanation": "正解は D・G・H です。\n\n`t` は `new Test(100)` により、`num` が100のTestインスタンスを参照しています。`num` はpublicフィールドなので、`t.num = 0;` と直接代入できます。\n\nまた、`modify(int x)` は `num += x;` を実行します。現在値100に対して `-t.num`、または `-t.getNum()` を渡せば `100 + (-100)` となり、結果は0になります。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は「どうすれば0を表示できるか」なので、単にコンパイルできるだけでは足りません。たとえばFの `t.modify(0)` はコンパイルできますが、100に0を足すだけなので結果は100です。\n\nまた、AやBは「numを直接書き換えたい」という意図は見えますが、どのオブジェクトのnumかが指定できていません。Testインスタンスは変数`t`が参照しているので、直接触るなら `t.num` と書く必要があります。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -31060,50 +31044,50 @@ window.JAVA_STUDY_DATA = {
           "C"
         ],
         "explanation": {
-          "summary": "引数名とフィールド名が同じなので、this.valueでフィールドを明示して代入する必要がある。",
+          "summary": "引数で受け取った値をprivateフィールドへ代入するsetterを選ぶ問題です。引数名とフィールド名が同じ場合は `this.value` でフィールドを明示します。",
           "points": [],
-          "correctReason": "正解は C です。\n\n引数名とフィールド名が同じなので、this.valueでフィールドを明示して代入する必要がある。",
+          "correctReason": "正解は C です。\n\n`Sample` クラスには `private String value;` というフィールドがあります。引数で受け取った値をこのフィールドへ代入するには、左辺でフィールドを指定する必要があります。選択肢Cの `this.value = value;` は、左辺の `this.value` がフィールド、右辺の `value` が引数を表すため、目的どおりsetterになります。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。引数名とフィールド名が同じなので、this.valueでフィールドを明示して代入する必要がある。"
+              "detail": "`value = value;` は、引数名がフィールド名を隠しているため、引数valueを引数value自身へ代入しているだけです。フィールドは変更されません。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。引数名とフィールド名が同じなので、this.valueでフィールドを明示して代入する必要がある。"
+              "detail": "`String value = str;` はメソッド内のローカル変数を作っているだけです。フィールド `value` は変更されません。戻り値があることも、setterとしての目的とはずれています。"
             },
             {
               "key": "C",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「」です。引数名とフィールド名が同じなので、this.valueでフィールドを明示して代入する必要がある。"
+              "detail": "正解です。`this.value` でインスタンスフィールドを明示し、右辺の引数 `value` を代入しています。privateフィールドをクラス内部から変更しているのでアクセス上も問題ありません。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。「」ではありません。引数名とフィールド名が同じなので、this.valueでフィールドを明示して代入する必要がある。"
+              "detail": "引数がないため、外から変更後の値を受け取れません。`this.value = value;` の右辺 `value` はフィールド自身を指すため、実質的に自分自身を代入しているだけです。"
             }
           ],
           "relatedKnowledge": [
-            "オーバーライドは、メソッド名と引数リストが同じであることが前提。戻り値型は同じ型または共変戻り値としてサブクラス型にできる。",
-            "オーバーライド時のアクセス修飾子は、親より狭くできない。publicをprotectedやデフォルトに落とすとコンパイルエラー。",
-            "オーバーロードは引数リスト違いの別メソッド。実行時の動的選択ではなく、コンパイル時の引数型で候補が決まる。"
+            "`this` は現在のインスタンスを表します。`this.value` と書くとフィールドを明示できます。",
+            "引数名とフィールド名が同じ場合、単に `value` と書くと引数が優先されます。",
+            "setterは通常、戻り値なしの `void` でフィールドを更新します。"
           ],
           "examTips": [
-            "@Overrideが付いているのに条件を満たさない場合はコンパイルエラーになる。付いていなくても条件を満たせばオーバーライドは成立する。",
-            "戻り値だけ違うメソッドはオーバーロードにならない。戻り値型でメソッドを区別できない。"
+            "`value = value;` はsetter問題の典型的な罠です。見た目は代入でも、フィールドが変わっていないことがあります。",
+            "privateフィールドは外部から直接触れませんが、同じクラス内のメソッドからは触れます。"
           ],
           "judgeSteps": [
-            "親メソッドと子メソッドのメソッド名・引数リストを比較する。",
-            "戻り値型が同じか、親の戻り値型のサブタイプになっているか確認する。",
-            "アクセス修飾子が親と同じか、より広いか確認する。",
-            "throws句が親より広いチェック例外になっていないか確認する。"
+            "フィールド名を確認する。",
+            "引数で値を受け取っているか確認する。",
+            "左辺がフィールドを指しているか確認する。",
+            "右辺が受け取った引数を指しているか確認する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は C です。\n\n引数名とフィールド名が同じなので、this.valueでフィールドを明示して代入する必要がある。",
+          "pdfExplanation": "正解は C です。\n\n`Sample` クラスには `private String value;` というフィールドがあります。引数で受け取った値をこのフィールドへ代入するには、左辺でフィールドを指定する必要があります。選択肢Cの `this.value = value;` は、左辺の `this.value` がフィールド、右辺の `value` が引数を表すため、目的どおりsetterになります。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題で大事なのは、代入式の左辺と右辺がそれぞれ何を指しているかです。`value = value;` は一見フィールドに代入しているように見えますが、メソッド引数 `value` がフィールド名を隠します。そのため左右どちらも引数です。\n\n`this.value` と書くと、現在のSampleインスタンスが持つフィールドvalueを明示できます。setterではこの `this` の使い方が頻出です。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -31149,62 +31133,63 @@ window.JAVA_STUDY_DATA = {
           },
           {
             "key": "E",
-            "text": "Testクラスの2行目のメソッドをpublicにする"
+            "text": "Testクラスの3行目のメソッドをpublicにする"
           }
         ],
         "answer": [
-          "D",
-          "E"
+          "C",
+          "D"
         ],
         "explanation": {
-          "summary": "protectedメソッドをオーバーライドするとき、アクセスをより狭いデフォルトにできない。Test#doProcessをprotectedまたはpublicにすればよい。",
+          "summary": "オーバーライド時にアクセス修飾子を狭くできない、というルールを問う問題です。修正すべきなのはTestクラス2行目のdoProcessです。",
           "points": [],
-          "correctReason": "正解は D・E です。\n\nprotectedメソッドをオーバーライドするとき、アクセスをより狭いデフォルトにできない。Test#doProcessをprotectedまたはpublicにすればよい。",
+          "correctReason": "正解は C・D です。\n\n`Sample` クラスの `doProcess()` は `protected` です。`Test` クラスの `void doProcess()` は同じ名前・同じ引数なので、これをオーバーライドしています。しかしアクセス修飾子を書いていないためデフォルトアクセスです。デフォルトアクセスは `protected` より狭いので、オーバーライド時のアクセス範囲を狭めることになり、コンパイルエラーです。\n\nしたがって、Testクラス2行目の `doProcess()` を `public` または `protected` にすれば修正できます。`doTest()` はSample側がデフォルトアクセス、Test側がprotectedなので、アクセス範囲を広げており問題ありません。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": false,
-              "detail": "誤りです。「Sampleクラスの2行目のメソッドをpublicにする」ではありません。protectedメソッドをオーバーライドするとき、アクセスをより狭いデフォルトにできない。Test#doProcessをprotectedまたはpublicにすればよい。"
+              "detail": "Sample側の `doProcess()` をpublicにすると、親メソッドのアクセス範囲がさらに広くなります。Test側はデフォルトアクセスのままなので、アクセス範囲を狭める問題は残るどころか悪化します。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「Sampleクラスの3行目のメソッドをpublicにする」ではありません。protectedメソッドをオーバーライドするとき、アクセスをより狭いデフォルトにできない。Test#doProcessをprotectedまたはpublicにすればよい。"
+              "detail": "Sample側の `doTest()` をpublicにすると、Test側の `protected void doTest()` がpublicより狭くなり、doTest側にもオーバーライド違反が発生します。元のエラー修正にもなりません。"
             },
             {
               "key": "C",
-              "isCorrect": false,
-              "detail": "誤りです。「Testクラスの2行目のメソッドをpublicにする」ではありません。protectedメソッドをオーバーライドするとき、アクセスをより狭いデフォルトにできない。Test#doProcessをprotectedまたはpublicにすればよい。"
+              "isCorrect": true,
+              "detail": "Testクラス2行目の `doProcess()` をpublicにすれば、親のprotectedより広いアクセス範囲になります。オーバーライド時にアクセス範囲を広げることは許可されます。"
             },
             {
               "key": "D",
               "isCorrect": true,
-              "detail": "正しい選択肢です。protectedメソッドをオーバーライドするとき、アクセスをより狭いデフォルトにできない。Test#doProcessをprotectedまたはpublicにすればよい。"
+              "detail": "Testクラス2行目の `doProcess()` をprotectedにすれば、親の `protected doProcess()` と同じアクセス範囲になります。これは正しいオーバーライドです。"
             },
             {
               "key": "E",
-              "isCorrect": true,
-              "detail": "正しい選択肢です。protectedメソッドをオーバーライドするとき、アクセスをより狭いデフォルトにできない。Test#doProcessをprotectedまたはpublicにすればよい。"
+              "isCorrect": false,
+              "detail": "Testクラス3行目の `doTest()` はすでにprotectedで、親のデフォルトアクセスより広いため問題ありません。ここをpublicにしても、Testクラス2行目のdoProcessのエラーは残ります。"
             }
           ],
           "relatedKnowledge": [
-            "privateメンバは同じクラス内からしか直接アクセスできない。継承していてもサブクラスから直接使えるわけではない。",
-            "デフォルトアクセスは同じパッケージ内限定。protectedは同じパッケージに加え、異なるパッケージのサブクラスからも一定条件でアクセスできる。",
-            "オーバーライドでは、親メソッドより狭いアクセス修飾子にできない。"
+            "アクセス範囲は `public > protected > default > private` の順です。",
+            "オーバーライドでは、戻り値や例外だけでなくアクセス修飾子も判定対象です。",
+            "抽象メソッドの実装でも、アクセス範囲を狭くすることはできません。"
           ],
           "examTips": [
-            "protectedは「どこからでもサブクラスなら自由」ではない。パッケージと参照の型を合わせて確認する。",
-            "privateメソッドはオーバーライドされない。同名メソッドを子に書いても別メソッドとして扱う。"
+            "修正問題では「どこを変えればエラーが消えるか」を見る。正しいコードに近い箇所をさらに変えても、原因箇所が残れば不正です。",
+            "同名メソッドがあれば、まずオーバーライドかどうかを確認してください。"
           ],
           "judgeSteps": [
-            "アクセス対象のメンバの修飾子を確認する。",
-            "アクセス元クラスが同じクラス、同じパッケージ、サブクラスのどれに該当するか確認する。",
-            "継承関係がある場合でも、privateやデフォルトアクセスの制限を個別に確認する。"
+            "SampleとTestのメソッド対応を確認する。",
+            "doProcessがprotectedからdefaultへ狭くなっていることを見つける。",
+            "doTestはdefaultからprotectedへ広がっているので問題ないと判断する。",
+            "doProcessをpublicまたはprotectedにする選択肢を選ぶ。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は D・E です。\n\nprotectedメソッドをオーバーライドするとき、アクセスをより狭いデフォルトにできない。Test#doProcessをprotectedまたはpublicにすればよい。",
+          "pdfExplanation": "正解は C・D です。\n\n`Sample` クラスの `doProcess()` は `protected` です。`Test` クラスの `void doProcess()` は同じ名前・同じ引数なので、これをオーバーライドしています。しかしアクセス修飾子を書いていないためデフォルトアクセスです。デフォルトアクセスは `protected` より狭いので、オーバーライド時のアクセス範囲を狭めることになり、コンパイルエラーです。\n\nしたがって、Testクラス2行目の `doProcess()` を `public` または `protected` にすれば修正できます。`doTest()` はSample側がデフォルトアクセス、Test側がprotectedなので、アクセス範囲を広げており問題ありません。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題は、2つのメソッドを分けて見る必要があります。`doProcess()` は親がprotected、子がデフォルトアクセスです。これは狭くしているのでエラーです。`doTest()` は親がデフォルトアクセス、子がprotectedです。これは広げているのでOKです。\n\nつまり、修正対象はTestクラス2行目だけです。Sample側をpublicにしたり、Testクラス3行目をpublicにしたりしても、原因であるTestクラス2行目は直りません。"
         },
         "source": "",
         "status": "pdf_visual_checked",
@@ -31252,56 +31237,55 @@ window.JAVA_STUDY_DATA = {
           "A"
         ],
         "explanation": {
-          "summary": "setAllで右からsetD(x)が10を返し、this.c、b、aに順に10が代入される。toStringの表示は全フィールド10。",
+          "summary": "連鎖代入と `this` の有無を読む問題です。実際に呼ばれるのは `setAll(10)` で、その中の連鎖代入により4つのフィールドすべてが10になります。",
           "points": [],
-          "correctReason": "正解は A です。\n\nsetAllで右からsetD(x)が10を返し、this.c、b、aに順に10が代入される。toStringの表示は全フィールド10。",
+          "correctReason": "正解は A です。\n\n`main` では `s.setAll(10);` だけが呼ばれています。`setA`、`setB`、`setC` は呼ばれていません。`setAll` の中では `a = b = this.c = setD(x);` が実行されます。代入演算子は右から評価されるため、まず `setD(10)` が呼ばれます。`setD` はフィールド `d` に10を代入し、その10を返します。\n\nその戻り値10が `this.c`、`b`、`a` に順に代入されます。`setAll` にはローカル変数aやbがないため、`a` と `b` はフィールドを指します。結果として `a=10, b=10, c=10, d=10` になります。",
           "optionAnalysis": [
             {
               "key": "A",
               "isCorrect": true,
-              "detail": "正解です。設問の結果は「Sample [a=10, b=10, c=10, d=10]」です。setAllで右からsetD(x)が10を返し、this.c、b、aに順に10が代入される。toStringの表示は全フィールド10。"
+              "detail": "正解です。`setD(10)` でdが10になり、戻り値10が `this.c`、`b`、`a` に連鎖代入されます。toStringは4つのフィールドすべてが10の状態を表示します。"
             },
             {
               "key": "B",
               "isCorrect": false,
-              "detail": "誤りです。「Sample [a=0, b=10, c=10, d=10]」ではありません。setAllで右からsetD(x)が10を返し、this.c、b、aに順に10が代入される。toStringの表示は全フィールド10。"
+              "detail": "`a` は0のままではありません。`setAll` 内の `a = ...` はフィールドaへの代入です。`setA` の `a = a;` は呼ばれていないため関係ありません。"
             },
             {
               "key": "C",
               "isCorrect": false,
-              "detail": "誤りです。「Sample [a=0, b=0, c=0, d=10]」ではありません。setAllで右からsetD(x)が10を返し、this.c、b、aに順に10が代入される。toStringの表示は全フィールド10。"
+              "detail": "`b` と `c` も0のままではありません。`this.c = setD(x)` によりcへ10が入り、その値がb、aへも代入されます。"
             },
             {
               "key": "D",
               "isCorrect": false,
-              "detail": "誤りです。設問のコードはコンパイルでき、結果は「Sample [a=10, b=10, c=10, d=10]」です。"
+              "detail": "コードはコンパイルできます。`a = b = this.c = setD(x);` は連鎖代入として合法です。`toString()` のオーバーライドも問題ありません。"
             },
             {
               "key": "E",
               "isCorrect": false,
-              "detail": "誤りです。実行時例外は発生せず、結果は「Sample [a=10, b=10, c=10, d=10]」です。"
+              "detail": "実行時例外は発生しません。null参照、配列範囲外、キャスト失敗などの例外要因はありません。正常にtoStringが呼ばれて表示されます。"
             }
           ],
           "relatedKnowledge": [
-            "ローカル変数は自動初期化されない。宣言しただけのローカル変数を読むとコンパイルエラーになる。",
-            "フィールドは型ごとのデフォルト値で初期化される。intなら0、booleanならfalse、参照型ならnull。ローカル変数とは扱いが違う。",
-            "同名のローカル変数や引数がある場合、単純名ではローカル側が優先される。フィールドを明示したい場合はthis.fieldまたはClassName.staticFieldを使う。"
+            "代入式は値を持ちます。`a = b = c = 10` のような連鎖代入が可能です。",
+            "代入の結合規則は右結合です。右端の式から値が決まります。",
+            "メソッド内に同名ローカル変数や引数がなければ、単に `a` と書いてもフィールドを指します。"
           ],
           "examTips": [
-            "初期化問題では、値が入る可能性ではなく、すべての経路で確実に代入済みかを見る。",
-            "フィールドのデフォルト値の知識をローカル変数へ持ち込まない。ここは試験でよく狙われる。",
-            "thisが付いているか、付いていないかで参照先が変わる。代入式では左辺と右辺を別々に確認する。"
+            "使われていないメソッドに引っ張られない。`setA` や `setB` は罠です。",
+            "`this` が付いていないフィールド参照でも、同名ローカル変数がなければフィールドを指します。"
           ],
           "judgeSteps": [
-            "対象がフィールドかローカル変数かを確認する。",
-            "ローカル変数なら、使用前に必ず代入されているかを確認する。",
-            "同名の変数がある場合、単純名がローカル側を指していないか確認する。",
-            "フィールドを参照する必要がある場合、thisやクラス名で明示されているかを見る。"
+            "mainで呼ばれているメソッドだけを見る。",
+            "`setAll(10)` の中の右端 `setD(x)` を先に評価する。",
+            "setDがdに10を入れて10を返すと確認する。",
+            "返った10がc、b、aへ代入されると追跡する。"
           ],
           "choiceAnalysis": [],
-          "pdfExplanation": "正解は A です。\n\nsetAllで右からsetD(x)が10を返し、this.c、b、aに順に10が代入される。toStringの表示は全フィールド10。",
+          "pdfExplanation": "正解は A です。\n\n`main` では `s.setAll(10);` だけが呼ばれています。`setA`、`setB`、`setC` は呼ばれていません。`setAll` の中では `a = b = this.c = setD(x);` が実行されます。代入演算子は右から評価されるため、まず `setD(10)` が呼ばれます。`setD` はフィールド `d` に10を代入し、その10を返します。\n\nその戻り値10が `this.c`、`b`、`a` に順に代入されます。`setAll` にはローカル変数aやbがないため、`a` と `b` はフィールドを指します。結果として `a=10, b=10, c=10, d=10` になります。",
           "pdfAlignmentNote": "",
-          "additionalExplanation": ""
+          "additionalExplanation": "【詳しい読み解き】\nこの問題には、使われないメソッドがいくつか置かれています。`setA(int a)` は `a = a;` なのでフィールドを変えない典型的な罠ですが、そもそもmainから呼ばれていません。`setB()` や `setC()` も呼ばれていません。\n\n見るべきなのは `setAll` です。`a = b = this.c = setD(x);` は右から処理されます。`setD(10)` がdを10にして10を返し、その10がc、b、aに入ります。`this.c` だけthis付きですが、aとbも同名ローカル変数がないためフィールドです。"
         },
         "source": "",
         "status": "pdf_visual_checked",
