@@ -3001,3 +3001,28 @@ details.article-card[open] summary { margin-bottom: 10px; }
     padding-inline: 0;
   }
 }
+
+
+/* 2026-05-29 v18: mobile header is unified on top page and all pages */
+@media (max-width: 860px) {
+  .sidebar {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 8px 10px !important;
+  }
+  .sidebar .brand {
+    margin: 0 !important;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .sidebar .mobile-nav-toggle {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .sidebar .nav-list {
+    grid-column: 1 / -1 !important;
+  }
+}
