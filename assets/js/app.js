@@ -7,10 +7,13 @@
   let currentMode = getInitialMode();
   let currentQuestionId = getInitialQuestionId();
   let currentTagFilter = getInitialTagFilter();
+  let currentRound = 1;
+  let materializedRoundKey = "";
   let timerHandle = null;
 
   const storageKey = "java-study-progress-v1";
   const examStorageKey = "java-study-exam-v1";
+  const roundStateStorageKey = "java-study-round-state-v1";
   const cloudConfigStorageKey = "java-study-cloud-sync-config-v1";
   const cloudStateStorageKey = "java-study-cloud-sync-state-v1";
   const DEFAULT_FIREBASE_CONFIG = Object.freeze({
@@ -87,7 +90,8 @@
       exportedAt: new Date().toISOString(),
       storage: {
         [storageKey]: readJson(storageKey, {}),
-        [examStorageKey]: readJson(examStorageKey, {})
+        [examStorageKey]: readJson(examStorageKey, {}),
+        [roundStateStorageKey]: readRoundState()
       }
     };
   }
@@ -98,9 +102,11 @@
     const storage = payload.storage && typeof payload.storage === "object" ? payload.storage : payload;
     const progress = storage[storageKey] || payload.progress || {};
     const exam = storage[examStorageKey] || payload.exam || {};
+    const rounds = storage[roundStateStorageKey] || payload.roundState || {};
     if (!progress || typeof progress !== "object" || Array.isArray(progress)) throw new Error("学習履歴データが見つかりません。");
     if (!exam || typeof exam !== "object" || Array.isArray(exam)) throw new Error("模擬問題履歴データの形式が正しくありません。");
-    return { progress, exam, meta: payload };
+    if (!rounds || typeof rounds !== "object" || Array.isArray(rounds)) throw new Error("周回履歴データの形式が正しくありません。");
+    return { progress, exam, rounds, meta: payload };
   }
 
   function mergeProgress(current, incoming) {
@@ -145,13 +151,28 @@
     return merged;
   }
 
+  function mergeRoundState(current, incoming) {
+    const currentState = current && typeof current === "object" ? current : {};
+    const incomingState = incoming && typeof incoming === "object" ? incoming : {};
+    return {
+      ...currentState,
+      ...incomingState,
+      active: {
+        ...(currentState.active && typeof currentState.active === "object" ? currentState.active : {}),
+        ...(incomingState.active && typeof incomingState.active === "object" ? incomingState.active : {})
+      }
+    };
+  }
+
   function importHistoryFromText(text, mode) {
     const parsed = parseHistoryPayload(text);
     if (mode === "replace") {
       writeProgress(parsed.progress);
       writeExamStore(parsed.exam);
+      writeRoundState(parsed.rounds);
     } else {
       writeProgress(mergeProgress(readProgress(), parsed.progress));
+      writeRoundState(mergeRoundState(readRoundState(), parsed.rounds));
       // 模擬問題タイマーは端末差で壊れやすいため、マージ時は現在端末の状態を優先する。
     }
     return true;
@@ -543,14 +564,56 @@ service cloud.firestore {
     });
   }
 
-  function getExamState(id = chapterId) {
-    return readExamStore()[id] || null;
+  function normalizeRound(value) {
+    const n = Math.floor(Number(value));
+    return Number.isFinite(n) && n >= 1 ? n : 1;
   }
 
-  function setExamState(id, state) {
+  function readRoundState() {
+    const state = readJson(roundStateStorageKey, {});
+    return state && typeof state === "object" ? state : {};
+  }
+
+  function writeRoundState(state) {
+    writeJson(roundStateStorageKey, state && typeof state === "object" ? state : {});
+    scheduleCloudUpload();
+  }
+
+  function getRouteRound() {
+    const params = getRouteParams();
+    return params.round ? normalizeRound(params.round) : 0;
+  }
+
+  function getActiveRound(id = chapterId) {
+    const state = readRoundState();
+    const active = state.active && typeof state.active === "object" ? state.active : {};
+    return normalizeRound(active[id] || 1);
+  }
+
+  function setActiveRound(id, round) {
+    if (!id) return;
+    const state = readRoundState();
+    const r = normalizeRound(round);
+    state.active = state.active && typeof state.active === "object" ? state.active : {};
+    if (normalizeRound(state.active[id] || 1) === r) return;
+    state.active[id] = r;
+    writeRoundState(state);
+  }
+
+  function examStoreKey(id = chapterId, round = getActiveRound(id)) {
+    const r = normalizeRound(round);
+    return r <= 1 ? id : `${id}::r${r}`;
+  }
+
+  function getExamState(id = chapterId, round = getActiveRound(id)) {
+    return readExamStore()[examStoreKey(id, round)] || null;
+  }
+
+  function setExamState(id, state, round = currentRound) {
     const store = readExamStore();
-    if (state) store[id] = state;
-    else delete store[id];
+    const key = examStoreKey(id, round);
+    if (state) store[key] = { ...state, round: normalizeRound(round) };
+    else delete store[key];
     writeExamStore(store);
   }
 
@@ -585,7 +648,8 @@ service cloud.firestore {
     return {
       q: hashParams.get("q") || params.get("q") || "",
       tag: hashParams.get("tag") || params.get("tag") || "",
-      retry: hashParams.get("retry") || params.get("retry") || ""
+      retry: hashParams.get("retry") || params.get("retry") || "",
+      round: hashParams.get("round") || params.get("round") || ""
     };
   }
 
@@ -673,6 +737,147 @@ service cloud.firestore {
 
   function attemptsOf(record) {
     return Array.isArray(record && record.attempts) ? record.attempts : [];
+  }
+
+  function attemptRound(attempt) {
+    return normalizeRound(attempt && attempt.round || 1);
+  }
+
+  function roundClearTime(record, round = currentRound) {
+    const clears = record && record.roundClears && typeof record.roundClears === "object" ? record.roundClears : {};
+    return Date.parse(clears[String(normalizeRound(round))] || "") || 0;
+  }
+
+  function attemptsOfRound(record, round = currentRound) {
+    if (!record) return [];
+    const r = normalizeRound(round);
+    const clearedAt = roundClearTime(record, r);
+    return attemptsOf(record)
+      .filter(attempt => attemptRound(attempt) === r)
+      .filter(attempt => {
+        const attemptAt = Date.parse(attempt && attempt.answeredAt || "") || 0;
+        return !clearedAt || !attemptAt || attemptAt > clearedAt;
+      })
+      .sort((a, b) => (Date.parse(a.answeredAt || "") || 0) - (Date.parse(b.answeredAt || "") || 0));
+  }
+
+  function latestAttemptOfRound(record, round = currentRound) {
+    const attempts = attemptsOfRound(record, round);
+    return attempts.length ? attempts[attempts.length - 1] : null;
+  }
+
+  function roundAnswerRecord(record, round = currentRound) {
+    if (!record) return null;
+    const r = normalizeRound(round);
+    const latest = latestAttemptOfRound(record, r);
+    if (latest) {
+      return {
+        ...record,
+        selected: Array.isArray(latest.selected) ? [...latest.selected] : [],
+        isCorrect: Boolean(latest.isCorrect),
+        answeredAt: latest.answeredAt,
+        chapterId: latest.chapterId || record.chapterId,
+        tags: latest.tags && latest.tags.length ? latest.tags : record.tags,
+        round: r
+      };
+    }
+    if (r === 1 && isAnswered(record) && normalizeRound(record.round || 1) === 1 && !roundClearTime(record, 1)) {
+      return record;
+    }
+    return { ...record, selected: [], isCorrect: false, answeredAt: "", round: r };
+  }
+
+  function isAnsweredInRound(record, round = currentRound) {
+    return isAnswered(roundAnswerRecord(record, round));
+  }
+
+  function isCorrectInRound(record, round = currentRound) {
+    const roundRecord = roundAnswerRecord(record, round);
+    return isAnswered(roundRecord) && Boolean(roundRecord.isCorrect);
+  }
+
+  function hasWrongInRound(record, round = currentRound) {
+    const roundRecord = roundAnswerRecord(record, round);
+    return isAnswered(roundRecord) && roundRecord.isCorrect === false;
+  }
+
+  function roundLabel(round) {
+    return `${normalizeRound(round)}週目`;
+  }
+
+  function materializeChapterRound(id, round = currentRound) {
+    if (!id) return;
+    const r = normalizeRound(round);
+    const progress = readProgress();
+    const questions = DATA.questions[id] || [];
+    questions.forEach(q => {
+      const record = progress[q.id];
+      if (!record) return;
+      const roundRecord = roundAnswerRecord(record, r);
+      const next = {
+        ...record,
+        round: r,
+        chapterId: record.chapterId || id,
+        tags: record.tags && record.tags.length ? record.tags : getQuestionTags(q)
+      };
+      if (isAnswered(roundRecord)) {
+        next.selected = [...roundRecord.selected];
+        next.isCorrect = Boolean(roundRecord.isCorrect);
+        next.answeredAt = roundRecord.answeredAt;
+      } else {
+        delete next.selected;
+        delete next.isCorrect;
+        delete next.answeredAt;
+      }
+      progress[q.id] = next;
+    });
+    writeProgress(progress);
+    materializedRoundKey = `${id}:${r}`;
+  }
+
+  function ensureChapterRound(force = false) {
+    if (!chapterId) return;
+    const routeRound = getRouteRound();
+    currentRound = routeRound || getActiveRound(chapterId);
+    currentRound = normalizeRound(currentRound);
+    setActiveRound(chapterId, currentRound);
+    const key = `${chapterId}:${currentRound}`;
+    if (force || materializedRoundKey !== key) materializeChapterRound(chapterId, currentRound);
+  }
+
+  function switchChapterRound(round) {
+    if (!chapterId) return;
+    currentRound = normalizeRound(round);
+    setActiveRound(chapterId, currentRound);
+    currentMode = "all";
+    currentQuestionId = null;
+    materializeChapterRound(chapterId, currentRound);
+    renderChapter();
+  }
+
+  function chapterRoundNumbers(id) {
+    const rounds = new Set([1, getActiveRound(id)]);
+    const progress = readProgress();
+    const questions = DATA.questions[id] || [];
+    questions.forEach(q => {
+      const record = progress[q.id];
+      attemptsOf(record).forEach(attempt => rounds.add(attemptRound(attempt)));
+      const clears = record && record.roundClears && typeof record.roundClears === "object" ? record.roundClears : {};
+      Object.keys(clears).forEach(key => rounds.add(normalizeRound(key)));
+    });
+    return Array.from(rounds).filter(n => n >= 1).sort((a, b) => a - b);
+  }
+
+  function roundStats(id, round) {
+    const r = normalizeRound(round);
+    const questions = DATA.questions[id] || [];
+    const progress = readProgress();
+    const answered = questions.filter(q => isAnsweredInRound(progress[q.id], r)).length;
+    const correct = questions.filter(q => isCorrectInRound(progress[q.id], r)).length;
+    const wrong = questions.filter(q => hasWrongInRound(progress[q.id], r)).length;
+    const flagged = questions.filter(q => isFlagged(progress[q.id])).length;
+    const rate = answered ? Math.round(correct / answered * 100) : 0;
+    return { total: questions.length, answered, correct, wrong, flagged, rate, round: r };
   }
 
   function wrongAttemptCount(record) {
@@ -782,7 +987,8 @@ service cloud.firestore {
       isCorrect,
       answeredAt,
       chapterId: ownerId,
-      tags: getQuestionTags(q)
+      tags: getQuestionTags(q),
+      round: currentRound
     };
     progress[q.id] = {
       ...previous,
@@ -791,6 +997,7 @@ service cloud.firestore {
       answeredAt,
       chapterId: ownerId,
       tags: getQuestionTags(q),
+      round: currentRound,
       attempts: [...attemptsOf(previous), attempt],
       ...(shouldResolveWrongHistory(previous, isCorrect) ? { wrongResolvedAt: answeredAt } : {})
     };
@@ -801,11 +1008,17 @@ service cloud.firestore {
     const progress = readProgress();
     const previous = progress[q.id];
     if (!previous) return;
+    const resetAt = new Date().toISOString();
     const next = {
       ...previous,
       chapterId: previous.chapterId || owningChapterId(q),
       tags: previous.tags && previous.tags.length ? previous.tags : getQuestionTags(q),
-      resetAt: new Date().toISOString()
+      round: currentRound,
+      resetAt,
+      roundClears: {
+        ...(previous.roundClears && typeof previous.roundClears === "object" ? previous.roundClears : {}),
+        [String(currentRound)]: resetAt
+      }
     };
     delete next.selected;
     delete next.isCorrect;
@@ -827,14 +1040,27 @@ service cloud.firestore {
   function clearChapterProgress(id, keepFlags) {
     const questions = DATA.questions[id] || [];
     const progress = readProgress();
+    const resetAt = new Date().toISOString();
     questions.forEach(q => {
-      const record = progress[q.id];
-      if (!record) return;
-      if (keepFlags && record.flagged) {
-        progress[q.id] = { flagged: true, chapterId: id, tags: getQuestionTags(q) };
-      } else {
-        delete progress[q.id];
-      }
+      const record = progress[q.id] || { chapterId: id, tags: getQuestionTags(q) };
+      const next = {
+        ...record,
+        chapterId: record.chapterId || id,
+        tags: record.tags && record.tags.length ? record.tags : getQuestionTags(q),
+        round: currentRound,
+        resetAt,
+        roundClears: {
+          ...(record.roundClears && typeof record.roundClears === "object" ? record.roundClears : {}),
+          [String(currentRound)]: resetAt
+        }
+      };
+      delete next.selected;
+      delete next.isCorrect;
+      delete next.answeredAt;
+      if (keepFlags && record.flagged) next.flagged = true;
+      if (!keepFlags) delete next.flagged;
+      if (next.flagged || attemptsOf(next).length || next.roundClears) progress[q.id] = next;
+      else delete progress[q.id];
     });
     writeProgress(progress);
   }
@@ -944,13 +1170,21 @@ service cloud.firestore {
   }
 
   function optionAnalysisHtml(q) {
-    const analyses = q.explanation && Array.isArray(q.explanation.optionAnalysis)
+    const rawAnalyses = q.explanation && Array.isArray(q.explanation.optionAnalysis)
       ? q.explanation.optionAnalysis
       : [];
+    const analyses = rawAnalyses
+      .map(item => {
+        const detail = String(item.detail || item.text || "").trim();
+        const verdict = String(item.verdict || "").trim().toLowerCase();
+        const isCorrect = typeof item.isCorrect === "boolean" ? item.isCorrect : verdict === "correct";
+        return { ...item, detail, isCorrect };
+      })
+      .filter(item => item.key && item.detail);
     if (analyses.length) {
       return `<div class="option-analysis-list">${analyses.map(item => `<div class="option-analysis ${item.isCorrect ? "is-correct" : "is-wrong"}">
         <div class="option-analysis-head"><span class="option-key">${escapeHtml(item.key)}.</span>${optionTextPreviewHtml(q, item.key)}</div>
-        ${readableTextHtml(item.detail || "")}
+        ${readableTextHtml(item.detail)}
       </div>`).join("")}</div>`;
     }
 
@@ -959,6 +1193,7 @@ service cloud.firestore {
       : [];
     return points.length ? listHtml(points) : `<p class="muted">選択肢別の解説は未入力です。</p>`;
   }
+
 
   function answerKeysHtml(keys, q = null) {
     const values = Array.isArray(keys) ? keys : [];
@@ -980,14 +1215,17 @@ service cloud.firestore {
     const rawExp = q.explanation || {};
     const exp = typeof rawExp === "string" ? { summary: rawExp, correctReason: rawExp } : rawExp;
     const summary = exp.summary || exp.correctReason || "解説未入力。";
-    const mainParts = [];
-    [exp.pdfExplanation, exp.additionalExplanation, exp.pdfExplanation ? "" : exp.correctReason].forEach(text => {
+    const sectionParts = [];
+    function addExplanationSection(title, text) {
       if (!text) return;
       const cleaned = String(text).replace(/【追加解説】/g, "").replace(/【間違えやすい点】/g, "").trim();
-      if (cleaned && !mainParts.includes(cleaned)) mainParts.push(cleaned);
-    });
-    if (!mainParts.length) mainParts.push(summary);
-    const mainExplanation = readableTextHtml(mainParts.join("\n\n"));
+      if (!cleaned) return;
+      sectionParts.push(`<section class="explanation-subsection"><h5>${escapeHtml(title)}</h5>${readableTextHtml(cleaned)}</section>`);
+    }
+    addExplanationSection("PDF解説に沿った詳細解説", exp.pdfExplanation);
+    addExplanationSection("補足解説", exp.additionalExplanation);
+    if (!sectionParts.length) addExplanationSection("解説", exp.correctReason || summary);
+    const mainExplanation = sectionParts.join("");
     const related = listHtml(exp.relatedKnowledge);
     const tips = listHtml(exp.examTips);
     const steps = listHtml(exp.judgeSteps);
@@ -1030,6 +1268,7 @@ service cloud.firestore {
       updateProgressUi();
       renderQuestionPalette();
       renderChapterStats();
+      renderRoundPanel();
       updateResetCurrentButton(q);
       if (isCorrect && isWrongReviewMode() && hasWrongHistory(readProgress()[q.id]) === false) {
         setWrongPracticeMessage("正解です。解説を確認してから次の問題へ進むと、この問題は間違い演習から外れます。");
@@ -1047,6 +1286,7 @@ service cloud.firestore {
       updateProgressUi();
       renderQuestionPalette();
       renderChapterStats();
+      renderRoundPanel();
       renderExamPanel();
       updateResetCurrentButton(q);
     }
@@ -1065,6 +1305,7 @@ service cloud.firestore {
     updateProgressUi();
     renderQuestionPalette();
     renderChapterStats();
+    renderRoundPanel();
     renderExamPanel();
     updateResetCurrentButton(q);
   }
@@ -1144,14 +1385,7 @@ service cloud.firestore {
   }
 
   function chapterStats(id) {
-    const questions = DATA.questions[id] || [];
-    const progress = readProgress();
-    const answered = questions.filter(q => isAnswered(progress[q.id])).length;
-    const correct = questions.filter(q => isAnswered(progress[q.id]) && progress[q.id].isCorrect).length;
-    const wrong = questions.filter(q => hasWrongHistory(progress[q.id])).length;
-    const flagged = questions.filter(q => isFlagged(progress[q.id])).length;
-    const rate = answered ? Math.round(correct / answered * 100) : 0;
-    return { total: questions.length, answered, correct, wrong, flagged, rate };
+    return roundStats(id, getActiveRound(id));
   }
 
   function globalStats() {
@@ -1207,19 +1441,22 @@ service cloud.firestore {
     let latest = null;
     for (const ch of DATA.chapters) {
       const questions = DATA.questions[ch.id] || [];
+      const round = getActiveRound(ch.id);
       questions.forEach((q, index) => {
-        const record = progress[q.id];
-        const t = latestProgressTime(record);
-        if (t && (!latest || t > latest.time)) latest = { chapter: ch, question: q, index, time: t };
+        const attempt = latestAttemptOfRound(progress[q.id], round);
+        const t = Date.parse(attempt && attempt.answeredAt || "") || 0;
+        if (t && (!latest || t > latest.time)) latest = { chapter: ch, question: q, index, time: t, round };
       });
     }
     if (latest) {
       const list = DATA.questions[latest.chapter.id] || [];
-      const next = list.slice(latest.index + 1).find(q => !isAnswered(progress[q.id])) || list.find(q => !isAnswered(progress[q.id])) || latest.question;
+      const round = latest.round || getActiveRound(latest.chapter.id);
+      const next = list.slice(latest.index + 1).find(q => !isAnsweredInRound(progress[q.id], round)) || list.find(q => !isAnsweredInRound(progress[q.id], round)) || latest.question;
       return { chapter: latest.chapter, question: next };
     }
     for (const ch of DATA.chapters) {
-      const q = (DATA.questions[ch.id] || []).find(item => !isAnswered(progress[item.id]));
+      const round = getActiveRound(ch.id);
+      const q = (DATA.questions[ch.id] || []).find(item => !isAnsweredInRound(progress[item.id], round));
       if (q) return { chapter: ch, question: q };
     }
     const first = DATA.chapters[0];
@@ -1230,14 +1467,16 @@ service cloud.firestore {
     const progress = readProgress();
     for (const ch of DATA.chapters) {
       const list = DATA.questions[ch.id] || [];
+      const round = getActiveRound(ch.id);
       const q = list.find(item => {
         const record = progress[item.id];
-        if (mode === "wrong") return hasWrongHistory(record);
+        const activeRecord = roundAnswerRecord(record, round);
+        if (mode === "wrong") return hasWrongInRound(record, round);
         if (mode === "flagged") return isFlagged(record);
-        if (mode === "unanswered") return !isAnswered(record);
+        if (mode === "unanswered") return !isAnswered(activeRecord);
         if (mode === "tag") {
           const tags = record && record.tags && record.tags.length ? record.tags : getQuestionTags(item);
-          return tags.map(normalizeTag).includes(normalizeTag(tag)) && (!record || !record.isCorrect || isFlagged(record));
+          return tags.map(normalizeTag).includes(normalizeTag(tag)) && (!isCorrectInRound(record, round) || isFlagged(record));
         }
         return true;
       });
@@ -1456,7 +1695,7 @@ service cloud.firestore {
       return `<a class="chapter-card" href="${escapeHtml(chapterHref(ch))}">
         <span class="badge ${escapeHtml(ch.status)}">${escapeHtml(badge)}</span>
         <strong>${escapeHtml(ch.title)}</strong>
-        <span class="chapter-progress-line">${s.answered}/${s.total} 解答済み・正解率 ${s.rate}%・復習 ${s.wrong + s.flagged}</span>
+        <span class="chapter-progress-line">${roundLabel(s.round)}・${s.answered}/${s.total} 解答済み・正解率 ${s.rate}%・復習 ${s.wrong + s.flagged}</span>
       </a>`;
     }).join("");
     // ダッシュボードは renderDashboard() 側でヘッダー直下に挿入する。
@@ -1471,8 +1710,8 @@ service cloud.firestore {
   function filteredQuestions() {
     const questions = DATA.questions[chapterId] || [];
     const progress = readProgress();
-    if (currentMode === "unanswered") return questions.filter(q => !isAnswered(progress[q.id]));
-    if (currentMode === "wrong") return questions.filter(q => hasWrongHistory(progress[q.id]));
+    if (currentMode === "unanswered") return questions.filter(q => !isAnsweredInRound(progress[q.id], currentRound));
+    if (currentMode === "wrong") return questions.filter(q => hasWrongInRound(progress[q.id], currentRound));
     if (currentMode === "flagged") return questions.filter(q => isFlagged(progress[q.id]));
     if (currentMode === "tag" && currentTagFilter) {
       return questions.filter(q => {
@@ -1512,13 +1751,49 @@ service cloud.firestore {
     });
   }
 
+  function renderRoundPanel() {
+    const root = document.getElementById("roundPanel");
+    if (!root || !chapterId) return;
+    const rounds = chapterRoundNumbers(chapterId);
+    const maxRound = Math.max(...rounds, currentRound, 1);
+    const statsHtml = rounds.map(round => {
+      const s = roundStats(chapterId, round);
+      const active = round === currentRound;
+      return `<button class="round-tab ${active ? "active" : ""}" data-round="${round}" aria-pressed="${active ? "true" : "false"}">
+        <strong>${roundLabel(round)}</strong>
+        <span>${s.answered}/${s.total}・${s.rate}%</span>
+      </button>`;
+    }).join("");
+    const current = roundStats(chapterId, currentRound);
+    root.innerHTML = `<div class="round-panel">
+      <div class="round-panel-head">
+        <div>
+          <h2>周回</h2>
+          <p>${roundLabel(currentRound)}の解答だけをこの画面に表示します。前の周回の履歴は残ります。</p>
+        </div>
+        <button class="btn primary" id="startNextRound">次の周回を開始</button>
+      </div>
+      <div class="round-tabs" aria-label="周回選択">${statsHtml}</div>
+      <div class="round-current-summary">
+        <span>現在: <strong>${roundLabel(currentRound)}</strong></span>
+        <span>解答済み ${current.answered}/${current.total}</span>
+        <span>正解 ${current.correct}</span>
+        <span>不正解 ${current.wrong}</span>
+      </div>
+    </div>`;
+    root.querySelectorAll("[data-round]").forEach(btn => {
+      btn.addEventListener("click", () => switchChapterRound(btn.dataset.round));
+    });
+    root.querySelector("#startNextRound")?.addEventListener("click", () => switchChapterRound(maxRound + 1));
+  }
+
   function renderChapterStats() {
     const root = document.getElementById("chapterStatsRoot");
     if (!root || !chapterId) return;
     const s = chapterStats(chapterId);
     root.innerHTML = `<div class="stat-grid compact">
-      <div class="stat-card"><span>全体</span><strong>${s.total}</strong></div>
-      <div class="stat-card"><span>解答済み</span><strong>${s.answered}</strong></div>
+      <div class="stat-card"><span>周回</span><strong>${roundLabel(s.round)}</strong></div>
+      <div class="stat-card"><span>解答済み</span><strong>${s.answered}/${s.total}</strong></div>
       <div class="stat-card"><span>正解率</span><strong>${s.rate}%</strong></div>
       <div class="stat-card"><span>復習対象</span><strong>${s.wrong + s.flagged}</strong></div>
     </div>
@@ -1536,12 +1811,13 @@ service cloud.firestore {
     const all = DATA.questions[chapterId] || [];
     const progress = readProgress();
     root.innerHTML = all.map(q => {
-      const r = progress[q.id];
+      const raw = progress[q.id];
+      const r = roundAnswerRecord(raw, currentRound);
       const classes = ["q-dot"];
       if (q.id === currentQuestionId) classes.push("active");
       if (isAnswered(r)) classes.push(r.isCorrect ? "answered correct" : "answered wrong");
-      else if (hasWrongHistory(r)) classes.push("wrong-history");
-      if (isFlagged(r)) classes.push("flagged");
+      else if (hasWrongHistory(raw)) classes.push("wrong-history");
+      if (isFlagged(raw)) classes.push("flagged");
       return `<button class="${classes.join(" ")}" data-qid="${escapeHtml(q.id)}" title="問${q.number}">${q.number}</button>`;
     }).join("");
     root.querySelectorAll("[data-qid]").forEach(btn => {
@@ -1587,7 +1863,7 @@ service cloud.firestore {
   function updateResetCurrentButton(q) {
     const btn = document.getElementById("resetCurrentQuestion");
     if (!btn) return;
-    const saved = readProgress()[q.id];
+    const saved = roundAnswerRecord(readProgress()[q.id], currentRound);
     const answered = isAnswered(saved);
     btn.disabled = !answered;
     btn.textContent = answered ? "解答をリセット" : "未回答";
@@ -1618,6 +1894,7 @@ service cloud.firestore {
     if (!shell || !chapterId) return;
     const list = filteredQuestions();
     renderChapterStats();
+    renderRoundPanel();
     renderExamPanel();
 
     if (!list.length) {
@@ -1650,7 +1927,7 @@ service cloud.firestore {
     restoreQuestion(card, q);
     const bottomSubmit = document.querySelector("[data-bottom-submit]");
     if (bottomSubmit) {
-      const saved = readProgress()[q.id];
+      const saved = roundAnswerRecord(readProgress()[q.id], currentRound);
       bottomSubmit.textContent = isAnswered(saved) && !isExamActive(chapterId) ? "もう一度解く" : "解答する";
       bottomSubmit.onclick = () => {
         if (isAnswered(saved) && !isExamActive(chapterId)) resetQuestion(card, q);
@@ -1703,7 +1980,7 @@ service cloud.firestore {
 
   function firstUnanswered() {
     const progress = readProgress();
-    const q = (DATA.questions[chapterId] || []).find(item => !isAnswered(progress[item.id]));
+    const q = (DATA.questions[chapterId] || []).find(item => !isAnsweredInRound(progress[item.id], currentRound));
     if (!q) return;
     currentMode = "all";
     currentQuestionId = q.id;
@@ -1823,12 +2100,13 @@ service cloud.firestore {
     const fill = document.getElementById("progressFill");
     const text = document.getElementById("progressText");
     if (fill) fill.style.width = s.total ? `${Math.round(s.answered / s.total * 100)}%` : "0%";
-    if (text) text.textContent = s.total ? `${s.answered}/${s.total} 解答済み・正解 ${s.correct}・見直し ${s.flagged}` : "0/0";
+    if (text) text.textContent = s.total ? `${roundLabel(s.round)}・${s.answered}/${s.total} 解答済み・正解 ${s.correct}・見直し ${s.flagged}` : "0/0";
   }
 
   function renderChapter() {
     const root = document.getElementById("questionRoot");
     if (!root || !chapterId) return;
+    ensureChapterRound();
     const chapter = chapterById(chapterId);
     const title = document.getElementById("chapterTitle");
     const desc = document.getElementById("chapterDesc");
@@ -1843,6 +2121,7 @@ service cloud.firestore {
     }
 
     root.innerHTML = `<div class="study-panel">
+      <div id="roundPanel" class="round-panel-root"></div>
       <div id="chapterStatsRoot" class="chapter-stats"></div>
       <div id="examPanel" class="exam-panel"></div>
       ${syncPanelHtml()}
@@ -1871,6 +2150,7 @@ service cloud.firestore {
 
     bindSyncPanel(root);
     bindCloudPanel(root);
+    renderRoundPanel();
     renderModeButtons();
     renderActiveQuestion({ focus: true });
     updateProgressUi();
@@ -1883,7 +2163,7 @@ service cloud.firestore {
     if (reset) {
       reset.onclick = () => {
         clearChapterProgress(chapterId, false);
-        setExamState(chapterId, null);
+        setExamState(chapterId, null, currentRound);
         currentMode = "all";
         currentQuestionId = null;
         renderChapter();
@@ -2061,6 +2341,7 @@ service cloud.firestore {
     }
     wrongPracticeIndex = Math.min(Math.max(wrongPracticeIndex, 0), wrongPracticeList.length - 1);
     const item = wrongPracticeList[wrongPracticeIndex];
+    currentRound = normalizeRound(item.record && item.record.round || getActiveRound(item.chapter && item.chapter.id) || 1);
     const q = item.question;
     shell.innerHTML = wrongPracticeQuestionHtml(item);
     const card = shell.querySelector(`[data-question-id="${cssEscape(q.id)}"]`);

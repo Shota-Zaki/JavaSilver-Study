@@ -3001,3 +3001,176 @@ details.article-card[open] summary { margin-bottom: 10px; }
     padding-inline: 0;
   }
 }
+
+
+/* 2026-05-29 v18: mobile header is unified on top page and all pages */
+@media (max-width: 860px) {
+  .sidebar {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 8px 10px !important;
+  }
+  .sidebar .brand {
+    margin: 0 !important;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .sidebar .mobile-nav-toggle {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .sidebar .nav-list {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+/* Round-based study cycle controls */
+.round-panel-root {
+  border-radius: 16px;
+}
+
+.round-panel {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255,255,255,.86);
+  box-shadow: 0 8px 20px rgba(31, 41, 55, .05);
+}
+
+.round-panel-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.round-panel h2 {
+  margin: 0 0 2px;
+  font-size: 18px;
+}
+
+.round-panel p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.round-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.round-tab {
+  display: inline-grid;
+  gap: 2px;
+  min-width: 96px;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  color: var(--ink);
+  text-align: left;
+}
+
+.round-tab strong {
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.round-tab span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.round-tab.active {
+  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.round-tab.active span {
+  color: rgba(255,255,255,.86);
+}
+
+.round-current-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.round-current-summary strong {
+  color: var(--ink);
+}
+
+@media (max-width: 560px) {
+  .round-panel-head {
+    display: grid;
+  }
+  .round-panel-head .btn {
+    width: 100%;
+  }
+  .round-tab {
+    min-width: calc(50% - 4px);
+  }
+}
+
+/* Explanation detail audit sections */
+.explanation-detail.detail-audit {
+  border-color: rgba(14, 165, 233, .32);
+  background: #f0f9ff;
+}
+.explanation-detail.detail-audit summary {
+  color: #0369a1;
+}
+.explanation-detail.detail-choice-audit {
+  border-color: rgba(99, 102, 241, .28);
+  background: #f8f7ff;
+}
+.explanation-detail.detail-choice-audit summary {
+  color: #4338ca;
+}
+.explanation-detail.detail-trace {
+  border-color: rgba(245, 158, 11, .32);
+  background: #fffbeb;
+}
+.explanation-detail.detail-trace summary {
+  color: #92400e;
+}
+.explanation-detail.detail-fine-points {
+  border-color: rgba(16, 185, 129, .30);
+  background: #f0fdf4;
+}
+.explanation-detail.detail-fine-points summary {
+  color: #047857;
+}
+.explanation-detail.detail-trap {
+  border-color: rgba(244, 63, 94, .30);
+  background: #fff7f7;
+}
+.explanation-detail.detail-trap summary {
+  color: #be123c;
+}
+.explanation-detail.detail-audit .readable-list,
+.explanation-detail.detail-choice-audit .readable-list,
+.explanation-detail.detail-trace .readable-list,
+.explanation-detail.detail-fine-points .readable-list,
+.explanation-detail.detail-trap .readable-list {
+  padding-left: 1.2rem;
+}
+.explanation-detail.detail-audit .readable-list li,
+.explanation-detail.detail-choice-audit .readable-list li,
+.explanation-detail.detail-trace .readable-list li,
+.explanation-detail.detail-fine-points .readable-list li,
+.explanation-detail.detail-trap .readable-list li {
+  line-height: 1.85;
+}
