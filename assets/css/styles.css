@@ -3174,3 +3174,82 @@ details.article-card[open] summary { margin-bottom: 10px; }
 .explanation-detail.detail-trap .readable-list li {
   line-height: 1.85;
 }
+
+/* Mock exam mode controls */
+.exam-mode-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.exam-mode-switch .mode-btn[disabled] {
+  cursor: not-allowed;
+  opacity: .55;
+}
+
+.exam-box.practice-mode {
+  border-color: rgba(37, 99, 235, .18);
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
+}
+
+.exam-start-state {
+  padding: 18px;
+  border: 1px solid rgba(37, 99, 235, .22);
+  border-radius: 18px;
+  background: #eff6ff;
+}
+
+.exam-start-state p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.exam-fixed-timer {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 80;
+  display: grid;
+  gap: 2px;
+  min-width: 132px;
+  padding: 10px 12px;
+  border: 1px solid rgba(17, 24, 39, .16);
+  border-radius: 16px;
+  background: rgba(17, 24, 39, .94);
+  color: #fff;
+  box-shadow: 0 16px 38px rgba(15, 23, 42, .22);
+  backdrop-filter: blur(10px);
+}
+
+.exam-fixed-timer.active {
+  outline: 3px solid rgba(245, 158, 11, .24);
+}
+
+.exam-fixed-label,
+.exam-fixed-sub {
+  font-size: 11px;
+  font-weight: 800;
+  color: rgba(255,255,255,.78);
+}
+
+.exam-fixed-timer strong {
+  font-family: var(--mono);
+  font-size: 24px;
+  line-height: 1.05;
+  letter-spacing: .04em;
+}
+
+@media (max-width: 720px) {
+  .exam-fixed-timer {
+    top: auto;
+    right: 10px;
+    bottom: 74px;
+    min-width: 116px;
+    padding: 8px 10px;
+  }
+  .exam-fixed-timer strong {
+    font-size: 20px;
+  }
+}

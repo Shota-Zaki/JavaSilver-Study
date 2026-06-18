@@ -1,6 +1,6 @@
 window.JAVA_STUDY_DATA = {
   "title": "Java Silver 勉強用ページ",
-  "version": "20260618-pdf-dense-paraphrase-v12-ch08",
+  "version": "20260618-exam-modes-v13",
   "chapters": [
     {
       "id": "ch01",

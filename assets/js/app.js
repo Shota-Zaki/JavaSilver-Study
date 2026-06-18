@@ -13,6 +13,7 @@
 
   const storageKey = "java-study-progress-v1";
   const examStorageKey = "java-study-exam-v1";
+  const examModeStorageKey = "java-study-exam-mode-v1";
   const roundStateStorageKey = "java-study-round-state-v1";
   const cloudConfigStorageKey = "java-study-cloud-sync-config-v1";
   const cloudStateStorageKey = "java-study-cloud-sync-state-v1";
@@ -104,7 +105,7 @@
     const exam = storage[examStorageKey] || payload.exam || {};
     const rounds = storage[roundStateStorageKey] || payload.roundState || {};
     if (!progress || typeof progress !== "object" || Array.isArray(progress)) throw new Error("学習履歴データが見つかりません。");
-    if (!exam || typeof exam !== "object" || Array.isArray(exam)) throw new Error("模擬問題履歴データの形式が正しくありません。");
+    if (!exam || typeof exam !== "object" || Array.isArray(exam)) throw new Error("模擬試験履歴データの形式が正しくありません。");
     if (!rounds || typeof rounds !== "object" || Array.isArray(rounds)) throw new Error("周回履歴データの形式が正しくありません。");
     return { progress, exam, rounds, meta: payload };
   }
@@ -173,7 +174,7 @@
     } else {
       writeProgress(mergeProgress(readProgress(), parsed.progress));
       writeRoundState(mergeRoundState(readRoundState(), parsed.rounds));
-      // 模擬問題タイマーは端末差で壊れやすいため、マージ時は現在端末の状態を優先する。
+      // 模擬試験タイマーは端末差で壊れやすいため、マージ時は現在端末の状態を優先する。
     }
     return true;
   }
@@ -617,6 +618,36 @@ service cloud.firestore {
     writeExamStore(store);
   }
 
+  function readExamModeStore() {
+    const store = readJson(examModeStorageKey, {});
+    return store && typeof store === "object" ? store : {};
+  }
+
+  function writeExamModeStore(store) {
+    writeJson(examModeStorageKey, store && typeof store === "object" ? store : {});
+  }
+
+  function getExamMode(id = chapterId) {
+    if (!isExamChapter(id)) return "practice";
+    const state = getExamState(id);
+    if (state && state.active) return "exam";
+    const mode = readExamModeStore()[id];
+    return mode === "exam" ? "exam" : "practice";
+  }
+
+  function setExamMode(id, mode) {
+    if (!isExamChapter(id)) return;
+    const normalized = mode === "exam" ? "exam" : "practice";
+    const store = readExamModeStore();
+    if (store[id] === normalized) return;
+    store[id] = normalized;
+    writeExamModeStore(store);
+  }
+
+  function isMockExamMode(id = chapterId) {
+    return isExamChapter(id) && getExamMode(id) === "exam";
+  }
+
   function isExamChapter(id = chapterId) {
     return id === "ch07" || id === "ch08";
   }
@@ -649,7 +680,8 @@ service cloud.firestore {
       q: hashParams.get("q") || params.get("q") || "",
       tag: hashParams.get("tag") || params.get("tag") || "",
       retry: hashParams.get("retry") || params.get("retry") || "",
-      round: hashParams.get("round") || params.get("round") || ""
+      round: hashParams.get("round") || params.get("round") || "",
+      examMode: hashParams.get("examMode") || params.get("examMode") || ""
     };
   }
 
@@ -1536,7 +1568,7 @@ service cloud.firestore {
         ${quickActionHtml("前回の続き", resume ? `${resume.chapter.title} / 問${resume.question.number}` : "第1章から開始", resume, "resume")}
         ${stats.wrong ? `<a class="quick-card" href="wrong-practice.html"><span>間違い復習</span><strong>${stats.wrong}問をランダム復習</strong></a>` : quickActionHtml("間違い復習", "対象なし", null, "wrong")}
         ${quickActionHtml("見直し復習", flagged ? `${stats.flagged}問を復習` : "対象なし", flagged, "flagged")}
-        <a class="quick-card" href="${escapeHtml(exam1 ? chapterHref(exam1, "all") : "#chapterGrid")}"><span>模擬問題を開始</span><strong>模擬問題① / 模擬問題②</strong></a>
+        <a class="quick-card" href="${escapeHtml(exam1 ? chapterHref(exam1, "all", { examMode: "exam" }) : "#chapterGrid")}"><span>模擬試験を開始</span><strong>模擬問題① / 模擬問題②</strong></a>
       </div>
       ${todayReviewHtml(stats)}
       <div class="stat-grid">
@@ -1897,6 +1929,18 @@ service cloud.firestore {
     renderRoundPanel();
     renderExamPanel();
 
+    const examState = isExamChapter(chapterId) ? getExamState(chapterId) : null;
+    if (isMockExamMode(chapterId) && !(examState && (examState.active || examState.finishedAt))) {
+      shell.innerHTML = `<div class="empty-state exam-start-state">
+        <h2>模擬試験モードは開始前です</h2>
+        <p>「模擬試験を開始」を押すと、この周回の解答をリセットして90分の試験を開始します。演習として解く場合は、上の切替で演習モードを選んでください。</p>
+      </div>`;
+      renderJump([]);
+      renderQuestionPalette();
+      updateNavButtons(0, 0);
+      return;
+    }
+
     if (!list.length) {
       shell.innerHTML = `<div class="empty-state">
         <h2>${escapeHtml(modeLabel(currentMode))}の問題はありません</h2>
@@ -1999,6 +2043,50 @@ service cloud.firestore {
     </div>`;
   }
 
+  function examModeButtonHtml(mode, active) {
+    const practiceActive = mode === "practice";
+    const examActive = mode === "exam";
+    return `<div class="exam-mode-switch" role="group" aria-label="模擬演習のモード切替">
+      <button class="mode-btn ${practiceActive ? "active" : ""}" data-exam-mode="practice" ${active ? "disabled" : ""}>演習モード</button>
+      <button class="mode-btn ${examActive ? "active" : ""}" data-exam-mode="exam">模擬試験モード</button>
+    </div>`;
+  }
+
+  function examTimerText(state) {
+    if (state && state.active) return formatSeconds(remainingSeconds(state));
+    if (state && state.finishedAt) return "00:00";
+    return "90:00";
+  }
+
+  function fixedExamTimerHtml(state, stats) {
+    const total = stats && stats.total ? stats.total : 0;
+    const answered = stats && typeof stats.answered === "number" ? stats.answered : 0;
+    const active = Boolean(state && state.active);
+    const finished = Boolean(state && state.finishedAt && !state.active);
+    const status = active ? "実施中" : finished ? "採点済み" : "開始前";
+    return `<div class="exam-fixed-timer ${active ? "active" : ""}" id="fixedExamTimer" aria-live="polite">
+      <span class="exam-fixed-label">模擬試験</span>
+      <strong data-exam-timer>${examTimerText(state)}</strong>
+      <span class="exam-fixed-sub">${escapeHtml(status)}・${answered}/${total}</span>
+    </div>`;
+  }
+
+  function updateExamTimers() {
+    if (!chapterId || !isExamChapter(chapterId)) return;
+    const state = getExamState(chapterId);
+    const text = examTimerText(state);
+    document.querySelectorAll("[data-exam-timer], #examTimer").forEach(timer => {
+      timer.textContent = text;
+    });
+    const fixed = document.getElementById("fixedExamTimer");
+    if (fixed) {
+      fixed.classList.toggle("active", Boolean(state && state.active));
+      const sub = fixed.querySelector(".exam-fixed-sub");
+      const s = chapterStats(chapterId);
+      if (sub) sub.textContent = `${state && state.active ? "実施中" : state && state.finishedAt ? "採点済み" : "開始前"}・${s.answered}/${s.total}`;
+    }
+  }
+
   function renderExamPanel() {
     const panel = document.getElementById("examPanel");
     if (!panel || !chapterId) return;
@@ -2009,29 +2097,57 @@ service cloud.firestore {
       return;
     }
     panel.hidden = false;
+    const mode = getExamMode(chapterId);
     const state = getExamState(chapterId);
     const active = Boolean(state && state.active);
     const s = chapterStats(chapterId);
     const unanswered = Math.max(s.total - s.answered, 0);
-    panel.innerHTML = `<div class="exam-box ${active ? "active" : ""}">
-      <div>
-        <h2>模擬問題モード</h2>
-        ${examSummaryHtml(state, s)}
-      </div>
-      <div class="exam-actions">
-        <span class="timer" id="examTimer">${active ? formatSeconds(remainingSeconds(state)) : "90:00"}</span>
-        <span class="exam-count">解答済み ${s.answered} / 未回答 ${unanswered} / 見直し ${s.flagged}</span>
-        ${active ? `<button class="btn primary" id="finishExam">模擬問題を終了して採点</button>` : `<button class="btn primary" id="startExam">模擬問題開始</button>`}
-      </div>
-    </div>`;
+
+    if (mode === "practice") {
+      panel.innerHTML = `<div class="exam-box practice-mode">
+        <div>
+          <h2>演習モード</h2>
+          <p>1問ずつ解答し、解答後すぐに正解・解説を確認します。周回、未回答、間違いのみ、見直しの復習に使います。</p>
+          ${examModeButtonHtml(mode, active)}
+        </div>
+        <div class="exam-actions">
+          <span class="exam-count">解答済み ${s.answered} / 未回答 ${unanswered} / 見直し ${s.flagged}</span>
+        </div>
+      </div>`;
+      stopTimer();
+    } else {
+      panel.innerHTML = `${fixedExamTimerHtml(state, s)}
+      <div class="exam-box ${active ? "active" : ""}">
+        <div>
+          <h2>模擬試験モード</h2>
+          <p>90分で60問を解きます。実施中は解答を保存するだけで、採点後に正解・解説を確認します。</p>
+          ${examSummaryHtml(state, s)}
+          ${examModeButtonHtml(mode, active)}
+        </div>
+        <div class="exam-actions">
+          <span class="timer" id="examTimer" data-exam-timer>${examTimerText(state)}</span>
+          <span class="exam-count">解答済み ${s.answered} / 未回答 ${unanswered} / 見直し ${s.flagged}</span>
+          ${active ? `<button class="btn primary" id="finishExam">模擬試験を終了して採点</button>` : `<button class="btn primary" id="startExam">模擬試験を開始</button>`}
+        </div>
+      </div>`;
+      if (active) startTimer();
+      else stopTimer();
+    }
+
+    panel.querySelectorAll("[data-exam-mode]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        if (active && btn.dataset.examMode === "practice") return;
+        setExamMode(chapterId, btn.dataset.examMode);
+        renderActiveQuestion({ focus: false });
+      });
+    });
     document.getElementById("startExam")?.addEventListener("click", startExam);
     document.getElementById("finishExam")?.addEventListener("click", () => finishExam(false));
-    if (active) startTimer();
-    else stopTimer();
   }
 
   function startExam() {
     if (!chapterId) return;
+    setExamMode(chapterId, "exam");
     clearChapterProgress(chapterId, true);
     setExamState(chapterId, {
       active: true,
@@ -2079,8 +2195,7 @@ service cloud.firestore {
         return;
       }
       const remain = remainingSeconds(state);
-      const timer = document.getElementById("examTimer");
-      if (timer) timer.textContent = formatSeconds(remain);
+      updateExamTimers();
       if (remain <= 0) finishExam(true);
     }, 1000);
   }
@@ -2107,6 +2222,10 @@ service cloud.firestore {
     const root = document.getElementById("questionRoot");
     if (!root || !chapterId) return;
     ensureChapterRound();
+    const routeExamMode = getRouteParams().examMode;
+    if (isExamChapter(chapterId) && (routeExamMode === "exam" || routeExamMode === "practice")) {
+      setExamMode(chapterId, routeExamMode);
+    }
     const chapter = chapterById(chapterId);
     const title = document.getElementById("chapterTitle");
     const desc = document.getElementById("chapterDesc");
