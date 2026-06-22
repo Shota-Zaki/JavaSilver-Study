@@ -1,0 +1,70 @@
+正解：C
+
+新しく導入されたswitch式と従来のswitch文の構文上の違いは、->（矢印）を使っているか、それとも:（コロン）を使っているかという点であるように思えます。しかし、これは正しくはありません。switch文とswitch式の違いは、文と式の違いにあるのです。文（Statement）は、プログラムで行う手続きを記述するもので、セミコロン
+
+で終わる行や、中カッコで括られた部分が1つの文となります。たとえば、if文や変数宣言、代入などが文に該当します。文は、それ自体で一つの完結した処理であり、プログラムの実行の流れを構成するものです。文の中には式を含むことができますが、文そのものは値を返しません。
+
+一方、式（Expression）は、値を生成し、結果を変数に代入できるものを指します。具体的には、リテラルや変数の利用、メソッドの呼び出し、演算子とそのオペランドの組み合わせなどが挙げられます。式は、文を構成する要素の1つであり、それを評価する（実行する）と結果を得ることができるものです。
+
+switch文は、その名のとおり「文」です。そのため、値を戻すことはできません。一方、switch式は値を戻すことができます。switch式で値を戻すには、次のコード例のように値を戻す式かリテラルを記述します。
+
+例　値を戻すswitch式
+
+```java
+public class Sample {
+    public static void main(String[] args) {
+        for (int i = 0; i < 4; i++) {
+            print(i);
+        }
+    }
+    private static void print(int i) {
+        String result = switch (i) {
+            case 1 -> "one";
+            case 2 -> "two";
+            case 3 -> "three";
+            default -> "default".toUpperCase();
+        };
+        System.out.println(result);
+    }
+}
+
+```
+
+このコード例では、caseの値に一致した場合、対応する文字列リテラルを戻し、その結果をString型変数resultに代入しています。caseが1〜3のときは文字列リテラルを戻しますが、defaultのときだけ大文字に変換するメソッド呼び出しになっているため、このコードを実行すると次のような結果がコンソールに表示されます。
+
+例　実行結果
+
+```text
+> java Sample
+DEFAULT
+one
+two
+three
+
+```
+
+また、switch式は式であるため、文の中で利用されている場合には、その文が終わることを示すセミコロンが必要です。前述のコードを簡略化して、switch式の結果をString型の変数resultに代入するというコードに置き換えてみると、セミコロンの必要性がわかると思います。
+
+例　switch式の結果をresultに代入
+
+```java
+public class Sample {
+    public static void main(String[] args) {
+        for (int i = 0; i < 4; i++) {
+            print(i);
+        }
+    }
+    private static void print(int i) {
+        String result = switch式の結果;    // セミコロンがないと文が終わらない
+        System.out.println(result);
+    }
+}
+
+```
+
+設問のコードは、switch式の結果をString型の変数に代入する文の中でswitch式が使われています。しかし、この文には終わりを示すセミコロンがありません。そのため、コンパイルエラーが発生します。よって、選択肢Cが正解となります。
+
+なお、switch式内では、returnを記述してもメソッドを抜けてしまうだけで式の結果を戻すことはできません。式の結果を戻すには、yieldを使います。詳しくは解答24を参照してください。
+
+試験対策
+switch式では、値を戻すことができます。switch文では値を戻すことはできません。switch式の終わりにはセミコロンが必要です。どこまでが1文なのかを確認するようにしましょう。

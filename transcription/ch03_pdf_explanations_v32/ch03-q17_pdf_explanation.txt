@@ -1,0 +1,44 @@
+正解：A、B、C、D、F、G
+
+switch文に関する問題です。条件によって分岐をするif文に対し、switch文の特徴は、値によって処理を分岐する点です。switch文の書式は、次のとおりです。
+
+構文
+
+```java
+switch (条件式) {
+    case 値:
+        処理
+        break;
+    case 値:
+        処理
+        break;
+    default:
+        処理
+        break;
+}
+
+```
+
+switch文は、条件式が戻す値と一致するcase式を実行します。条件式が戻せる値の型には制限があり、条件式は次の型の値を戻す式でなくてはいけません。
+
+```text
+char
+byte
+short
+int
+Character
+Byte
+Short
+Integer
+String
+Enum
+
+```
+
+たくさんの種類がありますが、次のように覚えましょう。
+
+・int以下の整数型とそのラッパークラス
+・文字と文字列
+・列挙型
+
+したがって、選択肢A、B、C、D、F、Gが正解です。間違えやすいのはlong型が含まれていない点です。ほかにもdoubleやfloatといった浮動小数点数を扱う型や、booleanも含まれません。したがって、選択肢EとHは誤りです。

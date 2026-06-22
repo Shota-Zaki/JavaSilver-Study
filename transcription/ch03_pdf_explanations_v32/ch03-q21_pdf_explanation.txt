@@ -1,0 +1,74 @@
+正解：C
+
+switch式に関する問題です。Javaの条件分岐のための基本的な構文には、if文とswitch文の2つがありました。if文は、条件に幅があったり、複雑な組み合わせ条件であったりするときに利用し、switch文は、条件となる値の種類が少ないときに利用します。しかし、switch文はフォールスルーを避けるために、いくつもbreakを記述する必要があります。そのため冗長なコードになりやすく、可読性を下げる要因になっていました。
+
+そこで、Java SE 12からswitch式という新しい構文が追加されました。switch式を利用したコードは、次のように矢印「->」を使っていることが特徴です。caseごとのbreakは必要ありません。
+
+例　switch式
+
+```java
+public class Sample {
+    public static void main(String[] args) {
+        for (int i = 0; i < 4; i++) {
+            print(i);
+        }
+    }
+    private static void print(int i) {
+        switch (i) {
+            case 1 -> System.out.println("one");
+            case 2 -> System.out.println("two");
+            case 3 -> System.out.println("three");
+            default -> System.out.println("other");
+        }
+    }
+}
+
+```
+
+このようにswitch式では、caseごとにbreakを記述しなくてもフォールスルーは発生しません。このコードをswitch式ではなく、これまでのswitch文で記述し直したものが次のコード例です。switch式に比べてコードが冗長であることがわかります。
+
+例　switch式の代わりにswitch文で記述
+
+```java
+public class Sample {
+    public static void main(String[] args) {
+        for (int i = 0; i < 4; i++) {
+            print(i);
+        }
+    }
+    private static void print(int i) {
+        switch (i) {
+            case 1:
+                System.out.println("one");
+                break;
+            case 2:
+                System.out.println("two");
+                break;
+            case 3:
+                System.out.println("three");
+                break;
+            default:
+                System.out.println("other");
+        }
+    }
+}
+
+```
+
+これら2つのコードは同じ内容であり、コンソールに出力される結果も同じです。
+
+例　実行結果
+
+```text
+> java Sample
+other
+one
+two
+three
+
+```
+
+設問のコードでは、変数aの値に応じてコンソールに文字を出力しています。変数aは2で初期化されており、2のcaseが実行されます。前述のとおり、switch式はbreakを記述しなくてもフォールスルーは発生しないため、コンソールにはBのみが表示されることになります。以上のことから、選択肢Cが正解です。
+
+参考
+switch式の正式リリースは、Java SE 14以降です。SE 12/13では開発者向けのプレビュー機能となるため、これらのバージョンでswitch式を利用する場合は、javacコマンドやjavaコマンドのオプションとして--enable-previewを付ける必要があります。

@@ -1,0 +1,99 @@
+正解：A
+
+StringクラスのstartsWithメソッドに関する問題です。
+java.lang.StringクラスのstartsWithメソッドは、文字列が引数で指定された
+文字で始まるかどうかを調べるためのメソッドです。調べた結果は真偽値で
+戻されます。たとえば次のコードの場合、文字列は「a」から始まっているた
+め、「true」とコンソールに表示されます。
+
+例: startsWithメソッド
+
+```java
+String str = "abc";
+System.out.println(str.startsWith("a"));
+```
+
+StringクラスにはendsWithというメソッドもあります。startsWithメソッドが
+引数の文字から文字列が始まっているかどうかを調べるのに対し、endsWith
+メソッドは引数の文字で終わっているかどうかを調べます。startsWithメソッ
+ドと一緒に覚えておきましょう。
+
+例: endsWithメソッド
+
+```java
+String str = "abc";
+System.out.println(str.endsWith("c"));
+```
+
+上記のコードでは、文字列が「c」で終わっているかどうかを調べているため、
+コンソールには「true」が表示されます。
+
+substringメソッドに限らず、Stringクラスの文字列を操作するためのメソッド
+は、新しいStringインスタンスを作り、その参照を戻します。たとえば、次
+のコードはreplaceメソッドを使って置換していますが、このコードを実行す
+ると、置換対象のStringインスタンス（str）はそのままで、新しく作られた
+Stringインスタンス（str2）が戻されることが確認できます。
+
+例: Stringインスタンスの保持する参照
+
+```java
+String str = "abc";
+String str2 = str.replace("a", "b");
+System.out.println(str);  ←こちらは元のまま
+System.out.println(str2);
+```
+
+これは、解答10で解説したとおり、Stringはimmutable（不変）なオブジェク
+トであるためです。
+
+このようにStringクラスに用意されているさまざまなメソッドの多くは、新
+しく作られたStringインスタンスへの参照を戻します。そのため、次のよう
+にメソッドの戻り値に対してさらにメソッドを呼び出すような記述ができま
+す。なお、このような記述方法を「メソッドチェイン」と呼びます。
+
+例: メソッドチェイン
+
+```java
+String str = "abcde";
+String str2 = str.substring(1,3).replace("b", "c");
+System.out.println(str2);
+```
+
+このコードでは、substringメソッドで「bc」という2文字だけを抽出し、そ
+の文字列（bc）に対して置換をしています。そのため、コンソールには「cc」
+が表示されます。なお、このコードは、次のコードと同じ意味です。
+
+例: メソッドチェインで記述した場合と同等の内容のコード
+
+```java
+String str = "abcde";
+String str2 = str.substring(1,3);
+String str3 = str2.replace("b", "c");
+System.out.println(str3);
+```
+
+設問のコードは、substringメソッドで抽出した文字列が「b」で始まってい
+るかどうかを調べています。substringメソッドで抽出する範囲は、解答13で
+解説したとおり、次のように線を引いて番号を振ると範囲が特定しやすくな
+ります。
+
+【設問の文字列のイメージ】
+
+```text
+| a | b | c | d | e |
+0   1   2   3   4   5
+    <---抽出する範囲--->
+```
+
+この図からわかるとおり、substringメソッドで抽出した結果は「bc」という
+文字列です。そのため、メソッドチェインで続いて実行されるstartsWithメソッ
+ドは「true」を戻します。以上のことから、選択肢Aが正解です。
+
+【試験対策】
+Stringクラスの多くのメソッドは、新しいStringインスタンスを作って
+戻します。Stringはimmutableなクラスであるため、元の文字列が変更
+されることはありません。
+
+【参考】
+あるメソッドが戻すオブジェクトのメソッドをさらに呼び出すことが
+できます。これを「メソッドチェイン」と呼びます。

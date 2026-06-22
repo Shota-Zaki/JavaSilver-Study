@@ -1,0 +1,100 @@
+正解：A
+
+テキストブロックのインデントに関する問題です。
+テキストブロック内の各行は、インデントが自動的に調整されます。これにより、テキストブロック全体を一定の幅でインデントすることができます。たとえば、次のテキストブロックには、左側にインデントが入っているため、読みやすくなっています。
+
+例: インデントがあるテキストブロック
+
+```java
+String html = """
+        <html lang="ja">
+          <head>
+            <meta charset="UTF-8">
+            <title>Sample</title>
+          </head>
+          <body>
+            <h1>Hello World</h1>
+          </body>
+        </html>""";
+```
+
+これをコンソールに出力すると、インデントが自動的に調整されて、次のように不要なインデントがない状態で出力されます。
+
+例: 出力結果
+
+```html
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <title>Sample</title>
+  </head>
+  <body>
+    <h1>Hello World</h1>
+  </body>
+</html>
+```
+
+インデントの調整は、テキストブロック内の最もインデント量が少ない行に基づいて行われます。たとえば前述のコードであれば、|を入れた箇所の左側のインデント部分が削除されることになります。
+
+例: インデントの基準位置①
+
+```java
+String html = """
+        |<html lang="ja">
+        |  <head>
+        |    <meta charset="UTF-8">
+        |    <title>Sample</title>
+        |  </head>
+        |  <body>
+        |    <h1>Hello World</h1>
+        |  </body>
+        |</html>""";
+```
+
+もし、次のように途中の行だけインデント量が少ない場合、その行を基準にしてインデント調整が行われることになります。なお、この例では、基準位置をわかりやすくするために|を入れています。
+
+例: インデントの基準位置②
+
+```java
+String html = """
+        |  <html lang="ja">
+        |  <head>
+        |    <meta charset="UTF-8">
+        |    <title>Sample</title>
+        |</head>
+        |  <body>
+        |    <h1>Hello World</h1>
+        |  </body>
+        |  </html>""";
+```
+
+この文字列リテラルをコンソールに出力すると、次のように表示されます。もっとも少ないインデント量で調整されていることがわかります。
+
+例: 出力結果
+
+```html
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Sample</title>
+</head>
+  <body>
+    <h1>Hello World</h1>
+  </body>
+  </html>
+```
+
+設問のコードでもっとも少ないインデント量の行は、7行目のトリプルクォーテーションです。そのため、7行目のトリプルクォーテーションのインデント量を基準として、ほかの行のインデント量が決まります。基準となる線を入れたものが次のコード例です。
+
+例: 設問のコード例
+
+```java
+String str = """
+        |A
+        |  B
+        |    C
+        |""";
+System.out.println(str);
+```
+
+以上のことから、選択肢Aが正解です。

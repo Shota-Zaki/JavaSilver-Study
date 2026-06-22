@@ -1,0 +1,21 @@
+正解：E
+
+ArrayListへのアクセスに関する問題です。
+解答37で解説したように、ArrayListはスレッドセーフなクラスではありません。そのため、2つのスレッドで並行処理をしているとき、片方のスレッドがArrayListから値を読み出している最中に、もう片方のスレッドが同じArrayListのインスタンスから要素を削除してしまう可能性があります。そのため、読み出しの最中に要素を削除しようとすると、次のような例外がスローされます。
+
+例 例外ConcurrentModificationException
+
+```text
+Exception in thread "main" java.util.ConcurrentModificationException
+    at java.util.ArrayList$Itr.checkForComodification(ArrayList.java:859)
+    at java.util.ArrayList$Itr.next(ArrayList.java:831)
+    at arraylist7.remove3.Main.main(Main.java:13)
+```
+
+この例外は、マルチスレッド環境だけでなく、シングルスレッド環境下でも発生します。
+
+設問のコードでは、11行目から始まる拡張for文で要素を1つずつ取り出し、その途中でremoveメソッドを使って要素を削除しています。解答42で解説したように、removeメソッドで要素を削除すると、後ろの要素が繰り上がります。このように要素が前に移動した後に繰り返し処理で読み出すと、java.util.ConcurrentModificationExceptionがスローされます（選択肢E）。問題42も同じようにremoveメソッドで要素を削除していますが、削除後に読み出していないため、例外がスローされません。本設問では、削除後に読み出しているため、例外がスローされている点に注意してください。
+
+【試験対策】
+
+removeメソッドの実行後に読み出しをすると、例外がスローされます。

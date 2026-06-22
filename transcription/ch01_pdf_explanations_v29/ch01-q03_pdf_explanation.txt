@@ -1,0 +1,51 @@
+正解：A、C
+
+クラスのインポートに関する問題です。コンパイラやJVMはクラスを完全修飾クラス名でしか扱えません。パッケージ宣言しなかった場合ですら、そのクラスは無名パッケージ（デフォルトパッケージ）に所属していると見なされます。そのため、本来ソースコードは次のように完全修飾クラス名でクラスを利用しなければいけません。
+
+例 完全修飾クラス名でクラスを指定したソースコード
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        java.lang.String str = "100";
+        int val = java.lang.Integer.parseInt(str);
+        java.math.BigDecimal decimal = new java.math.BigDecimal(val);
+        System.out.println(decimal.intValue());
+    }
+}
+```
+
+このように完全修飾クラス名でプログラムを記述すると、コードは冗長で読みづらくなります。そこで、次のようにインポート宣言をすることで、パッケージ名を省略してクラス名だけで記述できるようにします。
+
+例 クラスのパッケージ名を省略するため、インポート宣言をしたソースコード
+
+```java
+import java.lang.String;       // 省略可能
+import java.lang.Integer;      // 省略可能
+import java.math.BigDecimal;
+
+public class Main {
+    public static void main(String[] args) {
+        String str = "100";
+        int val = Integer.parseInt(str);
+        BigDecimal decimal = new BigDecimal(val);
+        System.out.println(decimal.intValue());
+    }
+}
+```
+
+なお、java.langパッケージは基本的なクラスがまとめられたパッケージであり、このパッケージに所属するクラスは頻繁に利用するためインポート宣言を省略できます。
+
+また、同じパッケージに属するクラスのインポート宣言も省略可能です。
+
+以上のことから、選択肢AとCが正解です。選択肢Bはjava.lang.Stringとjava.lang.Systemクラスに限定しており、適切ではありません。
+
+インポート宣言時に、利用するクラスの完全修飾クラス名を指定するのではなく、アスタリスク「*」を使ってそのパッケージに属するクラスをすべてインポートできます。たとえば、次のように宣言すれば、java.utilパッケージ内のすべてのクラスをクラス名で表記できます。
+
+例 java.utilパッケージに属する全クラスのインポート宣言
+
+```java
+import java.util.*;
+```
+
+このようにアスタリスクを使うことで一度に複数のクラスをインポートできます。ただし、この方法でインポートできるのは、指定したパッケージに属するクラスに限定されます。アスタリスクを使っても、同じ名称を含む別のパッケージがインポートされるわけではありません。上記の宣言でインポートされるのはjava.utilパッケージに属するクラスだけで、java.util.regexパッケージやjava.util.loggingパッケージに属するクラスをインポートできるということではありません。したがって、選択肢Dも誤りです。

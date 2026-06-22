@@ -1,0 +1,202 @@
+正解：A
+
+switch式の矢印以降に記述できるのは、以下の3つです。
+
+・値を戻す式
+・例外をスローするthrow文
+・ブロック
+
+1つ目の値を戻す式は、解答23で解説しています。caseに一致したとき、単純に値を戻すだけなら、リテラルや戻したい値を保持する変数、もしくは値を戻す式を記述するだけです。
+
+次に、2つ目の例外をスローするthrow文をswitch式の中で使ってみましょう。次のコード例は、引数が1〜3でなければ例外をスローします。
+
+例　switch式の中で例外をスローする
+
+```java
+public class Sample {
+    public static void main(String[] args) {
+        for (int i = 1; i < 5; i++) {
+            print(i);
+        }
+    }
+    private static void print(int i) {
+        String result = switch (i) {
+            case 1 -> "one";
+            case 2 -> "two";
+            case 3 -> "three";
+            default -> throw new IllegalArgumentException("value:" + i);
+        };
+        System.out.println(result);
+    }
+}
+
+```
+
+このコードを実行すると、次のようにコンソールにスタックトレースが表示され、例外が発生したことがわかります。
+
+例　実行結果
+
+```text
+> java Sample
+one
+two
+three
+Exception in thread "main" java.lang.IllegalArgumentException: value:4
+    at Sample.print(Sample.java:14)
+    at Sample.main(Sample.java:4)
+
+```
+
+throwは例外を呼び出し元に通知するためのものです。式の結果としての値を戻すためのものではありません。そのため、値を戻すためにthrowを利用しようとしている選択肢Dは誤りです。
+
+switch式の矢印以降に記述できるものの3つ目は、ブロックです。ブロックは、複数の文で構成され、中カッコで括られたコードのかたまりを指します。なお、1つしか文がない場合には、中カッコを省略できます。これはif文などで中カッコを省略できるのと同じです。
+
+switch式のブロックは、一致するcaseがあったときに複数の処理を実行したい場合に利用します。ブロック内で値を戻すときには、yieldを使います。returnでは呼び出し元のメソッドに処理が戻ってしまいますし、breakではswitch式そのものを抜けてしまうため、switch式内では利用できません。returnやbreakをswitch式の中に記述するとコンパイルエラーが発生します。よって、選択肢BとCは誤りです。
+
+次のコードは、caseに合致したときの処理をブロックで複数行記述した例です。
+
+例　switch式の中にブロックを記述
+
+```java
+public class Sample {
+    public static void main(String[] args) {
+        for (int i = 1; i < 4; i++) {
+            print(i);
+        }
+    }
+    private static void print(int i) {
+        String result = switch (i) {
+            case 1 -> {
+                System.out.println("case 1");
+                yield "one";
+            }
+            case 2 -> "two";
+            case 3 -> "three";
+            default -> throw new IllegalArgumentException("value:" + i);
+        };
+        System.out.println(result);
+    }
+}
+
+```
+
+このコードの1のcaseでは、入力された値を一度コンソールに表示してから、yieldを使って結果の文字列を戻しています。このコードを実行すると、コンソールに次のように表示されます。
+
+例　実行結果
+
+```text
+> java Sample
+case 1
+one
+two
+three
+
+```
+
+以上のことから、選択肢Aが正解となります。
+
+なお、switch式では、矢印を使う代わりに従来のswitch文のように「:」（コロン）を使うことも可能です。次のコード例は、前述のコード例を「:」を使うように修正したものです。
+
+例　switch式で矢印「->」の代わりにコロン「:」を使った例
+
+```java
+public class Sample {
+    public static void main(String[] args) {
+        for (int i = 1; i < 4; i++) {
+            print(i);
+        }
+    }
+    private static void print(int i) {
+        String result = switch (i) {
+            case 1: {
+                System.out.println("case 1");
+                yield "one";
+            }
+            case 2:
+                yield "two";
+            case 3:
+                yield "three";
+            default:
+                throw new IllegalArgumentException("value:" + i);
+        };
+        System.out.println(result);
+    }
+}
+
+```
+
+矢印との違いは、リテラルをそのまま記述しても値を戻すことができないため、値を戻せるよう明示的にyieldを使っている点です。このように、switch式でも「:」は利用できますが、筆者は矢印の利用を推奨します。「:」を使っている場合、yieldを記述し忘れてしまうと、思いがけないフォールスルーが発生する可能性があるためです。
+
+たとえば次のコード例では、2のcaseのときにyieldを記述し忘れてしまったために、コンソールにhelloが表示された後フォールスルーが発生し、3のcaseのyieldによってthreeという文字列が戻されてしまいます。
+
+例　「:」を使ったswitch式で、yieldを記述し忘れてしまった
+
+```java
+public class Sample {
+    public static void main(String[] args) {
+        for (int i = 1; i < 4; i++) {
+            print(i);
+        }
+    }
+    private static void print(int i) {
+        String result = switch (i) {
+            case 1: {
+                System.out.println("case 1");
+                yield "one";
+            }
+            case 2:
+                System.out.println("hello");    // yieldがない
+            case 3:
+                yield "three";
+            default:
+                throw new IllegalArgumentException("value:" + i);
+        };
+        System.out.println(result);
+    }
+}
+
+```
+
+そのため、このコードを実行すると、次のようにhelloに続いてthreeが2回表示されることになります。
+
+例　実行結果
+
+```text
+> java Sample
+case 1
+one
+hello
+three
+three
+
+```
+
+このコードを次のように矢印に置き換えると、caseが2のときに値を戻さないためコンパイルエラーになります。このようにswitch式では「:」ではなく、矢印を使うことで、不本意なフォールスルーを防ぐことができます。
+
+例　「->」を使えばyieldの書き忘れによるフォールスルーを防止する
+
+```java
+public class Sample {
+    public static void main(String[] args) {
+        for (int i = 1; i < 4; i++) {
+            print(i);
+        }
+    }
+    private static void print(int i) {
+        String result = switch (i) {
+            case 1 -> {
+                System.out.println("case 1");
+                yield "one";
+            }
+            case 2 -> System.out.println("hello");    // コンパイルエラーになる
+            case 3 -> "three";
+            default -> throw new IllegalArgumentException("value:" + i);
+        };
+        System.out.println(result);
+    }
+}
+
+```
+
+試験対策
+switch式でブロック内から値を戻すにはyieldを使います。

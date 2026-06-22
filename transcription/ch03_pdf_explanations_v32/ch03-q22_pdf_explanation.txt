@@ -1,0 +1,67 @@
+正解：D
+
+switch式についての問題です。従来のswitch文では、defaultは必須ではありませんでした。そのため、次のようにdefaultを省いてもコンパイルエラーにはなりません。
+
+例　defaultを省略したswitch文
+
+```java
+public class Sample {
+    public static void main(String[] args) {
+        for (int i = 0; i < 4; i++) {
+            print(i);
+        }
+    }
+    private static void print(int i) {
+        switch (i) {
+            case 1: System.out.println("one");
+                    break;
+            case 2: System.out.println("two");
+                    break;
+            case 3: System.out.println("three");
+                    break;
+        }
+    }
+}
+
+```
+
+このコードを実行すると、コンソールには次のような結果が出力されます。0を処理するためのcaseがないため、コンソールには、何も表示されません。
+
+例　実行結果
+
+```text
+> java Sample
+one
+two
+three
+
+```
+
+このように、従来のswitch文では、もし一致するcaseがなかったときには「何もできない」という状態が発生してしまいます。これが意図しない結果を生む可能性があるため、新しく導入されたswitch式ではすべてのパターンが網羅できるようにcaseを記述しなくてはいけなくなりました。次のコード例のように、defaultを記述しない場合はコンパイルエラーになります。
+
+例　defaultを省略したswitch式（コンパイルエラー）
+
+```java
+public class Sample {
+    public static void main(String[] args) {
+        for (int i = 0; i < 4; i++) {
+            print(i);
+        }
+    }
+    private static void print(int i) {
+        switch (i) {
+            case 1 -> System.out.println("one");
+            case 2 -> System.out.println("two");
+            case 3 -> System.out.println("three");
+        };
+    }
+}
+
+```
+
+厳密には、caseだけですべてのパターンを網羅できれば、defaultを記述する必要はありません。しかし、int型は-2,147,483,648〜2,147,483,647という膨大な値の範囲を持ちます。一方、上のswitch式のcaseでは1〜3にしか対応していないため、defaultを記述しないとすべての値の範囲を網羅することができず、コンパイルエラーになるのです。
+
+設問のコードのswitch式では、caseですべてのパターンが網羅されていないにもかかわらず、defaultが記述されていないためコンパイルエラーとなります。よって、選択肢Dが正解です。なお、選択肢Cのように、1つのcaseに複数の値をカンマ区切りで列挙することは可能です。
+
+試験対策
+switch式では、すべてのパターンが網羅されるcaseを用意しなければいけません。そのため、よほど限定された範囲を扱うのでなければ、defaultは欠かせないでしょう。
