@@ -1405,10 +1405,62 @@ service cloud.firestore {
   }
 
   function readableTextHtml(text) {
-    const chunks = readableChunks(text);
-    return chunks.length
-      ? `<div class="readable-text">${chunks.map(chunk => `<p>${escapeHtml(chunk)}</p>`).join("")}</div>`
-      : "";
+    const value = String(text || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n").trim();
+    if (!value) return "";
+
+    const parts = [];
+    const lines = value.split("\n");
+    let paragraph = [];
+    let code = [];
+    let inCode = false;
+    let codeLang = "";
+
+    function flushParagraph() {
+      const body = paragraph.join(" ").replace(/\s+/g, " ").trim();
+      if (body) parts.push(`<p>${escapeHtml(body)}</p>`);
+      paragraph = [];
+    }
+
+    function flushCode() {
+      const className = codeLang ? ` language-${escapeHtml(codeLang)}` : "";
+      parts.push(`<pre class="code-block explanation-code"><code class="${className}">${escapeHtml(code.join("\n"))}</code></pre>`);
+      code = [];
+      codeLang = "";
+    }
+
+    lines.forEach(line => {
+      const fence = line.match(/^```\s*([A-Za-z0-9_-]*)\s*$/);
+      if (fence) {
+        if (inCode) {
+          flushCode();
+          inCode = false;
+        } else {
+          flushParagraph();
+          inCode = true;
+          codeLang = fence[1] || "";
+        }
+        return;
+      }
+      if (inCode) {
+        code.push(line);
+        return;
+      }
+      if (!line.trim()) {
+        flushParagraph();
+        return;
+      }
+      const trimmed = line.trim();
+      if (/^(正解：|例\s|構文$|試験対策$|参考$|【.+】$)/.test(trimmed) || /^・/.test(trimmed) || /^\d+\.\s/.test(trimmed) || /^[A-I](?:[、,，]|\s|　)/.test(trimmed)) {
+        flushParagraph();
+        parts.push(`<p>${escapeHtml(trimmed)}</p>`);
+        return;
+      }
+      paragraph.push(trimmed);
+    });
+
+    if (inCode) flushCode();
+    flushParagraph();
+    return parts.length ? `<div class="readable-text">${parts.join("")}</div>` : "";
   }
 
   function readableInlineHtml(text) {
@@ -1491,9 +1543,11 @@ service cloud.firestore {
     addExplanationSection("", exp.pdfExplanation);
     if (!sectionParts.length) addExplanationSection("", exp.correctReason || summary);
     const mainExplanation = sectionParts.join("");
-    const related = listHtml(exp.relatedKnowledge);
-    const tips = listHtml(exp.examTips);
-    const steps = listHtml(exp.judgeSteps);
+    const pdfExplanationOnly = exp.pdfExplanationOnly === true;
+    const related = pdfExplanationOnly ? "" : listHtml(exp.relatedKnowledge);
+    const tips = pdfExplanationOnly ? "" : listHtml(exp.examTips);
+    const steps = pdfExplanationOnly ? "" : listHtml(exp.judgeSteps);
+    const choiceDetail = pdfExplanationOnly ? "" : optionAnalysisHtml(q);
 
     const detail = (title, body, open = false, className = "") => body ? `<details class="explanation-detail ${className}" ${open ? "open" : ""}>
         <summary>${escapeHtml(title)}</summary>
@@ -1509,7 +1563,7 @@ service cloud.firestore {
         ${answerSummaryHtml("正解", q.answer || [], "correct-answer", q)}
       </div>
       ${detail("解説", mainExplanation, true, "main-explanation")}
-      ${detail("選択肢別解説", optionAnalysisHtml(q), true)}
+      ${detail("選択肢別解説", choiceDetail, true)}
       ${detail("関連知識", related)}
       ${detail("試験での注意点", tips)}
       ${detail("解き方の手順", steps)}`;
