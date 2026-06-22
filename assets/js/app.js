@@ -7,10 +7,15 @@
   let currentMode = getInitialMode();
   let currentQuestionId = getInitialQuestionId();
   let currentTagFilter = getInitialTagFilter();
+  let currentExamReviewFilter = "";
+  let currentRound = 1;
+  let materializedRoundKey = "";
   let timerHandle = null;
 
   const storageKey = "java-study-progress-v1";
   const examStorageKey = "java-study-exam-v1";
+  const examModeStorageKey = "java-study-exam-mode-v1";
+  const roundStateStorageKey = "java-study-round-state-v1";
   const cloudConfigStorageKey = "java-study-cloud-sync-config-v1";
   const cloudStateStorageKey = "java-study-cloud-sync-state-v1";
   const DEFAULT_FIREBASE_CONFIG = Object.freeze({
@@ -87,7 +92,8 @@
       exportedAt: new Date().toISOString(),
       storage: {
         [storageKey]: readJson(storageKey, {}),
-        [examStorageKey]: readJson(examStorageKey, {})
+        [examStorageKey]: readJson(examStorageKey, {}),
+        [roundStateStorageKey]: readRoundState()
       }
     };
   }
@@ -98,9 +104,11 @@
     const storage = payload.storage && typeof payload.storage === "object" ? payload.storage : payload;
     const progress = storage[storageKey] || payload.progress || {};
     const exam = storage[examStorageKey] || payload.exam || {};
+    const rounds = storage[roundStateStorageKey] || payload.roundState || {};
     if (!progress || typeof progress !== "object" || Array.isArray(progress)) throw new Error("学習履歴データが見つかりません。");
-    if (!exam || typeof exam !== "object" || Array.isArray(exam)) throw new Error("模擬問題履歴データの形式が正しくありません。");
-    return { progress, exam, meta: payload };
+    if (!exam || typeof exam !== "object" || Array.isArray(exam)) throw new Error("模擬試験履歴データの形式が正しくありません。");
+    if (!rounds || typeof rounds !== "object" || Array.isArray(rounds)) throw new Error("周回履歴データの形式が正しくありません。");
+    return { progress, exam, rounds, meta: payload };
   }
 
   function mergeProgress(current, incoming) {
@@ -145,14 +153,57 @@
     return merged;
   }
 
+  function mergeRoundState(current, incoming) {
+    const currentState = current && typeof current === "object" ? current : {};
+    const incomingState = incoming && typeof incoming === "object" ? incoming : {};
+    return {
+      ...currentState,
+      ...incomingState,
+      active: {
+        ...(currentState.active && typeof currentState.active === "object" ? currentState.active : {}),
+        ...(incomingState.active && typeof incomingState.active === "object" ? incomingState.active : {})
+      }
+    };
+  }
+
+  function mergeExamStore(current, incoming) {
+    const merged = { ...(current && typeof current === "object" ? current : {}) };
+    Object.entries(incoming && typeof incoming === "object" ? incoming : {}).forEach(([id, raw]) => {
+      const currentChapter = normalizeExamChapterStore(merged[id], id);
+      const incomingChapter = normalizeExamChapterStore(raw, id);
+      const map = new Map();
+      currentChapter.attempts.forEach(attempt => map.set(attempt.attemptId, attempt));
+      incomingChapter.attempts.forEach(attempt => {
+        const existing = map.get(attempt.attemptId);
+        if (!existing) {
+          map.set(attempt.attemptId, attempt);
+          return;
+        }
+        const incomingTime = Date.parse(attempt.finishedAt || attempt.startedAt || "") || 0;
+        const existingTime = Date.parse(existing.finishedAt || existing.startedAt || "") || 0;
+        map.set(attempt.attemptId, incomingTime >= existingTime ? attempt : existing);
+      });
+      const attempts = Array.from(map.values()).sort((a, b) => (Date.parse(b.finishedAt || b.startedAt || "") || 0) - (Date.parse(a.finishedAt || a.startedAt || "") || 0));
+      const activeAttempt = attempts.find(attempt => attempt.active);
+      merged[id] = {
+        attempts,
+        activeAttemptId: activeAttempt ? activeAttempt.attemptId : "",
+        selectedAttemptId: incomingChapter.selectedAttemptId || currentChapter.selectedAttemptId || ""
+      };
+    });
+    return merged;
+  }
+
   function importHistoryFromText(text, mode) {
     const parsed = parseHistoryPayload(text);
     if (mode === "replace") {
       writeProgress(parsed.progress);
       writeExamStore(parsed.exam);
+      writeRoundState(parsed.rounds);
     } else {
       writeProgress(mergeProgress(readProgress(), parsed.progress));
-      // 模擬問題タイマーは端末差で壊れやすいため、マージ時は現在端末の状態を優先する。
+      writeExamStore(mergeExamStore(readExamStore(), parsed.exam));
+      writeRoundState(mergeRoundState(readRoundState(), parsed.rounds));
     }
     return true;
   }
@@ -543,15 +594,284 @@ service cloud.firestore {
     });
   }
 
-  function getExamState(id = chapterId) {
-    return readExamStore()[id] || null;
+  function normalizeRound(value) {
+    const n = Math.floor(Number(value));
+    return Number.isFinite(n) && n >= 1 ? n : 1;
   }
 
-  function setExamState(id, state) {
+  function readRoundState() {
+    const state = readJson(roundStateStorageKey, {});
+    return state && typeof state === "object" ? state : {};
+  }
+
+  function writeRoundState(state) {
+    writeJson(roundStateStorageKey, state && typeof state === "object" ? state : {});
+    scheduleCloudUpload();
+  }
+
+  function getRouteRound() {
+    const params = getRouteParams();
+    return params.round ? normalizeRound(params.round) : 0;
+  }
+
+  function getActiveRound(id = chapterId) {
+    const state = readRoundState();
+    const active = state.active && typeof state.active === "object" ? state.active : {};
+    return normalizeRound(active[id] || 1);
+  }
+
+  function setActiveRound(id, round) {
+    if (!id) return;
+    const state = readRoundState();
+    const r = normalizeRound(round);
+    state.active = state.active && typeof state.active === "object" ? state.active : {};
+    if (normalizeRound(state.active[id] || 1) === r) return;
+    state.active[id] = r;
+    writeRoundState(state);
+  }
+
+  function newExamAttemptId() {
+    return `exam-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  }
+
+  function normalizeExamAttempt(attempt, id) {
+    const raw = attempt && typeof attempt === "object" ? attempt : {};
+    const answers = raw.answers && typeof raw.answers === "object" && !Array.isArray(raw.answers) ? raw.answers : {};
+    const flags = raw.flags && typeof raw.flags === "object" && !Array.isArray(raw.flags) ? raw.flags : {};
+    const answerEvents = Array.isArray(raw.answerEvents) ? raw.answerEvents : [];
+    const startedAt = raw.startedAt || new Date().toISOString();
+    return {
+      attemptId: raw.attemptId || newExamAttemptId(),
+      chapterId: raw.chapterId || id,
+      round: normalizeRound(raw.round || 1),
+      startedAt,
+      finishedAt: raw.finishedAt || "",
+      durationSec: Number.isFinite(Number(raw.durationSec)) ? Number(raw.durationSec) : 90 * 60,
+      active: Boolean(raw.active && !raw.finishedAt),
+      autoFinished: Boolean(raw.autoFinished),
+      answers,
+      flags,
+      answerEvents,
+      score: raw.score && typeof raw.score === "object" ? raw.score : null,
+      reviewNotes: raw.reviewNotes && typeof raw.reviewNotes === "object" ? raw.reviewNotes : {}
+    };
+  }
+
+  function computeExamAttemptScore(attempt, id = chapterId) {
+    const questions = DATA.questions[id] || [];
+    const answers = attempt && attempt.answers && typeof attempt.answers === "object" ? attempt.answers : {};
+    const flags = attempt && attempt.flags && typeof attempt.flags === "object" ? attempt.flags : {};
+    let answered = 0;
+    let correct = 0;
+    let wrong = 0;
+    let flagged = 0;
+    const wrongQuestionIds = [];
+    const unansweredQuestionIds = [];
+    const flaggedQuestionIds = [];
+    const flaggedWrongQuestionIds = [];
+    const flaggedCorrectQuestionIds = [];
+    const tagMap = new Map();
+    questions.forEach(q => {
+      const answer = answers[q.id];
+      const isAns = answer && Array.isArray(answer.selected) && answer.selected.length > 0;
+      const isFlag = Boolean(flags[q.id]);
+      if (isFlag) {
+        flagged += 1;
+        flaggedQuestionIds.push(q.id);
+      }
+      if (!isAns) {
+        unansweredQuestionIds.push(q.id);
+        return;
+      }
+      answered += 1;
+      const ok = arraysEqual(answer.selected || [], q.answer || []);
+      if (ok) {
+        correct += 1;
+        if (isFlag) flaggedCorrectQuestionIds.push(q.id);
+      } else {
+        wrong += 1;
+        wrongQuestionIds.push(q.id);
+        if (isFlag) flaggedWrongQuestionIds.push(q.id);
+        getQuestionTags(q).forEach(tag => {
+          const key = normalizeTag(tag);
+          if (!key) return;
+          tagMap.set(key, (tagMap.get(key) || 0) + 1);
+        });
+      }
+    });
+    const total = questions.length;
+    const rate = total ? Math.round(correct / total * 100) : 0;
+    const weakTags = Array.from(tagMap.entries()).map(([tag, wrongCount]) => ({ tag, wrong: wrongCount }))
+      .sort((a, b) => b.wrong - a.wrong)
+      .slice(0, 8);
+    return { total, answered, correct, wrong, unanswered: Math.max(total - answered, 0), flagged, rate, wrongQuestionIds, unansweredQuestionIds, flaggedQuestionIds, flaggedWrongQuestionIds, flaggedCorrectQuestionIds, weakTags };
+  }
+
+  function normalizeExamChapterStore(raw, id) {
+    if (raw && typeof raw === "object" && Array.isArray(raw.attempts)) {
+      const attempts = raw.attempts.map(item => normalizeExamAttempt(item, id));
+      const activeAttempt = attempts.find(item => item.active);
+      return {
+        activeAttemptId: activeAttempt ? activeAttempt.attemptId : raw.activeAttemptId || "",
+        attempts,
+        selectedAttemptId: raw.selectedAttemptId || ""
+      };
+    }
+    if (raw && typeof raw === "object" && (raw.startedAt || raw.finishedAt || raw.active)) {
+      const legacy = normalizeExamAttempt({ ...raw, chapterId: id, attemptId: raw.attemptId || `legacy-${id}` }, id);
+      return { activeAttemptId: legacy.active ? legacy.attemptId : "", attempts: [legacy], selectedAttemptId: legacy.attemptId };
+    }
+    return { activeAttemptId: "", attempts: [], selectedAttemptId: "" };
+  }
+
+  function getExamChapterStore(id = chapterId) {
     const store = readExamStore();
-    if (state) store[id] = state;
-    else delete store[id];
+    return normalizeExamChapterStore(store[id], id);
+  }
+
+  function setExamChapterStore(id, chapterStore) {
+    const store = readExamStore();
+    const normalized = normalizeExamChapterStore(chapterStore, id);
+    store[id] = normalized;
+    Object.keys(store).forEach(key => {
+      if (key.startsWith(`${id}::`)) delete store[key];
+    });
     writeExamStore(store);
+  }
+
+  function getActiveExamAttempt(id = chapterId) {
+    const chapterStore = getExamChapterStore(id);
+    return chapterStore.attempts.find(item => item.active) || (chapterStore.activeAttemptId ? chapterStore.attempts.find(item => item.attemptId === chapterStore.activeAttemptId) : null) || null;
+  }
+
+  function sortedExamAttempts(id = chapterId) {
+    return getExamChapterStore(id).attempts.slice().sort((a, b) => {
+      const at = Date.parse(a.finishedAt || a.startedAt || "") || 0;
+      const bt = Date.parse(b.finishedAt || b.startedAt || "") || 0;
+      return bt - at;
+    });
+  }
+
+  function getLatestFinishedExamAttempt(id = chapterId) {
+    return sortedExamAttempts(id).find(item => item.finishedAt) || null;
+  }
+
+  function getSelectedExamAttempt(id = chapterId) {
+    const chapterStore = getExamChapterStore(id);
+    if (chapterStore.selectedAttemptId) {
+      const selected = chapterStore.attempts.find(item => item.attemptId === chapterStore.selectedAttemptId);
+      if (selected) return selected;
+    }
+    return getActiveExamAttempt(id) || getLatestFinishedExamAttempt(id) || sortedExamAttempts(id)[0] || null;
+  }
+
+  function getExamState(id = chapterId) {
+    return getSelectedExamAttempt(id);
+  }
+
+  function updateExamAttempt(id, attempt) {
+    const chapterStore = getExamChapterStore(id);
+    const normalized = normalizeExamAttempt(attempt, id);
+    const index = chapterStore.attempts.findIndex(item => item.attemptId === normalized.attemptId);
+    if (index >= 0) chapterStore.attempts[index] = normalized;
+    else chapterStore.attempts.push(normalized);
+    chapterStore.activeAttemptId = normalized.active ? normalized.attemptId : (chapterStore.activeAttemptId === normalized.attemptId ? "" : chapterStore.activeAttemptId);
+    chapterStore.selectedAttemptId = normalized.attemptId;
+    setExamChapterStore(id, chapterStore);
+    return normalized;
+  }
+
+  function clearSelectedExamAttempt(id = chapterId) {
+    const chapterStore = getExamChapterStore(id);
+    chapterStore.selectedAttemptId = "";
+    setExamChapterStore(id, chapterStore);
+  }
+
+  function examAnswerRecord(q, id = chapterId) {
+    const state = getExamState(id);
+    const answer = state && state.answers ? state.answers[q.id] : null;
+    if (!answer) return null;
+    return { ...answer, isCorrect: arraysEqual(answer.selected || [], q.answer || []), round: normalizeRound(state.round || 1) };
+  }
+
+  function saveExamAnswer(q, selected) {
+    const state = getActiveExamAttempt(chapterId);
+    if (!state) return;
+    const answeredAt = new Date().toISOString();
+    const record = {
+      selected: [...selected],
+      isCorrect: arraysEqual(selected, q.answer || []),
+      answeredAt,
+      chapterId,
+      tags: getQuestionTags(q),
+      round: normalizeRound(state.round || 1)
+    };
+    const next = {
+      ...state,
+      answers: { ...(state.answers || {}), [q.id]: record },
+      answerEvents: [
+        ...(Array.isArray(state.answerEvents) ? state.answerEvents : []),
+        { questionId: q.id, selected: [...selected], isCorrect: record.isCorrect, at: answeredAt }
+      ]
+    };
+    updateExamAttempt(chapterId, next);
+  }
+
+  function clearExamAnswer(q) {
+    const state = getActiveExamAttempt(chapterId);
+    if (!state) return;
+    const answers = { ...(state.answers || {}) };
+    delete answers[q.id];
+    const answerEvents = [
+      ...(Array.isArray(state.answerEvents) ? state.answerEvents : []),
+      { questionId: q.id, selected: [], cleared: true, at: new Date().toISOString() }
+    ];
+    updateExamAttempt(chapterId, { ...state, answers, answerEvents });
+  }
+
+  function isExamFlagged(q, id = chapterId) {
+    const state = getExamState(id);
+    return Boolean(state && state.flags && state.flags[q.id]);
+  }
+
+  function toggleExamFlag(q) {
+    const state = getActiveExamAttempt(chapterId) || getExamState(chapterId);
+    if (!state) return;
+    const flags = { ...(state.flags || {}) };
+    if (flags[q.id]) delete flags[q.id];
+    else flags[q.id] = true;
+    updateExamAttempt(chapterId, { ...state, flags });
+    renderActiveQuestion({ focus: false });
+  }
+
+  function readExamModeStore() {
+    const store = readJson(examModeStorageKey, {});
+    return store && typeof store === "object" ? store : {};
+  }
+
+  function writeExamModeStore(store) {
+    writeJson(examModeStorageKey, store && typeof store === "object" ? store : {});
+  }
+
+  function getExamMode(id = chapterId) {
+    if (!isExamChapter(id)) return "practice";
+    const state = getActiveExamAttempt(id);
+    if (state && state.active) return "exam";
+    const mode = readExamModeStore()[id];
+    return mode === "exam" ? "exam" : "practice";
+  }
+
+  function setExamMode(id, mode) {
+    if (!isExamChapter(id)) return;
+    const normalized = mode === "exam" ? "exam" : "practice";
+    const store = readExamModeStore();
+    if (store[id] === normalized) return;
+    store[id] = normalized;
+    writeExamModeStore(store);
+  }
+
+  function isMockExamMode(id = chapterId) {
+    return isExamChapter(id) && getExamMode(id) === "exam";
   }
 
   function isExamChapter(id = chapterId) {
@@ -559,8 +879,13 @@ service cloud.firestore {
   }
 
   function isExamActive(id = chapterId) {
-    const state = getExamState(id);
+    const state = getActiveExamAttempt(id);
     return Boolean(state && state.active);
+  }
+
+  function isExamReviewing(id = chapterId) {
+    const state = getExamState(id);
+    return Boolean(isMockExamMode(id) && state && state.finishedAt && !state.active);
   }
 
   function getChapterIdFromHash() {
@@ -585,7 +910,9 @@ service cloud.firestore {
     return {
       q: hashParams.get("q") || params.get("q") || "",
       tag: hashParams.get("tag") || params.get("tag") || "",
-      retry: hashParams.get("retry") || params.get("retry") || ""
+      retry: hashParams.get("retry") || params.get("retry") || "",
+      round: hashParams.get("round") || params.get("round") || "",
+      exam: hashParams.get("exam") || params.get("exam") || ""
     };
   }
 
@@ -673,6 +1000,149 @@ service cloud.firestore {
 
   function attemptsOf(record) {
     return Array.isArray(record && record.attempts) ? record.attempts : [];
+  }
+
+  function attemptRound(attempt) {
+    return normalizeRound(attempt && attempt.round || 1);
+  }
+
+  function roundClearTime(record, round = currentRound) {
+    const clears = record && record.roundClears && typeof record.roundClears === "object" ? record.roundClears : {};
+    return Date.parse(clears[String(normalizeRound(round))] || "") || 0;
+  }
+
+  function attemptsOfRound(record, round = currentRound) {
+    if (!record) return [];
+    const r = normalizeRound(round);
+    const clearedAt = roundClearTime(record, r);
+    return attemptsOf(record)
+      .filter(attempt => attemptRound(attempt) === r)
+      .filter(attempt => {
+        const attemptAt = Date.parse(attempt && attempt.answeredAt || "") || 0;
+        return !clearedAt || !attemptAt || attemptAt > clearedAt;
+      })
+      .sort((a, b) => (Date.parse(a.answeredAt || "") || 0) - (Date.parse(b.answeredAt || "") || 0));
+  }
+
+  function latestAttemptOfRound(record, round = currentRound) {
+    const attempts = attemptsOfRound(record, round);
+    return attempts.length ? attempts[attempts.length - 1] : null;
+  }
+
+  function roundAnswerRecord(record, round = currentRound) {
+    if (!record) return null;
+    const r = normalizeRound(round);
+    const latest = latestAttemptOfRound(record, r);
+    if (latest) {
+      return {
+        ...record,
+        selected: Array.isArray(latest.selected) ? [...latest.selected] : [],
+        isCorrect: Boolean(latest.isCorrect),
+        answeredAt: latest.answeredAt,
+        chapterId: latest.chapterId || record.chapterId,
+        tags: latest.tags && latest.tags.length ? latest.tags : record.tags,
+        round: r
+      };
+    }
+    if (r === 1 && isAnswered(record) && normalizeRound(record.round || 1) === 1 && !roundClearTime(record, 1)) {
+      return record;
+    }
+    return { ...record, selected: [], isCorrect: false, answeredAt: "", round: r };
+  }
+
+  function isAnsweredInRound(record, round = currentRound) {
+    return isAnswered(roundAnswerRecord(record, round));
+  }
+
+  function isCorrectInRound(record, round = currentRound) {
+    const roundRecord = roundAnswerRecord(record, round);
+    return isAnswered(roundRecord) && Boolean(roundRecord.isCorrect);
+  }
+
+  function hasWrongInRound(record, round = currentRound) {
+    const roundRecord = roundAnswerRecord(record, round);
+    return isAnswered(roundRecord) && roundRecord.isCorrect === false;
+  }
+
+  function roundLabel(round) {
+    return `${normalizeRound(round)}週目`;
+  }
+
+  function materializeChapterRound(id, round = currentRound) {
+    if (!id) return;
+    const r = normalizeRound(round);
+    const progress = readProgress();
+    const questions = DATA.questions[id] || [];
+    questions.forEach(q => {
+      const record = progress[q.id];
+      if (!record) return;
+      const roundRecord = roundAnswerRecord(record, r);
+      const next = {
+        ...record,
+        round: r,
+        chapterId: record.chapterId || id,
+        tags: record.tags && record.tags.length ? record.tags : getQuestionTags(q)
+      };
+      if (isAnswered(roundRecord)) {
+        next.selected = [...roundRecord.selected];
+        next.isCorrect = Boolean(roundRecord.isCorrect);
+        next.answeredAt = roundRecord.answeredAt;
+      } else {
+        delete next.selected;
+        delete next.isCorrect;
+        delete next.answeredAt;
+      }
+      progress[q.id] = next;
+    });
+    writeProgress(progress);
+    materializedRoundKey = `${id}:${r}`;
+  }
+
+  function ensureChapterRound(force = false) {
+    if (!chapterId) return;
+    const route = getRouteParams();
+    if (isExamChapter(chapterId) && route.exam === "1") setExamMode(chapterId, "exam");
+    const routeRound = getRouteRound();
+    currentRound = routeRound || getActiveRound(chapterId);
+    currentRound = normalizeRound(currentRound);
+    setActiveRound(chapterId, currentRound);
+    const key = `${chapterId}:${currentRound}`;
+    if (force || materializedRoundKey !== key) materializeChapterRound(chapterId, currentRound);
+  }
+
+  function switchChapterRound(round) {
+    if (!chapterId) return;
+    currentRound = normalizeRound(round);
+    setActiveRound(chapterId, currentRound);
+    currentMode = "all";
+    currentQuestionId = null;
+    materializeChapterRound(chapterId, currentRound);
+    renderChapter();
+  }
+
+  function chapterRoundNumbers(id) {
+    const rounds = new Set([1, getActiveRound(id)]);
+    const progress = readProgress();
+    const questions = DATA.questions[id] || [];
+    questions.forEach(q => {
+      const record = progress[q.id];
+      attemptsOf(record).forEach(attempt => rounds.add(attemptRound(attempt)));
+      const clears = record && record.roundClears && typeof record.roundClears === "object" ? record.roundClears : {};
+      Object.keys(clears).forEach(key => rounds.add(normalizeRound(key)));
+    });
+    return Array.from(rounds).filter(n => n >= 1).sort((a, b) => a - b);
+  }
+
+  function roundStats(id, round) {
+    const r = normalizeRound(round);
+    const questions = DATA.questions[id] || [];
+    const progress = readProgress();
+    const answered = questions.filter(q => isAnsweredInRound(progress[q.id], r)).length;
+    const correct = questions.filter(q => isCorrectInRound(progress[q.id], r)).length;
+    const wrong = questions.filter(q => hasWrongInRound(progress[q.id], r)).length;
+    const flagged = questions.filter(q => isFlagged(progress[q.id])).length;
+    const rate = answered ? Math.round(correct / answered * 100) : 0;
+    return { total: questions.length, answered, correct, wrong, flagged, rate, round: r };
   }
 
   function wrongAttemptCount(record) {
@@ -782,7 +1252,8 @@ service cloud.firestore {
       isCorrect,
       answeredAt,
       chapterId: ownerId,
-      tags: getQuestionTags(q)
+      tags: getQuestionTags(q),
+      round: currentRound
     };
     progress[q.id] = {
       ...previous,
@@ -791,6 +1262,7 @@ service cloud.firestore {
       answeredAt,
       chapterId: ownerId,
       tags: getQuestionTags(q),
+      round: currentRound,
       attempts: [...attemptsOf(previous), attempt],
       ...(shouldResolveWrongHistory(previous, isCorrect) ? { wrongResolvedAt: answeredAt } : {})
     };
@@ -801,11 +1273,17 @@ service cloud.firestore {
     const progress = readProgress();
     const previous = progress[q.id];
     if (!previous) return;
+    const resetAt = new Date().toISOString();
     const next = {
       ...previous,
       chapterId: previous.chapterId || owningChapterId(q),
       tags: previous.tags && previous.tags.length ? previous.tags : getQuestionTags(q),
-      resetAt: new Date().toISOString()
+      round: currentRound,
+      resetAt,
+      roundClears: {
+        ...(previous.roundClears && typeof previous.roundClears === "object" ? previous.roundClears : {}),
+        [String(currentRound)]: resetAt
+      }
     };
     delete next.selected;
     delete next.isCorrect;
@@ -827,14 +1305,27 @@ service cloud.firestore {
   function clearChapterProgress(id, keepFlags) {
     const questions = DATA.questions[id] || [];
     const progress = readProgress();
+    const resetAt = new Date().toISOString();
     questions.forEach(q => {
-      const record = progress[q.id];
-      if (!record) return;
-      if (keepFlags && record.flagged) {
-        progress[q.id] = { flagged: true, chapterId: id, tags: getQuestionTags(q) };
-      } else {
-        delete progress[q.id];
-      }
+      const record = progress[q.id] || { chapterId: id, tags: getQuestionTags(q) };
+      const next = {
+        ...record,
+        chapterId: record.chapterId || id,
+        tags: record.tags && record.tags.length ? record.tags : getQuestionTags(q),
+        round: currentRound,
+        resetAt,
+        roundClears: {
+          ...(record.roundClears && typeof record.roundClears === "object" ? record.roundClears : {}),
+          [String(currentRound)]: resetAt
+        }
+      };
+      delete next.selected;
+      delete next.isCorrect;
+      delete next.answeredAt;
+      if (keepFlags && record.flagged) next.flagged = true;
+      if (!keepFlags) delete next.flagged;
+      if (next.flagged || attemptsOf(next).length || next.roundClears) progress[q.id] = next;
+      else delete progress[q.id];
     });
     writeProgress(progress);
   }
@@ -892,8 +1383,8 @@ service cloud.firestore {
       ${tags ? `<div class="tag-list" aria-label="関連タグ">${tags}</div>` : ""}
       <div class="options">${(q.options || []).map(opt => optionHtml(q, opt)).join("")}</div>
       <div class="answer-actions">
-        <button class="btn primary" data-submit>解答する</button>
-        <button class="btn ghost" data-clear>この問題の解答をリセット</button>
+        <button class="btn primary" data-submit>${isExamActive(chapterId) ? "解答を保存" : isExamReviewing(chapterId) ? "採点済み" : "解答する"}</button>
+        <button class="btn ghost" data-clear>${isExamActive(chapterId) ? "保存した解答をリセット" : "この問題の解答をリセット"}</button>
         <button class="btn" data-card-next>次の問題へ</button>
         <span class="inline-note" data-message></span>
       </div>
@@ -944,13 +1435,21 @@ service cloud.firestore {
   }
 
   function optionAnalysisHtml(q) {
-    const analyses = q.explanation && Array.isArray(q.explanation.optionAnalysis)
+    const rawAnalyses = q.explanation && Array.isArray(q.explanation.optionAnalysis)
       ? q.explanation.optionAnalysis
       : [];
+    const analyses = rawAnalyses
+      .map(item => {
+        const detail = String(item.detail || item.text || "").trim();
+        const verdict = String(item.verdict || "").trim().toLowerCase();
+        const isCorrect = typeof item.isCorrect === "boolean" ? item.isCorrect : verdict === "correct";
+        return { ...item, detail, isCorrect };
+      })
+      .filter(item => item.key && item.detail);
     if (analyses.length) {
       return `<div class="option-analysis-list">${analyses.map(item => `<div class="option-analysis ${item.isCorrect ? "is-correct" : "is-wrong"}">
         <div class="option-analysis-head"><span class="option-key">${escapeHtml(item.key)}.</span>${optionTextPreviewHtml(q, item.key)}</div>
-        ${readableTextHtml(item.detail || "")}
+        ${readableTextHtml(item.detail)}
       </div>`).join("")}</div>`;
     }
 
@@ -959,6 +1458,7 @@ service cloud.firestore {
       : [];
     return points.length ? listHtml(points) : `<p class="muted">選択肢別の解説は未入力です。</p>`;
   }
+
 
   function answerKeysHtml(keys, q = null) {
     const values = Array.isArray(keys) ? keys : [];
@@ -980,14 +1480,17 @@ service cloud.firestore {
     const rawExp = q.explanation || {};
     const exp = typeof rawExp === "string" ? { summary: rawExp, correctReason: rawExp } : rawExp;
     const summary = exp.summary || exp.correctReason || "解説未入力。";
-    const mainParts = [];
-    [exp.pdfExplanation, exp.additionalExplanation, exp.pdfExplanation ? "" : exp.correctReason].forEach(text => {
+    const sectionParts = [];
+    function addExplanationSection(title, text) {
       if (!text) return;
       const cleaned = String(text).replace(/【追加解説】/g, "").replace(/【間違えやすい点】/g, "").trim();
-      if (cleaned && !mainParts.includes(cleaned)) mainParts.push(cleaned);
-    });
-    if (!mainParts.length) mainParts.push(summary);
-    const mainExplanation = readableTextHtml(mainParts.join("\n\n"));
+      if (!cleaned) return;
+      const heading = title ? `<h5>${escapeHtml(title)}</h5>` : "";
+      sectionParts.push(`<section class="explanation-subsection">${heading}${readableTextHtml(cleaned)}</section>`);
+    }
+    addExplanationSection("", exp.pdfExplanation);
+    if (!sectionParts.length) addExplanationSection("", exp.correctReason || summary);
+    const mainExplanation = sectionParts.join("");
     const related = listHtml(exp.relatedKnowledge);
     const tips = listHtml(exp.examTips);
     const steps = listHtml(exp.judgeSteps);
@@ -1030,6 +1533,7 @@ service cloud.firestore {
       updateProgressUi();
       renderQuestionPalette();
       renderChapterStats();
+      renderRoundPanel();
       updateResetCurrentButton(q);
       if (isCorrect && isWrongReviewMode() && hasWrongHistory(readProgress()[q.id]) === false) {
         setWrongPracticeMessage("正解です。解説を確認してから次の問題へ進むと、この問題は間違い演習から外れます。");
@@ -1041,18 +1545,20 @@ service cloud.firestore {
     const result = card.querySelector("[data-result]");
     card.querySelectorAll(".option").forEach(label => label.classList.remove("correct", "incorrect", "missed"));
     result.className = "result visible neutral";
-    result.innerHTML = `<h4>解答を保存しました</h4>`;
+    result.innerHTML = `<h4>解答を保存しました</h4><p>模擬試験中のため、正誤と解説は採点後に表示します。</p>`;
     if (persist) {
-      saveAnswer(q, selected);
+      saveExamAnswer(q, selected);
       updateProgressUi();
       renderQuestionPalette();
       renderChapterStats();
+      renderRoundPanel();
       renderExamPanel();
       updateResetCurrentButton(q);
     }
   }
 
   function resetQuestion(card, q) {
+    if (isExamReviewing(chapterId)) return;
     card.querySelectorAll("input[data-option]").forEach(input => { input.checked = false; });
     card.querySelectorAll(".option").forEach(label => label.classList.remove("correct", "incorrect", "missed"));
     const result = card.querySelector("[data-result]");
@@ -1060,11 +1566,13 @@ service cloud.firestore {
     result.innerHTML = "";
     const message = card.querySelector("[data-message]");
     if (message) message.textContent = "";
-    clearAnswer(q);
+    if (isExamActive(chapterId)) clearExamAnswer(q);
+    else clearAnswer(q);
     updateSelectionStatus(card, q);
     updateProgressUi();
     renderQuestionPalette();
     renderChapterStats();
+    renderRoundPanel();
     renderExamPanel();
     updateResetCurrentButton(q);
   }
@@ -1098,7 +1606,12 @@ service cloud.firestore {
       });
     });
 
+    if (isExamReviewing(chapterId)) {
+      submit.disabled = true;
+      clear.disabled = true;
+    }
     submit.addEventListener("click", () => {
+      if (isExamReviewing(chapterId)) return;
       const selected = selectedKeys(card);
       if (questionType(q) === "multi" && selected.length !== required) {
         message.textContent = `${required}つ選択してください。現在 ${selected.length}つです。`;
@@ -1121,6 +1634,23 @@ service cloud.firestore {
   }
 
   function restoreQuestion(card, q) {
+    if (isMockExamMode(chapterId) && getExamState(chapterId)) {
+      const saved = examAnswerRecord(q);
+      if (!saved) {
+        updateSelectionStatus(card, q);
+        return;
+      }
+      if (Array.isArray(saved.selected)) {
+        saved.selected.forEach(key => {
+          const input = card.querySelector(`input[value="${cssEscape(key)}"]`);
+          if (input) input.checked = true;
+        });
+        if (isExamActive(chapterId)) applyExamSavedState(card, q, saved.selected, false);
+        else applyResult(card, q, saved.selected, false);
+      }
+      updateSelectionStatus(card, q);
+      return;
+    }
     const progress = readProgress();
     const saved = progress[q.id];
     if (!saved) return;
@@ -1134,24 +1664,13 @@ service cloud.firestore {
         const input = card.querySelector(`input[value="${cssEscape(key)}"]`);
         if (input) input.checked = true;
       });
-      if (isExamActive(chapterId)) {
-        applyExamSavedState(card, q, saved.selected, false);
-      } else {
-        applyResult(card, q, saved.selected, false);
-      }
+      applyResult(card, q, saved.selected, false);
     }
     updateSelectionStatus(card, q);
   }
 
   function chapterStats(id) {
-    const questions = DATA.questions[id] || [];
-    const progress = readProgress();
-    const answered = questions.filter(q => isAnswered(progress[q.id])).length;
-    const correct = questions.filter(q => isAnswered(progress[q.id]) && progress[q.id].isCorrect).length;
-    const wrong = questions.filter(q => hasWrongHistory(progress[q.id])).length;
-    const flagged = questions.filter(q => isFlagged(progress[q.id])).length;
-    const rate = answered ? Math.round(correct / answered * 100) : 0;
-    return { total: questions.length, answered, correct, wrong, flagged, rate };
+    return roundStats(id, getActiveRound(id));
   }
 
   function globalStats() {
@@ -1207,19 +1726,22 @@ service cloud.firestore {
     let latest = null;
     for (const ch of DATA.chapters) {
       const questions = DATA.questions[ch.id] || [];
+      const round = getActiveRound(ch.id);
       questions.forEach((q, index) => {
-        const record = progress[q.id];
-        const t = latestProgressTime(record);
-        if (t && (!latest || t > latest.time)) latest = { chapter: ch, question: q, index, time: t };
+        const attempt = latestAttemptOfRound(progress[q.id], round);
+        const t = Date.parse(attempt && attempt.answeredAt || "") || 0;
+        if (t && (!latest || t > latest.time)) latest = { chapter: ch, question: q, index, time: t, round };
       });
     }
     if (latest) {
       const list = DATA.questions[latest.chapter.id] || [];
-      const next = list.slice(latest.index + 1).find(q => !isAnswered(progress[q.id])) || list.find(q => !isAnswered(progress[q.id])) || latest.question;
+      const round = latest.round || getActiveRound(latest.chapter.id);
+      const next = list.slice(latest.index + 1).find(q => !isAnsweredInRound(progress[q.id], round)) || list.find(q => !isAnsweredInRound(progress[q.id], round)) || latest.question;
       return { chapter: latest.chapter, question: next };
     }
     for (const ch of DATA.chapters) {
-      const q = (DATA.questions[ch.id] || []).find(item => !isAnswered(progress[item.id]));
+      const round = getActiveRound(ch.id);
+      const q = (DATA.questions[ch.id] || []).find(item => !isAnsweredInRound(progress[item.id], round));
       if (q) return { chapter: ch, question: q };
     }
     const first = DATA.chapters[0];
@@ -1230,14 +1752,16 @@ service cloud.firestore {
     const progress = readProgress();
     for (const ch of DATA.chapters) {
       const list = DATA.questions[ch.id] || [];
+      const round = getActiveRound(ch.id);
       const q = list.find(item => {
         const record = progress[item.id];
-        if (mode === "wrong") return hasWrongHistory(record);
+        const activeRecord = roundAnswerRecord(record, round);
+        if (mode === "wrong") return hasWrongInRound(record, round);
         if (mode === "flagged") return isFlagged(record);
-        if (mode === "unanswered") return !isAnswered(record);
+        if (mode === "unanswered") return !isAnswered(activeRecord);
         if (mode === "tag") {
           const tags = record && record.tags && record.tags.length ? record.tags : getQuestionTags(item);
-          return tags.map(normalizeTag).includes(normalizeTag(tag)) && (!record || !record.isCorrect || isFlagged(record));
+          return tags.map(normalizeTag).includes(normalizeTag(tag)) && (!isCorrectInRound(record, round) || isFlagged(record));
         }
         return true;
       });
@@ -1297,7 +1821,8 @@ service cloud.firestore {
         ${quickActionHtml("前回の続き", resume ? `${resume.chapter.title} / 問${resume.question.number}` : "第1章から開始", resume, "resume")}
         ${stats.wrong ? `<a class="quick-card" href="wrong-practice.html"><span>間違い復習</span><strong>${stats.wrong}問をランダム復習</strong></a>` : quickActionHtml("間違い復習", "対象なし", null, "wrong")}
         ${quickActionHtml("見直し復習", flagged ? `${stats.flagged}問を復習` : "対象なし", flagged, "flagged")}
-        <a class="quick-card" href="${escapeHtml(exam1 ? chapterHref(exam1, "all") : "#chapterGrid")}"><span>模擬問題を開始</span><strong>模擬問題① / 模擬問題②</strong></a>
+        <a class="quick-card" href="${escapeHtml(exam1 ? chapterHref(exam1, "all", { exam: "1" }) : "#chapterGrid")}"><span>模擬試験①</span><strong>60問 / 90分</strong></a>
+        <a class="quick-card" href="${escapeHtml(exam2 ? chapterHref(exam2, "all", { exam: "1" }) : "#chapterGrid")}"><span>模擬試験②</span><strong>60問 / 90分</strong></a>
       </div>
       ${todayReviewHtml(stats)}
       <div class="stat-grid">
@@ -1456,7 +1981,7 @@ service cloud.firestore {
       return `<a class="chapter-card" href="${escapeHtml(chapterHref(ch))}">
         <span class="badge ${escapeHtml(ch.status)}">${escapeHtml(badge)}</span>
         <strong>${escapeHtml(ch.title)}</strong>
-        <span class="chapter-progress-line">${s.answered}/${s.total} 解答済み・正解率 ${s.rate}%・復習 ${s.wrong + s.flagged}</span>
+        <span class="chapter-progress-line">${roundLabel(s.round)}・${s.answered}/${s.total} 解答済み・正解率 ${s.rate}%・復習 ${s.wrong + s.flagged}</span>
       </a>`;
     }).join("");
     // ダッシュボードは renderDashboard() 側でヘッダー直下に挿入する。
@@ -1470,9 +1995,28 @@ service cloud.firestore {
 
   function filteredQuestions() {
     const questions = DATA.questions[chapterId] || [];
+    if (isMockExamMode(chapterId)) {
+      const state = getExamState(chapterId);
+      if (state && state.active) return questions;
+      if (state && state.finishedAt) {
+        if (currentMode === "unanswered") return questions.filter(q => !examAnswerRecord(q));
+        if (currentMode === "wrong") return questions.filter(q => {
+          const record = examAnswerRecord(q);
+          return record && record.isCorrect === false;
+        });
+        if (currentMode === "flagged") return questions.filter(q => {
+          if (!isExamFlagged(q)) return false;
+          const record = examAnswerRecord(q);
+          if (currentExamReviewFilter === "flagged-wrong") return record && record.isCorrect === false;
+          if (currentExamReviewFilter === "flagged-correct") return record && record.isCorrect === true;
+          return true;
+        });
+        return questions;
+      }
+    }
     const progress = readProgress();
-    if (currentMode === "unanswered") return questions.filter(q => !isAnswered(progress[q.id]));
-    if (currentMode === "wrong") return questions.filter(q => hasWrongHistory(progress[q.id]));
+    if (currentMode === "unanswered") return questions.filter(q => !isAnsweredInRound(progress[q.id], currentRound));
+    if (currentMode === "wrong") return questions.filter(q => hasWrongInRound(progress[q.id], currentRound));
     if (currentMode === "flagged") return questions.filter(q => isFlagged(progress[q.id]));
     if (currentMode === "tag" && currentTagFilter) {
       return questions.filter(q => {
@@ -1485,6 +2029,8 @@ service cloud.firestore {
   }
 
   function modeLabel(mode) {
+    if (mode === "flagged" && currentExamReviewFilter === "flagged-wrong") return "見直し不正解";
+    if (mode === "flagged" && currentExamReviewFilter === "flagged-correct") return "見直し正解";
     return {
       all: "全問",
       unanswered: "未回答",
@@ -1497,14 +2043,22 @@ service cloud.firestore {
   function renderModeButtons() {
     const root = document.getElementById("modeButtons");
     if (!root) return;
+    const examState = isExamChapter(chapterId) ? getExamState(chapterId) : null;
+    if (isMockExamMode(chapterId) && examState && examState.active) {
+      currentMode = "all";
+      currentTagFilter = "";
+      root.innerHTML = `<div class="mode-disabled-note">模擬試験中は絞り込みを使いません。全60問を番号順に解きます。</div>`;
+      return;
+    }
     const modes = ["all", "unanswered", "wrong", "flagged"];
     const base = modes.map(mode => `<button class="mode-btn ${mode === currentMode ? "active" : ""}" data-mode="${mode}">${modeLabel(mode)}</button>`).join("");
-    const tagButton = currentTagFilter ? `<button class="mode-btn ${currentMode === "tag" ? "active" : ""}" data-mode="tag">${escapeHtml(modeLabel("tag"))}</button>` : "";
+    const tagButton = (!isMockExamMode(chapterId) && currentTagFilter) ? `<button class="mode-btn ${currentMode === "tag" ? "active" : ""}" data-mode="tag">${escapeHtml(modeLabel("tag"))}</button>` : "";
     root.innerHTML = base + tagButton;
     root.querySelectorAll("[data-mode]").forEach(btn => {
       btn.addEventListener("click", () => {
         currentMode = btn.dataset.mode;
         if (currentMode !== "tag") currentTagFilter = "";
+        currentExamReviewFilter = "";
         currentQuestionId = null;
         renderModeButtons();
         renderActiveQuestion({ focus: true });
@@ -1512,13 +2066,73 @@ service cloud.firestore {
     });
   }
 
+  function renderRoundPanel() {
+    const root = document.getElementById("roundPanel");
+    if (!root || !chapterId) return;
+    if (isMockExamMode(chapterId)) {
+      const state = getExamState(chapterId);
+      if (state && (state.active || state.finishedAt)) {
+        root.innerHTML = `<div class="round-panel exam-locked"><strong>模擬試験モード</strong><span>演習の周回履歴とは分離して保存しています。</span></div>`;
+        return;
+      }
+    }
+    const rounds = chapterRoundNumbers(chapterId);
+    const maxRound = Math.max(...rounds, currentRound, 1);
+    const statsHtml = rounds.map(round => {
+      const s = roundStats(chapterId, round);
+      const active = round === currentRound;
+      return `<button class="round-tab ${active ? "active" : ""}" data-round="${round}" aria-pressed="${active ? "true" : "false"}">
+        <strong>${roundLabel(round)}</strong>
+        <span>${s.answered}/${s.total}・${s.rate}%</span>
+      </button>`;
+    }).join("");
+    const current = roundStats(chapterId, currentRound);
+    root.innerHTML = `<div class="round-panel">
+      <div class="round-panel-head">
+        <div>
+          <h2>周回</h2>
+          <p>${roundLabel(currentRound)}の解答だけをこの画面に表示します。前の周回の履歴は残ります。</p>
+        </div>
+        <button class="btn primary" id="startNextRound">次の周回を開始</button>
+      </div>
+      <div class="round-tabs" aria-label="周回選択">${statsHtml}</div>
+      <div class="round-current-summary">
+        <span>現在: <strong>${roundLabel(currentRound)}</strong></span>
+        <span>解答済み ${current.answered}/${current.total}</span>
+        <span>正解 ${current.correct}</span>
+        <span>不正解 ${current.wrong}</span>
+      </div>
+    </div>`;
+    root.querySelectorAll("[data-round]").forEach(btn => {
+      btn.addEventListener("click", () => switchChapterRound(btn.dataset.round));
+    });
+    root.querySelector("#startNextRound")?.addEventListener("click", () => switchChapterRound(maxRound + 1));
+  }
+
   function renderChapterStats() {
     const root = document.getElementById("chapterStatsRoot");
     if (!root || !chapterId) return;
+    if (isMockExamMode(chapterId)) {
+      const state = getExamState(chapterId);
+      const s = state ? computeExamAttemptScore(state, chapterId) : { total: (DATA.questions[chapterId] || []).length, answered: 0, correct: 0, wrong: 0, flagged: 0, rate: 0 };
+      root.innerHTML = `<div class="stat-grid compact exam-stat-grid">
+        <div class="stat-card"><span>モード</span><strong>模擬試験</strong></div>
+        <div class="stat-card"><span>解答済み</span><strong>${s.answered}/${s.total}</strong></div>
+        <div class="stat-card"><span>正解数</span><strong>${state && state.finishedAt ? `${s.correct}/${s.total}` : "採点前"}</strong></div>
+        <div class="stat-card"><span>見直し</span><strong>${s.flagged}</strong></div>
+      </div>
+      <div class="palette-legend" aria-label="問題番号の状態">
+        <span><i class="legend-dot unanswered"></i>未回答</span>
+        <span><i class="legend-dot correct"></i>正解</span>
+        <span><i class="legend-dot wrong"></i>不正解</span>
+        <span><i class="legend-dot flagged"></i>見直し</span>
+      </div>`;
+      return;
+    }
     const s = chapterStats(chapterId);
     root.innerHTML = `<div class="stat-grid compact">
-      <div class="stat-card"><span>全体</span><strong>${s.total}</strong></div>
-      <div class="stat-card"><span>解答済み</span><strong>${s.answered}</strong></div>
+      <div class="stat-card"><span>周回</span><strong>${roundLabel(s.round)}</strong></div>
+      <div class="stat-card"><span>解答済み</span><strong>${s.answered}/${s.total}</strong></div>
       <div class="stat-card"><span>正解率</span><strong>${s.rate}%</strong></div>
       <div class="stat-card"><span>復習対象</span><strong>${s.wrong + s.flagged}</strong></div>
     </div>
@@ -1535,19 +2149,31 @@ service cloud.firestore {
     if (!root || !chapterId) return;
     const all = DATA.questions[chapterId] || [];
     const progress = readProgress();
+    const examMode = isMockExamMode(chapterId);
+    const examState = examMode ? getExamState(chapterId) : null;
     root.innerHTML = all.map(q => {
-      const r = progress[q.id];
       const classes = ["q-dot"];
       if (q.id === currentQuestionId) classes.push("active");
-      if (isAnswered(r)) classes.push(r.isCorrect ? "answered correct" : "answered wrong");
-      else if (hasWrongHistory(r)) classes.push("wrong-history");
-      if (isFlagged(r)) classes.push("flagged");
+      if (examMode && examState) {
+        const r = examAnswerRecord(q);
+        if (isAnswered(r)) {
+          classes.push("answered");
+          if (examState.finishedAt) classes.push(r.isCorrect ? "correct" : "wrong");
+        }
+        if (isExamFlagged(q)) classes.push("flagged");
+      } else {
+        const raw = progress[q.id];
+        const r = roundAnswerRecord(raw, currentRound);
+        if (isAnswered(r)) classes.push(r.isCorrect ? "answered correct" : "answered wrong");
+        else if (hasWrongHistory(raw)) classes.push("wrong-history");
+        if (isFlagged(raw)) classes.push("flagged");
+      }
       return `<button class="${classes.join(" ")}" data-qid="${escapeHtml(q.id)}" title="問${q.number}">${q.number}</button>`;
     }).join("");
     root.querySelectorAll("[data-qid]").forEach(btn => {
       btn.addEventListener("click", () => {
         currentQuestionId = btn.dataset.qid;
-        currentMode = "all";
+        if (!(isMockExamMode(chapterId) && isExamActive(chapterId))) currentMode = "all";
         renderModeButtons();
         renderActiveQuestion({ focus: true });
       });
@@ -1578,19 +2204,22 @@ service cloud.firestore {
   function updateFlagButton(q) {
     const btn = document.getElementById("toggleFlag");
     if (!btn) return;
-    const flagged = isFlagged(readProgress()[q.id]);
+    const examMode = isMockExamMode(chapterId) && getExamState(chapterId);
+    const flagged = examMode ? isExamFlagged(q) : isFlagged(readProgress()[q.id]);
     btn.textContent = flagged ? "見直し解除" : "後で見直す";
     btn.classList.toggle("active", flagged);
-    btn.onclick = () => toggleFlag(q);
+    btn.onclick = () => examMode ? toggleExamFlag(q) : toggleFlag(q);
   }
 
   function updateResetCurrentButton(q) {
     const btn = document.getElementById("resetCurrentQuestion");
     if (!btn) return;
-    const saved = readProgress()[q.id];
+    const examMode = isMockExamMode(chapterId) && getExamState(chapterId);
+    const saved = examMode ? examAnswerRecord(q) : roundAnswerRecord(readProgress()[q.id], currentRound);
     const answered = isAnswered(saved);
-    btn.disabled = !answered;
-    btn.textContent = answered ? "解答をリセット" : "未回答";
+    const locked = examMode && !isExamActive(chapterId);
+    btn.disabled = !answered || locked;
+    btn.textContent = locked ? "採点済み" : answered ? "解答をリセット" : "未回答";
     btn.onclick = () => {
       const card = document.querySelector(`[data-question-id="${cssEscape(q.id)}"]`);
       if (card) {
@@ -1618,7 +2247,20 @@ service cloud.firestore {
     if (!shell || !chapterId) return;
     const list = filteredQuestions();
     renderChapterStats();
+    renderRoundPanel();
     renderExamPanel();
+
+    const examState = isExamChapter(chapterId) ? getExamState(chapterId) : null;
+    if (isMockExamMode(chapterId) && !(examState && (examState.active || examState.finishedAt))) {
+      shell.innerHTML = `<div class="empty-state exam-start-state">
+        <h2>模擬試験モードは開始前です</h2>
+        <p>「模擬試験を開始」を押すと、演習履歴とは別に新しい答案履歴を作成します。演習として解く場合は、上の切替で演習モードを選んでください。</p>
+      </div>`;
+      renderJump([]);
+      renderQuestionPalette();
+      updateNavButtons(0, 0);
+      return;
+    }
 
     if (!list.length) {
       shell.innerHTML = `<div class="empty-state">
@@ -1650,10 +2292,14 @@ service cloud.firestore {
     restoreQuestion(card, q);
     const bottomSubmit = document.querySelector("[data-bottom-submit]");
     if (bottomSubmit) {
-      const saved = readProgress()[q.id];
-      bottomSubmit.textContent = isAnswered(saved) && !isExamActive(chapterId) ? "もう一度解く" : "解答する";
+      const examMode = isMockExamMode(chapterId) && getExamState(chapterId);
+      const saved = examMode ? examAnswerRecord(q) : roundAnswerRecord(readProgress()[q.id], currentRound);
+      if (isExamActive(chapterId)) bottomSubmit.textContent = isAnswered(saved) ? "保存し直す" : "解答を保存";
+      else if (isExamReviewing(chapterId)) bottomSubmit.textContent = "採点済み";
+      else bottomSubmit.textContent = isAnswered(saved) ? "もう一度解く" : "解答する";
+      bottomSubmit.disabled = isExamReviewing(chapterId);
       bottomSubmit.onclick = () => {
-        if (isAnswered(saved) && !isExamActive(chapterId)) resetQuestion(card, q);
+        if (isAnswered(saved) && !isExamActive(chapterId) && !isExamReviewing(chapterId)) resetQuestion(card, q);
         else card.querySelector("[data-submit]")?.click();
       };
     }
@@ -1702,8 +2348,19 @@ service cloud.firestore {
   }
 
   function firstUnanswered() {
+    if (isMockExamMode(chapterId)) {
+      const state = getExamState(chapterId);
+      if (!state || state.active) return;
+      const q = (DATA.questions[chapterId] || []).find(item => !examAnswerRecord(item));
+      if (!q) return;
+      currentMode = "unanswered";
+      currentQuestionId = q.id;
+      renderModeButtons();
+      renderActiveQuestion({ focus: true });
+      return;
+    }
     const progress = readProgress();
-    const q = (DATA.questions[chapterId] || []).find(item => !isAnswered(progress[item.id]));
+    const q = (DATA.questions[chapterId] || []).find(item => !isAnsweredInRound(progress[item.id], currentRound));
     if (!q) return;
     currentMode = "all";
     currentQuestionId = q.id;
@@ -1711,15 +2368,124 @@ service cloud.firestore {
     renderActiveQuestion({ focus: true });
   }
 
+  function examElapsedSeconds(state) {
+    if (!state || !state.startedAt) return 0;
+    const started = Date.parse(state.startedAt) || 0;
+    const end = Date.parse(state.finishedAt || "") || Date.now();
+    if (!started || !end) return 0;
+    return Math.max(0, Math.floor((end - started) / 1000));
+  }
+
   function examSummaryHtml(state, stats) {
     if (!state || state.active || !state.finishedAt) return "";
     const score = `${stats.correct}/${stats.total}`;
-    const wrongTags = weakTagStats().slice(0, 6);
-    return `<div class="exam-summary">
+    return `<div class="exam-summary compact-result">
       <strong>前回結果 ${score}・正解率 ${stats.rate}%</strong>
-      ${wrongTags.length ? `<span>弱点: ${wrongTags.map(item => escapeHtml(item.tag)).join(" / ")}</span>` : `<span>不正解タグはまだありません。</span>`}
-      <a class="btn" href="${escapeHtml(chapterHref(chapterById(chapterId), "wrong"))}">不正解を復習</a>
+      <span>未回答 ${stats.unanswered}・所要時間 ${formatSeconds(examElapsedSeconds(state))}</span>
+      ${stats.weakTags && stats.weakTags.length ? `<span>弱点: ${stats.weakTags.map(item => escapeHtml(item.tag)).join(" / ")}</span>` : `<span>弱点タグはまだありません。</span>`}
     </div>`;
+  }
+
+  function examResultHtml(state, stats) {
+    if (!state || !state.finishedAt) return "";
+    const attempts = sortedExamAttempts(chapterId).filter(item => item.finishedAt);
+    const attemptOptions = attempts.length > 1 ? `<label class="exam-history-select">結果履歴
+      <select id="examAttemptSelect">${attempts.map((attempt, index) => {
+        const score = computeExamAttemptScore(attempt, chapterId);
+        const date = formatDateTime(attempt.finishedAt || attempt.startedAt);
+        return `<option value="${escapeHtml(attempt.attemptId)}" ${attempt.attemptId === state.attemptId ? "selected" : ""}>${index + 1}. ${date} / ${score.correct}/${score.total}</option>`;
+      }).join("")}</select>
+    </label>` : "";
+    const weakTags = stats.weakTags && stats.weakTags.length
+      ? `<div class="weak-tags">${stats.weakTags.map(item => `<span class="weak-tag">${escapeHtml(item.tag)} <b>${item.wrong}</b></span>`).join("")}</div>`
+      : `<p class="inline-note">不正解タグはありません。</p>`;
+    return `<section class="exam-result-card" id="examResultCard">
+      <div class="exam-result-head">
+        <div>
+          <h2>模擬試験結果</h2>
+          <p>${escapeHtml(formatDateTime(state.finishedAt))} 採点</p>
+        </div>
+        <strong class="exam-score">${stats.correct}/${stats.total}</strong>
+      </div>
+      <div class="stat-grid compact">
+        <div class="stat-card"><span>正解率</span><strong>${stats.rate}%</strong></div>
+        <div class="stat-card"><span>未回答</span><strong>${stats.unanswered}</strong></div>
+        <div class="stat-card"><span>所要時間</span><strong>${formatSeconds(examElapsedSeconds(state))}</strong></div>
+        <div class="stat-card"><span>見直し</span><strong>${stats.flagged}</strong></div>
+      </div>
+      ${attemptOptions}
+      <div class="exam-result-actions">
+        <button class="btn" data-exam-review="wrong">不正解だけ確認</button>
+        <button class="btn" data-exam-review="unanswered">未回答だけ確認</button>
+        <button class="btn" data-exam-review="flagged">見直しフラグ付き確認</button>
+        <button class="btn" data-exam-review="flagged-wrong">見直しフラグ付き不正解</button>
+        <button class="btn" data-exam-review="flagged-correct">見直しフラグ付き正解</button>
+        <button class="btn" data-exam-review="all">全問を確認</button>
+        <button class="btn primary" id="startExamAgain">同じ模擬試験をもう一度</button>
+      </div>
+      <div class="exam-weak-block">
+        <h3>苦手タグ</h3>
+        ${weakTags}
+      </div>
+    </section>`;
+  }
+
+  function formatDateTime(value) {
+    const date = new Date(value || "");
+    if (Number.isNaN(date.getTime())) return "日時不明";
+    const pad = n => String(n).padStart(2, "0");
+    return `${date.getFullYear()}/${pad(date.getMonth() + 1)}/${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  }
+
+  function examModeButtonHtml(mode, active) {
+    const practiceActive = mode === "practice";
+    const examActive = mode === "exam";
+    return `<div class="exam-mode-switch" role="group" aria-label="模擬演習のモード切替">
+      <button class="mode-btn ${practiceActive ? "active" : ""}" data-exam-mode="practice" ${active ? "disabled" : ""}>演習モード</button>
+      <button class="mode-btn ${examActive ? "active" : ""}" data-exam-mode="exam">模擬試験モード</button>
+    </div>`;
+  }
+
+  function examTimerText(state) {
+    if (state && state.active) return formatSeconds(remainingSeconds(state));
+    if (state && state.finishedAt) return "採点済み";
+    return "90:00";
+  }
+
+  function fixedExamTimerHtml(state, stats) {
+    const total = stats && stats.total ? stats.total : 0;
+    const answered = stats && typeof stats.answered === "number" ? stats.answered : 0;
+    const active = Boolean(state && state.active);
+    const finished = Boolean(state && state.finishedAt && !state.active);
+    const status = active ? "実施中" : finished ? "採点済み" : "開始前";
+    const remain = active ? remainingSeconds(state) : 90 * 60;
+    const level = active && remain <= 60 ? "danger" : active && remain <= 5 * 60 ? "urgent" : active && remain <= 10 * 60 ? "warning" : "";
+    return `<div class="exam-fixed-timer ${active ? "active" : ""} ${escapeHtml(level)}" id="fixedExamTimer" aria-live="polite">
+      <span class="exam-fixed-label">模擬試験</span>
+      <strong data-exam-timer>${examTimerText(state)}</strong>
+      <span class="exam-fixed-sub">${escapeHtml(status)}・${answered}/${total}</span>
+    </div>`;
+  }
+
+  function updateExamTimers() {
+    if (!chapterId || !isExamChapter(chapterId)) return;
+    const state = getExamState(chapterId);
+    const text = examTimerText(state);
+    document.querySelectorAll("[data-exam-timer], #examTimer").forEach(timer => {
+      timer.textContent = text;
+    });
+    const fixed = document.getElementById("fixedExamTimer");
+    if (fixed) {
+      const active = Boolean(state && state.active);
+      const remain = active ? remainingSeconds(state) : 90 * 60;
+      fixed.classList.toggle("active", active);
+      fixed.classList.toggle("warning", active && remain <= 10 * 60 && remain > 5 * 60);
+      fixed.classList.toggle("urgent", active && remain <= 5 * 60 && remain > 60);
+      fixed.classList.toggle("danger", active && remain <= 60);
+      const sub = fixed.querySelector(".exam-fixed-sub");
+      const s = state ? computeExamAttemptScore(state, chapterId) : { answered: 0, total: (DATA.questions[chapterId] || []).length };
+      if (sub) sub.textContent = `${state && state.active ? "実施中" : state && state.finishedAt ? "採点済み" : "開始前"}・${s.answered}/${s.total}`;
+    }
   }
 
   function renderExamPanel() {
@@ -1732,55 +2498,131 @@ service cloud.firestore {
       return;
     }
     panel.hidden = false;
+    const mode = getExamMode(chapterId);
     const state = getExamState(chapterId);
     const active = Boolean(state && state.active);
-    const s = chapterStats(chapterId);
-    const unanswered = Math.max(s.total - s.answered, 0);
-    panel.innerHTML = `<div class="exam-box ${active ? "active" : ""}">
-      <div>
-        <h2>模擬問題モード</h2>
-        ${examSummaryHtml(state, s)}
+    const s = state ? computeExamAttemptScore(state, chapterId) : { total: (DATA.questions[chapterId] || []).length, answered: 0, correct: 0, wrong: 0, unanswered: (DATA.questions[chapterId] || []).length, flagged: 0, rate: 0, weakTags: [] };
+
+    if (mode === "practice") {
+      panel.innerHTML = `<div class="exam-box practice-mode">
+        <div>
+          <h2>演習モード</h2>
+          <p>1問ずつ解答し、解答後すぐに正解・解説を確認します。周回、未回答、間違いのみ、見直しの復習に使います。</p>
+          ${examModeButtonHtml(mode, active)}
+        </div>
+        <div class="exam-actions">
+          <span class="exam-count">演習履歴と模擬試験履歴は分離しています。</span>
+        </div>
+      </div>`;
+      stopTimer();
+    } else {
+      panel.innerHTML = `${fixedExamTimerHtml(state, s)}
+      <div class="exam-box ${active ? "active" : ""}">
+        <div>
+          <h2>模擬試験モード</h2>
+          <p>90分で60問を解きます。実施中は解答を保存するだけで、採点後に正解・解説を確認します。</p>
+          ${examSummaryHtml(state, s)}
+          ${examModeButtonHtml(mode, active)}
+        </div>
+        <div class="exam-actions">
+          <span class="timer" id="examTimer" data-exam-timer>${examTimerText(state)}</span>
+          <span class="exam-count">解答済み ${s.answered} / 未回答 ${s.unanswered} / 見直し ${s.flagged}</span>
+          ${active ? `<button class="btn primary" id="finishExam">模擬試験を終了して採点</button>` : `<button class="btn primary" id="startExam">模擬試験を開始</button>`}
+        </div>
       </div>
-      <div class="exam-actions">
-        <span class="timer" id="examTimer">${active ? formatSeconds(remainingSeconds(state)) : "90:00"}</span>
-        <span class="exam-count">解答済み ${s.answered} / 未回答 ${unanswered} / 見直し ${s.flagged}</span>
-        ${active ? `<button class="btn primary" id="finishExam">模擬問題を終了して採点</button>` : `<button class="btn primary" id="startExam">模擬問題開始</button>`}
-      </div>
-    </div>`;
+      ${examResultHtml(state, s)}`;
+      if (active) startTimer();
+      else stopTimer();
+    }
+
+    panel.querySelectorAll("[data-exam-mode]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        if (active && btn.dataset.examMode === "practice") return;
+        setExamMode(chapterId, btn.dataset.examMode);
+        currentMode = "all";
+        currentExamReviewFilter = "";
+        currentQuestionId = null;
+        clearSelectedExamAttempt(chapterId);
+        renderModeButtons();
+        renderActiveQuestion({ focus: false });
+      });
+    });
     document.getElementById("startExam")?.addEventListener("click", startExam);
+    document.getElementById("startExamAgain")?.addEventListener("click", startExam);
     document.getElementById("finishExam")?.addEventListener("click", () => finishExam(false));
-    if (active) startTimer();
-    else stopTimer();
+    document.getElementById("examAttemptSelect")?.addEventListener("change", event => {
+      const chapterStore = getExamChapterStore(chapterId);
+      chapterStore.selectedAttemptId = event.target.value;
+      setExamChapterStore(chapterId, chapterStore);
+      currentMode = "all";
+      currentQuestionId = null;
+      renderModeButtons();
+      renderActiveQuestion({ focus: true });
+    });
+    panel.querySelectorAll("[data-exam-review]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const mode = btn.dataset.examReview || "all";
+        currentExamReviewFilter = ["flagged-wrong", "flagged-correct"].includes(mode) ? mode : "";
+        currentMode = ["wrong", "unanswered", "flagged", "flagged-wrong", "flagged-correct"].includes(mode) ? (mode.startsWith("flagged") ? "flagged" : mode) : "all";
+        currentQuestionId = null;
+        renderModeButtons();
+        renderActiveQuestion({ focus: true });
+      });
+    });
   }
 
   function startExam() {
     if (!chapterId) return;
-    clearChapterProgress(chapterId, true);
-    setExamState(chapterId, {
+    const active = getActiveExamAttempt(chapterId);
+    if (active && active.active) return;
+    const ok = window.confirm("新しい模擬試験を開始します。演習モードの周回履歴は変更しません。前回までの模擬試験結果は履歴に残ります。開始しますか？");
+    if (!ok) return;
+    setExamMode(chapterId, "exam");
+    const attempt = normalizeExamAttempt({
+      attemptId: newExamAttemptId(),
+      chapterId,
+      round: currentRound,
       active: true,
       startedAt: new Date().toISOString(),
-      durationSec: 90 * 60
-    });
+      durationSec: 90 * 60,
+      answers: {},
+      flags: {},
+      answerEvents: []
+    }, chapterId);
+    updateExamAttempt(chapterId, attempt);
     currentMode = "all";
+    currentExamReviewFilter = "";
     currentQuestionId = (DATA.questions[chapterId] || [])[0]?.id || null;
     renderModeButtons();
     renderActiveQuestion({ focus: true });
   }
 
   function finishExam(autoFinished) {
-    const state = getExamState(chapterId);
+    const state = getActiveExamAttempt(chapterId);
     if (!state) return;
-    setExamState(chapterId, {
+    const stats = computeExamAttemptScore(state, chapterId);
+    if (!autoFinished && stats.unanswered > 0) {
+      const ok = window.confirm(`未回答が ${stats.unanswered} 問あります。このまま採点しますか？`);
+      if (!ok) return;
+    }
+    const finished = {
       ...state,
       active: false,
       finishedAt: new Date().toISOString(),
-      autoFinished: Boolean(autoFinished)
-    });
+      autoFinished: Boolean(autoFinished),
+      score: computeExamAttemptScore(state, chapterId)
+    };
+    updateExamAttempt(chapterId, finished);
     stopTimer();
+    currentMode = "all";
+    currentExamReviewFilter = "";
+    currentQuestionId = null;
+    renderModeButtons();
     renderActiveQuestion({ focus: true });
   }
 
   function remainingSeconds(state) {
+    if (!state) return 0;
     const started = Date.parse(state.startedAt);
     if (!Number.isFinite(started)) return state.durationSec || 0;
     const elapsed = Math.floor((Date.now() - started) / 1000);
@@ -1802,8 +2644,7 @@ service cloud.firestore {
         return;
       }
       const remain = remainingSeconds(state);
-      const timer = document.getElementById("examTimer");
-      if (timer) timer.textContent = formatSeconds(remain);
+      updateExamTimers();
       if (remain <= 0) finishExam(true);
     }, 1000);
   }
@@ -1819,16 +2660,27 @@ service cloud.firestore {
     // ダッシュボードの自動挿入は行わない。
       return;
     }
-    const s = chapterStats(chapterId);
+    let s = chapterStats(chapterId);
+    let label = `${roundLabel(s.round)}・${s.answered}/${s.total} 解答済み・正解 ${s.correct}・見直し ${s.flagged}`;
+    if (isMockExamMode(chapterId)) {
+      const state = getExamState(chapterId);
+      if (state) {
+        s = computeExamAttemptScore(state, chapterId);
+        label = state.finishedAt
+          ? `模擬試験・${s.correct}/${s.total} 正解・未回答 ${s.unanswered}・見直し ${s.flagged}`
+          : `模擬試験・${s.answered}/${s.total} 解答済み・見直し ${s.flagged}`;
+      }
+    }
     const fill = document.getElementById("progressFill");
     const text = document.getElementById("progressText");
     if (fill) fill.style.width = s.total ? `${Math.round(s.answered / s.total * 100)}%` : "0%";
-    if (text) text.textContent = s.total ? `${s.answered}/${s.total} 解答済み・正解 ${s.correct}・見直し ${s.flagged}` : "0/0";
+    if (text) text.textContent = s.total ? label : "0/0";
   }
 
   function renderChapter() {
     const root = document.getElementById("questionRoot");
     if (!root || !chapterId) return;
+    ensureChapterRound();
     const chapter = chapterById(chapterId);
     const title = document.getElementById("chapterTitle");
     const desc = document.getElementById("chapterDesc");
@@ -1843,6 +2695,7 @@ service cloud.firestore {
     }
 
     root.innerHTML = `<div class="study-panel">
+      <div id="roundPanel" class="round-panel-root"></div>
       <div id="chapterStatsRoot" class="chapter-stats"></div>
       <div id="examPanel" class="exam-panel"></div>
       ${syncPanelHtml()}
@@ -1871,6 +2724,7 @@ service cloud.firestore {
 
     bindSyncPanel(root);
     bindCloudPanel(root);
+    renderRoundPanel();
     renderModeButtons();
     renderActiveQuestion({ focus: true });
     updateProgressUi();
@@ -1881,16 +2735,22 @@ service cloud.firestore {
   function bindChapterToolbar() {
     const reset = document.getElementById("resetChapter");
     if (reset) {
+      const locked = isMockExamMode(chapterId) && Boolean(getExamState(chapterId));
+      reset.disabled = locked;
+      reset.textContent = locked ? "模擬試験中はリセット不可" : "この周回をリセット";
       reset.onclick = () => {
+        if (isMockExamMode(chapterId) && getExamState(chapterId)) return;
         clearChapterProgress(chapterId, false);
-        setExamState(chapterId, null);
         currentMode = "all";
         currentQuestionId = null;
         renderChapter();
       };
     }
     const unanswered = document.getElementById("firstUnanswered");
-    if (unanswered) unanswered.onclick = firstUnanswered;
+    if (unanswered) {
+      unanswered.disabled = isMockExamMode(chapterId) && isExamActive(chapterId);
+      unanswered.onclick = firstUnanswered;
+    }
   }
 
 
@@ -2061,6 +2921,7 @@ service cloud.firestore {
     }
     wrongPracticeIndex = Math.min(Math.max(wrongPracticeIndex, 0), wrongPracticeList.length - 1);
     const item = wrongPracticeList[wrongPracticeIndex];
+    currentRound = normalizeRound(item.record && item.record.round || getActiveRound(item.chapter && item.chapter.id) || 1);
     const q = item.question;
     shell.innerHTML = wrongPracticeQuestionHtml(item);
     const card = shell.querySelector(`[data-question-id="${cssEscape(q.id)}"]`);
