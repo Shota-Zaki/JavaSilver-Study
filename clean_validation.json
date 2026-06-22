@@ -1,0 +1,43 @@
+{
+  "source": "JavaSilver-Study-code-audit-v36-ch01-ch02-ch03-ch04-ch05-ch06-ch07-ch08-pdf-explanation-integrated",
+  "output_folder": "JavaSilver-Study-v37-clean-recheck-base",
+  "file_count": 168,
+  "checks": [
+    {
+      "cmd": "node --check /mnt/data/JavaSilver-Study-v37-clean-recheck-base/assets/js/app.js",
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "cmd": "node --check /mnt/data/JavaSilver-Study-v37-clean-recheck-base/data/questions.js",
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "removed_categories": [
+    "AI_WORK_STATE_V*.md",
+    "NEXT_WORK_V*.md",
+    "CH*_PDF_EXPLANATION_INTEGRATION_*.md",
+    "EXPLANATION_*.md",
+    "CODE_AUDIT_*.md",
+    "EXAM_MODE_*.md",
+    "validation JSON",
+    "old FILE_MANIFEST_V*.txt",
+    "docs/chatgpt report logs",
+    "unused assets/css/style.css",
+    "tools/"
+  ],
+  "kept_recheck_sources": [
+    "transcription/ch07_pdf_explanations_v35",
+    "transcription/ch08_pdf_explanations_v36"
+  ],
+  "not_run": [
+    "browser render check",
+    "smartphone device check",
+    "HTTP smoke",
+    "PDF character-by-character recheck",
+    "javac/java execution verification"
+  ]
+}
