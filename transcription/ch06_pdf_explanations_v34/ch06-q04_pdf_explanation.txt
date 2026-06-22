@@ -1,0 +1,10 @@
+正解：D
+
+try-catch-finally文の構文について問う問題です。
+
+try-catch-finallyの構文は、その出現順を変更することはできません。したがって、catch-try-finallyやtry-finally-catchのように順番を変更することはできません。
+
+設問のコードは、try-finally-catchの順で記述しており、このルールに反します。そのため、このコードをコンパイルすると、コンパイルエラーが発生します。よって、選択肢Dが正解です。
+
+【試験対策】
+try-catch-finallyの構文を確実に覚えましょう。catch-try-finallyやtry-finally-catchのように順番を変更することはできません。変更すると、コンパイルエラーになります。

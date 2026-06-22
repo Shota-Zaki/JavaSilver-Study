@@ -1,0 +1,36 @@
+正解：B
+
+try-with-resourcesを使う場合でも、catchブロックやfinallyブロックを付けて例外処理を実行することができます。例外発生の有無にかかわらず、リソースのクローズはtryブロックを抜けるタイミングで必ず実行されます。
+
+そのため、tryブロック内で例外が発生しなければ、リソースのクローズ、finallyブロックの順に実行されます。例外が発生すれば、リソースのクローズ、catchブロック、finallyブロックの順に実行されます。
+
+次のコードでは、tryブロック内で強制的に例外を発生させています。なお、ここで利用しているリソースクラスのSampleResourceは、解答21で使っているもので、closeメソッドは「close」とだけコンソールに表示します。
+
+【try-with-resources文と例外処理の例】
+
+```java
+public class SampleUsing {
+    public static void main(String[] args) {
+        try (SampleResource resource = new SampleResource();) {
+            throw new Exception();
+        } catch (Exception e) {
+            System.out.println("catch");
+        } finally {
+            System.out.println("finally");
+        }
+    }
+}
+
+```
+
+このクラスを実行すると、次のような結果がコンソールに表示され、リソースのクローズ、catchブロック、finallyブロックの順に実行されていることがわかります。以上のことから、選択肢Bが正解となります。
+
+【実行結果】
+
+```text
+> java SampleUsing
+close
+catch
+finally
+
+```

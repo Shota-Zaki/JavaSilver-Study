@@ -1,0 +1,44 @@
+正解：D
+
+try-with-resources文で処理できる対象についての問題です。
+
+try-with-resources文のカッコ「()」で扱えるのは、java.lang.AutoCloseableインタフェース、もしくはjava.io.Closeableインタフェースを実装したクラスです。よって、選択肢Dが正解です。
+
+2つのインタフェースの違いは、導入された目的です。AutoCloseableインタフェースはtry-with-resourcesが導入されたとき、それに対応する形で導入されました。一方、Closeableインタフェースは、try-with-resourcesが導入される以前から存在しています。Closeableインタフェースは、java.io.BufferedReaderのようなストリームを扱うクラスがそれぞれ実装していたcloseメソッドが共通の型として扱えるように作られたものです。
+
+Closeableインタフェースは、AutoCloseableインタフェースのサブインタフェースとして定義されています。そのため、Closeableで扱えるインスタンスへの参照は、アップキャストすればAutoCloseableでも扱うことが可能です。
+
+また、これら2つのインタフェースで定義されているcloseメソッドには、throwsで宣言している例外クラスの種類が違うという特徴もあります。次の2つのコード例は、それぞれのインタフェースの実装例です。
+
+【AutoCloseableを実装したクラス】
+
+```java
+public class SampleResource implements AutoCloseable {
+    @Override
+    public void close() throws Exception {
+        System.out.println("close");
+    }
+}
+
+```
+
+このクラスは、AutoCloseableインタフェースを実装しており、その唯一の抽象メソッドであるcloseメソッドは、Exception型の例外をスローします。
+
+【Closeableを実装したクラス】
+
+```java
+import java.io.Closeable;
+import java.io.IOException;
+
+public class SampleResource implements Closeable {
+    @Override
+    public void close() throws IOException {
+        System.out.println("close");
+    }
+}
+
+```
+
+一方、Closeableインタフェースを実装したクラスでは、closeメソッドのシグニチャは同じものの、スローする例外クラスがIOException型となっています。このことからも、Closeableインタフェースはあくまでも入出力ストリームを扱うことを前提としたインタフェースであることがわかります。
+
+もし、try-with-resourcesで扱うリソースクラスを独自で定義するのであれば、入出力ストリームに特化したCloseableではなく、AutoCloseableを実装するのが適切でしょう。

@@ -1,0 +1,66 @@
+正解：D
+
+try-with-resourcesに関する問題です。
+
+try-with-resources（リソース付きtryブロック）は、プログラムの中で扱うリソースを自動的に閉じるためのものです。
+
+一般的にプログラムで扱うリソースとは、プログラムからアクセスするデータを指しますが、Javaではデータだけでなく、アクセスするためのインスタンスなどもリソースとして扱います。データが書き込まれているファイルだけでなく、ファイルにアクセスするFileクラスやFileReaderクラスのインスタンスも含まれると考えてください。
+
+リソースは、使うときに開き、使い終わったら閉じなければいけません。大量のデータを効率よく管理するDBMSのように、リソースの種類によってはアクセスできる数に限りがあったり、対象となるリソースへのアクセス権を限定したりするものがあります。このようなリソースは、使用後に閉じなければ、アクセスできなくなる可能性があるのです。
+
+問題は、「リソースを使い終わったら閉じる」のは任意であって、必須ではないため、プログラマーが閉じ忘れる場合があることです。リソースを閉じるコードを記述しなくてもコンパイルエラーにはなりませんし、リソースを閉じなくても正常に処理できてしまうので、テストでも見つかりにくいのです。このようなミスを防ぐために、自動的にリソースを閉じるための構文として導入されたのが、try-with-resources文です。
+
+まず、try-with-resources文以前のコードを見てみましょう。次のコード例は、テキストファイルの内容をコピーするものです。finallyブロックで、入力のためのリソースと出力のためのリソースのcloseメソッドを呼び出し、リソースを閉じている点に注目してください。
+
+【try-with-resources文以前のコード】
+
+```java
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class FileCopy {
+    public static void main(String[] args) {
+        BufferedReader in = null;
+        BufferedWriter out = null;
+        try {
+            in = new BufferedReader(new FileReader(new File("input.txt")));
+            out = new BufferedWriter(new FileWriter(new File("result.txt")));
+
+            String line = null;
+            while ((line = in.readLine()) != null) {
+                out.append(line);
+                out.newLine();
+            }
+            out.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+}
+
+```
+
+このリソースを閉じるfinallyブロックを丸ごと削除してもコンパイルエラーにはなりません。リソースが解放されない可能性があっても、文法上の間違いはないからです。このプログラムはmainメソッド1つだけの簡単なものですが、数多くのクラスが連携し、データベースやネットワークを経由した別のシステムとの連携や並列処理などの実行中にリソースの閉じ忘れがあると、システム全体が動作しなくなる可能性があります。こうしたリソースの閉じ忘れによる不具合が発生しないように、try-with-resources文以前は、finallyブロックで必ずリソースを閉じるコードを記述する必要がありました。
+
+なお、このコードをtry-with-resourcesを使って記述したコード例は、解説22に掲載しています。コード量が減っていることを確認してみてください。
+
+このように、try-with-resources文の主な目的は例外処理ではなく、リソースの閉じ忘れを防ぐことです。例外処理のためのtryブロックは、それに続くcatchブロックかfinallyブロックのいずれかが必須でしたが、try-with-resources文では、catchブロックかfinallyブロック、もしくはその両方が省略可能です。以上のことから、選択肢Dが正解となります。

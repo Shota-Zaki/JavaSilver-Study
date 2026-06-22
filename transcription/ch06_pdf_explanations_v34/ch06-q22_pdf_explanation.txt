@@ -1,0 +1,122 @@
+正解：A、C
+
+try-with-resourcesでは、tryキーワードの後ろのカッコ内で宣言したリソースが、自動的に閉じる対象となります。
+
+```java
+try (自動的に閉じるリソースの宣言) {
+    // リソースを使った処理
+}
+
+```
+
+解答20で使用したテキストファイルの内容をコピーするプログラム（FileCopyクラス）を、try-with-resourcesを使って記述すると次のようになります。リソースが自動的に閉じるのに伴い、finallyブロックが必要なくなったことで、コードが簡潔になりました。
+
+【try-with-resourcesを使ったファイルコピーのプログラム】
+
+```java
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class FileCopy {
+    public static void main(String[] args) {
+        try (BufferedReader in =
+                 new BufferedReader(new FileReader(new File("input.txt")));
+             BufferedWriter out =
+                 new BufferedWriter(new FileWriter(new File("result.txt")))) {
+
+            String line = null;
+            while ((line = in.readLine()) != null) {
+                out.append(line);
+                out.newLine();
+            }
+            out.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+
+```
+
+なお、複数のリソースを対象とする場合は、このコード例の10〜13行目のようにセミコロン「;」で区切って列挙します。対象とするリソースが1つだけの場合は、セミコロンは省略可能です（付けることもできます）。
+
+try-with-resourcesで自動的に閉じる対象とするリソースは、tryに続くカッコだけでなく、次のようにtryブロックの前に宣言を記述することも可能です（選択肢C）。
+
+【tryブロック前でリソースを宣言】
+
+```java
+public class SampleUsing {
+    public static void main(String[] args) throws Exception {
+        SampleResource resource = new SampleResource();
+        try (resource) {
+            // do something
+        }
+    }
+}
+
+```
+
+このときの重要なポイントは、「リソースはfinalもしくは実質的にfinalでなくてはならない」ということです（選択肢D）。たとえば、次のようにtryブロック内で新しいインスタンスへの参照をリソースに代入することはできず、コンパイルエラーとなります。
+
+【実質的なfinalでないリソース】
+
+```java
+public class SampleUsing {
+    public static void main(String[] args) throws Exception {
+        SampleResource resource = new SampleResource();
+        try (resource) {
+            resource = new SampleResource();
+        }
+    }
+}
+
+```
+
+同様に、たとえtryブロックの外であったとしても、リソースは変更できません。次のコードでは、tryブロックの後でリソースを変更しようとしていますが、コンパイルエラーとなります（選択肢E）。
+
+【実質的なfinalでないリソース（tryブロック後で宣言したリソースの変更）】
+
+```java
+public class SampleUsing {
+    public static void main(String[] args) throws Exception {
+        SampleResource resource = new SampleResource();
+        try (resource) {
+            // do something
+        }
+        resource = new SampleResource();
+    }
+}
+
+```
+
+次のようなコードも、参照先がない（null）と宣言した変数をtryで変更しようとしているため、「実質的finalではない」としてコンパイルエラーとなります（選択肢B）。
+
+なお、自動的に閉じる対象の変数がnullでも、事前にnullチェックを行ってからcloseメソッドを呼び出すため、NullPointerExceptionが発生することはありません。
+
+【実質的なfinalでないリソース（tryブロック前で宣言したリソースの変更）】
+
+```java
+public class SampleUsing {
+    public static void main(String[] args) throws Exception {
+        SampleResource resource = null;
+        try (resource) {
+            // do something
+        }
+    }
+}
+
+```
+
+選択肢Aは、tryブロックの宣言と同時にリソースのインスタンスを生成しています。よって、正解です。
+
+選択肢Bは、参照先がない（null）と宣言した変数をtryで変更しようとしているため、実質的finalではないという意味でコンパイルエラーとなります。よって、誤りです。
+
+選択肢Cは、tryブロック前で作ったリソースを、try-with-resources文のtryブロックで扱うことを宣言しているものです。よって、正解です。
+
+選択肢Dは、try-with-resources文のtryブロックで宣言した変数の参照を変更しようとしており、実質的finalではないという意味でコンパイルエラーとなります。よって、誤りです。
+
+選択肢Eは、try-with-resources文で宣言した変数の参照を、tryブロック後で変更しようとしているため、実質的finalではないという意味でコンパイルエラーとなります。よって、誤りです。

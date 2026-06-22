@@ -1,0 +1,49 @@
+正解：D
+
+例外のマルチキャッチに関する問題です。
+
+例外のマルチキャッチでは、同じ例外処理を1つのcatchブロックにまとめて記述することができます。同じ例外処理をしないのであれば、まとめるべきではありません。たとえば、AExceptionとBExceptionが発生したときは同じ例外処理を実行し、CExceptionが発生したときに別の例外処理を実行したい場合には、次のようにcatchブロックを分けます。
+
+【マルチキャッチを使った例外処理】
+
+```java
+try {
+    // 3種類の例外が発生する処理
+} catch (AException | BException e) {
+    // 例外処理
+} catch (CException e) {
+    // 例外処理
+} finally {
+    // finally処理
+}
+
+```
+
+ただし、1つのcatchブロックに記述できるのは、継承関係にない例外だけです。たとえば次のように、BExceptionクラスはAExceptionクラスを継承しているとしましょう。
+
+【AExceptionクラスを継承するBExceptionクラス】
+
+```java
+public class BException extends AException {
+}
+
+```
+
+この場合、前述のマルチキャッチを使ったコードは「その例外はすでにキャッチされている」という旨のメッセージと共にコンパイルエラーが発生します。これは、継承関係にある例外は、ポリモーフィズムを使えばスーパークラス型の例外として扱えるためです。BExceptionへの参照は、BException型だけでなくAException型としても扱えるため、そもそもマルチキャッチにする必要がないのです。そのため、前述のコードは、次のようにAExceptionをキャッチするだけでよくなります。
+
+【ポリモーフィズムにより、例外をスーパークラス型で扱う】
+
+```java
+try {
+    // 3種類の例外が発生する処理
+} catch (AException e) {
+    // 例外処理
+} catch (CException e) {
+    // 例外処理
+} finally {
+    // finally処理
+}
+
+```
+
+RuntimeExceptionクラスは、Exceptionクラスのサブクラスです。マルチキャッチでは継承関係にあるクラスを同時に扱うことはできません。以上のことから、選択肢Dが正解です。

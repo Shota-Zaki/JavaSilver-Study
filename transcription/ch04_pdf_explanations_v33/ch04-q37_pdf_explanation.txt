@@ -1,0 +1,36 @@
+正解：C
+
+レコードのコンストラクタは、レコードそのもののアクセス修飾子よりも厳しいものを使えません。
+
+たとえば、次のようにpublicでレコードを宣言しているにもかかわらず、代替コンストラクタのアクセス修飾子を「なし（パッケージアクセス）」に変更するとコンパイルエラーとなります。
+
+例　publicで宣言されたレコードのコンストラクタ
+
+```java
+public record Customer(String name, int age, String address) {
+    Customer(String name, int age, String address) {
+        this.name = name;
+        this.age = age;
+        this.address = address;
+    }
+}
+
+```
+
+例　コンパイルエラーになる
+
+```text
+> javac Customer.java
+Customer.java:2: エラー: レコードCustomerに無効な標準コンストラクタがあります
+    Customer(String name, int age, String address) {
+    ^
+  (public)より強いアクセス権限を割り当てようとしました
+エラー1個
+
+```
+
+レコードをpublicで宣言した場合は、そのコンストラクタもpublicでなければいけません。もし、レコードがprotectedであれば、コンストラクタはpublicもしくはprotectedとします。また、レコードがアクセス修飾子なしであれば、コンストラクタはprivateであってはいけません。以上のことから、選択肢Cが正解となります。
+
+試験対策
+
+レコードのコンストラクタは、レコードそのもののアクセス修飾子よりも厳しいものを使えません。

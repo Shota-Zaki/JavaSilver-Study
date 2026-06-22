@@ -1,0 +1,190 @@
+正解：B
+
+レコードに関する問題です。レコードは、Java SE 16から導入されたもので、データを保持する変更不可能なクラスを簡単に記述するための機能です。Pythonなど別の言語では「名前付きタプル」と呼ばれます。
+
+「タプル」とは、名前、年齢、住所など、関係する複数のデータをまとめて1つの単位として扱うデータ構造のことです。タプルでは、構成するデータ要素を配列のように番号で扱うため、どのデータにアクセスしているのかわかりにくいという側面がありました。そこで、データ要素に名前を付けてア
+
+クセスできるようにしたものが「名前付きタプル」です。レコードが導入される以前のJavaであっても、次のようにpublicなフィールドを持つクラスを作ることで、名前付きタプルを実現できます。
+
+例　名前付きタプルNamingTuple
+
+```java
+public class NamingTuple {
+
+    public final String name;
+    public final int age;
+    public final String address;
+
+    public NamingTuple(String name, int age, String address) {
+        super();
+        this.name = name;
+        this.age = age;
+        this.address = address;
+    }
+}
+
+```
+
+このクラスからわかるとおり、名前付きタプルの特徴は次のようなものです。
+
+・一度保持したデータは変更できない（不変である）
+・アクセサメソッドを経由せず、フィールドに直接アクセスする（簡易である）
+
+これらの特徴は、データを交換するようなときに便利です。データを交換するときにはデータへのアクセスは簡易であったほうがよく、意図せずに変更されたりすることがないほうがよいからです。
+
+もっとも、前述の名前付きタプルを実際にJavaのプログラムとして扱うには、実装すべきメソッドがいくつかあります。たとえばこのクラスをコレクションなどで扱ったりするのであれば、次のコードのようにhashCodeメソッドやequalsメソッドなどのオーバーライドは不可欠です。また、ここでは省略していますが、デバッグなどを考えるとtoStringメソッドもオーバーライドしておいたほうがよいでしょう。
+
+例　NamingTupleクラスの実装
+
+```java
+import java.util.Objects;
+
+public class NamingTuple {
+
+    public final String name;
+    public final int age;
+    public final String address;
+
+    public NamingTuple(String name, int age, String address) {
+        super();
+        this.name = name;
+        this.age = age;
+        this.address = address;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(address, age, name);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        NamingTuple other = (NamingTuple) obj;
+        return Objects.equals(address, other.address)
+                && age == other.age
+                && Objects.equals(name, other.name);
+    }
+}
+
+```
+
+コード例のhashCodeメソッドやequalsメソッド、publicなコンストラクタなどは、必要なメソッドではありますが、何度も繰り返し記述するのは面倒です。そこで、これらを自動的に作ってくれる機能が導入されました。それがレコードです。
+
+まず、上の名前付きタプルのコード例をレコードに置き換えてみたものを見てみましょう。
+
+例　レコードの宣言（Customer.java）
+
+```java
+public record Customer(String name, int age, String address) {
+
+}
+
+```
+
+このように、何も宣言していないように見えるほど、コード量が減ったことがわかります。驚くべきことに、たったこれだけのコードで、このレコードには次のメソッドが自動的に実装されます。
+
+・toStringメソッド
+・hashCodeメソッドとequalsメソッド
+・getterメソッド（フィールドの値を戻すためのメソッド）
+・publicなコンストラクタ
+
+このレコードを利用すると、次のように各メソッドがちゃんと実装されており、利用できることがわかります。
+
+例　レコードの利用例
+
+```java
+public class Sample {
+    public static void main(String[] args) {
+
+        Customer a = new Customer("A", 20, "Tokyo");
+        System.out.println(a.name());
+        System.out.println(a.toString());
+        System.out.println(a.hashCode());
+
+        Customer b = new Customer("B", 20, "Osaka");
+        System.out.println(a.equals(b));
+    }
+}
+
+```
+
+次が動作させてみた結果です。正しく動作していることがわかります。
+
+```text
+> java Sample
+A
+Customer[name=A, age=20, address=Tokyo]
+81052339
+false
+
+```
+
+このように、複数のデータをまとめた複合データを表現しつつ、必須となる基本的なメソッドを自動的に実装してくれるのがレコードです。javapコマンドを使って、レコードをclassファイルから逆コンパイルしてみると、次のような結果が出力されます（メソッドのシグニチャのみ抜粋）。
+
+例　レコードを逆コンパイル
+
+```text
+> javap -c Customer
+Compiled from "Customer.java"
+public final class Customer extends java.lang.Record {
+  public Customer(java.lang.String, int, java.lang.String);
+  ... 省略 ...
+  public java.lang.String name();
+  ... 省略 ...
+  public int age();
+  ... 省略 ...
+  public java.lang.String address();
+  ... 省略 ...
+  public final java.lang.String toString();
+  ... 省略 ...
+  public final int hashCode();
+  ... 省略 ...
+  public final boolean equals(java.lang.Object);
+  ... 省略 ...
+}
+
+```
+
+このjavapコマンドの結果を見てみると次のようなことがわかります。
+
+・コンパイル後は普通のクラスである
+・java.lang.Recordクラスを継承したクラスとして宣言されている
+・finalで修飾されており、サブクラスを作れない
+・フィールドを初期化するために必要な引数を受け取るコンストラクタが宣言されている
+・フィールド名と同じ名前のgetterメソッドが定義されている（getという接頭辞は付かない）
+・toString、hashCode、equalsの3つメソッドが定義されている
+
+レコードを宣言するには、recordキーワードに続いて型名を宣言し、続いてレコードの構成要素を宣言します。コンパイルすると、レコードの型名はクラス名に、レコードの構成要素はフィールドになります。
+
+構文
+
+```java
+アクセス修飾子 record 型名(カンマ区切りで構成要素の列挙) {
+
+}
+
+```
+
+たとえば、次のように宣言すると、Customerという名前の型名で、String型のname、int型のage、String型のaddressという3つの構成要素を持ったレコードを定義したことになります。
+
+例　Customerレコードの定義
+
+```java
+public record Customer(String name, int age, String address) {
+
+}
+
+```
+
+このように、レコードはデータをやりとりするためのオブジェクトを作ることを簡素化し、とても効率的に開発ができるようにしてくれる便利な機能です。
+
+設問の選択肢では、レコードを継承したサブクラスを作れるとした選択肢Bが誤った説明です。レコードはfinalで修飾されており継承できません。よって、選択肢Bが正解です。
+
+【試験対策】
+レコードは、java.lang.Recordクラスを継承したfinalクラスです。toString、hashCode、equalsといった基本的なメソッドのほかに、フィールド名と同じ名前のgetterメソッドが定義されています。

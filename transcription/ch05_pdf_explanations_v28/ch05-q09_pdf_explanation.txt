@@ -1,0 +1,20 @@
+正解：A
+
+抽象クラスからのメソッド呼び出しに関する問題です。設問のコードでは、AbstractSampleクラスを継承したConcreteSampleクラスを定義し、mainメソッドでは、そのインスタンスをAbstractSample型で扱っています。Mainクラスの4行目で呼び出しているsampleメソッドは、AbstractSampleに定義されている具象メソッドです。このメソッドでは、コンソールに「A」と表示した後、testメソッドを呼び出しています。このときに実行されるのはAbstractSampleに定義されたtestメソッドではなく、ConcreteSampleに定義されたtestメソッドであることに注意してください。
+
+抽象メソッドは実装を持ちません。その代わり、サブクラスがそのメソッドをオーバーライドして、実装を提供しなければいけません。そのため、AbstractSampleのsampleメソッドが呼び出しているのは、ConcreteSampleに定義されたtestメソッドです。
+
+【設問のConcreteSampleとAbstractSampleのイメージ】
+
+```text
+実装時                         実行時
+AbstractSample.class           sample
+  sample                  ┌────────────┐
+                          │            │ 呼び出し
+ConcreteSample.class      │            ↓
+  test                    └───────── test
+```
+
+ConcreteSampleのtestメソッドでは、コンソールに「B」を表示し、処理を終了します。その後、sampleメソッドに制御が戻ってコンソールに「C」が表示されるため、コンソールには「A」「B」「C」の3つの文字が表示されることになります。
+
+以上のことから、選択肢Aが正解です。

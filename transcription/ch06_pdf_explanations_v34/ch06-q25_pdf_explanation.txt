@@ -1,0 +1,53 @@
+正解：B
+
+抑制された例外に関する問題です。
+
+tryブロック内で例外Aが発生した場合、catchブロックを処理する前にリソースのcloseメソッドが呼ばれます。このとき、リソースのcloseメソッド内でも何らかの例外Bが発生した場合、その例外Bは、tryブロック内で発生した例外Aの内側に隠されてしまい、catchブロックでキャッチすることはできません。catchブロックでキャッチできるのは、tryブロック内で発生した例外Aです。この例外Bのように隠されてしまう例外のことを「抑制された例外」と呼びます。
+
+【抑制された例外を意図的にスローする】
+
+```java
+public class SampleResource implements AutoCloseable {
+    @Override
+    public void close() throws Exception {
+        System.out.println("sample");
+        throw new RuntimeException("sample");
+    }
+}
+
+```
+
+もし、抑制された例外を扱いたい場合には、java.lang.ThrowableクラスのgetSuppressedメソッドを使います。このメソッドは、抑制された例外への参照をThrowable配列型で戻します。
+
+たとえば次のコード例では、catchブロックでキャッチするのは、tryブロック内でスローした例外です。その例外からgetSuppressedメソッドを使って、抑制された例外の配列を取り出し、コンソールに表示しています。
+
+【キャッチした例外から、抑制された例外への参照を取り出す】
+
+```java
+public class SampleUsing {
+    public static void main(String[] args) {
+        try (SampleResource resource = new SampleResource();) {
+            throw new Exception();
+        } catch (Exception e) {
+            for (Throwable t : e.getSuppressed()) {
+                System.out.println(t);
+            }
+        } finally {
+            System.out.println("finally");
+        }
+    }
+}
+
+```
+
+【実行結果】
+
+```text
+> java SampleUsing
+sample
+java.lang.RuntimeException: sample
+finally
+
+```
+
+設問のコードでは、AutoCloseableを実装したTroubleResourceをtry-with-resourcesで扱っています。tryブロック内でExceptionがスローされるため、まずTroubleResourceのcloseメソッドを呼び出して閉じようとしますが、そこでもRuntimeExceptionがスローされます。前述のとおり、例外が発生した際にリソースを閉じようとして、さらに例外が発生した場合、閉じる際に発生した例外は「抑制された例外」として扱われることになります。そのため、catchされるのはtryブロック内で発生したExceptionとなります。以上のことから、選択肢Bが正解となります。

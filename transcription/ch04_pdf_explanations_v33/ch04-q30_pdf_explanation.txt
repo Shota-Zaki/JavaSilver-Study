@@ -1,0 +1,135 @@
+正解：E
+
+instanceof演算子のパターンマッチングに関する問題です。Javaには、「同じ」かどうかを判定する3種類の方法があります。1つ目は、==演算子を使った同一性の確認です。この演算子を使うことで、2つの変数の参照先が同じインスタンスであるかどうかを確認することができます。2つ目は、equalsメソッドをオーバーライドして利用する同値性の確認です。
+
+例　instanceof演算子がfalseを戻す場合
+
+```java
+public class Sample {
+    public static void main(String[] args) throws Exception {
+        test(new C());
+    }
+    private static void test(A a) {
+        if (a instanceof B) {
+            B b = (B) a;
+            b.hello();
+        }
+    }
+}
+
+```
+
+この例では、instanceof演算子を使って、変数aの参照先が、B型と互換性があるかを確認しています。前述のとおり、CクラスにはBクラスと互換性がないため、この演算子はfalseを戻します。そのためif文のブロックは実行されず、コンソールには何も表示されることなく終了します。たとえば次のように、testメソッドにCクラスではなくBクラスのインスタンスへの参照を渡せば、コンソールには「B」と表示されます。
+
+例　instanceof演算子がtrueを戻す場合
+
+```java
+public class Sample {
+    public static void main(String[] args) throws Exception {
+        test(new B());
+    }
+    private static void test(A a) {
+        if (a instanceof B) {
+            B b = (B) a;
+            b.hello();
+        }
+    }
+}
+
+```
+
+instanceof演算子は、型の互換性を確認するための演算子です。そのため、次のようにBクラスを継承したDクラスのインスタンスへの参照を渡しても正しく動作します。
+
+例　サブクラスのインスタンスへの参照を渡してもtrueを戻す
+
+```java
+public class D extends B {
+    @Override
+    public void hello() {
+        System.out.println("D");
+    }
+}
+
+public class Sample {
+    public static void main(String[] args) throws Exception {
+        test(new D());
+    }
+    private static void test(A a) {
+        if (a instanceof B) {
+            B b = (B) a;
+            b.hello();
+        }
+    }
+}
+
+```
+
+このコードを実行すると、オーバーライドされたhelloメソッドが実行され、コンソールには「D」と表示されます。
+
+このように、ダウンキャストするときには、型の互換性を確認するためにinstanceof演算子は欠かせません。2021年にリリースされたJava SE 16では、この演算子が改良され、より短いコードで記述できるようになりました。従来のコードでは、まずinstanceof演算子を使って型の互換性を確認してからダウンキャストする必要がありましたが、SE 16以降は、型の互換性のチェックとダウンキャストを一度に記述できるようになりました。
+
+次のコード例は、先ほどのコードを新しいinstanceof演算子の記法で書き換えたものです。修正後のコード例を見てみると、ダウンキャストしていた箇所がなくなり、コード量が少し減って簡潔になったことがわかります。このような互換性の確認とダウンキャストを一度に行うinstanceof演算子の使い方を「instanceof演算子のパターンマッチング」と呼びます。
+
+例　互換性の確認とダウンキャストを一度に行う
+
+```java
+public class Sample {
+    public static void main(String[] args) throws Exception {
+        test(new D());
+    }
+    private static void test(A a) {
+        if (a instanceof B b) {
+            b.hello();
+        }
+    }
+}
+
+```
+
+パターンマッチング機能は、演算子の左オペランドの変数の参照先が、右オペランドに宣言した「パターン変数」の型と互換性があれば、その参照をパターン変数に代入します。上のコード例の場合、6行目のinstanceof演算子は、変数aの参照先がB型と互換性があれば、変数bに代入してtrueを戻すのです。
+
+instanceof演算子のパターン変数には、ローカル変数の宣言と同様にスコープ（有効範囲）があります。たとえばif文の条件式として宣言されたパターン変数はifブロック内でしか利用できず、続くelse-ifブロックやelseブロックで利用することはできません。次のコード例は、先ほどのコード例にelseブロックを追加し、そこでパターン変数を利用しようとしています。このコードはコンパイルエラーになります。
+
+例　パターン変数のスコープ
+
+```java
+public class Sample {
+    public static void main(String[] args) throws Exception {
+        test(new D());
+    }
+    private static void test(A a) {
+        if (a instanceof B b) {
+            b.hello();
+        } else {
+            b.hello(); // スコープの範囲外
+        }
+    }
+}
+
+```
+
+次のコード例では、パターン変数bと同じ名称を持つフィールドbが宣言されています。この場合は、パターン変数のスコープ内であればパターン変数が、スコープ外であればフィールドが利用されます。そのため、4行目でtestメソッドの引数として渡す参照がBクラスと互換性のないCクラスであれば、elseブロックの処理が実行され、フィールドbが利用されます。
+
+例　パターン変数とフィールド
+
+```java
+public class Sample {
+    private static B b = new B();
+    public static void main(String[] args) throws Exception {
+        test(new C());
+    }
+    private static void test(A a) {
+        if (a instanceof B b) {
+            b.hello();
+        } else {
+            b.hello();
+        }
+    }
+}
+
+```
+
+設問のコードでは、パターン変数bは宣言されているifブロックではなく、elseブロックで使われています。そのため、スコープ外での利用となりコンパイルエラーが発生します。以上のことから、選択肢Eが正解です。
+
+【試験対策】
+instanceof演算子で利用されるパターン変数のスコープを確認しましょう。スコープ外で利用している場合には、同名のフィールドを確認しましょう。

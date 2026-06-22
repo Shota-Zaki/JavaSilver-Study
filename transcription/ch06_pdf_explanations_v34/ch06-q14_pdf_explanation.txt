@@ -1,0 +1,9 @@
+正解：A
+
+例外クラスに関する問題です。
+
+設問のコードでは、ArrayListのインスタンスを作り、一度も要素を追加せずに、要素を取り出そうとしています。このように存在しない要素を取り出そうとするとIndexOutOfBoundsExceptionが発生します。よって、選択肢Aが正解です。
+
+IndexOutOfBoundsExceptionは、配列や文字列、コレクションの範囲外であることを示す例外クラスです。
+
+選択肢BのArrayIndexOutOfBoundsExceptionは、配列の要素外アクセスを表す例外クラスです。選択肢CのStringIndexOutOfBoundsExceptionは、文字列の範囲外アクセスを表す例外クラスです。IndexOutOfBoundsExceptionは、これらのスーパークラスです。なお、選択肢Dのような例外は存在しません。

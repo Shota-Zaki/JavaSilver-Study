@@ -1,0 +1,69 @@
+正解：C、D、E
+
+finalで修飾できる宣言を問う問題です。クラスを宣言するときにクラス名をfinalで修飾すると、継承できないクラスを定義することができます。たとえば、次のような2 つのクラスがあったとしましょう。AクラスとBクラスの定義
+
+```java
+public class A {
+    public void test() {
+        System.out.println("test");
+    }
+    // something code
+}
+```
+
+```java
+public class B {
+    public void test() {
+        System.out.println("test");
+    }
+    // something code
+}
+```
+
+AクラスとBクラスは、共通のtestメソッドを持っています。そこで、スーパークラスを定義してこのメソッドを移動したとしましょう。共通のメソッドをスーパークラスで定義
+
+```java
+public class Superclass {
+    public void test() {
+        System.out.println("test");
+    }
+}
+```
+
+このSuperclassクラスを継承することで、AとBにはtestメソッドを記述する必要がなくなります。Superclassクラスを継承
+
+```java
+public class A extends Superclass {
+    // something code
+}
+```
+
+```java
+public class B extends Superclass {
+    // something code
+}
+```
+
+継承はとても便利な機能ですが、スーパークラスの変更が強制的にサブクラスに及んでしまうというデメリットもあります。そのため、スーパークラスの変更の内容によっては、サブクラスの動作が予期せぬ形で変化してしまう可能性があります。特に継承の階層が深い場合には、その影響範囲が大きかったり、オーバーライドされてしまっていたりするため、スーパークラスを変更したときの影響が予測しづらくなります。そこで、それ以上継承できないようfinalで修飾しておきます。前述のSuperclassクラスのように、明確に継承されることを前提としたクラスのみfinalを外すのです。こうすると継承の階層を浅く保つことができ、スーパークラスの変更の影響を予測しやすくなるのです。次のコードが、前述のAとBをfinalで修飾した例です。
+
+継承できないようにする
+
+```java
+public final class A extends Superclass {
+    // something code
+}
+```
+
+```java
+public final class B extends Superclass {
+    // something code
+}
+```
+
+このようにfinalで修飾されると、AとBを継承したサブクラスを定義できなくなります。(finalを使ったクラス図）
+
+【図表原本確認済み】
+
+Superclass test(): void A {final} extends Superclass B {final} extends Superclass? extends A は不可。図中注記: 「これ以上はサブクラスを作れない」。final修飾子は、クラス以外にフィールドやメソッドにも付けることができます。フィールドに付ければ初期化後は変更できないフィールドを、メソッドに付ければオーバーライドできないメソッドを定義することができます。
+
+以上のことから、選択肢C、D 、Eが正解です。抽象クラスは継承することを前提としたクラスです。そのため、継承を制限するfinalで修飾することはできません。よって、選択肢Aは誤りです。また、インタフェースは実現するクラスを用意し、その使い方を規定するためのものです。そのため、やはりfinalで修飾することはできません。よって、選択肢Bも誤りです。明確に継承されることを前提としたクラスのことを、ソフトウェアの「拡張点」と呼びます。ソフトウェアはどこからでも拡張可能にしてしまうと意図しない継承が次々とできてしまう可能性があるため、拡張できる、つまり継承できる場所を限定的にすることで、保守性の低下を避けるようにします。
