@@ -1,27 +1,28 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
-  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - 学習記事</title>
-  <link rel="stylesheet" href="assets/css/styles.css?v=code-audit-v18">
+<meta charset="utf-8"/>
+<meta content="noindex, nofollow, noarchive, nosnippet" name="robots"/>
+<meta content="noindex, nofollow, noarchive, nosnippet" name="googlebot"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Java Silver Study - 学習記事</title>
+<link href="assets/css/styles.css?v=article-specific-v11" rel="stylesheet"/>
 </head>
 <body>
-  <div class="layout">
-    <aside class="sidebar">
-      <p class="brand"><a href="index.html">Java Silver Study</a></p>
-      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
-    </aside>
-    <main class="main reference-main article-main">
-      <section class="hero reference-hero compact-hero article-hero">
-        <p class="eyebrow">Java Silver Reference</p>
-        <h1>学習記事</h1>
-        <p>問題を解くための判定基準を、単元別に整理した詳説版です。読む順番、使い分け、復習導線までここから確認します。</p>
-      </section>
-      <section class="article-section">
-<h2>まず読む順番</h2>
+<div class="layout">
+<aside class="sidebar">
+<p class="brand"><a href="index.html">Java Silver Study</a></p>
+<nav aria-label="章一覧" class="nav-list" id="chapterNav"></nav>
+</aside>
+<main class="main reference-main article-main">
+<section class="hero reference-hero compact-hero article-hero">
+<p class="eyebrow">Java Silver Reference</p>
+<h1>学習記事</h1>
+<p>問題を解くための判定基準を、単元別に整理した詳説版です。読む順番、使い分け、復習導線までここから確認します。</p>
+</section>
+<section class="article-section">
+<h2>目的別に参照先を選ぶ</h2>
 <div class="article-card-grid"><article class="article-card"><h3>1. 判定フロー</h3><p><a href="decision-flow.html">問題文を読んだら最初に何を見るか</a>を固定します。出力を追う前にコンパイル可否を切るのが最優先です。</p></article><article class="article-card"><h3>2. コンパイル/実行時例外</h3><p><a href="compile-runtime.html">コンパイルエラー、実行時例外、正常終了</a>を分けます。ここが曖昧だと選択肢を消せません。</p></article><article class="article-card"><h3>3. 弱点別復習</h3><p><a href="weakness-map.html">間違え方から読む記事を逆引き</a>します。全部読むより、弱点から潰すほうが効率的です。</p></article></div>
 </section>
 <section class="article-section">
@@ -30,15 +31,15 @@
 </section>
 <section class="article-section">
 <h2>補助記事</h2>
-<div class="ref-index-grid clean-index"><a class="ref-index-card" href="output-tracing.html"><strong>出力追跡トレーニング</strong><small>変数表・参照表・制御表で1行ずつ追う</small></a><a class="ref-index-card" href="error-catalog.html"><strong>エラー・例外カタログ</strong><small>コンパイルエラー・実行時例外を逆引き</small></a><a class="ref-index-card" href="method-list.html"><strong>頻出メソッド</strong><small>戻り値、副作用、境界値、例外</small></a><a class="ref-index-card" href="fine-points.html"><strong>細かい仕様メモ</strong><small>1行単位の境界仕様と例外</small></a><a class="ref-index-card" href="exam-traps.html"><strong>ひっかけ集</strong><small>選択肢を切るための論点</small></a><a class="ref-index-card" href="mini-drills.html"><strong>ミニ演習</strong><small>30問で判定速度を上げる</small></a><a class="ref-index-card" href="glossary.html"><strong>単語集</strong><small>意味・コード上の見え方・注意点</small></a><a class="ref-index-card" href="java-qa-review.html"><strong>質問整理まとめ</strong><small>混ざりやすい疑問をQ&Aで整理</small></a></div>
+<div class="ref-index-grid clean-index"><a class="ref-index-card" href="output-tracing.html"><strong>出力追跡トレーニング</strong><small>変数表・参照表・制御表で1行ずつ追う</small></a><a class="ref-index-card" href="error-catalog.html"><strong>エラー・例外カタログ</strong><small>コンパイルエラー・実行時例外を逆引き</small></a><a class="ref-index-card" href="method-list.html"><strong>頻出メソッド</strong><small>戻り値、副作用、境界値、例外</small></a><a class="ref-index-card" href="fine-points.html"><strong>細かい仕様メモ</strong><small>1行単位の境界仕様と例外</small></a><a class="ref-index-card" href="exam-traps.html"><strong>ひっかけ集</strong><small>選択肢を切るための論点</small></a><a class="ref-index-card" href="mini-drills.html"><strong>ミニ演習</strong><small>30問で判定速度を上げる</small></a><a class="ref-index-card" href="glossary.html"><strong>単語集</strong><small>意味・コード上の見え方・注意点</small></a><a class="ref-index-card" href="java-qa-review.html"><strong>質問整理まとめ</strong><small>混ざりやすい疑問をQ&amp;Aで整理</small></a></div>
 </section>
 <section class="article-section">
-<h2>使い方</h2>
-<ol class="article-list priority-list"><li><strong>問題を解く前:</strong> まず判定フローを読む。問題を見た瞬間に「コンパイル可否」「実行時例外」「出力」のどれを問われているか分類する。</li><li><strong>間違えた直後:</strong> 解説を読むだけで終わらせず、該当単元の記事に戻る。なぜ他の選択肢が誤りかを言語化できるか確認する。</li><li><strong>模擬問題前:</strong> 全記事を読み返すのではなく、チートシート・ひっかけ集・頻出メソッドに絞る。直前に新知識を増やしすぎるのは逆効果です。</li></ol>
+<h2>論点に合う読み方</h2>
+<ol class="article-list priority-list"><li>型・継承の記事では、宣言型、実行時型、対象メンバーの順に分ける。</li><li>数値・演算子の記事では、式の型、評価順、副作用、代入先を表にする。</li><li>String・配列・Listの記事では、生成されたオブジェクト、参照共有、変更可否、境界を追う。</li><li>例外の記事では、発生地点、捕捉先、finally、リソース解放、伝播先を経路として書く。</li><li>API記事では、戻り値、副作用、許される添字、発生し得る例外をメソッドごとに確認する。</li></ol>
 </section>
-    </main>
-  </div>
-  <script src="data/questions.js?v=code-audit-v18"></script>
-  <script src="assets/js/app.js?v=code-audit-v18"></script>
+</main>
+</div>
+<script src="data/questions.js?v=article-specific-v11"></script>
+<script src="assets/js/app.js?v=article-specific-v11"></script>
 </body>
 </html>

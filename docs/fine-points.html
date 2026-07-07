@@ -1,171 +1,170 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
-  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - 細かい仕様メモ</title>
-  <link rel="stylesheet" href="assets/css/styles.css?v=code-audit-v18">
+<meta charset="utf-8"/>
+<meta content="noindex, nofollow, noarchive, nosnippet" name="robots"/>
+<meta content="noindex, nofollow, noarchive, nosnippet" name="googlebot"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Java Silver Study - 細かい仕様メモ</title>
+<link href="assets/css/styles.css?v=article-specific-v11" rel="stylesheet"/>
 </head>
 <body>
-  <div class="layout">
-    <aside class="sidebar">
-      <p class="brand"><a href="index.html">Java Silver Study</a></p>
-      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
-    </aside>
-    <main class="main reference-main article-main">
-      <section class="hero reference-hero compact-hero article-hero">
-        <p class="eyebrow">Java Silver Reference</p>
-        <h1>細かい仕様メモ</h1>
-        <p>1行単位で落とされやすい仕様を、コード例と判定順で整理します。</p>
-      </section>
-
-      <section class="article-section">
-        <h2>このページの使い方</h2>
-        <p>このページは、単元別の記事では拾いにくい「1行だけで落とされる仕様」を集めた詳説ページです。Java Silverでは、大きな概念を理解していても、<code>length</code> と <code>length()</code>、<code>println(null)</code> と <code>null.toString()</code> のような小さい差で失点します。</p>
-        <p>読み方は単純です。各項目について、<strong>コンパイルできるか</strong>、<strong>実行時例外になるか</strong>、<strong>正常なら何が出力されるか</strong>の順に確認してください。説明を読んで「知っている」と思った項目でも、コード例を見て即答できなければ試験では弱点です。</p>
-      </section>
-
-      <section class="article-section">
-        <h2>実行引数・mainメソッドまわり</h2>
-        <div class="article-card">
-          <h3><code>String[] args</code> は引数なしでも <code>null</code> ではない</h3>
-          <p>コマンドライン引数を渡さずに実行しても、<code>args</code> には長さ0の配列が渡されます。したがって <code>args.length</code> は <code>0</code> です。<code>args == null</code> ではありません。</p>
+<div class="layout">
+<aside class="sidebar">
+<p class="brand"><a href="index.html">Java Silver Study</a></p>
+<nav aria-label="章一覧" class="nav-list" id="chapterNav"></nav>
+</aside>
+<main class="main reference-main article-main">
+<section class="hero reference-hero compact-hero article-hero">
+<p class="eyebrow">Java Silver Reference</p>
+<h1>細かい仕様メモ</h1>
+<p>1行単位で落とされやすい仕様を、コード例と判定順で整理します。</p>
+</section>
+<section class="article-section">
+<h2>境界条件だけを横断して確認する</h2>
+<p>このページは、単元別の記事では拾いにくい「1行だけで落とされる仕様」を集めた詳説ページです。Java Silverでは、大きな概念を理解していても、<code>length</code> と <code>length()</code>、<code>println(null)</code> と <code>null.toString()</code> のような小さい差で失点します。</p>
+<p>読み方は単純です。各項目について、<strong>コンパイルできるか</strong>、<strong>実行時例外になるか</strong>、<strong>正常なら何が出力されるか</strong>の順に確認してください。説明を読んで「知っている」と思った項目でも、コード例を見て即答できなければ試験では弱点です。</p>
+</section><section class="article-section">
+<h2>細部を暗記ではなく対比で固定する</h2>
+<div class="table-wrap"><table class="ref-table"><thead><tr><th>似たもの</th><th>違い</th></tr></thead><tbody><tr><td>配列<code>length</code> / String<code>length()</code> / List<code>size()</code></td><td>フィールド / メソッド / メソッド</td></tr><tr><td><code>String.isEmpty()</code> / <code>isBlank()</code></td><td>長さ0 / 空白文字だけも含む</td></tr><tr><td><code>add(index,e)</code> / <code>set(index,e)</code></td><td>挿入 / 既存要素置換</td></tr><tr><td><code>==</code> / <code>equals</code></td><td>演算子による値・参照比較 / 動的メソッド呼び出し</td></tr><tr><td><code>throw</code> / <code>throws</code></td><td>例外オブジェクトを投げる文 / 宣言部で伝播可能性を示す</td></tr><tr><td><code>this</code> / <code>super</code></td><td>現在のオブジェクト / 親クラス側のメンバー・コンストラクタ</td></tr><tr><td><code>break</code> / <code>continue</code></td><td>対象文を終了 / 次の反復へ</td></tr></tbody></table></div>
+</section>
+<section class="article-section">
+<h2>実行引数・mainメソッドまわり</h2>
+<div class="article-card">
+<h3><code>String[] args</code> は引数なしでも <code>null</code> ではない</h3>
+<p>コマンドライン引数を渡さずに実行しても、<code>args</code> には長さ0の配列が渡されます。したがって <code>args.length</code> は <code>0</code> です。<code>args == null</code> ではありません。</p>
 <pre><code>public class Main {
     public static void main(String[] args) {
         System.out.println(args.length);
     }
 }</code></pre>
-          <p>引数なしで実行すると <code>0</code> が表示されます。ただし <code>args[0]</code> にアクセスすると、長さ0の配列に対する要素外アクセスなので <code>ArrayIndexOutOfBoundsException</code> です。</p>
-        </div>
-        <div class="article-card">
-          <h3>mainメソッドとして認められる形</h3>
-          <p>基本形は <code>public static void main(String[] args)</code> です。<code>String... args</code> も可変長引数なので認められます。引数名は <code>args</code> でなくても構いません。</p>
-          <table class="ref-table"><thead><tr><th>宣言</th><th>判定</th><th>理由</th></tr></thead><tbody>
-            <tr><td><code>public static void main(String[] args)</code></td><td>OK</td><td>標準形</td></tr>
-            <tr><td><code>public static void main(String... data)</code></td><td>OK</td><td><code>String[]</code> と同等に扱える</td></tr>
-            <tr><td><code>static public void main(String[] args)</code></td><td>OK</td><td>修飾子の順序は本質ではない</td></tr>
-            <tr><td><code>public void main(String[] args)</code></td><td>実行不可</td><td><code>static</code> ではない</td></tr>
-            <tr><td><code>public static int main(String[] args)</code></td><td>実行不可</td><td>戻り値が <code>void</code> ではない</td></tr>
-          </tbody></table>
-        </div>
-      </section>
-
-      <section class="article-section">
-        <h2>長さ・サイズ・文字数のAPI差</h2>
-        <p>Java Silverでは、似た名前のAPIを混ぜた選択肢が頻出です。これは暗記ではなく、「対象が配列か、Stringか、Listか」を先に決めれば切れます。</p>
-        <table class="ref-table"><thead><tr><th>対象</th><th>使うもの</th><th>メソッドか</th><th>例</th></tr></thead><tbody>
-          <tr><td>配列</td><td><code>length</code></td><td>フィールド</td><td><code>arr.length</code></td></tr>
-          <tr><td><code>String</code></td><td><code>length()</code></td><td>メソッド</td><td><code>str.length()</code></td></tr>
-          <tr><td><code>StringBuilder</code></td><td><code>length()</code></td><td>メソッド</td><td><code>sb.length()</code></td></tr>
-          <tr><td><code>List</code> / <code>ArrayList</code></td><td><code>size()</code></td><td>メソッド</td><td><code>list.size()</code></td></tr>
-        </tbody></table>
-        <div class="warn-box"><p><code>arr.length()</code>、<code>str.length</code>、<code>list.length</code> は全部コンパイルエラーです。見た目で流すと落ちます。</p></div>
-      </section>
-
-      <section class="article-section">
-        <h2><code>null</code> の扱い</h2>
-        <div class="article-card-grid">
-          <div class="article-card"><h3><code>println(null)</code></h3><p><code>System.out.println(s)</code> の <code>s</code> が <code>null</code> なら、文字列 <code>null</code> として表示されます。メソッド呼び出しではありません。</p></div>
-          <div class="article-card"><h3><code>null.toString()</code></h3><p><code>null</code> 参照に対してインスタンスメソッドを呼ぶので <code>NullPointerException</code> です。</p></div>
-          <div class="article-card"><h3><code>"x" + null</code></h3><p>文字列連結では <code>null</code> は <code>"null"</code> として連結されます。<code>"xnull"</code> になります。</p></div>
-          <div class="article-card"><h3><code>null instanceof X</code></h3><p><code>false</code> です。例外にはなりません。パターン変数も有効になりません。</p></div>
-        </div>
+<p>引数なしで実行すると <code>0</code> が表示されます。ただし <code>args[0]</code> にアクセスすると、長さ0の配列に対する要素外アクセスなので <code>ArrayIndexOutOfBoundsException</code> です。</p>
+</div>
+<div class="article-card">
+<h3>mainメソッドとして認められる形</h3>
+<p>基本形は <code>public static void main(String[] args)</code> です。<code>String... args</code> も可変長引数なので認められます。引数名は <code>args</code> でなくても構いません。</p>
+<table class="ref-table"><thead><tr><th>宣言</th><th>判定</th><th>理由</th></tr></thead><tbody>
+<tr><td><code>public static void main(String[] args)</code></td><td>OK</td><td>標準形</td></tr>
+<tr><td><code>public static void main(String... data)</code></td><td>OK</td><td><code>String[]</code> と同等に扱える</td></tr>
+<tr><td><code>static public void main(String[] args)</code></td><td>OK</td><td>修飾子の順序は本質ではない</td></tr>
+<tr><td><code>public void main(String[] args)</code></td><td>実行不可</td><td><code>static</code> ではない</td></tr>
+<tr><td><code>public static int main(String[] args)</code></td><td>実行不可</td><td>戻り値が <code>void</code> ではない</td></tr>
+</tbody></table>
+</div>
+</section>
+<section class="article-section">
+<h2>長さ・サイズ・文字数のAPI差</h2>
+<p>Java Silverでは、似た名前のAPIを混ぜた選択肢が頻出です。これは暗記ではなく、「対象が配列か、Stringか、Listか」を先に決めれば切れます。</p>
+<table class="ref-table"><thead><tr><th>対象</th><th>使うもの</th><th>メソッドか</th><th>例</th></tr></thead><tbody>
+<tr><td>配列</td><td><code>length</code></td><td>フィールド</td><td><code>arr.length</code></td></tr>
+<tr><td><code>String</code></td><td><code>length()</code></td><td>メソッド</td><td><code>str.length()</code></td></tr>
+<tr><td><code>StringBuilder</code></td><td><code>length()</code></td><td>メソッド</td><td><code>sb.length()</code></td></tr>
+<tr><td><code>List</code> / <code>ArrayList</code></td><td><code>size()</code></td><td>メソッド</td><td><code>list.size()</code></td></tr>
+</tbody></table>
+<div class="warn-box"><p><code>arr.length()</code>、<code>str.length</code>、<code>list.length</code> は全部コンパイルエラーです。見た目で流すと落ちます。</p></div>
+</section>
+<section class="article-section">
+<h2><code>null</code> の扱い</h2>
+<div class="article-card-grid">
+<div class="article-card"><h3><code>println(null)</code></h3><p><code>System.out.println(s)</code> の <code>s</code> が <code>null</code> なら、文字列 <code>null</code> として表示されます。メソッド呼び出しではありません。</p></div>
+<div class="article-card"><h3><code>null.toString()</code></h3><p><code>null</code> 参照に対してインスタンスメソッドを呼ぶので <code>NullPointerException</code> です。</p></div>
+<div class="article-card"><h3><code>"x" + null</code></h3><p>文字列連結では <code>null</code> は <code>"null"</code> として連結されます。<code>"xnull"</code> になります。</p></div>
+<div class="article-card"><h3><code>null instanceof X</code></h3><p><code>false</code> です。例外にはなりません。パターン変数も有効になりません。</p></div>
+</div>
 <pre><code>String s = null;
 System.out.println(s);        // null
 System.out.println("A" + s);  // Anull
 System.out.println(s.length()); // NullPointerException</code></pre>
-      </section>
-
-      <section class="article-section">
-        <h2>初期値・確定代入・スコープ</h2>
-        <p>フィールドには型ごとのデフォルト値があります。一方、ローカル変数にはデフォルト値がありません。宣言しただけで使うとコンパイルエラーです。</p>
-        <table class="ref-table"><thead><tr><th>場所</th><th>初期値</th><th>試験での見方</th></tr></thead><tbody>
-          <tr><td>インスタンスフィールド</td><td>ある</td><td><code>int</code> は0、参照型は <code>null</code>、<code>boolean</code> は <code>false</code></td></tr>
-          <tr><td>staticフィールド</td><td>ある</td><td>クラスに属するだけで、初期値ルールはフィールドと同じ</td></tr>
-          <tr><td>ローカル変数</td><td>ない</td><td>使用前に確実に代入されていないとコンパイルエラー</td></tr>
-          <tr><td>配列要素</td><td>ある</td><td><code>new int[3]</code> の各要素は0</td></tr>
-        </tbody></table>
-        <div class="article-card">
-          <h3>条件分岐があるローカル変数</h3>
+</section><section class="article-section">
+<h2>nullを使える場所と失敗地点</h2>
+<ul class="article-list"><li>任意の参照型変数へ代入できます。プリミティブ型へ直接代入できません。</li><li>参照型へのキャストは可能で、結果はnullです。</li><li><code>instanceof</code>の結果はfalseです。</li><li>文字列連結では文字列<code>"null"</code>として扱われます。</li><li>インスタンスメソッド・フィールドアクセス・アンボクシングで例外になります。</li><li>staticメンバーをnull参照経由で呼べる形でも、式の評価や可読性に注意し、型名を使います。</li></ul>
+</section>
+<section class="article-section">
+<h2>初期値・確定代入・スコープ</h2>
+<p>フィールドには型ごとのデフォルト値があります。一方、ローカル変数にはデフォルト値がありません。宣言しただけで使うとコンパイルエラーです。</p>
+<table class="ref-table"><thead><tr><th>場所</th><th>初期値</th><th>試験での見方</th></tr></thead><tbody>
+<tr><td>インスタンスフィールド</td><td>ある</td><td><code>int</code> は0、参照型は <code>null</code>、<code>boolean</code> は <code>false</code></td></tr>
+<tr><td>staticフィールド</td><td>ある</td><td>クラスに属するだけで、初期値ルールはフィールドと同じ</td></tr>
+<tr><td>ローカル変数</td><td>ない</td><td>使用前に確実に代入されていないとコンパイルエラー</td></tr>
+<tr><td>配列要素</td><td>ある</td><td><code>new int[3]</code> の各要素は0</td></tr>
+</tbody></table>
+<div class="article-card">
+<h3>条件分岐があるローカル変数</h3>
 <pre><code>int x;
 if (flag) {
     x = 10;
 }
 System.out.println(x); // flagがfalseなら未代入なのでコンパイルエラー</code></pre>
-          <p>「実行時にflagがtrueかもしれない」では足りません。コンパイラが全経路で代入済みと判断できる必要があります。</p>
-        </div>
-      </section>
+<p>「実行時にflagがtrueかもしれない」では足りません。コンパイラが全経路で代入済みと判断できる必要があります。</p>
+</div>
+</section>
+<section class="article-section">
+<h2>数値・文字・booleanの小さい罠</h2>
+<div class="article-card-grid">
+<div class="article-card"><h3><code>char</code> は整数系</h3><p><code>char c = 'A';</code> は文字ですが、演算すると数値として扱われます。<code>'A' + 1</code> は <code>int</code> 型の <code>66</code> です。</p></div>
+<div class="article-card"><h3><code>boolean</code> は数値非互換</h3><p><code>true == 1</code>、<code>boolean b = 0;</code> は不可です。他言語経験者ほど引っかかります。</p></div>
+<div class="article-card"><h3>整数は基本 <code>int</code></h3><p><code>10</code> は <code>int</code>、<code>10L</code> は <code>long</code> です。小数 <code>10.0</code> は基本 <code>double</code> です。</p></div>
+<div class="article-card"><h3><code>byte</code> / <code>short</code> は演算で <code>int</code></h3><p><code>byte b = 1; b = b + 1;</code> はコンパイルエラー。<code>b += 1;</code> は複合代入なので可。</p></div>
+</div>
+</section>
+<section class="article-section">
+<h2>配列・Listの境界仕様</h2>
+<table class="ref-table"><thead><tr><th>コード/状況</th><th>結果</th><th>理由</th></tr></thead><tbody>
+<tr><td><code>new int[0]</code></td><td>OK</td><td>長さ0の配列は作れる</td></tr>
+<tr><td><code>arr[0]</code> ただし長さ0</td><td>実行時例外</td><td><code>ArrayIndexOutOfBoundsException</code></td></tr>
+<tr><td><code>new int[-1]</code></td><td>実行時例外</td><td><code>NegativeArraySizeException</code></td></tr>
+<tr><td><code>List.of("A").add("B")</code></td><td>実行時例外</td><td>変更不可リストなので <code>UnsupportedOperationException</code></td></tr>
+<tr><td><code>Arrays.asList("A", "B").set(0, "X")</code></td><td>OK</td><td>要素の置換は可能</td></tr>
+<tr><td><code>Arrays.asList("A", "B").add("C")</code></td><td>実行時例外</td><td>固定サイズなので追加不可</td></tr>
+</tbody></table>
+</section>
+<section class="article-section">
+<h2>継承・interface・修飾子の細かい仕様</h2>
+<div class="article-card-grid">
+<div class="article-card"><h3>コンストラクタは継承されない</h3><p>サブクラスのインスタンス生成時にスーパークラスのコンストラクタは呼ばれますが、コンストラクタ自体をメンバとして引き継ぐわけではありません。</p></div>
+<div class="article-card"><h3><code>private</code> メンバはサブクラスから使えない</h3><p>サブクラスのインスタンス内にスーパークラス部分はありますが、<code>private</code> には直接アクセスできません。</p></div>
+<div class="article-card"><h3>interfaceの抽象メソッドは <code>public</code></h3><p>実装クラスでアクセス修飾子を省略するとdefaultアクセスになり、publicより狭いためコンパイルエラーです。</p></div>
+<div class="article-card"><h3>defaultメソッドとObjectメソッド</h3><p>interfaceのdefaultメソッドで <code>toString</code> など <code>Object</code> 由来のpublicメソッドを上書きする形は不可です。</p></div>
+<div class="article-card"><h3>staticメソッドはoverrideではない</h3><p>同名staticメソッドは隠蔽です。インスタンスの実体ではなく、参照型・クラス名に基づきます。</p></div>
+<div class="article-card"><h3>フィールドはoverrideされない</h3><p>同名フィールドがあっても、多態的に解決されません。参照変数の型でアクセス先が決まります。</p></div>
+</div>
+</section>
+<section class="article-section">
+<h2>例外処理の細かい仕様</h2>
+<table class="ref-table"><thead><tr><th>仕様</th><th>要点</th><th>ひっかけ</th></tr></thead><tbody>
+<tr><td>catch順序</td><td>サブクラス例外を先に書く</td><td><code>Exception</code> の後に <code>IOException</code> は到達不能</td></tr>
+<tr><td>finally</td><td>例外の有無に関係なく原則実行</td><td>catchされない例外でもfinallyは通る</td></tr>
+<tr><td>try-with-resources</td><td>リソースは宣言と逆順にclose</td><td>close後にfinallyが動く</td></tr>
+<tr><td>multi-catch</td><td><code>catch (A | B e)</code></td><td>継承関係にある例外同士は同時指定不可</td></tr>
+<tr><td>チェック例外</td><td>処理またはthrowsが必要</td><td><code>RuntimeException</code> 系は不要</td></tr>
+</tbody></table>
+</section>
+<section class="article-section">
+<h2>細部で失点しないための照合項目</h2>
+<ul class="check-list">
+<li><code>args</code> は引数なしでも長さ0配列。</li>
+<li>配列は <code>length</code>、Stringは <code>length()</code>、Listは <code>size()</code>。</li>
+<li>ローカル変数に初期値はない。</li>
+<li><code>null</code> に対するメソッド呼び出しは <code>NullPointerException</code>。</li>
+<li><code>String</code> は不変、<code>StringBuilder</code> は可変。</li>
+<li><code>StringBuilder.equals()</code> は内容比較ではない。</li>
+<li><code>byte</code> / <code>short</code> / <code>char</code> の演算結果は基本 <code>int</code>。</li>
+<li><code>boolean</code> と数値は非互換。</li>
+<li>コンストラクタは継承されない。</li>
+<li>interface実装メソッドは <code>public</code> が必要。</li>
+<li>フィールドはoverrideされない。</li>
+<li>staticメソッドはoverrideされない。</li>
+<li>catchは狭い例外から広い例外へ。</li>
+<li>try-with-resourcesのcloseは逆順。</li>
+</ul>
+</section>
 
-      <section class="article-section">
-        <h2>数値・文字・booleanの小さい罠</h2>
-        <div class="article-card-grid">
-          <div class="article-card"><h3><code>char</code> は整数系</h3><p><code>char c = 'A';</code> は文字ですが、演算すると数値として扱われます。<code>'A' + 1</code> は <code>int</code> 型の <code>66</code> です。</p></div>
-          <div class="article-card"><h3><code>boolean</code> は数値非互換</h3><p><code>true == 1</code>、<code>boolean b = 0;</code> は不可です。他言語経験者ほど引っかかります。</p></div>
-          <div class="article-card"><h3>整数は基本 <code>int</code></h3><p><code>10</code> は <code>int</code>、<code>10L</code> は <code>long</code> です。小数 <code>10.0</code> は基本 <code>double</code> です。</p></div>
-          <div class="article-card"><h3><code>byte</code> / <code>short</code> は演算で <code>int</code></h3><p><code>byte b = 1; b = b + 1;</code> はコンパイルエラー。<code>b += 1;</code> は複合代入なので可。</p></div>
-        </div>
-      </section>
 
-      <section class="article-section">
-        <h2>配列・Listの境界仕様</h2>
-        <table class="ref-table"><thead><tr><th>コード/状況</th><th>結果</th><th>理由</th></tr></thead><tbody>
-          <tr><td><code>new int[0]</code></td><td>OK</td><td>長さ0の配列は作れる</td></tr>
-          <tr><td><code>arr[0]</code> ただし長さ0</td><td>実行時例外</td><td><code>ArrayIndexOutOfBoundsException</code></td></tr>
-          <tr><td><code>new int[-1]</code></td><td>実行時例外</td><td><code>NegativeArraySizeException</code></td></tr>
-          <tr><td><code>List.of("A").add("B")</code></td><td>実行時例外</td><td>変更不可リストなので <code>UnsupportedOperationException</code></td></tr>
-          <tr><td><code>Arrays.asList("A", "B").set(0, "X")</code></td><td>OK</td><td>要素の置換は可能</td></tr>
-          <tr><td><code>Arrays.asList("A", "B").add("C")</code></td><td>実行時例外</td><td>固定サイズなので追加不可</td></tr>
-        </tbody></table>
-      </section>
 
-      <section class="article-section">
-        <h2>継承・interface・修飾子の細かい仕様</h2>
-        <div class="article-card-grid">
-          <div class="article-card"><h3>コンストラクタは継承されない</h3><p>サブクラスのインスタンス生成時にスーパークラスのコンストラクタは呼ばれますが、コンストラクタ自体をメンバとして引き継ぐわけではありません。</p></div>
-          <div class="article-card"><h3><code>private</code> メンバはサブクラスから使えない</h3><p>サブクラスのインスタンス内にスーパークラス部分はありますが、<code>private</code> には直接アクセスできません。</p></div>
-          <div class="article-card"><h3>interfaceの抽象メソッドは <code>public</code></h3><p>実装クラスでアクセス修飾子を省略するとdefaultアクセスになり、publicより狭いためコンパイルエラーです。</p></div>
-          <div class="article-card"><h3>defaultメソッドとObjectメソッド</h3><p>interfaceのdefaultメソッドで <code>toString</code> など <code>Object</code> 由来のpublicメソッドを上書きする形は不可です。</p></div>
-          <div class="article-card"><h3>staticメソッドはoverrideではない</h3><p>同名staticメソッドは隠蔽です。インスタンスの実体ではなく、参照型・クラス名に基づきます。</p></div>
-          <div class="article-card"><h3>フィールドはoverrideされない</h3><p>同名フィールドがあっても、多態的に解決されません。参照変数の型でアクセス先が決まります。</p></div>
-        </div>
-      </section>
-
-      <section class="article-section">
-        <h2>例外処理の細かい仕様</h2>
-        <table class="ref-table"><thead><tr><th>仕様</th><th>要点</th><th>ひっかけ</th></tr></thead><tbody>
-          <tr><td>catch順序</td><td>サブクラス例外を先に書く</td><td><code>Exception</code> の後に <code>IOException</code> は到達不能</td></tr>
-          <tr><td>finally</td><td>例外の有無に関係なく原則実行</td><td>catchされない例外でもfinallyは通る</td></tr>
-          <tr><td>try-with-resources</td><td>リソースは宣言と逆順にclose</td><td>close後にfinallyが動く</td></tr>
-          <tr><td>multi-catch</td><td><code>catch (A | B e)</code></td><td>継承関係にある例外同士は同時指定不可</td></tr>
-          <tr><td>チェック例外</td><td>処理またはthrowsが必要</td><td><code>RuntimeException</code> 系は不要</td></tr>
-        </tbody></table>
-      </section>
-
-      <section class="article-section">
-        <h2>最終チェックリスト</h2>
-        <ul class="check-list">
-          <li><code>args</code> は引数なしでも長さ0配列。</li>
-          <li>配列は <code>length</code>、Stringは <code>length()</code>、Listは <code>size()</code>。</li>
-          <li>ローカル変数に初期値はない。</li>
-          <li><code>null</code> に対するメソッド呼び出しは <code>NullPointerException</code>。</li>
-          <li><code>String</code> は不変、<code>StringBuilder</code> は可変。</li>
-          <li><code>StringBuilder.equals()</code> は内容比較ではない。</li>
-          <li><code>byte</code> / <code>short</code> / <code>char</code> の演算結果は基本 <code>int</code>。</li>
-          <li><code>boolean</code> と数値は非互換。</li>
-          <li>コンストラクタは継承されない。</li>
-          <li>interface実装メソッドは <code>public</code> が必要。</li>
-          <li>フィールドはoverrideされない。</li>
-          <li>staticメソッドはoverrideされない。</li>
-          <li>catchは狭い例外から広い例外へ。</li>
-          <li>try-with-resourcesのcloseは逆順。</li>
-        </ul>
-      </section>
-
-    </main>
-  </div>
-  <script src="data/questions.js?v=code-audit-v18"></script>
-  <script src="assets/js/app.js?v=code-audit-v18"></script>
+</main>
+</div>
+<script src="data/questions.js?v=article-specific-v11"></script>
+<script src="assets/js/app.js?v=article-specific-v11"></script>
 </body>
 </html>

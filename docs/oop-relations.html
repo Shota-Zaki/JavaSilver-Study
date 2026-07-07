@@ -1,50 +1,49 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
-  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Java Silver Study - 継承・interface・override</title>
-  <link rel="stylesheet" href="assets/css/styles.css?v=code-audit-v18">
+<meta charset="utf-8"/>
+<meta content="noindex, nofollow, noarchive, nosnippet" name="robots"/>
+<meta content="noindex, nofollow, noarchive, nosnippet" name="googlebot"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Java Silver Study - 継承・interface・override</title>
+<link href="assets/css/styles.css?v=article-specific-v11" rel="stylesheet"/>
 </head>
 <body>
-  <div class="layout">
-    <aside class="sidebar">
-      <p class="brand"><a href="index.html">Java Silver Study</a></p>
-      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
-    </aside>
-    <main class="main reference-main article-main">
-      <section class="hero reference-hero compact-hero article-hero">
-        <p class="eyebrow">Java Silver Reference</p>
-        <h1>継承・interface・override</h1>
-        <p>extends、implements、abstract、overrideを、コンパイル可否と出力追跡に直結する形で整理します。</p>
-      </section>
-
-      <section class="article-section">
-        <h2>この単元で最初に固定する考え方</h2>
-        <p>継承・interfaceの問題は、用語を知っているだけでは足りません。毎回、次の順で切ります。</p>
-        <ol>
-          <li><strong>クラス関係</strong>を見る。<code>extends</code> か <code>implements</code> か、単一継承か複数interfaceか。</li>
-          <li><strong>宣言型</strong>を見る。変数の型から、その場で呼べるメソッドが決まります。</li>
-          <li><strong>実体</strong>を見る。overrideされたインスタンスメソッドは、実体のクラスで動きます。</li>
-          <li><strong>アクセス修飾子</strong>を見る。継承していることと、直接アクセスできることは別です。</li>
-          <li><strong>コンストラクタ連鎖</strong>を見る。コンストラクタは継承されず、生成時には必ず親のコンストラクタが先に動きます。</li>
-        </ol>
-        <p class="inline-note">雑に「子クラスだから親の全部が使える」と考えると落ちます。Java Silverでは、private、default、protected、コンストラクタ、フィールド解決で崩されます。</p>
-      </section>
-
-      <section class="article-section">
-        <h2>スーパークラスとサブクラス</h2>
-        <p>継承を読むときは、まず「どちらが元で、どちらが拡張先か」を固定します。<code>class Child extends Parent</code> なら、<code>Parent</code> がスーパークラス、<code>Child</code> がサブクラスです。</p>
-        <table class="ref-table">
-          <thead><tr><th>用語</th><th>別名</th><th>意味</th><th>コード上の位置</th></tr></thead>
-          <tbody>
-            <tr><td>スーパークラス</td><td>親クラス / 基底クラス</td><td>継承元。共通のフィールドやメソッドを持つ側</td><td><code>extends</code> の右側</td></tr>
-            <tr><td>サブクラス</td><td>子クラス / 派生クラス</td><td>継承先。スーパークラスを土台に差分を追加する側</td><td><code>extends</code> の左側</td></tr>
-          </tbody>
-        </table>
-        <pre class="article-code"><code>class Parent {          // スーパークラス
+<div class="layout">
+<aside class="sidebar">
+<p class="brand"><a href="index.html">Java Silver Study</a></p>
+<nav aria-label="章一覧" class="nav-list" id="chapterNav"></nav>
+</aside>
+<main class="main reference-main article-main">
+<section class="hero reference-hero compact-hero article-hero">
+<p class="eyebrow">Java Silver Reference</p>
+<h1>継承・interface・override</h1>
+<p>extends、implements、abstract、overrideを、コンパイル可否と出力追跡に直結する形で整理します。</p>
+</section>
+<section class="article-section">
+<h2>継承はメンバーごとに規則が異なる</h2>
+<p>継承・interfaceの問題は、用語を知っているだけでは足りません。毎回、次の順で切ります。</p>
+<ol>
+<li><strong>クラス関係</strong>を見る。<code>extends</code> か <code>implements</code> か、単一継承か複数interfaceか。</li>
+<li><strong>宣言型</strong>を見る。変数の型から、その場で呼べるメソッドが決まります。</li>
+<li><strong>実体</strong>を見る。overrideされたインスタンスメソッドは、実体のクラスで動きます。</li>
+<li><strong>アクセス修飾子</strong>を見る。継承していることと、直接アクセスできることは別です。</li>
+<li><strong>コンストラクタ連鎖</strong>を見る。コンストラクタは継承されず、生成時には必ず親のコンストラクタが先に動きます。</li>
+</ol>
+<p class="inline-note">雑に「子クラスだから親の全部が使える」と考えると落ちます。Java Silverでは、private、default、protected、コンストラクタ、フィールド解決で崩されます。</p>
+</section>
+<section class="article-section">
+<h2>スーパークラスとサブクラス</h2>
+<p>継承を読むときは、まず「どちらが元で、どちらが拡張先か」を固定します。<code>class Child extends Parent</code> なら、<code>Parent</code> がスーパークラス、<code>Child</code> がサブクラスです。</p>
+<table class="ref-table">
+<thead><tr><th>用語</th><th>別名</th><th>意味</th><th>コード上の位置</th></tr></thead>
+<tbody>
+<tr><td>スーパークラス</td><td>親クラス / 基底クラス</td><td>継承元。共通のフィールドやメソッドを持つ側</td><td><code>extends</code> の右側</td></tr>
+<tr><td>サブクラス</td><td>子クラス / 派生クラス</td><td>継承先。スーパークラスを土台に差分を追加する側</td><td><code>extends</code> の左側</td></tr>
+</tbody>
+</table>
+<pre class="article-code"><code>class Parent {          // スーパークラス
     String name = "parent";
     void hello() {
         System.out.println("hello " + name);
@@ -56,17 +55,20 @@ class Child extends Parent { // サブクラス
         System.out.println("child");
     }
 }</code></pre>
-        <p><code>Child</code> のインスタンスは、<code>Parent</code> として扱える部分と、<code>Child</code> で追加した部分をあわせて持ちます。だから <code>Parent p = new Child();</code> のように、サブクラスのインスタンスをスーパークラス型の変数に代入できます。</p>
-        <pre class="article-code"><code>Parent p = new Child();
+<p><code>Child</code> のインスタンスは、<code>Parent</code> として扱える部分と、<code>Child</code> で追加した部分をあわせて持ちます。だから <code>Parent p = new Child();</code> のように、サブクラスのインスタンスをスーパークラス型の変数に代入できます。</p>
+<pre class="article-code"><code>Parent p = new Child();
 p.hello();
 // p.childOnly(); // NG: 変数の宣言型ParentにはchildOnlyがない</code></pre>
-        <p>ここで重要なのは、<strong>インスタンスが持っている機能</strong>と、<strong>変数の型から呼べる機能</strong>は別だという点です。実体が <code>Child</code> でも、変数の宣言型が <code>Parent</code> なら、<code>Parent</code> に見えているメンバしか呼べません。</p>
-      </section>
-
-      <section class="article-section">
-        <h2>継承は「is-a関係」として読む</h2>
-        <p>サブクラスはスーパークラスの一種として扱えます。これを <strong>is-a関係</strong> と考えます。<code>Child extends Parent</code> なら「Child は Parent の一種」と読める関係です。</p>
-        <pre class="article-code"><code>class Animal {
+<p>ここで重要なのは、<strong>インスタンスが持っている機能</strong>と、<strong>変数の型から呼べる機能</strong>は別だという点です。実体が <code>Child</code> でも、変数の宣言型が <code>Parent</code> なら、<code>Parent</code> に見えているメンバしか呼べません。</p>
+</section><section class="article-section">
+<h2>継承問題の最重要4分類</h2>
+<div class="table-wrap"><table class="ref-table"><thead><tr><th>対象</th><th>子クラス側の関係</th><th>呼び出し・参照の基準</th></tr></thead><tbody><tr><td>インスタンスメソッド</td><td>オーバーライド</td><td>実行時のオブジェクト型</td></tr><tr><td>staticメソッド</td><td>隠蔽</td><td>呼び出し式のコンパイル時型</td></tr><tr><td>フィールド</td><td>隠蔽</td><td>参照式のコンパイル時型</td></tr><tr><td>コンストラクタ</td><td>継承されない</td><td><code>this(...)</code>/<code>super(...)</code>で連鎖</td></tr></tbody></table></div>
+<p>この4分類を最初に行うと、出力問題とコンパイル可否を同じ規則で処理できます。</p>
+<details class="article-card"><summary><strong>staticとinstanceの置換</strong></summary><p>親のstaticメソッドと同じシグネチャを、子でインスタンスメソッドとして宣言できますか。</p><div class="article-callout"><strong>static整合性：</strong>できません。継承関係にある同一シグネチャでstaticとインスタンスを切り替えるとコンパイルエラーです。</div></details></section>
+<section class="article-section">
+<h2>継承は「is-a関係」として読む</h2>
+<p>サブクラスはスーパークラスの一種として扱えます。これを <strong>is-a関係</strong> と考えます。<code>Child extends Parent</code> なら「Child は Parent の一種」と読める関係です。</p>
+<pre class="article-code"><code>class Animal {
     void eat() {}
 }
 
@@ -76,31 +78,40 @@ class Dog extends Animal {
 
 Animal a = new Dog(); // OK: DogはAnimalの一種
 // Dog d = new Animal(); // NG: Animalが必ずDogとは限らない</code></pre>
-        <p>この非対称性が重要です。サブクラスからスーパークラスへの代入は自然にできますが、スーパークラスからサブクラスへの代入にはキャストが必要です。そして、実体がそのサブクラスでなければ実行時に <code>ClassCastException</code> になります。</p>
-        <details class="article-card"><summary><strong>試験での読み方</strong></summary><p><code>A a = new B();</code> が出たら、まず <code>B extends A</code> または <code>B implements A</code> の関係があるかを確認します。関係がなければコンパイルエラーです。関係がある場合でも、<code>a</code> から呼べるのは宣言型 <code>A</code> にあるメンバだけです。</p></details>
-      </section>
-
-      <section class="article-section">
-        <h2>継承されるもの・されないもの・直接アクセスできないもの</h2>
-        <p>「サブクラスはスーパークラスを継承する」という表現を雑に覚えると危険です。試験では、何が使えて何が使えないかを分けて問われます。</p>
-        <table class="ref-table">
-          <thead><tr><th>対象</th><th>サブクラスでどう扱うか</th><th>注意点</th></tr></thead>
-          <tbody>
-            <tr><td>public / protected / 条件を満たすdefaultメンバ</td><td>利用できる</td><td>アクセス修飾子とパッケージ条件を見る</td></tr>
-            <tr><td>privateフィールド・privateメソッド</td><td>直接アクセス不可</td><td>親の内部には存在するが、子から直接触れない</td></tr>
-            <tr><td>コンストラクタ</td><td>継承されない</td><td><code>super(...)</code> で呼び出すだけ</td></tr>
-            <tr><td>同名フィールド</td><td>overrideではない</td><td>フィールドは宣言型で解決される</td></tr>
-            <tr><td>インスタンスメソッド</td><td>override可能</td><td>呼び出し可否は宣言型、実行される本体は実体で決まる</td></tr>
-            <tr><td>staticメソッド</td><td>overrideではなく隠蔽</td><td>インスタンスメソッドとは解決規則が違う</td></tr>
-          </tbody>
-        </table>
-        <p>特に <code>private</code> とコンストラクタは「継承しているから使える」という雑な理解を壊すためによく出ます。ここを曖昧にしたまま問題を解くと、コンパイルエラー判定を外します。</p>
-      </section>
-
-      <section class="article-section">
-        <h2><code>this</code> と <code>super</code> の役割</h2>
-        <p><code>this</code> は現在のインスタンス、<code>super</code> はスーパークラス側のメンバやコンストラクタを指すために使います。</p>
-        <pre class="article-code"><code>class Parent {
+<p>この非対称性が重要です。サブクラスからスーパークラスへの代入は自然にできますが、スーパークラスからサブクラスへの代入にはキャストが必要です。そして、実体がそのサブクラスでなければ実行時に <code>ClassCastException</code> になります。</p>
+<details class="article-card"><summary><strong>試験での読み方</strong></summary><p><code>A a = new B();</code> が出たら、まず <code>B extends A</code> または <code>B implements A</code> の関係があるかを確認します。関係がなければコンパイルエラーです。関係がある場合でも、<code>a</code> から呼べるのは宣言型 <code>A</code> にあるメンバだけです。</p></details>
+</section>
+<section class="article-section">
+<h2>継承されるもの・されないもの・直接アクセスできないもの</h2>
+<p>「サブクラスはスーパークラスを継承する」という表現を雑に覚えると危険です。試験では、何が使えて何が使えないかを分けて問われます。</p>
+<table class="ref-table">
+<thead><tr><th>対象</th><th>サブクラスでどう扱うか</th><th>注意点</th></tr></thead>
+<tbody>
+<tr><td>public / protected / 条件を満たすdefaultメンバ</td><td>利用できる</td><td>アクセス修飾子とパッケージ条件を見る</td></tr>
+<tr><td>privateフィールド・privateメソッド</td><td>直接アクセス不可</td><td>親の内部には存在するが、子から直接触れない</td></tr>
+<tr><td>コンストラクタ</td><td>継承されない</td><td><code>super(...)</code> で呼び出すだけ</td></tr>
+<tr><td>同名フィールド</td><td>overrideではない</td><td>フィールドは宣言型で解決される</td></tr>
+<tr><td>インスタンスメソッド</td><td>override可能</td><td>呼び出し可否は宣言型、実行される本体は実体で決まる</td></tr>
+<tr><td>staticメソッド</td><td>overrideではなく隠蔽</td><td>インスタンスメソッドとは解決規則が違う</td></tr>
+</tbody>
+</table>
+<p>特に <code>private</code> とコンストラクタは「継承しているから使える」という雑な理解を壊すためによく出ます。ここを曖昧にしたまま問題を解くと、コンパイルエラー判定を外します。</p>
+</section><section class="article-section">
+<h2>継承されることと直接アクセスできることを分ける</h2>
+<p>privateメンバーは子クラスへ継承されず、直接アクセスできません。ただし親クラス部分の状態としてオブジェクト内には存在し、親クラスが提供するメソッド経由で利用できます。</p>
+<pre class="article-code"><code>class Parent {
+          private int value = 10;
+          protected int getValue() { return value; }
+      }
+      class Child extends Parent {
+          int read() { return getValue(); }
+      }</code></pre>
+<div class="article-callout"><strong>表現の精度：</strong>「子オブジェクトにprivateフィールドが存在しない」のではなく、「子クラスの宣言からその名前を直接使えない」と考えると混乱が減ります。</div>
+</section>
+<section class="article-section">
+<h2><code>this</code> と <code>super</code> の役割</h2>
+<p><code>this</code> は現在のインスタンス、<code>super</code> はスーパークラス側のメンバやコンストラクタを指すために使います。</p>
+<pre class="article-code"><code>class Parent {
     String name = "parent";
     Parent(String name) {
         this.name = name;
@@ -123,13 +134,12 @@ class Child extends Parent {
         super.print();                  // Parent側のメソッド呼び出し
     }
 }</code></pre>
-        <p><code>super(...)</code> はコンストラクタ呼び出しで、コンストラクタの先頭にしか書けません。<code>super.name</code> や <code>super.print()</code> はスーパークラス側のメンバ参照です。同じ <code>super</code> でも使い方を混ぜないでください。</p>
-      </section>
-
-      <section class="article-section">
-        <h2>extends：クラス継承の基本</h2>
-        <p><code>extends</code> は、既存クラスを拡張してサブクラスを作る構文です。左側のクラスがサブクラス、右側のクラスがスーパークラスです。サブクラスのインスタンスは、スーパークラス部分とサブクラス部分を持ちます。</p>
-        <pre class="article-code"><code>class Parent {
+<p><code>super(...)</code> はコンストラクタ呼び出しで、コンストラクタの先頭にしか書けません。<code>super.name</code> や <code>super.print()</code> はスーパークラス側のメンバ参照です。同じ <code>super</code> でも使い方を混ぜないでください。</p>
+</section>
+<section class="article-section">
+<h2>extends：クラス継承の基本</h2>
+<p><code>extends</code> は、既存クラスを拡張してサブクラスを作る構文です。左側のクラスがサブクラス、右側のクラスがスーパークラスです。サブクラスのインスタンスは、スーパークラス部分とサブクラス部分を持ちます。</p>
+<pre class="article-code"><code>class Parent {
     String name = "parent";
     void hello() {
         System.out.println("hello " + name);
@@ -141,13 +151,12 @@ class Child extends Parent {
         System.out.println(name); // Parentから継承されたフィールドを使える
     }
 }</code></pre>
-        <p>ここで重要なのは、<strong>継承されたメンバがあるから使える</strong>という点です。もし <code>Parent</code> に <code>name</code> がなく、<code>Child</code> にも <code>name</code> がなければ、<code>name</code> は未定義なのでコンパイルエラーです。</p>
-      </section>
-
-      <section class="article-section">
-        <h2>コンストラクタは継承されない</h2>
-        <p>継承で引き継がれない代表がコンストラクタです。サブクラスのインスタンス生成時には、サブクラスのコンストラクタが呼ばれ、その先頭でスーパークラスのコンストラクタが呼ばれます。</p>
-        <pre class="article-code"><code>class A {
+<p>ここで重要なのは、<strong>継承されたメンバがあるから使える</strong>という点です。もし <code>Parent</code> に <code>name</code> がなく、<code>Child</code> にも <code>name</code> がなければ、<code>name</code> は未定義なのでコンパイルエラーです。</p>
+</section>
+<section class="article-section">
+<h2>コンストラクタは継承されない</h2>
+<p>継承で引き継がれない代表がコンストラクタです。サブクラスのインスタンス生成時には、サブクラスのコンストラクタが呼ばれ、その先頭でスーパークラスのコンストラクタが呼ばれます。</p>
+<pre class="article-code"><code>class A {
     A(String value) {
         System.out.println("A:" + value);
     }
@@ -159,14 +168,24 @@ class B extends A {
         System.out.println("B");
     }
 }</code></pre>
-        <p><code>new B()</code> の実行順は <code>A:b</code> → <code>B</code> です。<code>B</code> が <code>A(String)</code> を継承して <code>new B("x")</code> できるわけではありません。</p>
-        <details class="article-card"><summary><strong>ひっかけ：親に引数なしコンストラクタがない場合</strong></summary><p>子クラスのコンストラクタで <code>super(...)</code> を書かないと、コンパイラは暗黙に <code>super()</code> を入れます。親に <code>A()</code> がなければコンパイルエラーです。</p></details>
-      </section>
-
-      <section class="article-section">
-        <h2>privateメンバは「存在する」が「直接使えない」</h2>
-        <p>privateフィールドやprivateメソッドは、サブクラスから直接アクセスできません。ただし、親クラスの内部からは当然使えます。</p>
-        <pre class="article-code"><code>class A {
+<p><code>new B()</code> の実行順は <code>A:b</code> → <code>B</code> です。<code>B</code> が <code>A(String)</code> を継承して <code>new B("x")</code> できるわけではありません。</p>
+<details class="article-card"><summary><strong>ひっかけ：親に引数なしコンストラクタがない場合</strong></summary><p>子クラスのコンストラクタで <code>super(...)</code> を書かないと、コンパイラは暗黙に <code>super()</code> を入れます。親に <code>A()</code> がなければコンパイルエラーです。</p></details>
+</section><section class="article-section">
+<h2>コンストラクタと初期化の継承関係</h2>
+<p>子クラスを生成すると、親クラス部分を先に初期化する必要があります。子コンストラクタが暗黙または明示的に親コンストラクタを呼び、親の処理が完了してから子の初期化へ進みます。</p>
+<pre class="article-code"><code>class Parent {
+          Parent(int x) { System.out.print("P"); }
+      }
+      class Child extends Parent {
+          Child() { super(10); System.out.print("C"); }
+      }
+      // new Child() -&gt; PC</code></pre>
+<div class="article-callout"><strong>親コンストラクタの要件：</strong>アクセス可能な引数なしコンストラクタがなければ、子は対応する<code>super(...)</code>を明示します。</div>
+<details class="article-card"><summary><strong>コンストラクタ継承</strong></summary><p>親に<code>Parent(int)</code>があると、子にも<code>Child(int)</code>が自動的にできますか。</p><div class="article-callout"><strong>継承される対象：</strong>できません。コンストラクタは継承されません。子側で必要なコンストラクタを宣言します。</div></details></section>
+<section class="article-section">
+<h2>privateメンバは「存在する」が「直接使えない」</h2>
+<p>privateフィールドやprivateメソッドは、サブクラスから直接アクセスできません。ただし、親クラスの内部からは当然使えます。</p>
+<pre class="article-code"><code>class A {
     private String value = "A";
     public String getValue() {
         return value;
@@ -179,13 +198,12 @@ class B extends A {
         System.out.println(getValue()); // OK: publicメソッド経由
     }
 }</code></pre>
-        <p>試験では「継承しているからprivateも使える」と思わせる選択肢が出ます。これは切ってください。privateは同じクラス内だけです。</p>
-      </section>
-
-      <section class="article-section">
-        <h2>implements：interfaceの実装</h2>
-        <p><code>implements</code> は、interfaceで定義された使い方をクラスに実装させる構文です。クラスは1つのクラスしか継承できませんが、複数のinterfaceを実装できます。</p>
-        <pre class="article-code"><code>interface Printable {
+<p>試験では「継承しているからprivateも使える」と思わせる選択肢が出ます。これは切ってください。privateは同じクラス内だけです。</p>
+</section>
+<section class="article-section">
+<h2>implements：interfaceの実装</h2>
+<p><code>implements</code> は、interfaceで定義された使い方をクラスに実装させる構文です。クラスは1つのクラスしか継承できませんが、複数のinterfaceを実装できます。</p>
+<pre class="article-code"><code>interface Printable {
     void print(); // public abstract扱い
 }
 
@@ -201,29 +219,27 @@ class Report implements Printable, Savable {
         System.out.println("save");
     }
 }</code></pre>
-        <p>interfaceの抽象メソッドは暗黙的に <code>public abstract</code> です。そのため、実装クラス側のメソッドも <code>public</code> にしなければいけません。アクセスを狭くするとコンパイルエラーです。</p>
-      </section>
-
-      <section class="article-section">
-        <h2>抽象クラスとinterfaceの違い</h2>
-        <table class="ref-table">
-          <thead><tr><th>観点</th><th>抽象クラス</th><th>interface</th></tr></thead>
-          <tbody>
-            <tr><td>継承方法</td><td><code>extends</code></td><td><code>implements</code></td></tr>
-            <tr><td>複数指定</td><td>不可。クラス継承は1つだけ</td><td>可。複数実装できる</td></tr>
-            <tr><td>インスタンス化</td><td>不可</td><td>不可</td></tr>
-            <tr><td>フィールド</td><td>通常フィールドを持てる</td><td>暗黙に <code>public static final</code></td></tr>
-            <tr><td>コンストラクタ</td><td>持てる</td><td>持てない</td></tr>
-            <tr><td>用途</td><td>共通実装・共通状態を持たせる</td><td>外部からの扱い方を定義する</td></tr>
-          </tbody>
-        </table>
-        <p>抽象クラスは「未完成のクラス」です。interfaceは「扱い方・契約」です。この区別を曖昧にすると、コンストラクタやフィールドの問題で間違えます。</p>
-      </section>
-
-      <section class="article-section">
-        <h2>abstractメソッドを実装しない場合</h2>
-        <p>抽象メソッドを継承した具象クラスは、そのメソッドを実装しなければコンパイルエラーです。実装しないなら、そのクラス自身も <code>abstract</code> にする必要があります。</p>
-        <pre class="article-code"><code>abstract class A {
+<p>interfaceの抽象メソッドは暗黙的に <code>public abstract</code> です。そのため、実装クラス側のメソッドも <code>public</code> にしなければいけません。アクセスを狭くするとコンパイルエラーです。</p>
+</section>
+<section class="article-section">
+<h2>抽象クラスとinterfaceの違い</h2>
+<table class="ref-table">
+<thead><tr><th>観点</th><th>抽象クラス</th><th>interface</th></tr></thead>
+<tbody>
+<tr><td>継承方法</td><td><code>extends</code></td><td><code>implements</code></td></tr>
+<tr><td>複数指定</td><td>不可。クラス継承は1つだけ</td><td>可。複数実装できる</td></tr>
+<tr><td>インスタンス化</td><td>不可</td><td>不可</td></tr>
+<tr><td>フィールド</td><td>通常フィールドを持てる</td><td>暗黙に <code>public static final</code></td></tr>
+<tr><td>コンストラクタ</td><td>持てる</td><td>持てない</td></tr>
+<tr><td>用途</td><td>共通実装・共通状態を持たせる</td><td>外部からの扱い方を定義する</td></tr>
+</tbody>
+</table>
+<p>抽象クラスは「未完成のクラス」です。interfaceは「扱い方・契約」です。この区別を曖昧にすると、コンストラクタやフィールドの問題で間違えます。</p>
+</section>
+<section class="article-section">
+<h2>abstractメソッドを実装しない場合</h2>
+<p>抽象メソッドを継承した具象クラスは、そのメソッドを実装しなければコンパイルエラーです。実装しないなら、そのクラス自身も <code>abstract</code> にする必要があります。</p>
+<pre class="article-code"><code>abstract class A {
     abstract void test();
 }
 
@@ -236,22 +252,21 @@ class C extends B {
         System.out.println("C");
     }
 }</code></pre>
-      </section>
-
-      <section class="article-section">
-        <h2>overrideの成立条件</h2>
-        <p>overrideは「同じ名前のメソッドを書いた」だけでは成立しません。次の条件を同時に満たす必要があります。</p>
-        <table class="ref-table">
-          <thead><tr><th>条件</th><th>正しい形</th><th>誤りやすい形</th></tr></thead>
-          <tbody>
-            <tr><td>シグネチャ</td><td>メソッド名と引数リストが同じ</td><td>引数型が違うとoverload</td></tr>
-            <tr><td>戻り値型</td><td>同じ、または戻り値が参照型ならサブタイプ</td><td>親より広い戻り値型は不可</td></tr>
-            <tr><td>アクセス</td><td>同じか、より広い</td><td><code>public</code> を <code>protected</code> に狭めるのは不可</td></tr>
-            <tr><td>チェック例外</td><td>同じか、より狭い</td><td>より広いチェック例外を追加不可</td></tr>
-            <tr><td>static</td><td>static同士なら隠蔽</td><td>staticとインスタンスの相互変更は不可</td></tr>
-          </tbody>
-        </table>
-        <pre class="article-code"><code>class A {
+</section>
+<section class="article-section">
+<h2>overrideの成立条件</h2>
+<p>overrideは「同じ名前のメソッドを書いた」だけでは成立しません。次の条件を同時に満たす必要があります。</p>
+<table class="ref-table">
+<thead><tr><th>条件</th><th>正しい形</th><th>誤りやすい形</th></tr></thead>
+<tbody>
+<tr><td>シグネチャ</td><td>メソッド名と引数リストが同じ</td><td>引数型が違うとoverload</td></tr>
+<tr><td>戻り値型</td><td>同じ、または戻り値が参照型ならサブタイプ</td><td>親より広い戻り値型は不可</td></tr>
+<tr><td>アクセス</td><td>同じか、より広い</td><td><code>public</code> を <code>protected</code> に狭めるのは不可</td></tr>
+<tr><td>チェック例外</td><td>同じか、より狭い</td><td>より広いチェック例外を追加不可</td></tr>
+<tr><td>static</td><td>static同士なら隠蔽</td><td>staticとインスタンスの相互変更は不可</td></tr>
+</tbody>
+</table>
+<pre class="article-code"><code>class A {
     protected Number test() throws java.io.IOException {
         return 1;
     }
@@ -263,26 +278,34 @@ class B extends A {
         return 1;
     }
 }</code></pre>
-        <p>上の例はOKです。アクセスは <code>protected</code> から <code>public</code> に広がり、戻り値は <code>Number</code> から <code>Integer</code> に具体化され、チェック例外も狭くなっています。</p>
-      </section>
-
-      <section class="article-section">
-        <h2>overloadとoverrideを混同しない</h2>
-        <p>引数が違えばoverloadです。override問題で、選択肢の引数型が少し変わっているだけなら、それはoverrideではありません。</p>
-        <pre class="article-code"><code>class A {
+<p>上の例はOKです。アクセスは <code>protected</code> から <code>public</code> に広がり、戻り値は <code>Number</code> から <code>Integer</code> に具体化され、チェック例外も狭くなっています。</p>
+</section><section class="article-section">
+<h2>オーバーライド条件を一括確認する</h2>
+<div class="table-wrap"><table class="ref-table"><thead><tr><th>確認点</th><th>許可される形</th><th>コンパイルエラーの例</th></tr></thead><tbody><tr><td>名前・引数</td><td>同じシグネチャまたはサブシグネチャ</td><td><code>int</code>を<code>Integer</code>へ変更</td></tr><tr><td>戻り値</td><td>同じ型、参照型なら共変戻り値</td><td><code>int</code>を<code>long</code>へ変更</td></tr><tr><td>アクセス</td><td>同じか広げる</td><td><code>public</code>を<code>protected</code>へ狭める</td></tr><tr><td>チェック例外</td><td>同じ、より狭い、またはなし</td><td><code>IOException</code>を<code>Exception</code>へ広げる</td></tr><tr><td>親メソッド</td><td>非private・非finalのインスタンスメソッド</td><td>finalメソッドを再定義</td></tr></tbody></table></div>
+<pre class="article-code"><code>class Parent {
+          Number create() throws java.io.IOException { return 1; }
+      }
+      class Child extends Parent {
+          @Override
+          Integer create() throws java.io.FileNotFoundException { return 1; }
+      }</code></pre>
+<details class="article-card"><summary><strong>共変戻り値</strong></summary><p>親が<code>Number</code>を返し、子が<code>Integer</code>を返すオーバーライドは有効ですか。</p><div class="article-callout"><strong>戻り値の互換性：</strong>有効です。<code>Integer</code>は<code>Number</code>のサブタイプです。プリミティブ型には共変戻り値はありません。</div></details></section>
+<section class="article-section">
+<h2>overloadとoverrideを混同しない</h2>
+<p>引数が違えばoverloadです。override問題で、選択肢の引数型が少し変わっているだけなら、それはoverrideではありません。</p>
+<pre class="article-code"><code>class A {
     void test(int x) {}
 }
 
 class B extends A {
     void test(long x) {} // overrideではなくoverload
 }</code></pre>
-        <p><code>@Override</code> を付けた場合、overrideになっていなければコンパイルエラーです。試験では <code>@Override</code> の有無が大きなヒントです。</p>
-      </section>
-
-      <section class="article-section">
-        <h2>interface型で受ける意味</h2>
-        <p>interface型の変数で受けると、そのinterfaceに宣言されたメソッドだけを呼べます。実体クラスに独自メソッドがあっても、宣言型に存在しなければ呼べません。</p>
-        <pre class="article-code"><code>interface A {
+<p><code>@Override</code> を付けた場合、overrideになっていなければコンパイルエラーです。試験では <code>@Override</code> の有無が大きなヒントです。</p>
+</section>
+<section class="article-section">
+<h2>interface型で受ける意味</h2>
+<p>interface型の変数で受けると、そのinterfaceに宣言されたメソッドだけを呼べます。実体クラスに独自メソッドがあっても、宣言型に存在しなければ呼べません。</p>
+<pre class="article-code"><code>interface A {
     void test();
 }
 
@@ -294,13 +317,12 @@ class B implements A {
 A a = new B();
 a.test();
 // a.onlyB(); // NG: A型にはonlyBがない</code></pre>
-        <p>これはポリモーフィズムの基本です。「実体にあるから呼べる」ではありません。<strong>呼べるかは宣言型、実行される中身は実体</strong>です。</p>
-      </section>
-
-      <section class="article-section">
-        <h2>フィールドはoverrideされない</h2>
-        <p>メソッドはoverrideされますが、フィールドはoverrideされません。同名フィールドを子クラスに定義すると、隠蔽に近い形になります。</p>
-        <pre class="article-code"><code>class A {
+<p>これはポリモーフィズムの基本です。「実体にあるから呼べる」ではありません。<strong>呼べるかは宣言型、実行される中身は実体</strong>です。</p>
+</section>
+<section class="article-section">
+<h2>フィールドはoverrideされない</h2>
+<p>メソッドはoverrideされますが、フィールドはoverrideされません。同名フィールドを子クラスに定義すると、隠蔽に近い形になります。</p>
+<pre class="article-code"><code>class A {
     String name = "A";
     String getName() { return name; }
 }
@@ -313,33 +335,45 @@ class B extends A {
 A obj = new B();
 System.out.println(obj.name);      // A: フィールドは宣言型
 System.out.println(obj.getName()); // B: メソッドは実体</code></pre>
-        <p>Java Silverの出力問題では、ここが頻出です。フィールドアクセスとメソッド呼び出しを同じルールで追うと誤答します。</p>
-      </section>
+<p>Java Silverの出力問題では、ここが頻出です。フィールドアクセスとメソッド呼び出しを同じルールで追うと誤答します。</p>
+</section>
+<section class="article-section">
+<h2>メソッド解決の判断表</h2>
+<table class="ref-table">
+<thead><tr><th>式</th><th>まず見るもの</th><th>実際の解決</th></tr></thead>
+<tbody>
+<tr><td><code>obj.field</code></td><td>変数の宣言型</td><td>宣言型のフィールド</td></tr>
+<tr><td><code>obj.method()</code></td><td>宣言型にそのメソッドがあるか</td><td>overrideされていれば実体のメソッド</td></tr>
+<tr><td><code>ClassName.staticMethod()</code></td><td>指定したクラス</td><td>staticメソッド。overrideではなく隠蔽</td></tr>
+<tr><td><code>((B)obj).method()</code></td><td>キャスト後の型</td><td>実行時にキャスト可能なら呼べる</td></tr>
+</tbody>
+</table>
+</section><section class="article-section">
+<h2>継承と合成を使い分ける</h2>
+<p>継承は「子が親として完全に扱える」is-a関係で使います。単なるコード再利用だけで継承すると、不要な公開メソッドや親実装への強い依存が生じます。部品を保持するhas-a関係なら合成が適します。</p>
+<pre class="article-code"><code>class Engine { void start() {} }
+      class Car {
+          private final Engine engine;
+          Car(Engine engine) { this.engine = engine; }
+          void start() { engine.start(); }
+      }</code></pre>
+</section>
+<section class="article-section">
+<h2>継承対象と実行対象を切り分ける</h2>
+<details class="article-card"><summary><strong>Q1. <code>class B extends A</code> のとき、AのコンストラクタはBに継承される？</strong></summary><p>されません。Bのコンストラクタ内から <code>super(...)</code> でAのコンストラクタを呼ぶだけです。</p></details>
+<details class="article-card"><summary><strong>Q2. interfaceの抽象メソッドを実装するとき、アクセス修飾子を省略できる？</strong></summary><p>できません。interface側は暗黙に <code>public</code> なので、実装側も <code>public</code> が必要です。</p></details>
+<details class="article-card"><summary><strong>Q3. <code>A a = new B();</code> で、Bだけにあるメソッドを呼べる？</strong></summary><p>宣言型Aにそのメソッドがなければ呼べません。必要なら <code>((B)a).method()</code> のようにキャストします。ただし実体がBでなければ実行時例外です。</p></details>
+<p class="inline-note">関連: <a href="inheritance-interface.html">継承とインタフェース詳細</a> / <a href="polymorphism-cast.html">ポリモーフィズム・キャスト</a> / <a href="modifiers-access.html">修飾子・アクセス制御</a></p>
+</section>
 
-      <section class="article-section">
-        <h2>メソッド解決の判断表</h2>
-        <table class="ref-table">
-          <thead><tr><th>式</th><th>まず見るもの</th><th>実際の解決</th></tr></thead>
-          <tbody>
-            <tr><td><code>obj.field</code></td><td>変数の宣言型</td><td>宣言型のフィールド</td></tr>
-            <tr><td><code>obj.method()</code></td><td>宣言型にそのメソッドがあるか</td><td>overrideされていれば実体のメソッド</td></tr>
-            <tr><td><code>ClassName.staticMethod()</code></td><td>指定したクラス</td><td>staticメソッド。overrideではなく隠蔽</td></tr>
-            <tr><td><code>((B)obj).method()</code></td><td>キャスト後の型</td><td>実行時にキャスト可能なら呼べる</td></tr>
-          </tbody>
-        </table>
-      </section>
 
-      <section class="article-section">
-        <h2>ミニ演習</h2>
-        <details class="article-card"><summary><strong>Q1. <code>class B extends A</code> のとき、AのコンストラクタはBに継承される？</strong></summary><p>されません。Bのコンストラクタ内から <code>super(...)</code> でAのコンストラクタを呼ぶだけです。</p></details>
-        <details class="article-card"><summary><strong>Q2. interfaceの抽象メソッドを実装するとき、アクセス修飾子を省略できる？</strong></summary><p>できません。interface側は暗黙に <code>public</code> なので、実装側も <code>public</code> が必要です。</p></details>
-        <details class="article-card"><summary><strong>Q3. <code>A a = new B();</code> で、Bだけにあるメソッドを呼べる？</strong></summary><p>宣言型Aにそのメソッドがなければ呼べません。必要なら <code>((B)a).method()</code> のようにキャストします。ただし実体がBでなければ実行時例外です。</p></details>
-        <p class="inline-note">関連: <a href="inheritance-interface.html">継承とインタフェース詳細</a> / <a href="polymorphism-cast.html">ポリモーフィズム・キャスト</a> / <a href="modifiers-access.html">修飾子・アクセス制御</a></p>
-      </section>
 
-    </main>
-  </div>
-  <script src="data/questions.js?v=code-audit-v18"></script>
-  <script src="assets/js/app.js?v=code-audit-v18"></script>
+
+
+
+</main>
+</div>
+<script src="data/questions.js?v=article-specific-v11"></script>
+<script src="assets/js/app.js?v=article-specific-v11"></script>
 </body>
 </html>

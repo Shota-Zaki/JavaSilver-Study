@@ -1,6 +1,6 @@
 window.JAVA_STUDY_DATA = {
   "title": "Java Silver 勉強用ページ",
-  "version": "20260707-ch01-full-image-audit-fixed-v9",
+  "version": "20260707-article-specific-learning-v11",
   "chapters": [
     {
       "id": "ch01",
