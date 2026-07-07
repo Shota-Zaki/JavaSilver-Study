@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - コンパイルエラーと実行時例外</title>
+  <link rel="stylesheet" href="assets/css/styles.css?v=code-audit-v18">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main article-main">
+      <section class="hero reference-hero compact-hero article-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>コンパイルエラーと実行時例外</h1>
+        <p>コード問題で最初に切るべき「コンパイルできるか」「実行中に例外が出るか」「正常出力か」を整理します。</p>
+      </section>
+      <section class="article-section">
+<h2>3分類を混ぜない</h2>
+<p>Java Silverの選択肢は、しばしば「コンパイルエラー」「実行時例外」「出力結果」を混ぜてきます。ここを混同すると、解説を読んでも同じ間違いを繰り返します。</p><table class="ref-table"><thead><tr><th>分類</th><th>発生タイミング</th><th>例</th></tr></thead><tbody><tr><td>コンパイルエラー</td><td>実行前。classファイルを作れない</td><td>型不一致、未初期化ローカル変数、override違反、catch到達不能</td></tr><tr><td>実行時例外</td><td>コンパイル後、実行中</td><td><code>NullPointerException</code>、<code>ArrayIndexOutOfBoundsException</code>、<code>ClassCastException</code></td></tr><tr><td>正常出力</td><td>コンパイルも実行も成功</td><td>printlnの結果、または何も表示されない</td></tr></tbody></table>
+</section>
+<section class="article-section">
+<h2>コンパイルエラーの典型</h2>
+<pre class="article-code"><code>int a;
+System.out.println(a); // 未初期化ローカル変数
+
+byte b = 1;
+b = b + 1;             // b + 1 はint
+
+class A { private void test() {} }
+class B extends A { @Override void test() {} } // privateはoverride対象外</code></pre><p>コンパイルエラーは、JVMが実行する前に発生します。したがって「途中まで表示される」は原則ありません。</p>
+</section>
+<section class="article-section">
+<h2>実行時例外の典型</h2>
+<pre class="article-code"><code>String s = null;
+System.out.println(s.length()); // NullPointerException
+
+int[] a = new int[0];
+a[0] = 10;                     // ArrayIndexOutOfBoundsException
+
+Object obj = &quot;abc&quot;;
+Integer n = (Integer) obj;      // ClassCastException</code></pre><p>実行時例外は、該当行に到達して初めて起きます。到達しない行の例外は発生しません。</p>
+</section>
+<section class="article-section">
+<h2>到達不能コードとcatch順序</h2>
+<p>catchは上から順に評価されます。スーパークラスの例外を先にcatchすると、サブクラスのcatchは到達不能になりコンパイルエラーです。</p><pre class="article-code"><code>try {
+    throw new java.io.IOException();
+} catch (Exception e) {
+} catch (java.io.IOException e) { // NG: 先にExceptionで捕まる
+}</code></pre>
+</section>
+<section class="article-section">
+<h2>何も表示されないケース</h2>
+<p>「何も表示されない」は、コンパイルエラーや例外とは別です。正常に実行されたが <code>println</code> に到達しない、または空文字を出力するなどのケースです。</p><pre class="article-code"><code>String s = &quot;&quot;;
+System.out.print(s); // 正常終了。ただし見た目は何も出ない</code></pre>
+</section>
+<section class="article-section">
+<h2>判定練習</h2>
+<details class="article-card"><summary><strong>Q. <code>String s = null; System.out.println(s);</code> は例外？</strong></summary><p>例外ではありません。<code>println(Object)</code> はnullを文字列 <code>null</code> として表示します。<code>s.length()</code> のようにインスタンスメソッドを呼ぶと例外です。</p></details><details class="article-card"><summary><strong>Q. コンパイルエラーのコードは、途中のprintlnだけ実行される？</strong></summary><p>されません。そもそも実行用のclassファイルを作れないので、出力はありません。</p></details><p class="inline-note">関連: <a href="decision-flow.html">判定フロー</a> / <a href="compile-runtime.html">コンパイル・実行時例外</a> / <a href="exam-traps.html">ひっかけ集</a></p>
+</section>
+<section class="article-section deep-extra">
+<h2>「途中まで出る」かどうかの境界</h2>
+<p>コンパイルエラーなら何も実行されません。実行時例外なら、例外発生前の出力は残ります。この違いが選択肢を切る鍵です。</p><pre class="article-code"><code>// コンパイルエラー: 何も表示されない
+int a;
+System.out.println(&quot;A&quot;);
+System.out.println(a);
+
+// 実行時例外: Aは表示される
+System.out.println(&quot;A&quot;);
+String s = null;
+s.length();
+System.out.println(&quot;B&quot;);</code></pre>
+</section>
+
+<section class="article-section deep-extra">
+<h2>例外がcatchされる場合とされない場合</h2>
+<p>発生した例外型がcatchの型に代入可能ならcatchされます。代入可能でなければ、そこで呼び出し元へ伝播します。</p><pre class="article-code"><code>try {
+    Object o = &quot;abc&quot;;
+    Integer i = (Integer) o;
+} catch (NullPointerException e) {
+    System.out.println(&quot;NPE&quot;);
+}
+// ClassCastExceptionはcatchされない。異常終了。</code></pre>
+</section>
+
+    </main>
+  </div>
+  <script src="data/questions.js?v=code-audit-v18"></script>
+  <script src="assets/js/app.js?v=code-audit-v18"></script>
+</body>
+</html>

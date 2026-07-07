@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - エラー・例外カタログ</title>
+  <link rel="stylesheet" href="assets/css/styles.css?v=code-audit-v18">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main article-main">
+      <section class="hero reference-hero compact-hero article-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>エラー・例外カタログ</h1>
+        <p>Java Silverでは、出力を追う前に「そもそもコンパイルできるか」を切る必要があります。このページでは、コンパイルエラー・実行時例外・正常終了を逆引きで整理します。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>最初に固定する分類</h2>
+        <table class="ref-table">
+          <thead><tr><th>分類</th><th>発生タイミング</th><th>選択肢での扱い</th><th>判断の軸</th></tr></thead>
+          <tbody>
+            <tr><td>コンパイルエラー</td><td>実行前</td><td>出力も例外も発生しない</td><td>文法、型、アクセス、override、未処理チェック例外</td></tr>
+            <tr><td>実行時例外</td><td>実行中</td><td>発生位置までの出力は残る</td><td>null、範囲外、キャスト、数値変換、0除算</td></tr>
+            <tr><td>正常終了</td><td>最後まで実行</td><td>出力結果を追う</td><td>評価順、参照、メソッド呼び出し、例外処理</td></tr>
+          </tbody>
+        </table>
+        <div class="article-callout warn">
+          <strong>出力を追う前にコンパイル可否。</strong><br>
+          コンパイルエラーのコードに対して出力を追っても無意味です。試験本番では、まず「宣言・型・アクセス・例外処理・override」を高速に確認してください。
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>コンパイルエラー：型・代入・初期化</h2>
+        <table class="ref-table">
+          <thead><tr><th>原因</th><th>典型コード</th><th>なぜエラーか</th><th>試験での見抜き方</th></tr></thead>
+          <tbody>
+            <tr><td>ローカル変数未初期化</td><td><code>int a; System.out.println(a);</code></td><td>ローカル変数にはデフォルト値がない。</td><td>フィールドなら初期値あり、ローカルなら確定代入が必要。</td></tr>
+            <tr><td>縮小変換</td><td><code>byte b = 128;</code></td><td><code>byte</code> の範囲を超える。</td><td><code>byte</code> は -128〜127。</td></tr>
+            <tr><td>小数リテラル</td><td><code>float f = 1.0;</code></td><td><code>1.0</code> は <code>double</code>。</td><td><code>float</code> にするなら <code>1.0F</code>。</td></tr>
+            <tr><td>longからint</td><td><code>int x = 10L;</code></td><td><code>long</code> を <code>int</code> に暗黙代入できない。</td><td><code>L</code> 接尾辞を見落とさない。</td></tr>
+            <tr><td>byte/short演算</td><td><code>byte c = a + b;</code></td><td><code>byte</code> 同士でも演算結果は <code>int</code>。</td><td>変数同士の演算は定数式ではない。</td></tr>
+            <tr><td>booleanと数値</td><td><code>if (1) {}</code></td><td>Javaでは条件式は <code>boolean</code> が必要。</td><td>C言語系の感覚で読まない。</td></tr>
+            <tr><td>nullを基本型へ代入</td><td><code>int n = null;</code></td><td><code>null</code> は参照型用。</td><td>ラッパー型なら代入自体は可能。</td></tr>
+            <tr><td>不正な識別子</td><td><code>int 1a = 10;</code></td><td>識別子は数字で始められない。</td><td><code>_</code> 単体や予約語にも注意。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="article-section">
+        <h2>コンパイルエラー：var</h2>
+        <table class="ref-table">
+          <thead><tr><th>原因</th><th>典型コード</th><th>理由</th><th>判断</th></tr></thead>
+          <tbody>
+            <tr><td>初期化なし</td><td><code>var a;</code></td><td>推論材料がない。</td><td><code>var</code> は宣言時初期化が必須。</td></tr>
+            <tr><td>null単独</td><td><code>var a = null;</code></td><td>型を決められない。</td><td>キャストがあれば推論可能な場合あり。</td></tr>
+            <tr><td>フィールド</td><td><code>private var value = 10;</code></td><td><code>var</code> はローカル変数用。</td><td>フィールド・引数・戻り値には使えない。</td></tr>
+            <tr><td>メソッド引数</td><td><code>void test(var x) {}</code></td><td>引数型には使えない。</td><td>ラムダ引数の特殊ケースと混同しない。</td></tr>
+            <tr><td>配列初期化子</td><td><code>var a = {1, 2};</code></td><td>配列型を直接推論できない。</td><td><code>var a = new int[]{1,2};</code> は可能。</td></tr>
+            <tr><td>複数宣言</td><td><code>var a = 1, b = 2;</code></td><td><code>var</code> では複数変数宣言不可。</td><td>1文1変数で見る。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="article-section">
+        <h2>コンパイルエラー：クラス・メソッド・コンストラクタ</h2>
+        <table class="ref-table">
+          <thead><tr><th>原因</th><th>典型コード</th><th>理由</th><th>見抜き方</th></tr></thead>
+          <tbody>
+            <tr><td>publicクラス名とファイル名不一致</td><td><code>public class A</code> を <code>B.java</code> に保存</td><td>publicトップレベルクラス名とファイル名は一致が必要。</td><td>ファイル名が設問に書かれていたら必ず確認。</td></tr>
+            <tr><td>戻り値ありコンストラクタ風メソッド</td><td><code>void Sample() {}</code></td><td>これはコンストラクタではなくメソッド。</td><td>クラス名と同じでも戻り値型があればメソッド。</td></tr>
+            <tr><td>暗黙super()失敗</td><td>親に無引数コンストラクタがない</td><td>子のコンストラクタ先頭で暗黙に <code>super()</code> が呼ばれる。</td><td>親コンストラクタを確認。</td></tr>
+            <tr><td>this()/super()の位置不正</td><td>処理後に <code>this()</code></td><td>コンストラクタ呼び出しは先頭文のみ。</td><td>1行目以外ならエラー。</td></tr>
+            <tr><td>staticからインスタンスメンバ参照</td><td><code>static void m(){ System.out.println(value); }</code></td><td>インスタンスなしでインスタンスメンバは使えない。</td><td><code>main</code> 内から直接フィールドを触っていないか見る。</td></tr>
+            <tr><td>戻り値不足</td><td><code>int m(){ if(x) return 1; }</code></td><td>全経路で戻り値が必要。</td><td>条件分岐の片側に return がない。</td></tr>
+            <tr><td>到達不能文</td><td><code>return; System.out.println();</code></td><td>絶対に実行されない文はエラー。</td><td><code>return</code>、<code>throw</code>、無限ループ後を見る。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="article-section">
+        <h2>コンパイルエラー：継承・override・interface</h2>
+        <table class="ref-table">
+          <thead><tr><th>原因</th><th>典型コード</th><th>理由</th><th>判断</th></tr></thead>
+          <tbody>
+            <tr><td>overrideでアクセスを狭くする</td><td><code>public</code> → <code>protected</code></td><td>オーバーライドでは同じか広いアクセスが必要。</td><td>親子メソッドのアクセス修飾子を比較。</td></tr>
+            <tr><td>戻り値型が不正</td><td>親より広い戻り値型</td><td>戻り値は同じかサブクラス型のみ。</td><td>共変戻り値かどうか見る。</td></tr>
+            <tr><td>checked例外を広げる</td><td>親が <code>IOException</code>、子が <code>Exception</code></td><td>overrideでチェック例外を広げられない。</td><td>RuntimeException系は別扱い。</td></tr>
+            <tr><td>finalメソッドをoverride</td><td><code>final void m()</code> を子で再定義</td><td><code>final</code> メソッドはoverride不可。</td><td>親メソッドの <code>final</code> を確認。</td></tr>
+            <tr><td>privateメソッドをoverride扱い</td><td>親 <code>private void m()</code>、子 <code>@Override void m()</code></td><td><code>private</code> は継承されないためoverrideではない。</td><td><code>@Override</code> があるとエラー。</td></tr>
+            <tr><td>abstractメソッド未実装</td><td>具象クラスがinterfaceメソッド未実装</td><td>抽象メソッドの実装義務が残る。</td><td>クラスが <code>abstract</code> なら未実装でもよい場合あり。</td></tr>
+            <tr><td>defaultメソッド衝突</td><td>複数interfaceが同じdefaultを持つ</td><td>クラス側で解決しないと衝突。</td><td>同名同シグネチャのdefaultを探す。</td></tr>
+            <tr><td>Objectメソッドをdefault定義</td><td>interfaceで <code>default String toString()</code></td><td><code>Object</code> のpublicメソッド相当をdefaultで提供できない。</td><td><code>toString</code>、<code>equals</code>、<code>hashCode</code> に注意。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="article-section">
+        <h2>コンパイルエラー：アクセス制御・修飾子</h2>
+        <table class="ref-table">
+          <thead><tr><th>原因</th><th>典型</th><th>理由</th><th>判断</th></tr></thead>
+          <tbody>
+            <tr><td>privateメンバへの外部アクセス</td><td><code>obj.value</code></td><td><code>private</code> は同じクラス内のみ。</td><td>継承していても直接アクセス不可。</td></tr>
+            <tr><td>defaultアクセスの別パッケージ利用</td><td>無修飾クラスを別パッケージから使う</td><td>defaultは同一パッケージのみ。</td><td>パッケージ宣言を見る。</td></tr>
+            <tr><td>protectedの誤用</td><td>別パッケージで親型変数からprotectedアクセス</td><td>別パッケージではサブクラス経由の制約がある。</td><td>「同じパッケージか」「サブクラス内か」を分ける。</td></tr>
+            <tr><td>トップレベルprivate/protected</td><td><code>private class A</code></td><td>トップレベルクラスに使えない。</td><td>トップレベルか内部クラスかを確認。</td></tr>
+            <tr><td>sealedのpermits不整合</td><td>許可されていないクラスが継承</td><td><code>permits</code> に列挙されていない。</td><td>継承先の名前を照合。</td></tr>
+            <tr><td>sealed子クラスの修飾漏れ</td><td><code>class B extends A</code></td><td>sealedを継承した直接サブクラスは <code>final</code> / <code>sealed</code> / <code>non-sealed</code> が必要。</td><td>直接の子クラスを確認。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="article-section">
+        <h2>コンパイルエラー：例外処理</h2>
+        <table class="ref-table">
+          <thead><tr><th>原因</th><th>典型コード</th><th>理由</th><th>見抜き方</th></tr></thead>
+          <tbody>
+            <tr><td>チェック例外未処理</td><td><code>throw new IOException();</code></td><td>catchするかthrows宣言が必要。</td><td><code>Exception</code> 直下や <code>IOException</code> を見る。</td></tr>
+            <tr><td>catch順序不正</td><td><code>catch(Exception)</code> の後に <code>catch(IOException)</code></td><td>後続catchが到達不能。</td><td>親例外を先にcatchしていないか。</td></tr>
+            <tr><td>multi-catchの親子関係</td><td><code>catch(Exception | IOException e)</code></td><td>同じmulti-catch内に親子関係は不可。</td><td><code>|</code> の左右の継承関係を見る。</td></tr>
+            <tr><td>try構文不正</td><td><code>try {}</code> だけ</td><td><code>catch</code> または <code>finally</code> が必要。</td><td>tryの後続ブロックを確認。</td></tr>
+            <tr><td>try-with-resources対象外</td><td>AutoCloseableでない型をresourceに書く</td><td>リソースは <code>AutoCloseable</code> が必要。</td><td><code>close()</code> だけでなく型が実装しているか。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="article-section">
+        <h2>実行時例外：null・範囲外・キャスト</h2>
+        <table class="ref-table">
+          <thead><tr><th>例外</th><th>典型コード</th><th>原因</th><th>試験での注意</th></tr></thead>
+          <tbody>
+            <tr><td><code>NullPointerException</code></td><td><code>s.length()</code> where <code>s == null</code></td><td>null参照でメソッド/フィールドアクセス。</td><td><code>System.out.println(s)</code> だけなら <code>null</code> 表示で例外ではない。</td></tr>
+            <tr><td><code>ArrayIndexOutOfBoundsException</code></td><td><code>array[array.length]</code></td><td>配列範囲外。</td><td>最後の有効添字は <code>length - 1</code>。</td></tr>
+            <tr><td><code>StringIndexOutOfBoundsException</code></td><td><code>str.charAt(str.length())</code></td><td>文字列範囲外。</td><td><code>substring(length)</code> は空文字で可能、<code>charAt(length)</code> は不可。</td></tr>
+            <tr><td><code>IndexOutOfBoundsException</code></td><td><code>list.get(list.size())</code></td><td>List範囲外。</td><td>配列とは例外クラス名が違う。</td></tr>
+            <tr><td><code>ClassCastException</code></td><td><code>String s = (String) obj;</code></td><td>実体が変換先型ではない。</td><td>コンパイル可能でも実体が違えば落ちる。</td></tr>
+            <tr><td><code>ArrayStoreException</code></td><td><code>Object[] a = new String[1]; a[0] = new Object();</code></td><td>実体配列の要素型に合わない。</td><td>配列の共変性で出る。</td></tr>
+            <tr><td><code>ArithmeticException</code></td><td><code>10 / 0</code></td><td>整数の0除算。</td><td>小数の0除算とは挙動が違う。</td></tr>
+            <tr><td><code>NumberFormatException</code></td><td><code>Integer.parseInt("A")</code></td><td>数値へ変換できない。</td><td>起動引数の変換問題で頻出。</td></tr>
+            <tr><td><code>UnsupportedOperationException</code></td><td><code>List.of("A").add("B")</code></td><td>変更不可リストへの変更操作。</td><td><code>List.of</code> や固定サイズリストに注意。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="article-section">
+        <h2>実行時例外：catchされる場合・されない場合</h2>
+        <p>例外が発生しても、対応する <code>catch</code> があれば処理は継続します。対応する <code>catch</code> がなければ、そこで異常終了します。<code>finally</code> がある場合は、異常終了前にも実行されます。</p>
+        <pre><code>try {
+    System.out.println("A");
+    String s = null;
+    s.length();
+    System.out.println("B");
+} catch (NullPointerException e) {
+    System.out.println("C");
+} finally {
+    System.out.println("D");
+}
+System.out.println("E");</code></pre>
+        <p>この場合、出力は <code>A C D E</code> です。<code>B</code> は例外発生後なので実行されません。catchで処理できたため、finally後に後続処理へ進みます。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>チェック例外と非チェック例外の見分け</h2>
+        <table class="ref-table">
+          <thead><tr><th>分類</th><th>代表例</th><th>コンパイラの処理要求</th><th>覚え方</th></tr></thead>
+          <tbody>
+            <tr><td>チェック例外</td><td><code>Exception</code>, <code>IOException</code></td><td>catch または throws が必要。</td><td><code>RuntimeException</code> 系ではない <code>Exception</code>。</td></tr>
+            <tr><td>非チェック例外</td><td><code>RuntimeException</code>, <code>NullPointerException</code>, <code>ClassCastException</code>, <code>NumberFormatException</code></td><td>処理しなくてもコンパイル可能。</td><td>実行時のプログラムミス系。</td></tr>
+            <tr><td>Error</td><td><code>OutOfMemoryError</code> など</td><td>通常処理対象にしない。</td><td>試験では例外階層として区別。</td></tr>
+          </tbody>
+        </table>
+        <div class="article-callout">
+          <strong>RuntimeExceptionかどうかを見る。</strong><br>
+          すべてを丸暗記するより、頻出の非チェック例外を先に押さえる方が効率的です。<code>NullPointerException</code>、<code>ArrayIndexOutOfBoundsException</code>、<code>ClassCastException</code>、<code>NumberFormatException</code>、<code>ArithmeticException</code> は非チェック例外として即判定できるようにしてください。
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>エラー判定の実戦フロー</h2>
+        <ol class="article-list priority-list">
+          <li><strong>宣言を見る。</strong> ファイル名、package/import、クラス修飾子、mainメソッド、変数宣言を確認する。</li>
+          <li><strong>型を見る。</strong> 代入、戻り値、引数、演算結果、キャストの可否を確認する。</li>
+          <li><strong>アクセスを見る。</strong> private/default/protected/public、staticからの参照、継承関係を見る。</li>
+          <li><strong>override/interfaceを見る。</strong> アクセス、戻り値、throws、abstract未実装、default衝突を確認する。</li>
+          <li><strong>チェック例外を見る。</strong> IOExceptionなどがcatch/throwsされているか確認する。</li>
+          <li><strong>ここまで通ったら実行時へ進む。</strong> null、範囲外、キャスト、0除算、数値変換を左から追う。</li>
+          <li><strong>例外処理を見る。</strong> catchされるか、finallyが実行されるか、後続処理へ進むかを判断する。</li>
+        </ol>
+      </section>
+
+      <section class="article-section">
+        <h2>ミニ演習</h2>
+        <div class="article-card-grid">
+          <article class="article-card">
+            <h3>演習1：コンパイルか実行時か</h3>
+            <pre><code>String s = null;
+System.out.println(s.length());</code></pre>
+            <p><strong>答え:</strong> コンパイルは可能。実行時に <code>NullPointerException</code>。</p>
+          </article>
+          <article class="article-card">
+            <h3>演習2：ローカル変数</h3>
+            <pre><code>int x;
+if (args.length &gt; 0) {
+    x = 10;
+}
+System.out.println(x);</code></pre>
+            <p><strong>答え:</strong> コンパイルエラー。<code>if</code> に入らない経路では <code>x</code> が未初期化。</p>
+          </article>
+          <article class="article-card">
+            <h3>演習3：catch順序</h3>
+            <pre><code>try {
+    throw new java.io.IOException();
+} catch (Exception e) {
+} catch (java.io.IOException e) {
+}</code></pre>
+            <p><strong>答え:</strong> コンパイルエラー。先に <code>Exception</code> で捕まえるため、後続の <code>IOException</code> は到達不能。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>最後に見るチェックリスト</h2>
+        <ul class="article-list check-list">
+          <li>出力を追う前にコンパイルエラー候補を潰したか。</li>
+          <li>ローカル変数とフィールドの初期値ルールを混同していないか。</li>
+          <li><code>var</code> をフィールド・引数・戻り値に使っていないか。</li>
+          <li>小さい整数型の演算結果を <code>int</code> として見ているか。</li>
+          <li>overrideでアクセス・戻り値・throwsを確認したか。</li>
+          <li>チェック例外をcatchまたはthrowsしているか。</li>
+          <li>nullのメソッド呼び出し、範囲外、キャスト失敗を左から追ったか。</li>
+          <li>例外発生後、tryブロックの残りを実行していないか。</li>
+          <li>catchされた後にfinallyと後続処理へ進むかを見たか。</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+  <script src="data/questions.js?v=code-audit-v18"></script>
+  <script src="assets/js/app.js?v=code-audit-v18"></script>
+</body>
+</html>

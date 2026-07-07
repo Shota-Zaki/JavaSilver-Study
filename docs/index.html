@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver 勉強用ページ</title>
+  <link rel="stylesheet" href="assets/css/styles.css?v=code-audit-v18">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand">Java Silver Study</p>
+      <button type="button" class="mobile-nav-toggle" aria-controls="chapterNav" aria-expanded="false"><span class="mobile-nav-toggle-icon" aria-hidden="true">☰</span><span class="mobile-nav-toggle-label">メニュー</span></button>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main">
+      <section class="hero">
+        <h1>Java Silver勉強用ページ</h1>
+        
+      </section>
+      <section>
+        <h2>演習一覧</h2>
+        <div id="chapterGrid" class="chapter-grid"></div>
+      </section>
+      <section class="reference-strip">
+        <h2>学習記事一覧</h2>
+        <p class="inline-note">各記事は詳説版です。まず「判定フロー」→「コンパイル/例外」→苦手単元の順で読むと効率がいいです。</p>
+        <div class="reference-grid large">
+          <a class="reference-card" href="reference.html"><span>総合</span><strong>学習記事トップ</strong><small>全体索引</small></a>
+          <a class="reference-card" href="decision-flow.html"><span>判定</span><strong>判定フロー</strong><small>最初に見る・深掘り済み</small></a>
+          <a class="reference-card" href="syntax-basics.html"><span>基礎</span><strong>Java実行・宣言</strong><small>main / package / import</small></a>
+          <a class="reference-card" href="compile-runtime.html"><span>判定</span><strong>コンパイル/例外</strong><small>コンパイルエラー・実行時例外</small></a>
+          <a class="reference-card" href="datatypes.html"><span>型</span><strong>型・変数・リテラル</strong><small>primitive / null / 初期値</small></a>
+          <a class="reference-card" href="numeric-rules.html"><span>型</span><strong>数値・型昇格</strong><small>byte / short / char / 定数式</small></a>
+          <a class="reference-card" href="var-scope.html"><span>型</span><strong>var・スコープ</strong><small>ローカル変数型推論</small></a>
+          <a class="reference-card" href="strings.html"><span>文字列</span><strong>文字列・StringBuilder</strong><small>String / StringBuilder</small></a>
+          <a class="reference-card" href="equality.html"><span>比較</span><strong>同一性・同値性</strong><small>== / equals</small></a>
+          <a class="reference-card" href="collections-arrays.html"><span>配列</span><strong>配列・List</strong><small>ArrayList / List</small></a>
+          <a class="reference-card" href="operators-control.html"><span>演算</span><strong>演算子・制御構造</strong><small>評価順 / 短絡 / switch</small></a>
+          <a class="reference-card" href="loop-control.html"><span>制御</span><strong>ループ制御</strong><small>while / for / break / continue</small></a>
+          <a class="reference-card" href="output-tracing.html"><span>出力</span><strong>出力追跡</strong><small>変数表・参照表・制御表</small></a>
+          <a class="reference-card" href="methods-constructors.html"><span>クラス</span><strong>メソッド・コンストラクタ</strong><small>overload / this / super</small></a>
+          <a class="reference-card" href="object-oriented.html"><span>クラス</span><strong>クラス・static・record</strong><small>参照 / static / GC / record</small></a>
+          <a class="reference-card" href="modifiers-access.html"><span>修飾子</span><strong>修飾子・アクセス制御</strong><small>アクセス範囲 / final / sealed</small></a>
+          <a class="reference-card" href="oop-relations.html"><span>継承</span><strong>継承・interface</strong><small>extends / implements / override</small></a>
+          <a class="reference-card" href="inheritance-interface.html"><span>継承</span><strong>継承/interface詳細</strong><small>default / sealed / protected</small></a>
+          <a class="reference-card" href="polymorphism-cast.html"><span>継承</span><strong>ポリモーフィズム・キャスト</strong><small>宣言型 / 実体 / キャスト</small></a>
+          <a class="reference-card" href="exceptions.html"><span>例外</span><strong>例外処理</strong><small>try / catch / finally / close</small></a>
+          <a class="reference-card" href="silver17-points.html"><span>Java 17</span><strong>Java 17論点</strong><small>record / sealed / switch</small></a>
+          <a class="reference-card" href="exam-traps.html"><span>対策</span><strong>ひっかけ集</strong><small>模擬問題前確認</small></a>
+          <a class="reference-card" href="cheatsheet.html"><span>対策</span><strong>直前確認</strong><small>総仕上げ</small></a>
+
+          <a class="reference-card" href="method-list.html"><span>補助</span><strong>頻出メソッド</strong><small>戻り値 / 副作用 / 境界値</small></a>
+          <a class="reference-card" href="error-catalog.html"><span>補助</span><strong>エラー・例外カタログ</strong><small>コンパイルエラー / 実行時例外</small></a>
+          <a class="reference-card" href="fine-points.html"><span>補助</span><strong>細かい仕様メモ</strong><small>1行単位の境界仕様</small></a>
+          <a class="reference-card" href="mini-drills.html"><span>演習</span><strong>ミニ演習</strong><small>短問30問で判定速度を上げる</small></a>
+          <a class="reference-card" href="glossary.html"><span>用語</span><strong>単語集</strong><small>意味・コード上の見え方・注意点</small></a>
+          <a class="reference-card" href="java-qa-review.html"><span>復習</span><strong>質問整理まとめ</strong><small>混ざりやすい疑問をQ&Aで整理</small></a>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="data/questions.js?v=code-audit-v18"></script>
+  <script src="assets/js/app.js?v=code-audit-v18"></script>
+</body>
+</html>

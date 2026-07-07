@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - Java実行・宣言ルール</title>
+  <link rel="stylesheet" href="assets/css/styles.css?v=code-audit-v18">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main article-main">
+      <section class="hero reference-hero compact-hero article-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>Java実行・宣言ルール</h1>
+        <p>mainメソッド、ソースファイル名、package/import、起動引数を、コンパイル可否の観点で整理します。</p>
+      </section>
+      <section class="article-section">
+<h2>実行できるクラスの条件</h2>
+<p>Javaコマンドで直接実行するには、実行対象クラスに正しい <code>main</code> メソッドが必要です。戻り値、static、引数、名前のどれかが違うと、起動用メソッドとして扱われません。</p><table class="ref-table"><thead><tr><th>要素</th><th>正しい形</th><th>よくある誤り</th></tr></thead><tbody><tr><td>メソッド名</td><td><code>main</code></td><td><code>Main</code>, <code>mane</code></td></tr><tr><td>戻り値</td><td><code>void</code></td><td><code>int</code>, 戻り値省略</td></tr><tr><td>修飾子</td><td><code>public static</code></td><td><code>static</code>がない、<code>public</code>がない</td></tr><tr><td>引数</td><td><code>String[] args</code> または <code>String... args</code></td><td><code>String args</code>, <code>int[] args</code></td></tr></tbody></table><pre class="article-code"><code>public class Sample {
+    public static void main(String[] args) {
+        System.out.println(&quot;OK&quot;);
+    }
+}</code></pre>
+</section>
+<section class="article-section">
+<h2>publicクラスとファイル名</h2>
+<p>1つのソースファイルに複数のトップレベルクラスを書けます。ただし、<code>public</code> なトップレベルクラスは1つまでで、ファイル名と一致する必要があります。</p><pre class="article-code"><code>// Sample.java
+public class Sample { }
+class Helper { }</code></pre><p>これは可能です。<code>Helper</code> は <code>public</code> ではないので、同じファイルに置けます。</p><pre class="article-code"><code>// Main.java
+public class Sample { } // NG: publicクラス名とファイル名が一致しない</code></pre>
+</section>
+<section class="article-section">
+<h2>packageとimportの順序</h2>
+<p>パッケージ宣言は、コメントを除いてソースファイルの先頭に置きます。<code>import</code> は <code>package</code> の後、クラス宣言の前です。</p><table class="ref-table"><thead><tr><th>順序</th><th>書けるもの</th></tr></thead><tbody><tr><td>1</td><td>コメント</td></tr><tr><td>2</td><td><code>package</code> 宣言</td></tr><tr><td>3</td><td><code>import</code> 宣言</td></tr><tr><td>4</td><td>クラス・interface・recordなどの宣言</td></tr></tbody></table><pre class="article-code"><code>package com.example;
+
+import java.util.ArrayList;
+
+public class Sample { }</code></pre><div class="article-callout warn"><code>import</code> を <code>package</code> より前に書く、またはJavaに存在しない「packageブロック」を作るとコンパイルエラーです。</div>
+</section>
+<section class="article-section">
+<h2>importで省略できるもの</h2>
+<p><code>java.lang</code> パッケージと同じパッケージ内のクラスはimport不要です。<code>java.util.*</code> のワイルドカードは、そのパッケージ直下のクラスだけが対象です。サブパッケージまでは含みません。</p><pre class="article-code"><code>import java.util.*;       // ArrayListは使える
+// import java.util.stream.*; は別途必要
+
+ArrayList&lt;String&gt; list = new ArrayList&lt;&gt;();</code></pre>
+</section>
+<section class="article-section">
+<h2>起動引数</h2>
+<p><code>main(String[] args)</code> の <code>args</code> は、コマンドライン引数を文字列配列として受け取ります。引数がなければ <code>null</code> ではなく、長さ0の配列です。</p><pre class="article-code"><code>// java Sample A B
+System.out.println(args.length); // 2
+System.out.println(args[0]);     // A
+System.out.println(args[1]);     // B</code></pre><p>引数なしで <code>args[0]</code> を読むと <code>ArrayIndexOutOfBoundsException</code> です。</p>
+</section>
+<section class="article-section">
+<h2>ミニ演習</h2>
+<details class="article-card"><summary><strong>Q. <code>static public void main(String... args)</code> は有効？</strong></summary><p>有効です。修飾子の順序は自由で、<code>String...</code> は可変長引数として <code>String[]</code> と同等に起動用mainとして使えます。</p></details><details class="article-card"><summary><strong>Q. <code>import java.util.*;</code> で <code>java.util.stream.Stream</code> は使える？</strong></summary><p>使えません。ワイルドカードは直下の型だけで、サブパッケージは対象外です。</p></details><p class="inline-note">関連: <a href="decision-flow.html">判定フロー</a> / <a href="compile-runtime.html">コンパイル・実行時例外</a> / <a href="exam-traps.html">ひっかけ集</a></p>
+</section>
+<section class="article-section deep-extra">
+<h2>mainメソッドの微妙な許容範囲</h2>
+<p>mainメソッドは形が固定に見えますが、修飾子の順序や可変長引数は許容されます。逆に、戻り値や引数型が違うものは、同名でも起動用mainではありません。</p><table class="ref-table"><thead><tr><th>コード</th><th>起動用mainか</th><th>理由</th></tr></thead><tbody><tr><td><code>public static void main(String[] args)</code></td><td>可</td><td>標準形</td></tr><tr><td><code>static public void main(String... args)</code></td><td>可</td><td>修飾子順序自由、可変長引数可</td></tr><tr><td><code>public void main(String[] args)</code></td><td>不可</td><td>staticがない</td></tr><tr><td><code>public static int main(String[] args)</code></td><td>不可</td><td>戻り値がvoidではない</td></tr><tr><td><code>public static void main(String args)</code></td><td>不可</td><td>引数が配列/可変長ではない</td></tr></tbody></table>
+</section>
+
+<section class="article-section deep-extra">
+<h2>ファイル名問題の切り方</h2>
+<p>ファイル名問題では、publicトップレベルクラスだけを探します。publicでないトップレベルクラスは、ファイル名と一致しなくても同じファイルに置けます。</p><pre class="article-code"><code>// A.java
+public class A { public static void main(String[] args) {} }
+class B { public static void main(String[] args) {} }</code></pre><p>この場合、<code>javac A.java</code> で <code>A.class</code> と <code>B.class</code> が生成されます。Bにも正しいmainがあれば <code>java B</code> で実行可能です。</p>
+</section>
+
+    </main>
+  </div>
+  <script src="data/questions.js?v=code-audit-v18"></script>
+  <script src="assets/js/app.js?v=code-audit-v18"></script>
+</body>
+</html>

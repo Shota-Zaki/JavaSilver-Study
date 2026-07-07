@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - ミニ演習</title>
+  <link rel="stylesheet" href="assets/css/styles.css?v=code-audit-v18">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main article-main">
+      <section class="hero reference-hero compact-hero article-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>ミニ演習</h1>
+        <p>短いコードで、コンパイル可否・実行時例外・出力結果を素早く判定する訓練です。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>使い方</h2>
+        <p>このミニ演習は、知識確認ではなく<strong>判定速度を上げる訓練</strong>です。各問を見たら、先に「コンパイルエラー / 実行時例外 / 出力あり」のどれかへ分類してください。その後に出力値や例外名を詰めます。</p>
+        <p>20秒以上かかる問題は、単に知識が足りないのではなく、確認順が固定されていない可能性が高いです。間違えたら、該当する学習記事へ戻ってください。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>型・代入・リテラル</h2>
+        <div class="drill-grid">
+          <div class="drill-card"><h2>1. byte演算</h2><pre><code>byte b = 1;
+b = b + 1;</code></pre><details><summary>解答</summary><p>コンパイルエラー。<code>b + 1</code> は <code>int</code> になり、<code>byte</code> へ暗黙代入できません。</p></details></div>
+          <div class="drill-card"><h2>2. 複合代入</h2><pre><code>byte b = 1;
+b += 1;
+System.out.println(b);</code></pre><details><summary>解答</summary><p><code>2</code>。複合代入は暗黙キャストを含みます。</p></details></div>
+          <div class="drill-card"><h2>3. 小数リテラル</h2><pre><code>float f = 1.0;</code></pre><details><summary>解答</summary><p>コンパイルエラー。<code>1.0</code> は <code>double</code> です。<code>1.0F</code> なら可。</p></details></div>
+          <div class="drill-card"><h2>4. 8進数</h2><pre><code>int x = 09;</code></pre><details><summary>解答</summary><p>コンパイルエラー。先頭 <code>0</code> は8進数表記で、8や9は使えません。</p></details></div>
+          <div class="drill-card"><h2>5. char演算</h2><pre><code>char c = 'A';
+System.out.println(c + 1);</code></pre><details><summary>解答</summary><p><code>66</code>。<code>char</code> は演算時に数値として扱われ、結果は <code>int</code> です。</p></details></div>
+          <div class="drill-card"><h2>6. boolean非互換</h2><pre><code>boolean b = 1;</code></pre><details><summary>解答</summary><p>コンパイルエラー。Javaでは <code>boolean</code> と数値に互換性はありません。</p></details></div>
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>var・初期化・スコープ</h2>
+        <div class="drill-grid">
+          <div class="drill-card"><h2>7. varとnull</h2><pre><code>var x = null;</code></pre><details><summary>解答</summary><p>コンパイルエラー。<code>null</code> だけでは推論する型が決まりません。</p></details></div>
+          <div class="drill-card"><h2>8. varと配列初期化子</h2><pre><code>var a = {1, 2, 3};</code></pre><details><summary>解答</summary><p>コンパイルエラー。配列初期化子だけでは <code>var</code> の推論対象にできません。<code>var a = new int[]{1,2,3};</code> なら可。</p></details></div>
+          <div class="drill-card"><h2>9. ローカル変数</h2><pre><code>int x;
+System.out.println(x);</code></pre><details><summary>解答</summary><p>コンパイルエラー。ローカル変数には初期値がありません。</p></details></div>
+          <div class="drill-card"><h2>10. フィールド初期値</h2><pre><code>class A {
+    int x;
+    void test() { System.out.println(x); }
+}</code></pre><details><summary>解答</summary><p>コンパイル可能。フィールド <code>x</code> は <code>0</code> に初期化されます。</p></details></div>
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>String・StringBuilder・比較</h2>
+        <div class="drill-grid">
+          <div class="drill-card"><h2>11. String不変</h2><pre><code>String s = "abc";
+s.toUpperCase();
+System.out.println(s);</code></pre><details><summary>解答</summary><p><code>abc</code>。<code>String</code> は不変で、戻り値を受け取っていません。</p></details></div>
+          <div class="drill-card"><h2>12. substring</h2><pre><code>String s = "abcd";
+s.substring(1, 3);
+System.out.println(s);</code></pre><details><summary>解答</summary><p><code>abcd</code>。<code>substring</code> も新しい文字列を返すだけです。</p></details></div>
+          <div class="drill-card"><h2>13. 文字列プール</h2><pre><code>String a = "ja" + "va";
+String b = "java";
+System.out.println(a == b);</code></pre><details><summary>解答</summary><p><code>true</code>。コンパイル時定数同士の連結なので同じ文字列リテラルとして扱われます。</p></details></div>
+          <div class="drill-card"><h2>14. new String</h2><pre><code>String a = new String("java");
+String b = "java";
+System.out.println(a == b);</code></pre><details><summary>解答</summary><p><code>false</code>。<code>new</code> で別インスタンスを作っています。</p></details></div>
+          <div class="drill-card"><h2>15. StringBuilder可変</h2><pre><code>StringBuilder sb = new StringBuilder("A");
+StringBuilder x = sb;
+x.append("B");
+System.out.println(sb);</code></pre><details><summary>解答</summary><p><code>AB</code>。同じ可変オブジェクトを参照しています。</p></details></div>
+          <div class="drill-card"><h2>16. StringBuilder.equals</h2><pre><code>var a = new StringBuilder("A");
+var b = new StringBuilder("A");
+System.out.println(a.equals(b));</code></pre><details><summary>解答</summary><p><code>false</code>。<code>StringBuilder</code> は内容比較の <code>equals</code> を提供していません。</p></details></div>
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>配列・List</h2>
+        <div class="drill-grid">
+          <div class="drill-card"><h2>17. 長さ0配列</h2><pre><code>int[] a = new int[0];
+System.out.println(a.length);</code></pre><details><summary>解答</summary><p><code>0</code>。長さ0の配列は作れます。</p></details></div>
+          <div class="drill-card"><h2>18. 長さ0配列の要素</h2><pre><code>int[] a = new int[0];
+System.out.println(a[0]);</code></pre><details><summary>解答</summary><p>実行時に <code>ArrayIndexOutOfBoundsException</code>。</p></details></div>
+          <div class="drill-card"><h2>19. removeのオーバーロード</h2><pre><code>var list = new java.util.ArrayList&lt;Integer&gt;();
+list.add(10);
+list.add(20);
+list.remove(1);
+System.out.println(list);</code></pre><details><summary>解答</summary><p><code>[10]</code>。<code>remove(1)</code> はインデックス1の削除です。</p></details></div>
+          <div class="drill-card"><h2>20. List.of</h2><pre><code>var list = java.util.List.of("A", "B");
+list.add("C");</code></pre><details><summary>解答</summary><p>実行時に <code>UnsupportedOperationException</code>。<code>List.of</code> は変更不可です。</p></details></div>
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>演算子・制御構造</h2>
+        <div class="drill-grid">
+          <div class="drill-card"><h2>21. 後置インクリメント</h2><pre><code>int a = 10;
+int b = a++ + a;
+System.out.println(b);</code></pre><details><summary>解答</summary><p><code>21</code>。最初の <code>a++</code> は10を使ってから <code>a</code> を11にします。次の <code>a</code> は11です。</p></details></div>
+          <div class="drill-card"><h2>22. 短絡評価</h2><pre><code>int a = 0;
+if (false && ++a &gt; 0) {}
+System.out.println(a);</code></pre><details><summary>解答</summary><p><code>0</code>。<code>&&</code> は左がfalseなら右を評価しません。</p></details></div>
+          <div class="drill-card"><h2>23. 非短絡評価</h2><pre><code>int a = 0;
+if (false &amp; ++a &gt; 0) {}
+System.out.println(a);</code></pre><details><summary>解答</summary><p><code>1</code>。<code>&amp;</code> はboolean同士にも使えますが、右辺も評価します。</p></details></div>
+          <div class="drill-card"><h2>24. booleanの大小比較</h2><pre><code>boolean a = true;
+boolean b = false;
+System.out.println(a &gt; b);</code></pre><details><summary>解答</summary><p>コンパイルエラー。<code>boolean</code> に大小比較は使えません。</p></details></div>
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>継承・ポリモーフィズム・例外</h2>
+        <div class="drill-grid">
+          <div class="drill-card"><h2>25. 呼べるメソッド</h2><pre><code>class A {}
+class B extends A { void test() {} }
+A a = new B();
+a.test();</code></pre><details><summary>解答</summary><p>コンパイルエラー。呼べるメソッドは宣言型 <code>A</code> で決まります。</p></details></div>
+          <div class="drill-card"><h2>26. override実行</h2><pre><code>class A { void test(){ System.out.println("A"); } }
+class B extends A { void test(){ System.out.println("B"); } }
+A a = new B();
+a.test();</code></pre><details><summary>解答</summary><p><code>B</code>。メソッド呼び出しは実体側のoverride実装が動きます。</p></details></div>
+          <div class="drill-card"><h2>27. フィールド</h2><pre><code>class A { String v = "A"; }
+class B extends A { String v = "B"; }
+A a = new B();
+System.out.println(a.v);</code></pre><details><summary>解答</summary><p><code>A</code>。フィールドはoverrideされず、参照変数の型で決まります。</p></details></div>
+          <div class="drill-card"><h2>28. ダウンキャスト</h2><pre><code>Object o = "java";
+Integer i = (Integer) o;</code></pre><details><summary>解答</summary><p>実行時に <code>ClassCastException</code>。コンパイルはできますが実体は <code>String</code> です。</p></details></div>
+          <div class="drill-card"><h2>29. catch順序</h2><pre><code>try {
+    throw new java.io.IOException();
+} catch (Exception e) {
+} catch (java.io.IOException e) {
+}</code></pre><details><summary>解答</summary><p>コンパイルエラー。後続の <code>IOException</code> catch は到達不能です。</p></details></div>
+          <div class="drill-card"><h2>30. finally</h2><pre><code>try {
+    System.out.print("A");
+    int x = 10 / 0;
+    System.out.print("B");
+} finally {
+    System.out.print("C");
+}</code></pre><details><summary>解答</summary><p><code>AC</code> が表示された後、<code>ArithmeticException</code> が送出されます。<code>B</code> には進みません。</p></details></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+  <script src="data/questions.js?v=code-audit-v18"></script>
+  <script src="assets/js/app.js?v=code-audit-v18"></script>
+</body>
+</html>

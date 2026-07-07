@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - 弱点別復習マップ</title>
+  <link rel="stylesheet" href="assets/css/styles.css?v=code-audit-v18">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main article-main">
+      <section class="hero reference-hero compact-hero article-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>弱点別復習マップ</h1>
+        <p>間違えた理由から、読むべき記事と復習方法を逆引きします。</p>
+      </section>
+      <section class="article-section">
+<h2>間違い方で分類する</h2>
+<table class="ref-table"><thead><tr><th>間違い方</th><th>原因</th><th>読む記事</th></tr></thead><tbody><tr><td>出力は追えたが答えが違う</td><td>副作用・参照・例外の追跡漏れ</td><td><a href="output-tracing.html">出力追跡</a></td></tr><tr><td>コンパイルエラーを見落とす</td><td>型・初期化・override・catch順序</td><td><a href="compile-runtime.html">コンパイル/例外</a></td></tr><tr><td>型問題で迷う</td><td>int昇格、定数式、複合代入</td><td><a href="numeric-rules.html">数値・型昇格</a></td></tr><tr><td>String比較で落ちる</td><td>同一性と同値性の混同</td><td><a href="equality.html">同一性・同値性</a></td></tr><tr><td>継承で落ちる</td><td>宣言型と実体、override、フィールド隠蔽</td><td><a href="polymorphism-cast.html">ポリモーフィズム</a></td></tr></tbody></table>
+</section>
+<section class="article-section">
+<h2>復習のやり方</h2>
+<ol class="article-list priority-list"><li>間違えた問題をもう一度開き、正解だけでなく誤答選択肢の理由を言う。</li><li>該当記事のコード例を1つ写し、値や型を変えてみる。</li><li>翌日に間違い演習で再確認する。正解しても説明できなければ未習得です。</li></ol>
+</section>
+    </main>
+  </div>
+  <script src="data/questions.js?v=code-audit-v18"></script>
+  <script src="assets/js/app.js?v=code-audit-v18"></script>
+</body>
+</html>

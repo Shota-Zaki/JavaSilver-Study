@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - ループ制御</title>
+  <link rel="stylesheet" href="assets/css/styles.css?v=code-audit-v18">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main article-main">
+      <section class="hero reference-hero compact-hero article-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>ループ制御</h1>
+        <p>while、do-while、for、拡張for、break、continue、ラベルを、コンパイル可否と出力追跡の両面から整理します。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>この単元の結論</h2>
+        <div class="article-callout">
+          <strong>ループ問題は「何回回るか」ではなく、「各回の入口・本体・出口で変数がどう変わるか」を表で追う。</strong><br>
+          特に <code>continue</code> の後に更新式へ行くか、条件式へ戻るかを間違えると、ほぼ確実に失点します。
+        </div>
+        <ol class="article-list priority-list">
+          <li><strong>コンパイル可否を見る</strong>。条件式がbooleanか、ラベルの飛び先が正しいか、到達不能文がないか確認する。</li>
+          <li><strong>ループの種類を判定する</strong>。while、do-while、通常for、拡張forで評価順が違う。</li>
+          <li><strong>初期値を表に書く</strong>。i、j、sum、flagなど、変わる変数を列にする。</li>
+          <li><strong>1周分の流れを固定する</strong>。条件 → 本体 → continue/break → 更新式 → 次の条件、の順を確認する。</li>
+          <li><strong>終了条件を確認する</strong>。条件false、break、return、例外、無限ループのどれで終わるか見る。</li>
+        </ol>
+      </section>
+
+      <section class="article-section">
+        <h2>while文は条件を先に見る</h2>
+        <p><code>while</code> は本体を実行する前に条件式を評価します。最初から条件がfalseなら、本体は1回も実行されません。</p>
+        <pre class="article-code"><code>int a = 10;
+while (a &lt; 10) {
+    System.out.println("A");
+}
+System.out.println("B");
+// B</code></pre>
+        <p><code>a &lt; 10</code> は最初からfalseなので、<code>A</code> は出ません。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>do-while文は最低1回実行する</h2>
+        <p><code>do-while</code> は本体を実行した後に条件式を評価します。そのため、条件が最初からfalseでも本体は1回実行されます。</p>
+        <pre class="article-code"><code>int a = 10;
+do {
+    System.out.println("A");
+} while (a &lt; 10);
+System.out.println("B");
+// A
+// B</code></pre>
+        <div class="article-callout warn">
+          <strong>do-whileの末尾にはセミコロンが必要。</strong><br>
+          <code>do { ... } while (condition);</code> の形です。ここは構文問題として狙われます。
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>通常for文の実行順序</h2>
+        <p>for文は、初期化式・条件式・更新式を1行に書きますが、実行順序は固定です。</p>
+        <ol class="article-list priority-list">
+          <li>初期化式を1回だけ実行する。</li>
+          <li>条件式を評価する。falseなら終了。</li>
+          <li>本体を実行する。</li>
+          <li>更新式を実行する。</li>
+          <li>再び条件式へ戻る。</li>
+        </ol>
+        <pre class="article-code"><code>for (int i = 0; i &lt; 3; i++) {
+    System.out.print(i);
+}
+// 012</code></pre>
+        <table class="ref-table">
+          <thead><tr><th>タイミング</th><th>i</th><th>出力</th><th>説明</th></tr></thead>
+          <tbody>
+            <tr><td>初期化</td><td>0</td><td>-</td><td><code>int i = 0</code></td></tr>
+            <tr><td>1周目</td><td>0</td><td>0</td><td>本体後に <code>i++</code> で1。</td></tr>
+            <tr><td>2周目</td><td>1</td><td>1</td><td>本体後に2。</td></tr>
+            <tr><td>3周目</td><td>2</td><td>2</td><td>本体後に3。</td></tr>
+            <tr><td>条件判定</td><td>3</td><td>-</td><td><code>i &lt; 3</code> がfalseで終了。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="article-section">
+        <h2>for文の3要素は省略できる</h2>
+        <p>通常for文の初期化式、条件式、更新式は省略できます。条件式を省略するとtrue扱いになり、無限ループになります。</p>
+        <pre class="article-code"><code>for (;;) {
+    break;
+}
+System.out.println("end"); // OK</code></pre>
+        <p>無限ループでも、内部に到達可能な <code>break</code> があれば後続文が到達可能と判断される場合があります。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>for文内で宣言した変数のスコープ</h2>
+        <p>for文の初期化部で宣言した変数は、そのfor文の中だけで有効です。</p>
+        <pre class="article-code"><code>for (int i = 0; i &lt; 3; i++) {
+    System.out.println(i);
+}
+// System.out.println(i); // NG: iはfor文の外では使えない</code></pre>
+        <p>一方、for文の外で宣言した変数を更新式で使った場合、その変数はループ後も残ります。</p>
+        <pre class="article-code"><code>int i = 0;
+for (; i &lt; 3; i++) { }
+System.out.println(i); // 3</code></pre>
+      </section>
+
+      <section class="article-section">
+        <h2>continueの飛び先はループの種類で違う</h2>
+        <p><code>continue</code> は現在の周回の残りを飛ばします。ただし、その後にどこへ行くかはループの種類で違います。</p>
+        <table class="ref-table">
+          <thead><tr><th>ループ</th><th><code>continue</code> 後の移動先</th><th>注意点</th></tr></thead>
+          <tbody>
+            <tr><td><code>for</code></td><td>更新式へ進む</td><td><code>i++</code> は実行される。</td></tr>
+            <tr><td><code>while</code></td><td>条件式へ戻る</td><td>更新処理を本体末尾に書いていると、飛ばされる可能性がある。</td></tr>
+            <tr><td><code>do-while</code></td><td>条件式へ進む</td><td>本体末尾を飛ばして条件を見る。</td></tr>
+          </tbody>
+        </table>
+        <pre class="article-code"><code>for (int i = 0; i &lt; 3; i++) {
+    if (i == 1) continue;
+    System.out.print(i);
+}
+// 02</code></pre>
+      </section>
+
+      <section class="article-section">
+        <h2>while文のcontinueは無限ループを作りやすい</h2>
+        <p>while文では、更新処理を <code>continue</code> より後ろに書くと、その更新が飛ばされます。</p>
+        <pre class="article-code"><code>int i = 0;
+while (i &lt; 3) {
+    if (i == 1) {
+        i++;       // これがないと無限ループになりやすい
+        continue;
+    }
+    System.out.print(i);
+    i++;
+}
+// 02</code></pre>
+        <div class="article-callout warn">
+          <strong>whileでcontinueが出たら、更新処理が実行されるかを必ず確認。</strong> ここを見落とすと、終了するループを無限ループと誤判定したり、その逆をします。
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>breakは最も近いループまたはswitchを抜ける</h2>
+        <p>ラベルなしの <code>break</code> は、最も内側のループまたはswitchを1つだけ抜けます。ネストした外側のループまでは抜けません。</p>
+        <pre class="article-code"><code>for (int i = 0; i &lt; 2; i++) {
+    for (int j = 0; j &lt; 2; j++) {
+        break; // jのループだけ抜ける
+    }
+    System.out.print(i);
+}
+// 01</code></pre>
+      </section>
+
+      <section class="article-section">
+        <h2>ラベル付きbreak/continue</h2>
+        <p>ラベルは文に名前を付ける機能です。<code>break label;</code> は指定したラベル付き文から抜けます。一方、<code>continue label;</code> の対象にできるのはループだけです。</p>
+        <table class="ref-table">
+          <thead><tr><th>構文</th><th>飛び先</th><th>対象</th></tr></thead>
+          <tbody>
+            <tr><td><code>break label;</code></td><td>ラベル付き文の外</td><td>ループ、switch、通常ブロックなど</td></tr>
+            <tr><td><code>continue label;</code></td><td>ラベル付きループの次周回</td><td>ループのみ</td></tr>
+          </tbody>
+        </table>
+        <pre class="article-code"><code>outer:
+for (int i = 0; i &lt; 3; i++) {
+    for (int j = 0; j &lt; 3; j++) {
+        if (j == 1) break outer;
+    }
+}
+System.out.println("end");</code></pre>
+        <p><code>j == 1</code> になった時点で、内側だけでなく <code>outer</code> が付いた外側のfor文ごと抜けます。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>continue labelの対象はループでなければならない</h2>
+        <p>ラベル自体はブロックにも付けられます。しかし、<code>continue</code> で飛べるのはループだけです。</p>
+        <pre class="article-code"><code>label: {
+    // continue label; // NG: labelはループではなくブロック
+    break label;       // OK: ラベル付きブロックから抜ける
+}</code></pre>
+        <p>この違いは細かいですが、Java Silverでは狙われます。<code>break</code> と <code>continue</code> を同じものとして覚えるのは危険です。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>拡張for文の基本</h2>
+        <p>拡張for文は、配列やIterableの要素を順に取り出す構文です。添字を使わないため、範囲外アクセスは起きにくくなりますが、制約もあります。</p>
+        <pre class="article-code"><code>int[] nums = {1, 2, 3};
+for (int n : nums) {
+    System.out.print(n);
+}
+// 123</code></pre>
+        <table class="ref-table">
+          <thead><tr><th>項目</th><th>内容</th></tr></thead>
+          <tbody>
+            <tr><td>対象</td><td>配列、または <code>Iterable</code> を実装したオブジェクト。</td></tr>
+            <tr><td>ループ変数</td><td>各要素を受け取る一時変数。型互換性が必要。</td></tr>
+            <tr><td>添字</td><td>直接は取れない。必要なら通常forを使う。</td></tr>
+            <tr><td>更新</td><td>ループ変数へ再代入しても、配列要素そのものは置き換わらない。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="article-section">
+        <h2>拡張forのループ変数は要素そのものではない</h2>
+        <p>プリミティブ配列では、ループ変数を書き換えても配列要素は変わりません。</p>
+        <pre class="article-code"><code>int[] nums = {1, 2, 3};
+for (int n : nums) {
+    n = 10;
+}
+System.out.println(nums[0]); // 1</code></pre>
+        <p>参照型の場合、ループ変数は参照のコピーを受け取ります。変数に別オブジェクトを代入しても元の配列要素は変わりませんが、参照先オブジェクトの中身を変更すれば影響します。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>Collectionを拡張forで走査中に構造変更しない</h2>
+        <p><code>ArrayList</code> などを拡張forで走査中に、同じリストへ <code>add</code> や <code>remove</code> を行うと、実行時に <code>ConcurrentModificationException</code> が発生する典型パターンです。</p>
+        <pre class="article-code"><code>var list = new java.util.ArrayList&lt;String&gt;();
+list.add("A");
+list.add("B");
+
+for (String s : list) {
+    list.remove(s); // 実行時例外になり得る
+}</code></pre>
+        <p>通常for文で添字を調整する、Iteratorを使うなどの対処が必要ですが、試験では「実行時例外」として判定できれば十分なことが多いです。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>到達不能文を判定する</h2>
+        <p>Javaでは、明らかに実行されない文があるとコンパイルエラーになります。</p>
+        <pre class="article-code"><code>while (true) {
+}
+// System.out.println("A"); // NG: 到達不能</code></pre>
+        <p>ただし、ループ内部に到達可能な <code>break</code> がある場合、後続文は到達可能と判断されます。</p>
+        <pre class="article-code"><code>while (true) {
+    break;
+}
+System.out.println("A"); // OK</code></pre>
+        <div class="article-callout warn">
+          <strong><code>if (false)</code> と <code>while(false)</code> は扱いが違う。</strong> <code>while(false)</code> はループ本体が到達不能として問題になります。定数条件が出たらコンパイル可否を先に見てください。
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>ネストループの追跡例</h2>
+        <pre class="article-code"><code>outer:
+for (int i = 0; i &lt; 3; i++) {
+    for (int j = 0; j &lt; 3; j++) {
+        if (i == 1 &amp;&amp; j == 1) continue outer;
+        System.out.print(i + "" + j + " ");
+    }
+}</code></pre>
+        <table class="ref-table">
+          <thead><tr><th>i</th><th>jの動き</th><th>出力</th><th>理由</th></tr></thead>
+          <tbody>
+            <tr><td>0</td><td>0,1,2</td><td><code>00 01 02</code></td><td>条件に該当しない。</td></tr>
+            <tr><td>1</td><td>0,1で中断</td><td><code>10</code></td><td><code>j==1</code> で <code>continue outer</code>。外側forの更新へ。</td></tr>
+            <tr><td>2</td><td>0,1,2</td><td><code>20 21 22</code></td><td>条件に該当しない。</td></tr>
+          </tbody>
+        </table>
+        <p>全体の出力は <code>00 01 02 10 20 21 22</code> です。ラベル付きcontinueは「外側ループの次周回へ移動する」と考えると崩れません。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>典型ひっかけ</h2>
+        <table class="ref-table">
+          <thead><tr><th>コード/状況</th><th>判定</th><th>理由</th></tr></thead>
+          <tbody>
+            <tr><td><code>while (1) {}</code></td><td>コンパイルエラー</td><td>条件はbooleanのみ。</td></tr>
+            <tr><td><code>do {} while(false)</code></td><td>OK</td><td>do-whileは最低1回実行。末尾セミコロンが必要。</td></tr>
+            <tr><td><code>continue;</code> がswitch内だけにある</td><td>コンパイルエラー</td><td>continueの対象はループ。</td></tr>
+            <tr><td><code>break;</code> がswitch内にある</td><td>OK</td><td>breakはswitchを抜けられる。</td></tr>
+            <tr><td><code>continue label;</code> のlabelがブロック</td><td>コンパイルエラー</td><td>continue先はループでなければならない。</td></tr>
+            <tr><td>拡張forでループ変数へ再代入</td><td>元配列は置換されない</td><td>ループ変数はコピー。</td></tr>
+            <tr><td>拡張for中にListをremove</td><td>実行時例外になり得る</td><td>構造変更の検出。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="article-section">
+        <h2>ミニ演習</h2>
+        <details class="article-card"><summary><strong>Q1. <code>int a = 10; while (a &lt; 10) { System.out.print("A"); } System.out.print("B");</code></strong></summary><p><code>while</code> は条件を先に見るため本体は0回です。出力は <code>B</code>。</p></details>
+        <details class="article-card"><summary><strong>Q2. <code>int a = 10; do { System.out.print("A"); } while (a &lt; 10);</code></strong></summary><p><code>do-while</code> は最低1回実行されるため、<code>A</code> が出力されます。</p></details>
+        <details class="article-card"><summary><strong>Q3. for文で <code>continue</code> したら更新式は実行される？</strong></summary><p>実行されます。for文では、continue後に更新式へ進み、その後条件式を評価します。</p></details>
+        <details class="article-card"><summary><strong>Q4. <code>continue</code> はswitchを抜けるために使える？</strong></summary><p>使えません。switchを抜けるのは <code>break</code> です。<code>continue</code> の対象はループです。</p></details>
+        <details class="article-card"><summary><strong>Q5. 拡張forで <code>for (int n : nums) { n = 0; }</code> とすると配列要素は0になる？</strong></summary><p>なりません。<code>n</code> は各要素の値を受け取る一時変数です。</p></details>
+        <p class="inline-note">前に戻る: <a href="operators-control.html">演算子・制御構造</a> / 次に読む: <a href="output-tracing.html">出力追跡</a> / 関連: <a href="collections-arrays.html">配列・List</a></p>
+      </section>
+    </main>
+  </div>
+  <script src="data/questions.js?v=code-audit-v18"></script>
+  <script src="assets/js/app.js?v=code-audit-v18"></script>
+</body>
+</html>

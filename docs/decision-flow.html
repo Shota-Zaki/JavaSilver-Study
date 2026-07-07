@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Java Silver Study - 判定フロー</title>
+  <link rel="stylesheet" href="assets/css/styles.css?v=code-audit-v18">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="brand"><a href="index.html">Java Silver Study</a></p>
+      <nav id="chapterNav" class="nav-list" aria-label="章一覧"></nav>
+    </aside>
+    <main class="main reference-main article-main">
+      <section class="hero reference-hero compact-hero article-hero">
+        <p class="eyebrow">Java Silver Reference</p>
+        <h1>判定フロー</h1>
+        <p>Java Silverのコード問題を、コンパイル可否、実行時例外、出力結果の順に切るための詳説ページです。</p>
+      </section>
+      <section class="article-section article-card important">
+        <h2>この記事の目的</h2>
+        <p>Java Silverの問題は、知識量よりも「判定順」で落ちることが多いです。特に出力問題では、値を追い始める前にコンパイルエラーを見落とすと、その時点で負けです。このページでは、どの問題でも同じ順番で確認できるように、コンパイル可否、実行時例外、出力結果の3段階に分けて整理します。</p>
+        <ul class="article-list">
+          <li><strong>第1段階:</strong> そもそもコンパイルできるか。</li>
+          <li><strong>第2段階:</strong> コンパイルできるなら、実行中に例外で止まるか。</li>
+          <li><strong>第3段階:</strong> 例外で止まらないなら、最終的に何が表示されるか。</li>
+        </ul>
+        <p>この順番を崩すと、難問ではなく普通の問題でも誤答します。逆に、この順番を固定できれば、複雑なコードでも見る場所がかなり限定されます。</p>
+      </section>
+
+      <section class="article-section article-card">
+        <h2>全体フロー</h2>
+        <p>最初に次の表の順番で確認します。これは毎回使う基本型です。</p>
+        <table class="ref-table">
+          <thead>
+            <tr><th>順番</th><th>確認対象</th><th>見るポイント</th><th>典型的な落とし穴</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>設問と選択肢</td><td>何を答える問題かを先に見る</td><td>出力を聞かれていると思い込み、コンパイルエラー選択肢を見落とす</td></tr>
+            <tr><td>2</td><td>ソース構造</td><td>package、import、publicクラス名、トップレベルクラス修飾子</td><td>packageより前にimportを書く、トップレベルにprivate/protected/staticを付ける</td></tr>
+            <tr><td>3</td><td>mainとメソッド宣言</td><td>mainの形、戻り値、引数、static、呼び出し先の存在</td><td>mainに見えるが実行エントリポイントではない</td></tr>
+            <tr><td>4</td><td>変数宣言とスコープ</td><td>初期化、varの使用場所、同名変数、ローカル変数の有効範囲</td><td>ローカル変数未初期化、varをフィールドや引数に使う</td></tr>
+            <tr><td>5</td><td>型と代入</td><td>互換性、暗黙変換、キャスト、数値昇格、戻り値型</td><td>byte/short演算のint化、longをintへ代入、doubleをfloatへ代入</td></tr>
+            <tr><td>6</td><td>クラス・継承・interface</td><td>constructor、this/super、override、abstract、default method</td><td>override条件違反、abstract実装漏れ、constructorを継承すると誤解する</td></tr>
+            <tr><td>7</td><td>例外処理の構文</td><td>checked例外、catch順序、try-catch-finallyの並び</td><td>親例外を先にcatch、checked例外の未処理、finallyとcatchの順序違反</td></tr>
+            <tr><td>8</td><td>実行時例外</td><td>null、配列範囲外、キャスト失敗、数値変換失敗、0除算</td><td>コンパイルは通るが途中で止まる</td></tr>
+            <tr><td>9</td><td>出力追跡</td><td>評価順、副作用、参照、短絡評価、動的ディスパッチ</td><td>++/--、+=、String結合、method override、field隠蔽</td></tr>
+          </tbody>
+        </table>
+        <p>重要なのは、上から順に「脱落条件」を潰すことです。出力を追うのは最後です。</p>
+      </section>
+
+      <section class="article-section article-card">
+        <h2>ステップ1: 選択肢から問題の型を読む</h2>
+        <p>コードを見る前に、選択肢を確認します。選択肢はヒントです。何を検証すべきかがほぼ書かれています。</p>
+        <table class="ref-table">
+          <thead><tr><th>選択肢の形</th><th>最初に疑うもの</th><th>理由</th></tr></thead>
+          <tbody>
+            <tr><td>「コンパイルエラー」がある</td><td>宣言、型、override、例外処理</td><td>Java Silverでは実行前に落ちる問題が多い</td></tr>
+            <tr><td>「実行時例外」がある</td><td>null、配列、キャスト、parse、0除算</td><td>文法は正しいが実行途中で止まる可能性がある</td></tr>
+            <tr><td>出力候補だけ</td><td>副作用、分岐、ループ、参照</td><td>コンパイル可否の確認後、値を追う</td></tr>
+            <tr><td>「何も表示されない」がある</td><td>条件分岐、ループ未実行、例外前停止</td><td>printlnに到達しているかを見る</td></tr>
+            <tr><td>複数選択</td><td>正しい説明と誤り説明を個別判定</td><td>1つ正しいから終わりではない</td></tr>
+          </tbody>
+        </table>
+        <p>ここを雑にやると、問題が求めていない方向に時間を使います。先に「この問題は何を落とし穴にしているか」を推測してください。</p>
+      </section>
+
+      <section class="article-section article-card">
+        <h2>ステップ2: ソース構造で落とす</h2>
+        <p>最初に見るのは、プログラムの骨格です。ここで落ちるなら、値の追跡は不要です。</p>
+        <h3>packageとimportの順序</h3>
+        <pre class="article-code"><code>// OK
+package sample;
+import java.util.*;
+public class Main { }
+
+// NG
+import java.util.*;
+package sample;
+public class Main { }</code></pre>
+        <p><code>package</code> 宣言は、コメントを除いてソースファイルの先頭に置きます。<code>import</code> はその後です。順番が逆ならコンパイルエラーです。</p>
+        <h3>publicクラスとファイル名</h3>
+        <pre class="article-code"><code>// Sample.java に保存されている場合
+public class Sample { }
+class Helper { }</code></pre>
+        <p>トップレベルの <code>public</code> クラスがある場合、ソースファイル名はそのクラス名と一致する必要があります。<code>public</code> ではないトップレベルクラスは、同じファイルに複数書けます。</p>
+        <h3>トップレベルクラスの修飾子</h3>
+        <table class="ref-table">
+          <thead><tr><th>修飾子</th><th>トップレベルで使えるか</th><th>注意</th></tr></thead>
+          <tbody>
+            <tr><td><code>public</code></td><td>使える</td><td>ファイル名との一致が必要</td></tr>
+            <tr><td><code>final</code></td><td>使える</td><td>継承不可</td></tr>
+            <tr><td><code>abstract</code></td><td>使える</td><td>直接インスタンス化不可</td></tr>
+            <tr><td><code>sealed</code></td><td>使える</td><td>許可するサブクラスの指定が必要</td></tr>
+            <tr><td><code>non-sealed</code></td><td>条件付きで使える</td><td>sealed型を継承・実装したクラスで使う</td></tr>
+            <tr><td><code>private</code> / <code>protected</code></td><td>使えない</td><td>トップレベルでは不可。ネストしたクラスなら別</td></tr>
+            <tr><td><code>static</code></td><td>使えない</td><td>トップレベルでは不可。static nested classなら可</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="article-section article-card">
+        <h2>ステップ3: mainと呼び出し口を確認する</h2>
+        <p>実行問題では、実行される <code>main</code> が正しい形かを確認します。</p>
+        <pre class="article-code"><code>// 実行エントリポイントとして有効
+public static void main(String[] args) { }
+public static void main(String... args) { }
+
+// mainという名前でも、実行エントリポイントではない
+public void main(String[] args) { }       // staticがない
+public static int main(String[] args) { } // 戻り値がvoidではない
+static void main(String[] args) { }       // publicではない</code></pre>
+        <p>試験では「mainっぽい」形を混ぜてきます。コードの中で呼び出される普通のメソッドとしては成立しても、<code>java</code> コマンドで実行する入口として成立しない場合があります。</p>
+        <p>ただし、問題文で「このメソッドを呼び出したとき」と書かれている場合は、mainの形ではなく、その呼び出し自体が可能かを見ます。設問の前提を読み落とさないでください。</p>
+      </section>
+
+      <section class="article-section article-card">
+        <h2>ステップ4: 変数宣言・var・初期化を確認する</h2>
+        <p>Java Silverでは、<code>var</code> とローカル変数の初期化が頻出です。ここはかなり機械的に切れます。</p>
+        <h3>ローカル変数は自動初期化されない</h3>
+        <pre class="article-code"><code>public class Main {
+    public static void main(String[] args) {
+        int x;
+        System.out.println(x); // コンパイルエラー
+    }
+}</code></pre>
+        <p>フィールドはデフォルト値で初期化されますが、ローカル変数は使用前に明示的な初期化が必要です。ここを混同すると落ちます。</p>
+        <h3>varが使える場所</h3>
+        <table class="ref-table">
+          <thead><tr><th>場所</th><th>var使用</th><th>例</th></tr></thead>
+          <tbody>
+            <tr><td>ローカル変数</td><td>可</td><td><code>var s = "abc";</code></td></tr>
+            <tr><td>拡張forの変数</td><td>可</td><td><code>for (var x : list)</code></td></tr>
+            <tr><td>フィールド</td><td>不可</td><td><code>private var value;</code></td></tr>
+            <tr><td>メソッド引数</td><td>不可</td><td><code>void test(var x)</code></td></tr>
+            <tr><td>戻り値型</td><td>不可</td><td><code>var test()</code></td></tr>
+            <tr><td>初期値なし</td><td>不可</td><td><code>var x;</code></td></tr>
+            <tr><td><code>null</code>のみ</td><td>不可</td><td><code>var x = null;</code></td></tr>
+            <tr><td>配列初期化子だけ</td><td>不可</td><td><code>var a = {1, 2, 3};</code></td></tr>
+          </tbody>
+        </table>
+        <p><code>var</code> は「型を書かなくてよい魔法」ではありません。コンパイラが右辺から型を一意に推論できるローカル変数宣言だけです。</p>
+      </section>
+
+      <section class="article-section article-card">
+        <h2>ステップ5: 型・代入・演算で落とす</h2>
+        <p>出力を追う前に、代入できるかを確認します。特に小さい整数型、浮動小数点、booleanは狙われます。</p>
+        <h3>整数リテラルと範囲</h3>
+        <pre class="article-code"><code>byte a = 127;  // OK
+byte b = 128;  // コンパイルエラー
+short c = 300; // OK
+char d = 65;   // OK。'A'に相当</code></pre>
+        <p><code>byte</code> は -128〜127、<code>short</code> は -32768〜32767、<code>char</code> は 0〜65535 です。整数定数を代入する場合、範囲内なら小さい型にも代入できます。</p>
+        <h3>演算するとintになりやすい</h3>
+        <pre class="article-code"><code>byte a = 10;
+byte b = 20;
+byte c = a + b;      // コンパイルエラー。a + b は int
+byte d = (byte)(a+b); // OK</code></pre>
+        <p><code>byte</code>、<code>short</code>、<code>char</code> は、算術演算時に基本的に <code>int</code> に昇格します。変数同士の演算結果をそのまま小さい型に戻すことはできません。</p>
+        <h3>long・float・doubleの基本</h3>
+        <pre class="article-code"><code>int a = 2 * 3L;   // コンパイルエラー。結果はlong
+long b = 2 * 3L;  // OK
+float c = 10.0;   // コンパイルエラー。10.0はdouble
+float d = 10.0F;  // OK</code></pre>
+        <p>整数リテラルは基本 <code>int</code>、浮動小数点リテラルは基本 <code>double</code> です。<code>L</code>、<code>F</code> の有無で型が変わります。</p>
+        <h3>booleanと数値は別物</h3>
+        <pre class="article-code"><code>boolean b = true;
+if (b) { }
+if (b == true) { }
+if (1) { }       // コンパイルエラー
+boolean x = 1;   // コンパイルエラー</code></pre>
+        <p>Javaでは、<code>0</code> を false、<code>1</code> を true として扱いません。C言語系の感覚を持ち込むと間違えます。</p>
+      </section>
+
+      <section class="article-section article-card">
+        <h2>ステップ6: クラス・継承・interfaceで落とす</h2>
+        <p>継承問題では、見た目の出力より先に「そもそも継承・実装として成立しているか」を確認します。</p>
+        <h3>コンストラクタは継承されない</h3>
+        <pre class="article-code"><code>class A {
+    A(String s) { }
+}
+class B extends A { }
+// Bは暗黙に super(); を呼ぼうとするが、Aに無引数コンストラクタがないためコンパイルエラー</code></pre>
+        <p>サブクラスはスーパークラスのコンストラクタを引き継ぎません。サブクラスのコンストラクタでは、最初に <code>super(...)</code> または <code>this(...)</code> が呼ばれます。明示しない場合は <code>super()</code> が補われます。</p>
+        <h3>overrideの条件</h3>
+        <table class="ref-table">
+          <thead><tr><th>項目</th><th>条件</th><th>違反例</th></tr></thead>
+          <tbody>
+            <tr><td>メソッド名・引数</td><td>同じシグネチャ</td><td>引数型が違うならoverloadでありoverrideではない</td></tr>
+            <tr><td>戻り値型</td><td>同じ型または共変戻り値</td><td>サブクラス側でより広い型を返す</td></tr>
+            <tr><td>アクセス修飾子</td><td>同じか、より広い</td><td><code>public</code> を <code>protected</code> に狭める</td></tr>
+            <tr><td>例外</td><td>checked例外を広げない</td><td>親にない広いchecked例外をthrowsする</td></tr>
+            <tr><td>static</td><td>staticメソッドはoverrideではなく隠蔽</td><td>インスタンスメソッドとstaticを入れ替える</td></tr>
+          </tbody>
+        </table>
+        <h3>interfaceの基本</h3>
+        <ul class="article-list">
+          <li>インタフェースの抽象メソッドは暗黙に <code>public abstract</code>。</li>
+          <li>インタフェースのフィールドは暗黙に <code>public static final</code>。</li>
+          <li><code>default</code> メソッドは実装を持てる。</li>
+          <li><code>private</code> メソッドはインタフェース内の共通処理として使えるが、実装クラスから呼び出すものではない。</li>
+          <li>クラスが抽象クラスでないなら、未実装の抽象メソッドをすべて実装する必要がある。</li>
+        </ul>
+      </section>
+
+      <section class="article-section article-card">
+        <h2>ステップ7: 例外処理の構文で落とす</h2>
+        <p>例外は、コンパイル時に落ちるものと実行時に落ちるものを分けます。ここを混ぜると判断が不安定になります。</p>
+        <h3>checked例外は処理または宣言が必要</h3>
+        <pre class="article-code"><code>import java.io.IOException;
+
+class A {
+    void test() throws IOException { }
+    void call() {
+        test(); // コンパイルエラー。IOExceptionを処理していない
+    }
+}</code></pre>
+        <p><code>Exception</code> 系でも、<code>RuntimeException</code> のサブクラスは非チェック例外です。<code>IOException</code> などのチェック例外は、<code>try-catch</code> または <code>throws</code> が必要です。</p>
+        <h3>catchは狭い例外から広い例外へ</h3>
+        <pre class="article-code"><code>try {
+    // any code
+} catch (Exception e) {
+} catch (NullPointerException e) { // コンパイルエラー。到達不能
+}</code></pre>
+        <p>親クラスの例外を先にcatchすると、子クラスのcatchに到達できません。catchは具体的な例外から順に書きます。</p>
+        <h3>try-catch-finallyの並び</h3>
+        <pre class="article-code"><code>// OK
+try { } catch (Exception e) { } finally { }
+try { } finally { }
+
+// NG
+try { } finally { } catch (Exception e) { }</code></pre>
+        <p><code>finally</code> の後に <code>catch</code> は書けません。構文順序で落とせる問題です。</p>
+      </section>
+
+      <section class="article-section article-card">
+        <h2>ステップ8: 実行時例外を確認する</h2>
+        <p>コンパイルできると判断したら、次は実行時例外です。例外が発生した時点で、通常の後続処理は実行されません。</p>
+        <table class="ref-table">
+          <thead><tr><th>例外</th><th>典型例</th><th>判定ポイント</th></tr></thead>
+          <tbody>
+            <tr><td><code>NullPointerException</code></td><td><code>s.length()</code> where <code>s == null</code></td><td>null参照に対してインスタンスメソッドやフィールドを使う</td></tr>
+            <tr><td><code>ArrayIndexOutOfBoundsException</code></td><td><code>arr[3]</code> where length is 3</td><td>配列の添字は0からlength-1</td></tr>
+            <tr><td><code>StringIndexOutOfBoundsException</code></td><td><code>s.charAt(5)</code></td><td>Stringの範囲外アクセス</td></tr>
+            <tr><td><code>ClassCastException</code></td><td><code>(B) a</code> where 実体がBではない</td><td>参照型のキャストはコンパイル可能でも実体が合わないと失敗</td></tr>
+            <tr><td><code>NumberFormatException</code></td><td><code>Integer.parseInt("abc")</code></td><td>文字列を数値に変換できない</td></tr>
+            <tr><td><code>ArithmeticException</code></td><td><code>10 / 0</code></td><td>整数の0除算。浮動小数点の0除算とは挙動が違う</td></tr>
+          </tbody>
+        </table>
+        <pre class="article-code"><code>try {
+    String s = null;
+    System.out.println(s.length());
+    System.out.println("A");
+} catch (NullPointerException e) {
+    System.out.println("B");
+} finally {
+    System.out.println("C");
+}</code></pre>
+        <p><code>s.length()</code> で <code>NullPointerException</code> が発生します。そのため <code>A</code> は表示されません。対応するcatchで <code>B</code>、最後にfinallyで <code>C</code> が表示されます。</p>
+      </section>
+
+      <section class="article-section article-card">
+        <h2>ステップ9: 出力追跡に入る</h2>
+        <p>コンパイルも実行時例外も問題ないと判断してから、初めて値を追います。ここでは、評価順と副作用が中心です。</p>
+        <h3>++/--は表にする</h3>
+        <pre class="article-code"><code>int a = 10;
+int b = a++ + a + --a;
+System.out.println(a + "," + b);</code></pre>
+        <table class="ref-table">
+          <thead><tr><th>式の部分</th><th>式に使われる値</th><th>処理後のa</th><th>理由</th></tr></thead>
+          <tbody>
+            <tr><td><code>a++</code></td><td>10</td><td>11</td><td>後置なので、元の値を使ってから増える</td></tr>
+            <tr><td><code>a</code></td><td>11</td><td>11</td><td>現在値を使う</td></tr>
+            <tr><td><code>--a</code></td><td>10</td><td>10</td><td>前置なので、先に減ってから使う</td></tr>
+          </tbody>
+        </table>
+        <p>したがって <code>b</code> は <code>10 + 11 + 10 = 31</code>、最後の <code>a</code> は <code>10</code> です。</p>
+        <h3>短絡評価</h3>
+        <pre class="article-code"><code>int a = 10;
+int b = 10;
+if (a > 10 && ++b > 10) {
+    a++;
+}
+System.out.println(a + b);</code></pre>
+        <p><code>&&</code> は左が false なら右を評価しません。<code>a > 10</code> は false なので <code>++b</code> は実行されず、出力は <code>20</code> です。<code>&</code> なら右も評価されます。</p>
+        <h3>String結合は左から効く</h3>
+        <pre class="article-code"><code>System.out.println(1 + 2 + "A" + 3 + 4); // 3A34</code></pre>
+        <p>左から評価され、途中でStringになると以降は文字列結合です。<code>1 + 2</code> は数値加算で <code>3</code>、そこから <code>"A"</code> と結合して <code>"3A"</code>、以降は文字列結合です。</p>
+      </section>
+
+      <section class="article-section article-card">
+        <h2>出力追跡で必ず分けるもの</h2>
+        <p>出力問題で混同しやすいのは、参照型、フィールド、メソッド、staticです。</p>
+        <table class="ref-table">
+          <thead><tr><th>対象</th><th>決まり方</th><th>例</th></tr></thead>
+          <tbody>
+            <tr><td>インスタンスメソッド</td><td>実体のクラスで動的に決まる</td><td>overrideされたメソッドは実体側が呼ばれる</td></tr>
+            <tr><td>フィールド</td><td>変数の宣言型で決まる</td><td>同名フィールドはoverrideではなく隠蔽</td></tr>
+            <tr><td>staticメソッド</td><td>基本的に参照型・クラス名で決まる</td><td>overrideではなく隠蔽</td></tr>
+            <tr><td>overload</td><td>コンパイル時の引数型で決まる</td><td>実体ではなく、呼び出し時に見えている型が重要</td></tr>
+            <tr><td>override</td><td>実行時の実体で決まる</td><td>ポリモーフィズムの中心</td></tr>
+          </tbody>
+        </table>
+        <pre class="article-code"><code>class A {
+    String name = "A";
+    String getName() { return name; }
+}
+class B extends A {
+    String name = "B";
+    String getName() { return name; }
+}
+A obj = new B();
+System.out.println(obj.name);     // A
+System.out.println(obj.getName()); // B</code></pre>
+        <p><code>obj.name</code> はフィールドなので変数の型 <code>A</code> で決まります。<code>obj.getName()</code> はインスタンスメソッドなので実体 <code>B</code> のメソッドが呼ばれます。</p>
+      </section>
+
+      <section class="article-section article-card important">
+        <h2>実戦テンプレート</h2>
+        <p>問題を解くときは、次の順番をそのまま使ってください。</p>
+        <ol class="article-list priority-list">
+          <li><strong>選択肢を見る。</strong> コンパイルエラー・実行時例外・出力のどれを判定する問題かを決める。</li>
+          <li><strong>ソース構造を見る。</strong> package/import、publicクラス名、トップレベル修飾子を確認する。</li>
+          <li><strong>宣言を見る。</strong> main、メソッド、戻り値、引数、static、var、ローカル変数初期化を見る。</li>
+          <li><strong>型を見る。</strong> 代入、数値昇格、キャスト、戻り値、boolean互換性を見る。</li>
+          <li><strong>クラス関係を見る。</strong> constructor、super/this、override、abstract/interface、アクセス修飾子を見る。</li>
+          <li><strong>例外処理を見る。</strong> checked例外、catch順序、finallyの位置を見る。</li>
+          <li><strong>ここまで通ったら実行する。</strong> null、範囲外、キャスト失敗、parse失敗、0除算を見る。</li>
+          <li><strong>最後に出力を追う。</strong> ++/--、短絡評価、String結合、参照、メソッド呼び出しを表にする。</li>
+        </ol>
+        <p>この順番を守るだけで、無駄なトレースが減ります。逆に、この順番を守れないうちは、知識が増えても点数は安定しません。</p>
+      </section>
+
+      <section class="article-section article-card">
+        <h2>例題1: コンパイルエラーを先に切る</h2>
+        <pre class="article-code"><code>public class Main {
+    public static void main(String[] args) {
+        int a;
+        if (args.length > 0) {
+            a = 10;
+        }
+        System.out.println(a);
+    }
+}</code></pre>
+        <p>この問題で <code>args.length</code> の値を想像してはいけません。コンパイラは、<code>if</code> に入らない可能性があることを見ます。その場合、<code>a</code> は未初期化のまま使われます。したがってコンパイルエラーです。</p>
+        <p>「実行時に引数を渡せば大丈夫」という考え方は不正確です。Javaのコンパイル時チェックは、実行時の都合ではなく、コード上で確実に初期化されるかを見ます。</p>
+      </section>
+
+      <section class="article-section article-card">
+        <h2>例題2: コンパイル後に実行時例外を切る</h2>
+        <pre class="article-code"><code>public class Main {
+    public static void main(String[] args) {
+        String[] data = {"A", "B"};
+        System.out.println(data[2]);
+        System.out.println("end");
+    }
+}</code></pre>
+        <p>配列の型、初期化、<code>main</code> の形に問題はありません。したがってコンパイルは通ります。</p>
+        <p>次に実行します。配列 <code>data</code> の要素数は2なので、使える添字は <code>0</code> と <code>1</code> だけです。<code>data[2]</code> は範囲外なので、<code>ArrayIndexOutOfBoundsException</code> が発生します。<code>end</code> は表示されません。</p>
+      </section>
+
+      <section class="article-section article-card">
+        <h2>例題3: 出力追跡は最後にする</h2>
+        <pre class="article-code"><code>public class Main {
+    public static void main(String[] args) {
+        int a = 1;
+        int b = 2;
+        System.out.println("" + a + b + (a + b));
+    }
+}</code></pre>
+        <p>宣言、型、例外に問題はありません。ここで初めて出力を追います。</p>
+        <ul class="article-list">
+          <li><code>"" + a</code> で文字列結合になり、<code>"1"</code>。</li>
+          <li>次の <code>+ b</code> も文字列結合なので、<code>"12"</code>。</li>
+          <li><code>(a + b)</code> は括弧内で先に数値加算され、<code>3</code>。</li>
+          <li>結果は <code>"123"</code>。</li>
+        </ul>
+        <p>出力は <code>123</code> です。</p>
+      </section>
+
+      <section class="article-section article-card">
+        <h2>ミニ演習</h2>
+        <details class="article-card compact">
+          <summary><strong>Q1. 次のコードは何を最初に見るべきか。</strong></summary>
+          <pre class="article-code"><code>class Main {
+    static void main(String[] args) {
+        System.out.println("A");
+    }
+}</code></pre>
+          <p><code>main</code> の形です。<code>public</code> がないため、実行エントリポイントとしては不適切です。設問が「java Mainで実行したとき」としているなら、出力問題ではありません。</p>
+        </details>
+        <details class="article-card compact">
+          <summary><strong>Q2. 次のコードはコンパイルできるか。</strong></summary>
+          <pre class="article-code"><code>byte b = 10;
+b = b + 1;</code></pre>
+          <p>できません。<code>b + 1</code> は <code>int</code> になります。<code>byte</code> に戻すにはキャストが必要です。ただし <code>b += 1;</code> は複合代入で暗黙のキャストが入るため別です。</p>
+        </details>
+        <details class="article-card compact">
+          <summary><strong>Q3. 次のコードの出力は何か。</strong></summary>
+          <pre class="article-code"><code>int x = 0;
+if (x++ > 0 && ++x > 1) {
+    x += 10;
+}
+System.out.println(x);</code></pre>
+          <p><code>x++ > 0</code> は、比較に使われる値が0なので false。その後 <code>x</code> は1になります。<code>&&</code> の右側 <code>++x > 1</code> は評価されません。if内も実行されません。出力は <code>1</code> です。</p>
+        </details>
+      </section>
+
+      <section class="article-section article-card important">
+        <h2>この単元の到達基準</h2>
+        <p>このページを読んだだけで終わらせると弱いです。次の状態になっていなければ、まだ使える知識になっていません。</p>
+        <ul class="article-list">
+          <li>選択肢を見て、コンパイル問題か実行時例外問題か出力問題かを分類できる。</li>
+          <li>出力追跡の前に、最低限のコンパイルチェックを行える。</li>
+          <li><code>var</code>、ローカル変数未初期化、byte/short演算、override条件を先に確認できる。</li>
+          <li>例外が出た行以降の通常処理を追わない判断ができる。</li>
+          <li>++/--、短絡評価、String結合、参照型の問題を表で追える。</li>
+        </ul>
+        <p class="inline-note">次に深掘りするなら、得点効率が高いのは「型・変数・リテラル」または「数値・型昇格」です。</p>
+      </section>
+
+    </main>
+  </div>
+  <script src="data/questions.js?v=code-audit-v18"></script>
+  <script src="assets/js/app.js?v=code-audit-v18"></script>
+</body>
+</html>
