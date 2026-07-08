@@ -7,7 +7,7 @@
 <meta content="noindex, nofollow, noarchive, nosnippet" name="googlebot"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Java Silver Study - 演算子・制御構造</title>
-<link href="assets/css/styles.css?v=article-specific-v11" rel="stylesheet"/>
+<link href="assets/css/styles.css?v=independent-topics-v12" rel="stylesheet"/>
 </head>
 <body>
 <div class="layout">
@@ -252,34 +252,7 @@ switch (n) {
 // BC</code></pre>
 <p><code>case 2</code> に一致して <code>B</code> を出力し、breakがないため <code>default</code> へ流れて <code>C</code> も出力します。</p>
 </section>
-<section class="article-section">
-<h2>switch式は値を返す</h2>
-<p>Java 17範囲では、switch式も押さえます。switch文は処理を分岐しますが、switch式は値を返せます。</p>
-<pre class="article-code"><code>int n = 2;
-String result = switch (n) {
-    case 1 -&gt; "one";
-    case 2 -&gt; "two";
-    default -&gt; "other";
-};
-System.out.println(result); // two</code></pre>
-<p><code>-&gt;</code> 形式では原則としてフォールスルーしません。ブロックで複数文を書く場合は <code>yield</code> で値を返します。</p>
-<pre class="article-code"><code>String result = switch (n) {
-    case 1 -&gt; "one";
-    default -&gt; {
-        String s = "other";
-        yield s;
-    }
-};</code></pre>
-</section><section class="article-section">
-<h2>switch文とswitch式の判定</h2>
-<div class="table-wrap"><table class="ref-table"><thead><tr><th>観点</th><th>switch文</th><th>switch式</th></tr></thead><tbody><tr><td>目的</td><td>処理の分岐</td><td>値の生成</td></tr><tr><td>従来の<code>:</code>ラベル</td><td>フォールスルーあり</td><td>使用可能だが値生成には<code>yield</code>が必要</td></tr><tr><td><code>-&gt;</code>ラベル</td><td>フォールスルーなし</td><td>式・ブロック・throwを右辺に置ける</td></tr><tr><td>網羅性</td><td>必須ではない</td><td>値を返すなら全ケースを覆う必要がある</td></tr><tr><td>末尾セミコロン</td><td>switch文全体には通常不要</td><td>代入式として使う場合は必要</td></tr></tbody></table></div>
-<pre class="article-code"><code>int day = 2;
-      String name = switch (day) {
-          case 1 -&gt; "Mon";
-          case 2 -&gt; "Tue";
-          default -&gt; "Other";
-      };</code></pre>
-<details class="article-card"><summary><strong>switch式の網羅性</strong></summary><p>列挙型をswitch式で扱い、全定数を列挙した場合、<code>default</code>は必須ですか。</p><div class="article-callout"><strong>網羅性の判定：</strong>すべての列挙定数を網羅しているとコンパイラが判断できれば、<code>default</code>なしでも成立します。</div></details></section>
+<section class="article-section"><h2>switch式の詳細</h2><p>値を生成するswitch式は、switch文とは網羅性、yield、結果型の判定が異なります。<a href="switch-expressions.html">switch式</a>で、セレクタ評価から式全体の型まで独立して扱います。</p></section>
 <section class="article-section">
 <h2>副作用と短絡評価の誤読</h2>
 <table class="ref-table">
@@ -304,14 +277,10 @@ System.out.println(result); // two</code></pre>
 <details class="article-card"><summary><strong>Q5. <code>switch</code> の <code>default</code> は最後に書かないといけない？</strong></summary><p>最後でなくても構文上は可能です。ただしbreakがなければそこから下にフォールスルーします。</p></details>
 <p class="inline-note">次に読む: <a href="loop-control.html">ループ制御</a> / 関連: <a href="numeric-rules.html">数値・型昇格</a> / <a href="output-tracing.html">出力追跡</a></p>
 </section>
-
-
-
-
-
+<section class="article-section"><h2>発展記事</h2><p class="inline-note">switch式の値生成・yield・網羅性は、<a href="switch-expressions.html">switch式の独立解説</a>で詳しく扱います。</p></section>
 </main>
 </div>
-<script src="data/questions.js?v=article-specific-v11"></script>
-<script src="assets/js/app.js?v=article-specific-v11"></script>
+<script src="data/questions.js?v=independent-topics-v12"></script>
+<script src="assets/js/app.js?v=independent-topics-v12"></script>
 </body>
 </html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="noindex, nofollow, noarchive, nosnippet" name="robots"/>
+<meta content="noindex, nofollow, noarchive, nosnippet" name="googlebot"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Java Silver Study - instanceofパターン変数</title>
+<link href="assets/css/styles.css?v=independent-topics-v12" rel="stylesheet"/>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<p class="brand"><a href="index.html">Java Silver Study</a></p>
+<nav aria-label="章一覧" class="nav-list" id="chapterNav"></nav>
+</aside>
+<main class="main reference-main article-main">
+<section class="hero reference-hero compact-hero article-hero">
+<p class="eyebrow">Java Silver Reference</p>
+<h1>instanceofパターン変数</h1>
+<p>型判定が成功した経路だけに広がるパターン変数のスコープを、短絡評価と制御フローから説明します。</p>
+</section>
+
+<section class="article-section">
+<h2>型判定とキャストを1つの条件にまとめる</h2>
+<p>型パターン付き<code>instanceof</code>は、条件が真なら安全なキャスト結果を変数へ束縛します。構文を省略形として暗記するより、従来コードのどの2段階をまとめたものかを見る方が理解しやすくなります。</p>
+<div class="grid-two">
+<div class="article-card"><h3>従来の書き方</h3><pre class="article-code"><code>if (obj instanceof String) {
+    String text = (String) obj;
+    System.out.println(text.length());
+}</code></pre></div>
+<div class="article-card"><h3>型パターン</h3><pre class="article-code"><code>if (obj instanceof String text) {
+    System.out.println(text.length());
+}</code></pre></div>
+</div>
+<p>変数<code>text</code>が使えるのは、<code>obj</code>がStringであることをコンパイラが保証できる経路だけです。この保証を基準にスコープを読みます。</p>
+</section>
+<section class="article-section">
+<h2><code>&amp;&amp;</code>では右辺へ進む時点で型判定が成功している</h2>
+<pre class="article-code"><code>if (obj instanceof String text &amp;&amp; text.length() &gt; 3) {
+    System.out.println(text.toUpperCase());
+}</code></pre>
+<p><code>&amp;&amp;</code>の右辺は左辺がtrueのときだけ評価されます。右辺へ到達した時点でパターン照合は成功しているため、<code>text</code>を使用できます。</p>
+<pre class="article-code"><code>if (obj instanceof String text &amp;&amp; check(text)) {
+    // textは使用可能
+}</code></pre>
+<p>条件式を左から読むと、変数が導入される位置と、その後に保証が続く範囲を追えます。</p>
+</section>
+<section class="article-section">
+<h2><code>||</code>の右辺では成功が保証されない</h2>
+<pre class="article-code"><code>if (obj instanceof String text || text.length() &gt; 3) {
+    // コンパイルエラー
+}</code></pre>
+<p><code>||</code>の右辺が評価されるのは、左辺がfalseのときです。つまり<code>obj instanceof String text</code>が失敗した経路で<code>text</code>を使おうとしているため、不正です。</p>
+<p>同じ変数名が条件内に見えても、短絡評価の方向が逆ならスコープも逆になります。</p>
+</section>
+<section class="article-section">
+<h2>否定条件の後でも、失敗経路を終了させれば使える</h2>
+<pre class="article-code"><code>static int length(Object obj) {
+    if (!(obj instanceof String text)) {
+        return 0;
+    }
+    return text.length();
+}</code></pre>
+<p>ifの後へ到達できるのは、否定条件がfalseだった場合だけです。したがって元のパターン照合は成功しており、<code>text</code>を使用できます。</p>
+<p>一方、失敗経路が終了しない場合は、ifの後で使用できません。</p>
+<pre class="article-code"><code>if (!(obj instanceof String text)) {
+    System.out.println("not string");
+}
+// System.out.println(text); // Stringでない経路も到達するためエラー</code></pre>
+</section>
+<section class="article-section">
+<h2>if-elseでは成功側だけに変数が存在する</h2>
+<pre class="article-code"><code>if (obj instanceof String text) {
+    System.out.println(text.length()); // 可
+} else {
+    // System.out.println(text);       // 不可
+}</code></pre>
+<p>elseへ進むのはパターン照合が失敗した場合です。パターン変数は単にif文全体へ宣言されたローカル変数ではありません。真偽によって確実に照合済みとなる範囲へだけ広がります。</p>
+</section>
+<section class="article-section">
+<h2>nullはどの型パターンにも一致しない</h2>
+<pre class="article-code"><code>Object obj = null;
+if (obj instanceof String text) {
+    System.out.println(text.length());
+} else {
+    System.out.println("no match");
+}</code></pre>
+<p>出力は<code>no match</code>です。<code>instanceof</code>はnullに対してfalseを返すため、判定前のnullチェックを必ず別に書く必要はありません。ただし、条件の別部分でobjのメソッドを先に呼べばNullPointerExceptionになります。</p>
+<pre class="article-code"><code>// obj.toString()を先に評価するためnullなら例外
+if (obj.toString().length() &gt; 0 &amp;&amp; obj instanceof String text) {}</code></pre>
+</section>
+<section class="article-section">
+<h2>宣言型と実行時型を分けて判定する</h2>
+<pre class="article-code"><code>Object value = "Java";
+if (value instanceof CharSequence seq) {
+    System.out.println(seq.length());
+}</code></pre>
+<p>変数valueの宣言型はObjectですが、参照先はStringです。StringはCharSequenceを実装するため照合が成功します。パターン変数seqの型はCharSequenceなので、その型から見えるメソッドを呼びます。</p>
+<pre class="article-code"><code>if (value instanceof CharSequence seq) {
+    seq.length();
+    // seq.substring(1); // CharSequenceにはないためコンパイルエラー
+}</code></pre>
+<p>実体がStringでも、パターン変数をCharSequenceとして宣言したなら、呼び出せるメンバーはCharSequence型を基準に決まります。</p>
+</section>
+<section class="article-section">
+<h2>同じ参照を指すが、別オブジェクトを生成するわけではない</h2>
+<pre class="article-code"><code>Object obj = new StringBuilder("A");
+if (obj instanceof StringBuilder builder) {
+    builder.append("B");
+}
+System.out.println(obj); // AB</code></pre>
+<p>パターン変数builderには、objが参照している同じインスタンスへの参照が入ります。キャストと同様に、型判定によって新しいオブジェクトが生成されるわけではありません。</p>
+</section>
+<section class="article-section">
+<h2>複合条件は到達経路へ印を付ける</h2>
+<pre class="article-code"><code>if (obj instanceof String text
+        &amp;&amp; !text.isEmpty()
+        &amp;&amp; text.charAt(0) == 'J') {
+    System.out.println(text);
+}</code></pre>
+<p>この条件は次の順で読みます。</p>
+<ol class="article-list priority-list"><li>objがStringならtextが導入される。</li><li>Stringでない場合は短絡してif本体へ進まない。</li><li>textが空でない場合だけ<code>charAt(0)</code>を評価する。</li><li>先頭がJの場合だけ本体へ進む。</li></ol>
+<p>型安全だけでなく、<code>charAt(0)</code>の境界安全性も短絡評価によって保証されています。型パターン問題では、変数スコープとAPIの実行条件を同時に追うことがあります。</p>
+</section>
+<section class="article-section">
+<h2>instanceofの型パターンとswitchの型パターンを分ける</h2>
+<p>switchのcaseへ型パターンを書く構文は、Java 17ではプレビュー機能です。通常のコンパイル設定を前提とする問題では、<code>instanceof Type variable</code>の型パターンと、switchのパターンマッチングを同一視しません。</p>
+</section>
+<section class="article-section">
+<h2>スコープを判断する方法</h2>
+<p>変数名の見た目ではなく、その行へ到達したときに型判定成功が必ず成り立つかを確認します。</p>
+<table class="ref-table"><thead><tr><th>位置</th><th>使用可否</th><th>理由</th></tr></thead><tbody>
+<tr><td><code>&amp;&amp;</code>の右辺</td><td>可</td><td>左辺成功時だけ到達</td></tr>
+<tr><td><code>||</code>の右辺</td><td>不可</td><td>左辺失敗時に到達</td></tr>
+<tr><td>ifのthenブロック</td><td>可</td><td>条件がtrue</td></tr>
+<tr><td>対応するelseブロック</td><td>不可</td><td>条件がfalse</td></tr>
+<tr><td>否定判定後、失敗側がreturnした後</td><td>可</td><td>残る経路は照合成功のみ</td></tr>
+</tbody></table>
+</section>
+<section class="article-section"><h2>キャスト・短絡評価・スコープとの接続</h2><p class="inline-note"><a href="polymorphism-cast.html">ポリモーフィズム・キャスト</a> / <a href="operators-control.html">短絡評価</a> / <a href="var-scope.html">変数のスコープ</a></p></section>
+
+</main>
+</div>
+<script src="data/questions.js?v=independent-topics-v12"></script>
+<script src="assets/js/app.js?v=independent-topics-v12"></script>
+</body>
+</html>

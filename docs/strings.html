@@ -7,7 +7,7 @@
 <meta content="noindex, nofollow, noarchive, nosnippet" name="googlebot"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Java Silver Study - 文字列・StringBuilder</title>
-<link href="assets/css/styles.css?v=article-specific-v11" rel="stylesheet"/>
+<link href="assets/css/styles.css?v=independent-topics-v12" rel="stylesheet"/>
 </head>
 <body>
 <div class="layout">
@@ -263,16 +263,7 @@ System.out.println(a == b); // true</code></pre>
       System.out.println(a); // ad
       System.out.println(a == b); // true</code></pre>
 <div class="table-wrap"><table class="ref-table"><thead><tr><th>メソッド</th><th>主な効果</th><th>境界の注意</th></tr></thead><tbody><tr><td><code>append</code></td><td>末尾へ追加</td><td>多くの型を文字列表現へ変換</td></tr><tr><td><code>insert(index,x)</code></td><td>index位置の前へ挿入</td><td><code>0〜length</code></td></tr><tr><td><code>delete(begin,end)</code></td><td>begin以上end未満を削除</td><td>endが長さを超える場合はlengthとして扱われる。beginの範囲と大小関係に注意</td></tr><tr><td><code>replace(begin,end,str)</code></td><td>指定範囲を置換</td><td>操作後に長さが変わる</td></tr><tr><td><code>reverse</code></td><td>同じインスタンスを反転</td><td>戻り値も同じ参照</td></tr><tr><td><code>setLength</code></td><td>切り詰めまたはNUL文字で拡張</td><td>表示だけでは拡張部分を見落としやすい</td></tr></tbody></table></div>
-<details class="article-card"><summary><strong>StringBuilderの別名参照</strong></summary><p><code>a.append("x")</code>の後に<code>a = new StringBuilder()</code>とすると、以前の参照を持つ<code>b</code>の内容は消えますか。</p><div class="article-callout"><strong>参照関係：</strong>消えません。<code>a</code>が別オブジェクトを指すだけで、<code>b</code>は以前のオブジェクトを参照し続けます。</div></details></section><section class="article-section">
-<h2>テキストブロックは内容文字列を追う</h2>
-<p>テキストブロックでは、開始区切りの直後に改行が必要です。共通インデントの除去、末尾改行、行継続のバックスラッシュ、空白保持の<code>\s</code>が問われます。</p>
-<pre class="article-code"><code>String text = """
-              A
-                B
-              """;
-      
-      // 共通インデントが除去され、通常は末尾改行を含む</code></pre>
-</section>
+<details class="article-card"><summary><strong>StringBuilderの別名参照</strong></summary><p><code>a.append("x")</code>の後に<code>a = new StringBuilder()</code>とすると、以前の参照を持つ<code>b</code>の内容は消えますか。</p><div class="article-callout"><strong>参照関係：</strong>消えません。<code>a</code>が別オブジェクトを指すだけで、<code>b</code>は以前のオブジェクトを参照し続けます。</div></details></section><section class="article-section"><h2>テキストブロックの詳細</h2><p>テキストブロックはStringですが、共通インデント、末尾改行、\s、行継続の変換が先に行われます。<a href="text-blocks.html">テキストブロック</a>で、実際の文字列値へ変換する順序を独立して扱います。</p></section>
 <section class="article-section">
 <h2>StringとStringBuilderのコンストラクタ</h2>
 <table class="ref-table">
@@ -322,15 +313,10 @@ System.out.println(sb.length()); // 0</code></pre>
 <details class="article-card"><summary><strong>Q4. <code>new StringBuilder("x").equals(new StringBuilder("x"))</code> は？</strong></summary><p><code>false</code> です。<code>StringBuilder</code> の <code>equals</code> は内容比較として考えてはいけません。内容比較するなら <code>toString()</code> 後に比較します。</p></details>
 <p class="inline-note">次に読む: <a href="equality.html">同一性・同値性</a> / 関連: <a href="var-scope.html">var・スコープ</a> / <a href="collections-arrays.html">配列・List</a></p>
 </section>
-
-
-
-
-
-
+<section class="article-section"><h2>発展記事</h2><p class="inline-note">複数行文字列のインデントと改行は、<a href="text-blocks.html">テキストブロック</a>で変換順序から扱います。</p></section>
 </main>
 </div>
-<script src="data/questions.js?v=article-specific-v11"></script>
-<script src="assets/js/app.js?v=article-specific-v11"></script>
+<script src="data/questions.js?v=independent-topics-v12"></script>
+<script src="assets/js/app.js?v=independent-topics-v12"></script>
 </body>
 </html>

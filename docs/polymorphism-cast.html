@@ -7,7 +7,7 @@
 <meta content="noindex, nofollow, noarchive, nosnippet" name="googlebot"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Java Silver Study - ポリモーフィズム・キャスト</title>
-<link href="assets/css/styles.css?v=article-specific-v11" rel="stylesheet"/>
+<link href="assets/css/styles.css?v=independent-topics-v12" rel="stylesheet"/>
 </head>
 <body>
 <div class="layout">
@@ -318,34 +318,7 @@ System.out.println(obj instanceof StringBuilder); // false</code></pre>
 System.out.println(s instanceof String); // false</code></pre>
 <p>ここで <code>NullPointerException</code> になると考えるのは誤りです。<code>instanceof</code> はメソッド呼び出しではありません。</p>
 </section>
-<section class="article-section">
-<h2>instanceofのパターンマッチング</h2>
-<p>Java 17では、<code>instanceof</code> と同時に変数を宣言できます。trueと判定された範囲内で、その変数を使えます。</p>
-<pre class="article-code"><code>Object obj = "abc";
-
-if (obj instanceof String s) {
-    System.out.println(s.length()); // sはString型として使える
-}</code></pre>
-<p>パターン変数 <code>s</code> は、条件がtrueになる範囲でだけ有効です。if文の外で無条件に使えるわけではありません。</p>
-<pre class="article-code"><code>Object obj = "abc";
-
-if (!(obj instanceof String s)) {
-    return;
-}
-System.out.println(s.length()); // ここではStringであることが確定している</code></pre>
-</section><section class="article-section">
-<h2>instanceofパターンの型保証とスコープ</h2>
-<pre class="article-code"><code>Object obj = "Java";
-      if (obj instanceof String s) {
-          System.out.println(s.length());
-      }
-      
-      if (!(obj instanceof String text)) {
-          throw new IllegalArgumentException();
-      }
-      System.out.println(text.toUpperCase());</code></pre>
-<p><code>instanceof</code>は実体が対象型として扱えるかを調べます。<code>null instanceof Type</code>は<code>false</code>です。パターン変数は、条件から型が保証される範囲だけで有効です。</p>
-</section>
+<section class="article-section"><h2>instanceofパターン変数の詳細</h2><p>型パターンはキャストの省略だけでなく、条件の真偽に応じてスコープが変化します。<a href="instanceof-patterns.html">instanceofパターン変数</a>で、短絡評価と到達経路から独立して扱います。</p></section>
 <section class="article-section">
 <h2>interface型で受けるポリモーフィズム</h2>
 <p>interface型の変数は、そのinterfaceを実装したクラスのインスタンスを受けられます。呼べるのはinterfaceに定義されたメソッドです。</p>
@@ -448,17 +421,10 @@ public class Main {
 <details class="article-card"><summary><strong>Q4. <code>A a = new B(); System.out.println(a.value);</code> で <code>A</code> と <code>B</code> の両方に <code>value</code> がある場合は？</strong></summary><p>宣言型 <code>A</code> のフィールドが参照されます。フィールドはoverrideされません。</p></details>
 <p class="inline-note">関連: <a href="oop-relations.html">継承・interface</a> / <a href="inheritance-interface.html">継承/interface詳細</a> / <a href="compile-runtime.html">コンパイル・実行時例外</a></p>
 </section>
-
-
-
-
-
-
-
-
+<section class="article-section"><h2>発展記事</h2><p class="inline-note">パターン変数の使用範囲は、<a href="instanceof-patterns.html">instanceofパターン変数</a>で制御フロー別に扱います。</p></section>
 </main>
 </div>
-<script src="data/questions.js?v=article-specific-v11"></script>
-<script src="assets/js/app.js?v=article-specific-v11"></script>
+<script src="data/questions.js?v=independent-topics-v12"></script>
+<script src="assets/js/app.js?v=independent-topics-v12"></script>
 </body>
 </html>

@@ -7,7 +7,7 @@
 <meta content="noindex, nofollow, noarchive, nosnippet" name="googlebot"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Java Silver Study - 修飾子・アクセス制御</title>
-<link href="assets/css/styles.css?v=article-specific-v11" rel="stylesheet"/>
+<link href="assets/css/styles.css?v=independent-topics-v12" rel="stylesheet"/>
 </head>
 <body>
 <div class="layout">
@@ -331,27 +331,7 @@ class B implements A {
 }</code></pre>
 <div class="article-callout warn">インタフェースの抽象メソッドはpublicです。実装クラス側で指定なしにすると、アクセスを狭くすることになりコンパイルエラーです。</div>
 </section>
-<section class="article-section">
-<h2>sealed / non-sealed / permits</h2>
-<p><code>sealed</code> は、継承または実装できる相手を制限する仕組みです。<code>permits</code> で許可されたクラスだけが直接のサブクラスになれます。</p>
-<pre class="article-code"><code>sealed class A permits B, C {}
-final class B extends A {}
-non-sealed class C extends A {}
-
-// class D extends A {} // NG: permitsに含まれていない</code></pre>
-<p>sealedクラスを継承した直接のサブクラスは、次のどれかで今後の継承方針を示す必要があります。</p>
-<table class="ref-table"><thead><tr><th>修飾子</th><th>意味</th></tr></thead><tbody>
-<tr><td><code>final</code></td><td>ここで継承を止める</td></tr>
-<tr><td><code>sealed</code></td><td>さらに継承先を限定する</td></tr>
-<tr><td><code>non-sealed</code></td><td>以降の継承制限を解除する</td></tr>
-</tbody></table>
-<pre class="article-code"><code>sealed class Parent permits Child {}
-
-// class Child extends Parent {} // NG: final/sealed/non-sealedのどれかが必要
-
-final class Child extends Parent {} // OK</code></pre>
-<p><code>non-sealed</code> は、sealedな親を持つクラスで意味を持ちます。何でもないクラスに突然 <code>non-sealed</code> を付けるのは不可です。</p>
-</section>
+<section class="article-section"><h2>sealed修飾子の詳細</h2><p>sealed、non-sealed、permitsは、単独の修飾子表だけでは判断できません。親子の直接関係と配置条件を含むため、<a href="sealed-types.html">sealedクラスとsealedインターフェース</a>で独立して扱います。</p></section>
 <section class="article-section">
 <h2>修飾子の組み合わせ早見表</h2>
 <table class="ref-table"><thead><tr><th>コード断片</th><th>判定</th><th>理由</th></tr></thead><tbody>
@@ -407,16 +387,11 @@ class B implements A {
 <pre class="article-code"><code>sealed class A permits B {}
 class B extends A {}</code></pre>
 <p><strong>答え:</strong> コンパイルエラー。sealedクラスの直接の子は <code>final</code>、<code>sealed</code>、<code>non-sealed</code> のいずれかで修飾する必要があります。</p></details>
-<p class="inline-note">関連: <a href="object-oriented.html">クラス・static・record</a> / <a href="oop-relations.html">継承・interface</a> / <a href="inheritance-interface.html">継承/interface詳細</a> / <a href="silver17-points.html">Java 17論点</a></p>
+<p class="inline-note">関連: <a href="object-oriented.html">クラス・static・record</a> / <a href="oop-relations.html">継承・interface</a> / <a href="inheritance-interface.html">継承/interface詳細</a> / <a href="sealed-types.html">sealed型詳細</a></p>
 </section>
-
-
-
-
-
 </main>
 </div>
-<script src="data/questions.js?v=article-specific-v11"></script>
-<script src="assets/js/app.js?v=article-specific-v11"></script>
+<script src="data/questions.js?v=independent-topics-v12"></script>
+<script src="assets/js/app.js?v=independent-topics-v12"></script>
 </body>
 </html>

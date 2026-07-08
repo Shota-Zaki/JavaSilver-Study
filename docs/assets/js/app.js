@@ -18,6 +18,12 @@
   const roundStateStorageKey = "java-study-round-state-v1";
   const cloudConfigStorageKey = "java-study-cloud-sync-config-v1";
   const cloudStateStorageKey = "java-study-cloud-sync-state-v1";
+  const CLOUD_STORAGE_FORMAT = "chunked-json-v1";
+  const CLOUD_SCHEMA_VERSION = 2;
+  const CLOUD_CHUNK_COLLECTION = "historyChunks";
+  const CLOUD_CHUNK_MAX_BYTES = 700 * 1024;
+  const CLOUD_BATCH_MAX_OPERATIONS = 400;
+  const CLOUD_READ_MAX_PARALLEL = 20;
   const DEFAULT_FIREBASE_CONFIG = Object.freeze({
     apiKey: "AIzaSyBm_OMaIUyO15Sri5GR_fQ2g8iTXjlj_mo",
     authDomain: "javasilver-study.firebaseapp.com",
@@ -393,6 +399,127 @@
     return cloud.modules.firestoreMod.doc(cloud.db, "javaStudyProgress", cloud.user.uid);
   }
 
+  function cloudChunkCollectionRef() {
+    if (!cloud.user) throw new Error("Googleログインが必要です。");
+    return cloud.modules.firestoreMod.collection(cloudDocRef(), CLOUD_CHUNK_COLLECTION);
+  }
+
+  function cloudChunkDocId(uploadId, index) {
+    return `${uploadId}-${String(index).padStart(6, "0")}`;
+  }
+
+  function utf8ByteLength(value) {
+    return new TextEncoder().encode(String(value || "")).length;
+  }
+
+  function splitUtf8Text(value, maxBytes = CLOUD_CHUNK_MAX_BYTES) {
+    const text = String(value || "");
+    if (!text) return [""];
+    if (!Number.isFinite(maxBytes) || maxBytes < 1024) throw new Error("クラウド分割サイズの設定が正しくありません。");
+    const encoder = new TextEncoder();
+    const chunks = [];
+    const safeBoundary = end => {
+      if (end <= 0 || end >= text.length) return end;
+      const previousCode = text.charCodeAt(end - 1);
+      const nextCode = text.charCodeAt(end);
+      return previousCode >= 0xD800 && previousCode <= 0xDBFF && nextCode >= 0xDC00 && nextCode <= 0xDFFF ? end - 1 : end;
+    };
+    let start = 0;
+    while (start < text.length) {
+      let end = safeBoundary(Math.min(text.length, start + maxBytes));
+      if (end <= start) end = Math.min(text.length, start + 1);
+      let content = text.slice(start, end);
+      let byteLength = encoder.encode(content).length;
+      while (byteLength > maxBytes) {
+        const width = end - start;
+        const scaledWidth = Math.max(1, Math.floor(width * maxBytes / byteLength));
+        let nextEnd = safeBoundary(start + scaledWidth);
+        if (nextEnd <= start) nextEnd = Math.min(text.length, start + 1);
+        if (nextEnd >= end) nextEnd = safeBoundary(end - 1);
+        if (nextEnd <= start) throw new Error("クラウド履歴を安全なサイズへ分割できませんでした。");
+        end = nextEnd;
+        content = text.slice(start, end);
+        byteLength = encoder.encode(content).length;
+      }
+      chunks.push(content);
+      start = end;
+    }
+    return chunks;
+  }
+
+  async function writeCloudChunks(uploadId, chunks) {
+    const firestore = cloud.modules.firestoreMod;
+    const collectionRef = cloudChunkCollectionRef();
+    for (let start = 0; start < chunks.length; start += CLOUD_BATCH_MAX_OPERATIONS) {
+      const batch = firestore.writeBatch(cloud.db);
+      const batchChunks = chunks.slice(start, start + CLOUD_BATCH_MAX_OPERATIONS);
+      batchChunks.forEach((content, offset) => {
+        const index = start + offset;
+        const ref = firestore.doc(collectionRef, cloudChunkDocId(uploadId, index));
+        batch.set(ref, {
+          uploadId,
+          index,
+          content,
+          byteLength: utf8ByteLength(content),
+          createdAt: firestore.serverTimestamp()
+        });
+      });
+      await batch.commit();
+    }
+  }
+
+  async function deleteCloudChunkDocs(docs) {
+    const firestore = cloud.modules.firestoreMod;
+    for (let start = 0; start < docs.length; start += CLOUD_BATCH_MAX_OPERATIONS) {
+      const batch = firestore.writeBatch(cloud.db);
+      docs.slice(start, start + CLOUD_BATCH_MAX_OPERATIONS).forEach(docSnap => batch.delete(docSnap.ref));
+      await batch.commit();
+    }
+  }
+
+  async function cleanupInactiveCloudChunks(activeUploadId) {
+    const firestore = cloud.modules.firestoreMod;
+    const snapshot = await firestore.getDocs(cloudChunkCollectionRef());
+    const staleDocs = snapshot.docs.filter(docSnap => {
+      const data = docSnap.data();
+      return !data || data.uploadId !== activeUploadId;
+    });
+    if (staleDocs.length) await deleteCloudChunkDocs(staleDocs);
+  }
+
+  async function readCloudChunkedPayload(metadata) {
+    const uploadId = String(metadata.activeUploadId || "");
+    const chunkCount = Math.floor(Number(metadata.chunkCount));
+    if (!uploadId || !Number.isFinite(chunkCount) || chunkCount < 1 || chunkCount > 2000) {
+      throw new Error("クラウド上の分割履歴メタデータが正しくありません。");
+    }
+    const firestore = cloud.modules.firestoreMod;
+    const collectionRef = cloudChunkCollectionRef();
+    const snapshots = [];
+    for (let start = 0; start < chunkCount; start += CLOUD_READ_MAX_PARALLEL) {
+      const count = Math.min(CLOUD_READ_MAX_PARALLEL, chunkCount - start);
+      const batchSnapshots = await Promise.all(Array.from({ length: count }, (_, offset) => {
+        const index = start + offset;
+        return firestore.getDoc(firestore.doc(collectionRef, cloudChunkDocId(uploadId, index)));
+      }));
+      snapshots.push(...batchSnapshots);
+    }
+    const chunks = snapshots.map((snapshot, index) => {
+      if (!snapshot.exists()) throw new Error(`クラウド履歴の分割データが不足しています（${index + 1}/${chunkCount}）。`);
+      const data = snapshot.data();
+      if (!data || data.uploadId !== uploadId || Number(data.index) !== index || typeof data.content !== "string") {
+        throw new Error(`クラウド履歴の分割データが破損しています（${index + 1}/${chunkCount}）。`);
+      }
+      return data.content;
+    });
+    const text = chunks.join("");
+    const expectedBytes = Number(metadata.totalBytes);
+    if (Number.isFinite(expectedBytes) && expectedBytes >= 0 && utf8ByteLength(text) !== expectedBytes) {
+      throw new Error("クラウド履歴のサイズ検証に失敗しました。再度保存してください。");
+    }
+    return text;
+  }
+
   async function pushCloudHistory(silent) {
     if (!cloudEnabled()) return;
     await ensureCloudReady();
@@ -401,14 +528,30 @@
       return;
     }
     const payload = makeHistoryPayload();
-    await cloud.modules.firestoreMod.setDoc(cloudDocRef(), {
-      payload,
-      updatedAt: cloud.modules.firestoreMod.serverTimestamp(),
+    const payloadText = JSON.stringify(payload);
+    const chunks = splitUtf8Text(payloadText);
+    const uploadId = `history-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    await writeCloudChunks(uploadId, chunks);
+    const firestore = cloud.modules.firestoreMod;
+    await firestore.setDoc(cloudDocRef(), {
+      storageFormat: CLOUD_STORAGE_FORMAT,
+      schemaVersion: CLOUD_SCHEMA_VERSION,
+      payloadSchemaVersion: payload.schemaVersion || 1,
+      activeUploadId: uploadId,
+      chunkCount: chunks.length,
+      totalBytes: utf8ByteLength(payloadText),
+      updatedAt: firestore.serverTimestamp(),
       dataVersion: payload.dataVersion || "",
-      schemaVersion: payload.schemaVersion || 1
+      payload: firestore.deleteField()
     }, { merge: true });
+    try {
+      await cleanupInactiveCloudChunks(uploadId);
+    } catch (cleanupError) {
+      console.warn("古いクラウド履歴チャンクを削除できませんでした。次回保存時に再試行します。", cleanupError);
+    }
     writeCloudState({ ...readCloudState(), lastPushedAt: new Date().toISOString() });
-    setCloudMessage("クラウドへ保存しました。", false, { silentToast: Boolean(silent) });
+    const detail = chunks.length > 1 ? `（${chunks.length}分割）` : "";
+    setCloudMessage(`クラウドへ保存しました${detail}。`, false, { silentToast: Boolean(silent) });
     updateCloudUi();
   }
 
@@ -420,10 +563,16 @@
       if (!silent) setCloudMessage("クラウド上に履歴がありません。先に別端末から保存してください。", true);
       return false;
     }
-    const data = snap.data();
-    const payload = data && data.payload;
-    if (!payload) throw new Error("クラウド上の履歴形式が正しくありません。");
-    const imported = importHistoryFromText(JSON.stringify(payload), mode || "merge");
+    const data = snap.data() || {};
+    let payloadText = "";
+    if (data.storageFormat === CLOUD_STORAGE_FORMAT) {
+      payloadText = await readCloudChunkedPayload(data);
+    } else if (data.payload) {
+      payloadText = JSON.stringify(data.payload);
+    } else {
+      throw new Error("クラウド上の履歴形式が正しくありません。");
+    }
+    const imported = importHistoryFromText(payloadText, mode || "merge");
     if (imported) {
       writeCloudState({ ...readCloudState(), lastPulledAt: new Date().toISOString() });
       renderAll();
@@ -446,6 +595,9 @@ service cloud.firestore {
   match /databases/{database}/documents {
     match /javaStudyProgress/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
+      match /{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
     }
   }
 }`;
@@ -1913,19 +2065,23 @@ service cloud.firestore {
       ["numeric-rules.html", "数値・型昇格", "byte/short"],
       ["var-scope.html", "var・スコープ", "初期化"],
       ["strings.html", "文字列・StringBuilder", "不変/可変"],
+      ["text-blocks.html", "テキストブロック", "改行/空白"],
       ["equality.html", "同一性・同値性", "==/equals"],
       ["collections-arrays.html", "配列・List", "ArrayList"],
       ["operators-control.html", "演算子・制御", "評価順"],
+      ["switch-expressions.html", "switch式", "yield/網羅性"],
       ["loop-control.html", "ループ制御", "break/continue"],
       ["output-tracing.html", "出力追跡", "表で追う"],
       ["methods-constructors.html", "メソッド・コンストラクタ", "overload"],
-      ["object-oriented.html", "クラス・static・record", "参照/static"],
-      ["modifiers-access.html", "修飾子・アクセス", "final/sealed"],
+      ["object-oriented.html", "クラス・static・初期化", "参照/static"],
+      ["record-classes.html", "レコードクラス", "コンポーネント"],
+      ["modifiers-access.html", "修飾子・アクセス", "abstract/final"],
+      ["sealed-types.html", "sealed型", "permits"],
       ["oop-relations.html", "継承・interface", "override"],
       ["inheritance-interface.html", "継承/interface詳細", "default"],
       ["polymorphism-cast.html", "ポリモーフィズム・キャスト", "cast"],
-      ["exceptions.html", "例外処理", "try/catch"],
-      ["silver17-points.html", "Java 17論点", "record/sealed"]
+      ["instanceof-patterns.html", "instanceofパターン", "フロースコープ"],
+      ["exceptions.html", "例外処理", "try/catch"]
     ];
 
     const otherItems = [

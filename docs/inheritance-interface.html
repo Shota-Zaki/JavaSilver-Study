@@ -7,7 +7,7 @@
 <meta content="noindex, nofollow, noarchive, nosnippet" name="googlebot"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Java Silver Study - 継承とインタフェース詳細</title>
-<link href="assets/css/styles.css?v=article-specific-v11" rel="stylesheet"/>
+<link href="assets/css/styles.css?v=independent-topics-v12" rel="stylesheet"/>
 </head>
 <body>
 <div class="layout">
@@ -278,42 +278,8 @@ class B extends A {
 }</code></pre>
 <p>protectedは「サブクラスなら何でもOK」ではありません。この誤解はかなり危険です。</p>
 </section>
-<section class="article-section">
-<h2>sealedクラス・sealed interface</h2>
-<p><code>sealed</code> は、継承・実装できるクラスを制限する仕組みです。許可する相手は <code>permits</code> で指定します。</p>
-<pre class="article-code"><code>sealed interface Shape permits Circle, Rectangle { }
+<section class="article-section"><h2>sealed階層は独立記事で扱う</h2><p>sealed型は、通常の継承規則に追加される「直接サブタイプの許可関係」を持ちます。permits、final、sealed、non-sealedを階層図から読む方法は、<a href="sealed-types.html">sealedクラスとsealedインターフェース</a>で扱います。</p></section>
 
-final class Circle implements Shape { }
-non-sealed class Rectangle implements Shape { }</code></pre>
-<p>sealedを継承・実装した側は、次のいずれかを明示する必要があります。</p>
-<table class="ref-table">
-<thead><tr><th>修飾子</th><th>意味</th><th>使う場面</th></tr></thead>
-<tbody>
-<tr><td><code>final</code></td><td>ここで継承を止める</td><td>これ以上派生させない</td></tr>
-<tr><td><code>sealed</code></td><td>さらに許可先を制限する</td><td>階層を引き続き管理する</td></tr>
-<tr><td><code>non-sealed</code></td><td>制限を解除する</td><td>ここから先は通常の継承に戻す</td></tr>
-</tbody>
-</table>
-<details class="article-card"><summary><strong>ひっかけ：permitsに書かれていないクラス</strong></summary><p>許可されていないクラスがsealedクラスを継承・実装するとコンパイルエラーです。</p></details>
-</section>
-<section class="article-section">
-<h2>sealedの典型コンパイルエラー</h2>
-<pre class="article-code"><code>sealed class A permits B { }
-
-// class C extends A { } // NG: permitsにCがない
-
-// class B extends A { } // NG: final/sealed/non-sealedのいずれかが必要
-
-final class B extends A { } // OK</code></pre>
-<p>問題では、許可リストだけでなく、許可されたサブクラス側の修飾子も見ます。片方だけ見ても足りません。</p>
-</section><section class="article-section">
-<h2>sealed階層の確認事項</h2>
-<ol class="article-list"><li>直接の許可先が<code>permits</code>または同一コンパイル単位の関係から決まっているか。</li><li>許可されていない型が直接継承・実装していないか。</li><li>許可された直接サブタイプが<code>final</code>、<code>sealed</code>、<code>non-sealed</code>のいずれかを宣言しているか。</li><li><code>non-sealed</code>はsealed型の直接サブタイプでのみ意味を持つか。</li></ol>
-<pre class="article-code"><code>sealed interface Shape permits Circle, Polygon { }
-      final class Circle implements Shape { }
-      non-sealed class Polygon implements Shape { }
-      class Triangle extends Polygon { } // 制限解除後なので可</code></pre>
-</section>
 <section class="article-section">
 <h2>メソッドとフィールドの解決を分ける</h2>
 <p>継承/interfaceの詳細問題では、出力追跡と組み合わされます。特に、同名フィールドとoverrideメソッドの混在に注意します。</p>
@@ -374,18 +340,9 @@ System.out.println(a.getValue()); // B</code></pre>
 <details class="article-card"><summary><strong>Q4. sealedクラスを継承したクラスは、何も修飾子を付けなくてよい？</strong></summary><p>ダメです。<code>final</code>、<code>sealed</code>、<code>non-sealed</code> のいずれかが必要です。</p></details>
 <p class="inline-note">関連: <a href="oop-relations.html">継承・interface・override</a> / <a href="modifiers-access.html">修飾子・アクセス制御</a> / <a href="polymorphism-cast.html">ポリモーフィズム・キャスト</a></p>
 </section>
-
-
-
-
-
-
-
-
-
 </main>
 </div>
-<script src="data/questions.js?v=article-specific-v11"></script>
-<script src="assets/js/app.js?v=article-specific-v11"></script>
+<script src="data/questions.js?v=independent-topics-v12"></script>
+<script src="assets/js/app.js?v=independent-topics-v12"></script>
 </body>
 </html>

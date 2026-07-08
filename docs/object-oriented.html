@@ -6,8 +6,8 @@
 <meta content="noindex, nofollow, noarchive, nosnippet" name="robots"/>
 <meta content="noindex, nofollow, noarchive, nosnippet" name="googlebot"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Java Silver Study - クラス・static・record</title>
-<link href="assets/css/styles.css?v=article-specific-v11" rel="stylesheet"/>
+<title>Java Silver Study - クラス・static・初期化</title>
+<link href="assets/css/styles.css?v=independent-topics-v12" rel="stylesheet"/>
 </head>
 <body>
 <div class="layout">
@@ -18,7 +18,7 @@
 <main class="main reference-main article-main">
 <section class="hero reference-hero compact-hero article-hero">
 <p class="eyebrow">Java Silver Reference</p>
-<h1>クラス・static・record</h1>
+<h1>クラス・static・初期化</h1>
 <p>インスタンス、参照、static、初期化順、GC、recordを、出力問題で使える粒度まで整理します。</p>
 </section>
 <section class="article-section">
@@ -310,88 +310,10 @@ b = a;    // bにnullを代入。Bへの参照が外れる
 </tbody></table>
 <div class="article-callout warn"><code>System.gc()</code> はGCの実行を促すだけです。必ず即回収されるとは言えません。選択肢に「必ず回収される」があれば疑ってください。</div>
 </section>
-<section class="article-section">
-<h2>recordの基本構造</h2>
-<p><code>record</code> は、データを保持するクラスを簡潔に定義する仕組みです。コンポーネントを書くと、フィールド、コンストラクタ、アクセサ、<code>equals</code>、<code>hashCode</code>、<code>toString</code> が自動的に用意されます。</p>
-<pre class="article-code"><code>record User(String name, int age) {}
+<section class="article-section"><h2>レコードクラスは独立記事で扱う</h2><p>レコードクラスは、通常クラスの短縮記法として片付けると、標準コンストラクタや生成メンバーを読み違えます。コンポーネント、コンパクトコンストラクタ、値比較、可変コンポーネントは、<a href="record-classes.html">レコードクラス</a>で独立して詳しく扱います。</p></section>
 
-User u = new User("Alice", 20);
-System.out.println(u.name()); // Alice
-System.out.println(u.age());  // 20
-System.out.println(u);        // User[name=Alice, age=20] のような形式</code></pre>
-<p>アクセサ名は <code>getName()</code> ではなく <code>name()</code> です。この違いは頻出です。</p>
-<pre class="article-code"><code>// u.getName(); // NG
-u.name();       // OK</code></pre>
-</section><section class="article-section">
-<h2>recordを通常クラスと比較する</h2>
-<p>recordは状態を表すコンポーネントから、private finalフィールド、公開アクセサ、標準的な<code>equals</code>・<code>hashCode</code>・<code>toString</code>などを提供します。クラス自体は暗黙的にfinalです。</p>
-<pre class="article-code"><code>record User(String name, int age) {
-          User {
-              if (age &lt; 0) throw new IllegalArgumentException();
-          }
-      
-          String label() {
-              return name + ":" + age;
-          }
-      }</code></pre>
-<div class="table-wrap"><table class="ref-table"><thead><tr><th>宣言</th><th>可否・意味</th></tr></thead><tbody><tr><td>追加インスタンスフィールド</td><td>不可。状態はコンポーネントで表す</td></tr><tr><td>staticフィールド・staticメソッド</td><td>可</td></tr><tr><td>インスタンスメソッド</td><td>可</td></tr><tr><td>他クラスの継承</td><td>不可。暗黙的に<code>Record</code>を継承しfinal</td></tr><tr><td>interface実装</td><td>可</td></tr><tr><td>コンパクトコンストラクタ</td><td>検証や正規化に使用。代入は暗黙に行われる</td></tr></tbody></table></div>
-<details class="article-card"><summary><strong>recordアクセサ</strong></summary><p>recordコンポーネント<code>name</code>のアクセサ名は<code>getName()</code>ですか。</p><div class="article-callout"><strong>生成されるアクセサ：</strong>標準アクセサは<code>name()</code>です。通常のJavaBeans形式とは異なります。</div></details></section>
-<section class="article-section">
-<h2>recordの制約</h2>
-<p>recordは普通のクラスより制約があります。ここを曖昧にすると、Java 17論点で失点します。</p>
-<table class="ref-table"><thead><tr><th>項目</th><th>判定</th><th>理由</th></tr></thead><tbody>
-<tr><td>暗黙にfinal</td><td>継承されない</td><td>recordをextendsするクラスは作れない</td></tr>
-<tr><td>明示的に別クラスをextends</td><td>不可</td><td>recordは暗黙に<code>java.lang.Record</code>を継承する</td></tr>
-<tr><td>interface実装</td><td>可</td><td><code>implements</code> は使える</td></tr>
-<tr><td>インスタンスフィールド追加</td><td>不可</td><td>recordの状態はコンポーネントで表す</td></tr>
-<tr><td>staticフィールド追加</td><td>可</td><td>クラス側の値なので状態追加ではない</td></tr>
-</tbody></table>
-<pre class="article-code"><code>interface Named {
-    String name();
-}
 
-record User(String name, int age) implements Named {
-    static int count;     // OK
-    // int level;         // NG: 追加のインスタンスフィールド
-}</code></pre>
-</section>
-<section class="article-section">
-<h2>recordのコンストラクタ</h2>
-<p>recordには、コンポーネントと同じ引数を持つ標準コンストラクタがあります。また、コンパクトコンストラクタを使うと、引数リストを書かずに検証処理を追加できます。</p>
-<pre class="article-code"><code>record User(String name, int age) {
-    User {
-        if (age &lt; 0) {
-            throw new IllegalArgumentException();
-        }
-    }
-}</code></pre>
-<p>コンパクトコンストラクタ内では、最終的にコンポーネントフィールドへ値が設定されます。明示的に <code>this.name = name;</code> のような代入を書く通常のコンストラクタとは感覚が違います。</p>
-<pre class="article-code"><code>record User(String name, int age) {
-    public User(String name, int age) {
-        if (age &lt; 0) {
-            throw new IllegalArgumentException();
-        }
-        this.name = name;
-        this.age = age;
-    }
-}</code></pre>
-<p>明示的な標準コンストラクタを書く場合は、すべてのコンポーネントを初期化する必要があります。</p>
-</section>
-<section class="article-section">
-<h2>recordは浅い不変性で考える</h2>
-<p>recordのコンポーネントフィールドは再代入できません。ただし、参照先が可変オブジェクトなら、その中身まで自動的に不変になるわけではありません。</p>
-<pre class="article-code"><code>import java.util.ArrayList;
 
-record Team(ArrayList&lt;String&gt; members) {}
-
-ArrayList&lt;String&gt; list = new ArrayList&lt;&gt;();
-list.add("A");
-Team t = new Team(list);
-
-list.add("B");
-System.out.println(t.members()); // [A, B]</code></pre>
-<p>Java Silverでは深い不変性まで問われる頻度は高くありませんが、「recordだから中のListも変更不可」とは言えません。</p>
-</section>
 <section class="article-section">
 <h2>printlnとtoString</h2>
 <p><code>System.out.println(obj)</code> は、参照型を出力するときに基本的に <code>toString()</code> の結果を使います。<code>null</code> の場合は例外ではなく <code>null</code> と表示されます。</p>
@@ -401,19 +323,7 @@ System.out.println(obj); // null
 // obj.toString(); // NG: NullPointerException</code></pre>
 <p><code>println(obj)</code> と <code>obj.toString()</code> は同じではありません。ここは地味に落とされます。</p>
 </section>
-<section class="article-section">
-<h2>参照共有・static・recordの誤読</h2>
-<ul class="article-list">
-<li><code>a = b</code> をオブジェクトコピーだと思う。</li>
-<li><code>static</code> フィールドをインスタンスごとに別だと思う。</li>
-<li><code>static</code> メソッドからインスタンスフィールドを直接使えると思う。</li>
-<li>フィールドとローカル変数の初期化ルールを混同する。</li>
-<li><code>final</code> 参照型変数の中身まで変更不可だと思う。</li>
-<li>GC対象とGC実行タイミングを混同する。</li>
-<li>recordのアクセサを <code>getXxx()</code> だと思う。</li>
-<li>recordが通常クラスを <code>extends</code> できると思う。</li>
-</ul>
-</section>
+
 <section class="article-section">
 <h2>参照先と所有者を追う</h2>
 <details class="article-card"><summary><strong>Q1. 次の出力は？</strong></summary>
@@ -436,16 +346,11 @@ System.out.println(a.x);</code></pre>
     int price;
 }</code></pre>
 <p><strong>答え:</strong> コンパイルエラー。recordに追加のインスタンスフィールドは定義できません。</p></details>
-<p class="inline-note">関連: <a href="methods-constructors.html">メソッド・コンストラクタ</a> / <a href="modifiers-access.html">修飾子・アクセス制御</a> / <a href="silver17-points.html">Java 17論点</a></p>
+<p class="inline-note">関連: <a href="methods-constructors.html">メソッド・コンストラクタ</a> / <a href="modifiers-access.html">修飾子・アクセス制御</a> / <a href="record-classes.html">レコードクラス詳細</a></p>
 </section>
-
-
-
-
-
 </main>
 </div>
-<script src="data/questions.js?v=article-specific-v11"></script>
-<script src="assets/js/app.js?v=article-specific-v11"></script>
+<script src="data/questions.js?v=independent-topics-v12"></script>
+<script src="assets/js/app.js?v=independent-topics-v12"></script>
 </body>
 </html>
