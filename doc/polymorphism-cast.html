@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="noindex, nofollow, noarchive, nosnippet" name="robots"/>
+<meta content="noindex, nofollow, noarchive, nosnippet" name="googlebot"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Java Silver Study - ポリモーフィズム・キャスト</title>
+<link href="assets/css/styles.css?v=round-wrong-groups-v15" rel="stylesheet"/>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<p class="brand"><a href="index.html">Java Silver Study</a></p>
+<nav aria-label="章一覧" class="nav-list" id="chapterNav"></nav>
+</aside>
+<main class="main reference-main article-main">
+<section class="hero reference-hero compact-hero article-hero">
+<p class="eyebrow">Java Silver Reference</p>
+<h1>ポリモーフィズム・キャスト</h1>
+<p>宣言型と実体、メソッド解決、フィールド解決、キャスト、instanceof、ClassCastExceptionを詳しく整理します。</p>
+</section>
+<section class="article-section">
+<h2>宣言型で候補を絞り実行時型で実装を決める</h2>
+<p>ポリモーフィズムとキャストの問題は、必ず <strong>宣言型</strong> と <strong>実体</strong> を分けて見ます。ここを混ぜると、ほぼ確実に間違えます。</p>
+<table class="ref-table">
+<thead><tr><th>見るもの</th><th>決まること</th><th>例</th></tr></thead>
+<tbody>
+<tr><td>宣言型</td><td>その場で呼べるメソッド・参照できるフィールド</td><td><code>A a</code> なら、基本的に <code>A</code> に見えるメンバだけ</td></tr>
+<tr><td>実体</td><td>overrideされたインスタンスメソッドの実行内容</td><td><code>new B()</code> なら、overrideメソッドは <code>B</code> 側が動く</td></tr>
+<tr><td>キャスト</td><td>コンパイル時の見え方を一時的に変える</td><td><code>((B) a).onlyB()</code></td></tr>
+<tr><td>実行時の型</td><td>ダウンキャストが安全かどうか</td><td>実体が <code>B</code> でなければ <code>ClassCastException</code></td></tr>
+</tbody>
+</table>
+<p class="inline-note">雑に「中身はBだからBのメソッドを呼べる」と考えるのは誤りです。呼べるかどうかはまず宣言型で決まります。</p>
+</section>
+<section class="article-section">
+<h2>メソッド呼び出しとキャストの分岐</h2>
+<ol class="article-list priority-list">
+<li><strong>クラス・interfaceの関係</strong>を確認する。親子関係があるか、interface実装関係があるか。</li>
+<li><strong>左辺の宣言型</strong>を見る。その変数型でメソッド呼び出しがコンパイルできるか。</li>
+<li><strong>キャスト式の有無</strong>を見る。キャスト後の型でメソッドを探しているか、括弧の位置は正しいか。</li>
+<li><strong>実体</strong>を見る。ダウンキャストなら、実体がその型として扱えるか。</li>
+<li><strong>メソッドかフィールドか</strong>を見る。インスタンスメソッドは実体側、フィールドとstaticメソッドは宣言型寄りに解決されます。</li>
+<li><strong>例外発生</strong>を見る。型関連はあるが実体が合わなければ <code>ClassCastException</code> です。</li>
+</ol>
+</section>
+<section class="article-section">
+<h2>宣言型と実体を分ける</h2>
+<p>次のコードでは、変数 <code>a</code> の宣言型は <code>A</code>、実体は <code>B</code> です。</p>
+<pre class="article-code"><code>class A {
+    void test() {
+        System.out.println("A");
+    }
+}
+
+class B extends A {
+    @Override
+    void test() {
+        System.out.println("B");
+    }
+
+    void onlyB() {
+        System.out.println("onlyB");
+    }
+}
+
+A a = new B();
+a.test();      // B
+// a.onlyB();  // コンパイルエラー</code></pre>
+<p><code>a.test()</code> はコンパイルできます。<code>A</code> に <code>test()</code> があるからです。実行されるのは <code>B</code> のoverrideメソッドです。</p>
+<p>一方、<code>a.onlyB()</code> はコンパイルエラーです。実体が <code>B</code> でも、宣言型 <code>A</code> には <code>onlyB()</code> が見えません。</p>
+</section><section class="article-section">
+<h2>型と実体を5つの用語に分ける</h2>
+<div class="table-wrap"><table class="ref-table"><thead><tr><th>用語</th><th>意味</th><th>コード上の位置</th></tr></thead><tbody><tr><td>クラス</td><td>オブジェクトの構造・処理の定義</td><td><code>class Dog { ... }</code></td></tr><tr><td>型</td><td>値を何として扱うかを決める分類</td><td><code>Animal animal</code>の<code>Animal</code></td></tr><tr><td>変数</td><td>値や参照を保持する名前</td><td><code>animal</code></td></tr><tr><td>参照</td><td>オブジェクトを指す値</td><td>代入でコピーされる</td></tr><tr><td>インスタンス</td><td>実行時に生成されたオブジェクト</td><td><code>new Dog()</code></td></tr></tbody></table></div>
+<pre class="article-code"><code>Animal animal = new Dog();
+      // 宣言型・コンパイル時型: Animal
+      // 実行時型・実体のクラス: Dog</code></pre>
+<div class="article-callout"><strong>最重要：</strong>「呼び出しを記述できるか」は宣言型、「オーバーライドされたどの実装が動くか」は実行時型で判定します。</div>
+</section>
+<section class="article-section">
+<h2>アップキャスト</h2>
+<p>サブクラスのインスタンスは、スーパークラス型の変数に代入できます。これをアップキャストと呼びます。明示キャストは不要です。</p>
+<pre class="article-code"><code>class Animal {}
+class Dog extends Animal {}
+
+Dog dog = new Dog();
+Animal animal = dog;       // OK: DogはAnimalとして扱える
+Animal animal2 = new Dog(); // OK</code></pre>
+<p>「DogはAnimalである」と言えるので自然に代入できます。ただし、<code>Animal</code> 型として扱っている間は、<code>Animal</code> に見えるメンバしか呼べません。</p>
+</section>
+<section class="article-section">
+<h2>ダウンキャスト</h2>
+<p>スーパークラス型の参照をサブクラス型として扱うには、明示キャストが必要です。ただし、キャストを書けることと実行時に安全なことは別です。</p>
+<pre class="article-code"><code>class Animal {}
+class Dog extends Animal {
+    void bark() {
+        System.out.println("bark");
+    }
+}
+
+Animal animal = new Dog();
+Dog dog = (Dog) animal; // OK: 実体がDog
+dog.bark();</code></pre>
+<p>この場合、変数 <code>animal</code> の宣言型は <code>Animal</code> ですが、実体は <code>Dog</code> です。そのため <code>(Dog) animal</code> は実行時にも成功します。</p>
+</section><section class="article-section">
+<h2>キャストはオブジェクトを変換せず、見方を変える</h2>
+<pre class="article-code"><code>Animal a = new Dog();
+      Dog d = (Dog) a;
+      // aとdは同じDogインスタンスを参照</code></pre>
+<div class="table-wrap"><table class="ref-table"><thead><tr><th>判定段階</th><th>確認内容</th><th>失敗結果</th></tr></thead><tbody><tr><td>コンパイル時</td><td>宣言型同士にキャスト可能性があるか</td><td>不可能ならコンパイルエラー</td></tr><tr><td>実行時</td><td>実体が指定型またはそのサブタイプか</td><td>不一致なら<code>ClassCastException</code></td></tr><tr><td>null</td><td>どの参照型へもキャスト可能</td><td>結果は<code>null</code>で例外なし</td></tr></tbody></table></div>
+<pre class="article-code"><code>Animal a1 = new Dog();
+      Dog d1 = (Dog) a1;       // 成功
+      
+      Animal a2 = new Animal();
+      // Dog d2 = (Dog) a2;    // 実行時ClassCastException
+      
+      Animal a3 = null;
+      Dog d3 = (Dog) a3;       // null</code></pre>
+<details class="article-card"><summary><strong>不正キャスト</strong></summary><p><code>Animal a = new Animal(); Dog d = (Dog)a;</code>はどの段階で失敗しますか。</p><div class="article-callout"><strong>nullのキャスト：</strong>型関係上キャスト可能性があるためコンパイルは通り、実行時に<code>ClassCastException</code>です。</div></details><details class="article-card"><summary><strong>nullキャスト</strong></summary><p><code>Dog d = (Dog)null;</code>はどうなりますか。</p><div class="article-callout"><strong>候補選択と動的ディスパッチ：</strong>コンパイル・実行とも成功し、<code>d</code>は<code>null</code>です。後でインスタンスメソッドを呼ぶと<code>NullPointerException</code>です。</div></details></section>
+<section class="article-section">
+<h2>ClassCastExceptionになる形</h2>
+<p>型に継承関係があるためキャスト式自体はコンパイルできても、実体が目的の型でなければ実行時に <code>ClassCastException</code> です。</p>
+<pre class="article-code"><code>class Animal {}
+class Dog extends Animal {}
+class Cat extends Animal {}
+
+Animal animal = new Cat();
+Dog dog = (Dog) animal; // 実行時にClassCastException</code></pre>
+<p>変数 <code>animal</code> は <code>Animal</code> 型なので、コンパイラは「実体がDogの可能性もある」と見ます。そのためキャスト式は通ります。しかし実体は <code>Cat</code> なので、実行時に失敗します。</p>
+</section>
+<section class="article-section">
+<h2>コンパイルエラーになるキャスト</h2>
+<p>そもそも型同士に変換可能性がない場合、キャスト式自体がコンパイルエラーになります。</p>
+<pre class="article-code"><code>class Dog {}
+class Car {}
+
+Dog dog = new Dog();
+// Car car = (Car) dog; // コンパイルエラー</code></pre>
+<p><code>Dog</code> と <code>Car</code> に継承関係もinterface実装関係もなければ、キャストできる可能性がありません。この場合は実行時例外ではなく、コンパイルエラーです。</p>
+<details class="article-card"><summary><strong>interfaceが絡む場合は慎重に見る</strong></summary><p>interface型へのキャストは「実装している可能性」があるため、クラス同士よりコンパイルが通る場面があります。ただし、実体がそのinterfaceを実装していなければ実行時に <code>ClassCastException</code> です。</p></details>
+</section>
+<section class="article-section">
+<h2>nullのキャスト</h2>
+<p><code>null</code> はどの参照型にもキャストできます。実体がないため、キャスト自体で <code>ClassCastException</code> にはなりません。</p>
+<pre class="article-code"><code>String s = (String) null; // OK
+System.out.println(s);    // null
+// s.length();            // NullPointerException</code></pre>
+<p>キャストは成功します。ただし、その後にメソッドを呼ぶと、参照先がないため <code>NullPointerException</code> です。</p>
+</section>
+<section class="article-section">
+<h2>メソッドは実体で動く</h2>
+<p>overrideされたインスタンスメソッドは、実行時の実体で決まります。</p>
+<pre class="article-code"><code>class A {
+    String name() {
+        return "A";
+    }
+}
+
+class B extends A {
+    @Override
+    String name() {
+        return "B";
+    }
+}
+
+A a = new B();
+System.out.println(a.name()); // B</code></pre>
+<p>呼び出し可能かどうかは宣言型 <code>A</code> で確認します。<code>A</code> に <code>name()</code> があるのでコンパイルできます。実行時は実体 <code>B</code> のoverrideメソッドが選ばれます。</p>
+</section><section class="article-section">
+<h2>メソッド呼び出しは2段階で決まる</h2>
+<pre class="article-code"><code>class Animal {
+          void speak() { System.out.println("Animal"); }
+      }
+      class Dog extends Animal {
+          @Override void speak() { System.out.println("Dog"); }
+          void fetch() { }
+      }
+      Animal a = new Dog();
+      a.speak();       // コンパイル可、実行はDog.speak
+      // a.fetch();    // コンパイルエラー: Animalに宣言がない</code></pre>
+<ol class="article-list"><li>コンパイル時に、宣言型から呼び出せるメソッド候補を決める。</li><li>オーバーロードがあるなら、引数のコンパイル時型でシグネチャを選ぶ。</li><li>選ばれたシグネチャがインスタンスメソッドなら、実行時に実体のオーバーライド実装へ動的ディスパッチする。</li></ol>
+<details class="article-card"><summary><strong>見えるメソッド</strong></summary><p><code>Animal a = new Dog();</code>で、Dogにだけある<code>fetch()</code>を直接呼べますか。</p><div class="article-callout"><strong>コンパイル時に見える範囲：</strong>呼べません。宣言型Animalに宣言がないためコンパイルエラーです。実体がDogであることを確認してダウンキャストします。</div></details></section>
+<section class="article-section">
+<h2>フィールドはoverrideされない</h2>
+<p>フィールドはメソッドと違い、overrideされません。同じ名前のフィールドをサブクラスに定義すると、隠蔽に近い状態になります。参照するフィールドは宣言型で決まります。</p>
+<pre class="article-code"><code>class A {
+    String value = "A";
+}
+
+class B extends A {
+    String value = "B";
+}
+
+A a = new B();
+System.out.println(a.value);       // A
+System.out.println(((B) a).value); // B</code></pre>
+<p>ここは試験でよく落とされます。<strong>メソッドは実体、フィールドは宣言型</strong> とまず覚えてください。</p>
+</section>
+<section class="article-section">
+<h2>staticメソッドもoverrideされない</h2>
+<p>staticメソッドはインスタンスに属さず、クラスに属します。サブクラスで同じシグネチャのstaticメソッドを書いてもoverrideではなく、隠蔽です。</p>
+<pre class="article-code"><code>class A {
+    static void test() {
+        System.out.println("A");
+    }
+}
+
+class B extends A {
+    static void test() {
+        System.out.println("B");
+    }
+}
+
+A a = new B();
+a.test(); // A。コンパイル時の型Aで解決される</code></pre>
+<p>実務ではインスタンス参照からstaticメソッドを呼ぶべきではありません。ただし試験では出ます。overrideの動的ディスパッチとは別物です。</p>
+</section><section class="article-section">
+<h2>フィールドとstaticメソッドは動的ディスパッチされない</h2>
+<pre class="article-code"><code>class Parent {
+          String value = "P";
+          static void show() { System.out.print("P"); }
+      }
+      class Child extends Parent {
+          String value = "C";
+          static void show() { System.out.print("C"); }
+      }
+      Parent p = new Child();
+      System.out.println(p.value); // P
+      p.show();                    // P（型名呼び出し推奨）</code></pre>
+<div class="article-callout"><strong>機械的ルール：</strong>同名フィールドとstaticメソッドは、参照式のコンパイル時型で選びます。</div>
+</section>
+<section class="article-section">
+<h2>overloadはコンパイル時に決まる</h2>
+<p>overloadは引数の型で呼び分ける仕組みです。どのoverloadを呼ぶかは、基本的にコンパイル時の引数型で決まります。</p>
+<pre class="article-code"><code>class A {}
+class B extends A {}
+
+class Sample {
+    void test(A a) {
+        System.out.println("A");
+    }
+    void test(B b) {
+        System.out.println("B");
+    }
+}
+
+Sample s = new Sample();
+A x = new B();
+s.test(x); // A</code></pre>
+<p>実体は <code>B</code> ですが、変数 <code>x</code> の宣言型は <code>A</code> です。そのため <code>test(A)</code> が選ばれます。</p>
+</section>
+<section class="article-section">
+<h2>overload選択後にoverrideが効く</h2>
+<p>やや難しいですが、まずoverloadがコンパイル時に選ばれ、その後、そのメソッドがoverrideされていれば実体側が実行されます。</p>
+<pre class="article-code"><code>class A {}
+class B extends A {}
+
+class Parent {
+    void test(A a) {
+        System.out.println("Parent A");
+    }
+    void test(B b) {
+        System.out.println("Parent B");
+    }
+}
+
+class Child extends Parent {
+    @Override
+    void test(A a) {
+        System.out.println("Child A");
+    }
+}
+
+Parent p = new Child();
+A arg = new B();
+p.test(arg); // Child A</code></pre>
+<ol>
+<li><code>arg</code> の宣言型は <code>A</code> なので、overloadでは <code>test(A)</code> が選ばれる。</li>
+<li><code>p</code> の実体は <code>Child</code> なので、<code>test(A)</code> のoverride先である <code>Child A</code> が実行される。</li>
+</ol>
+</section><section class="article-section">
+<h2>オーバーロードとオーバーライドが混ざる問題</h2>
+<pre class="article-code"><code>class Parent {
+          void test(Object x) { System.out.println("P-Object"); }
+      }
+      class Child extends Parent {
+          @Override void test(Object x) { System.out.println("C-Object"); }
+          void test(String x) { System.out.println("C-String"); }
+      }
+      Parent p = new Child();
+      p.test("Java"); // C-Object</code></pre>
+<p>まず宣言型<code>Parent</code>から<code>test(Object)</code>が選ばれ、そのシグネチャについて実行時型<code>Child</code>のオーバーライド実装が動きます。<code>Child.test(String)</code>は候補探索時に見えません。</p>
+<details class="article-card"><summary><strong>オーバーロード混在</strong></summary><p>親型変数に子オブジェクトを代入したとき、子にだけあるより具体的なオーバーロードが選ばれますか。</p><div class="article-callout"><strong>実行時の型検査：</strong>宣言型から見えなければ選ばれません。まずコンパイル時に親型の候補を決め、その後で同じシグネチャの子実装へディスパッチします。</div></details></section>
+<section class="article-section">
+<h2>キャストとメソッド呼び出しの括弧</h2>
+<p>キャストしてからメソッドを呼ぶには、キャスト式全体を括弧で囲みます。括弧がずれると、先にメソッドを探してしまいコンパイルエラーになります。</p>
+<pre class="article-code"><code>Object obj = "abc";
+
+// String s = (String) obj.substring(1); // NG: Objectにsubstringはない
+String s = ((String) obj).substring(1);  // OK</code></pre>
+<p><code>(String) obj.substring(1)</code> のように見える式は、<code>obj.substring(1)</code> を先に解釈しようとします。<code>Object</code> に <code>substring</code> はないので失敗します。</p>
+</section>
+<section class="article-section">
+<h2>instanceofの基本</h2>
+<p><code>instanceof</code> は、左辺の参照先インスタンスが右辺の型として扱えるかを判定します。</p>
+<pre class="article-code"><code>Object obj = "abc";
+
+System.out.println(obj instanceof String);        // true
+System.out.println(obj instanceof StringBuilder); // false</code></pre>
+<p>変数の宣言型だけではなく、実体を見ます。<code>obj</code> の宣言型は <code>Object</code> ですが、実体が <code>String</code> なので <code>String</code> 判定はtrueです。</p>
+</section>
+<section class="article-section">
+<h2>instanceofとnull</h2>
+<p><code>null instanceof 型</code> は常にfalseです。例外にはなりません。</p>
+<pre class="article-code"><code>String s = null;
+System.out.println(s instanceof String); // false</code></pre>
+<p>ここで <code>NullPointerException</code> になると考えるのは誤りです。<code>instanceof</code> はメソッド呼び出しではありません。</p>
+</section>
+<section class="article-section"><h2>instanceofパターン変数の詳細</h2><p>型パターンはキャストの省略だけでなく、条件の真偽に応じてスコープが変化します。<a href="instanceof-patterns.html">instanceofパターン変数</a>で、短絡評価と到達経路から独立して扱います。</p></section>
+<section class="article-section">
+<h2>interface型で受けるポリモーフィズム</h2>
+<p>interface型の変数は、そのinterfaceを実装したクラスのインスタンスを受けられます。呼べるのはinterfaceに定義されたメソッドです。</p>
+<pre class="article-code"><code>interface Printable {
+    void print();
+}
+
+class Report implements Printable {
+    public void print() {
+        System.out.println("report");
+    }
+    void export() {
+        System.out.println("export");
+    }
+}
+
+Printable p = new Report();
+p.print();   // OK
+// p.export(); // NG: Printable型にはexportがない</code></pre>
+<p>interface型で受ける意味は、実装クラスを差し替えられることです。ただし、宣言型に見えないメソッドは呼べません。</p>
+</section>
+<section class="article-section">
+<h2>配列のポリモーフィズムとArrayStoreException</h2>
+<p>配列は参照型であり、配列にもポリモーフィズムがあります。ただし、配列は実行時に要素型を覚えているため、代入時に <code>ArrayStoreException</code> が起きることがあります。</p>
+<pre class="article-code"><code>Object[] values = new String[2];
+values[0] = "A";          // OK
+values[1] = new Object(); // 実行時にArrayStoreException</code></pre>
+<p>宣言型は <code>Object[]</code> なので <code>Object</code> を入れられそうに見えます。しかし実体は <code>String[]</code> なので、String以外を格納できません。</p>
+</section><section class="article-section">
+<h2>配列のポリモーフィズム</h2>
+<p>配列は参照型であり、配列型にも継承・実装関係があります。参照型配列は共変なので、<code>String[]</code>を<code>Object[]</code>へ代入できますが、格納時に実体の配列型が検査されます。</p>
+<pre class="article-code"><code>Object[] values = new String[1];
+      values[0] = "A";
+      // values[0] = 10; // ArrayStoreException</code></pre>
+</section>
+<section class="article-section">
+<h2>総合例：何が表示されるか</h2>
+<pre class="article-code"><code>class A {
+    String value = "A-field";
+    String name() {
+        return "A-method";
+    }
+}
+
+class B extends A {
+    String value = "B-field";
+    @Override
+    String name() {
+        return "B-method";
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        A a = new B();
+        System.out.println(a.value);
+        System.out.println(a.name());
+        System.out.println(((B) a).value);
+    }
+}</code></pre>
+<table class="ref-table">
+<thead><tr><th>式</th><th>判断</th><th>結果</th></tr></thead>
+<tbody>
+<tr><td><code>a.value</code></td><td>フィールドは宣言型 <code>A</code></td><td><code>A-field</code></td></tr>
+<tr><td><code>a.name()</code></td><td>メソッドは実体 <code>B</code></td><td><code>B-method</code></td></tr>
+<tr><td><code>((B) a).value</code></td><td>キャスト後の宣言型は <code>B</code></td><td><code>B-field</code></td></tr>
+</tbody>
+</table>
+</section>
+<section class="article-section">
+<h2>フィールド・static・overloadの誤読</h2>
+<div class="article-card-grid">
+<article class="article-card"><h3>実体だけで呼べると判断する</h3><p><code>A a = new B();</code> でも、<code>A</code> にないメソッドは呼べません。</p></article>
+<article class="article-card"><h3>フィールドもoverrideされると思う</h3><p>フィールドはoverrideされません。宣言型で決まります。</p></article>
+<article class="article-card"><h3>キャストを書けば安全だと思う</h3><p>キャスト式がコンパイルできても、実体が合わなければ <code>ClassCastException</code> です。</p></article>
+<article class="article-card"><h3><code>instanceof null</code> を例外と考える</h3><p><code>null instanceof 型</code> はfalseです。</p></article>
+<article class="article-card"><h3>overloadを実体で選ぶ</h3><p>overload選択は基本的にコンパイル時の引数型で決まります。</p></article>
+<article class="article-card"><h3>括弧なしキャストでメソッドを呼ぶ</h3><p><code>((B) obj).method()</code> の括弧が必要です。</p></article>
+</div>
+</section>
+<section class="article-section">
+<h2>選択基準をメンバー種別ごとに比較する</h2>
+<table class="ref-table">
+<thead><tr><th>対象</th><th>主に見るもの</th><th>注意点</th></tr></thead>
+<tbody>
+<tr><td>インスタンスメソッド呼び出し</td><td>呼べるかは宣言型、実行内容は実体</td><td>overrideが効く</td></tr>
+<tr><td>フィールド参照</td><td>宣言型</td><td>overrideされない</td></tr>
+<tr><td>staticメソッド</td><td>宣言型</td><td>overrideではなく隠蔽</td></tr>
+<tr><td>overload</td><td>引数の宣言型</td><td>実体だけで選ばない</td></tr>
+<tr><td>ダウンキャスト</td><td>実体</td><td>合わなければ <code>ClassCastException</code></td></tr>
+<tr><td><code>instanceof</code></td><td>実体</td><td><code>null</code> はfalse</td></tr>
+</tbody>
+</table>
+</section>
+<section class="article-section">
+<h2>宣言型と実行時型を二段階で追う</h2>
+<details class="article-card"><summary><strong>Q1. <code>A a = new B();</code> で、<code>B</code> だけにある <code>onlyB()</code> は呼べる？</strong></summary><p>そのままでは呼べません。宣言型 <code>A</code> に <code>onlyB()</code> がないためコンパイルエラーです。実体が <code>B</code> であることは、メソッド探索の前提にはなりません。</p></details>
+<details class="article-card"><summary><strong>Q2. <code>A a = new C(); B b = (B) a;</code> は必ずコンパイルエラー？ ただし <code>B</code> と <code>C</code> はどちらも <code>A</code> のサブクラス。</strong></summary><p>コンパイルは通る可能性があります。<code>a</code> の宣言型は <code>A</code> であり、<code>B</code> に変換できる可能性があるためです。ただし実体が <code>C</code> なので、実行時に <code>ClassCastException</code> です。</p></details>
+<details class="article-card"><summary><strong>Q3. <code>null instanceof String</code> の結果は？</strong></summary><p><code>false</code> です。<code>NullPointerException</code> ではありません。</p></details>
+<details class="article-card"><summary><strong>Q4. <code>A a = new B(); System.out.println(a.value);</code> で <code>A</code> と <code>B</code> の両方に <code>value</code> がある場合は？</strong></summary><p>宣言型 <code>A</code> のフィールドが参照されます。フィールドはoverrideされません。</p></details>
+<p class="inline-note">関連: <a href="oop-relations.html">継承・interface</a> / <a href="inheritance-interface.html">継承/interface詳細</a> / <a href="compile-runtime.html">コンパイル・実行時例外</a></p>
+</section>
+<section class="article-section"><h2>発展記事</h2><p class="inline-note">パターン変数の使用範囲は、<a href="instanceof-patterns.html">instanceofパターン変数</a>で制御フロー別に扱います。</p></section>
+</main>
+</div>
+<script src="data/questions.js?v=round-wrong-groups-v15"></script>
+<script src="assets/js/app.js?v=round-wrong-groups-v15"></script>
+</body>
+</html>

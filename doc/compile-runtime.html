@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="noindex, nofollow, noarchive, nosnippet" name="robots"/>
+<meta content="noindex, nofollow, noarchive, nosnippet" name="googlebot"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Java Silver Study - コンパイルエラーと実行時例外</title>
+<link href="assets/css/styles.css?v=round-wrong-groups-v15" rel="stylesheet"/>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<p class="brand"><a href="index.html">Java Silver Study</a></p>
+<nav aria-label="章一覧" class="nav-list" id="chapterNav"></nav>
+</aside>
+<main class="main reference-main article-main">
+<section class="hero reference-hero compact-hero article-hero">
+<p class="eyebrow">Java Silver Reference</p>
+<h1>コンパイルエラーと実行時例外</h1>
+<p>コード問題で最初に切るべき「コンパイルできるか」「実行中に例外が出るか」「正常出力か」を整理します。</p>
+</section>
+<section class="article-section">
+<h2>3分類を混ぜない</h2>
+<p>Java Silverの選択肢は、しばしば「コンパイルエラー」「実行時例外」「出力結果」を混ぜてきます。ここを混同すると、解説を読んでも同じ間違いを繰り返します。</p><table class="ref-table"><thead><tr><th>分類</th><th>発生タイミング</th><th>例</th></tr></thead><tbody><tr><td>コンパイルエラー</td><td>実行前。classファイルを作れない</td><td>型不一致、未初期化ローカル変数、override違反、catch到達不能</td></tr><tr><td>実行時例外</td><td>コンパイル後、実行中</td><td><code>NullPointerException</code>、<code>ArrayIndexOutOfBoundsException</code>、<code>ClassCastException</code></td></tr><tr><td>正常出力</td><td>コンパイルも実行も成功</td><td>printlnの結果、または何も表示されない</td></tr></tbody></table>
+</section><section class="article-section">
+<h2>判定を4段階に分ける</h2>
+<div class="table-wrap"><table class="ref-table"><thead><tr><th>段階</th><th>確認内容</th><th>代表的な失敗</th></tr></thead><tbody><tr><td>1. コンパイル</td><td>構文、型、アクセス、到達可能性、例外検査</td><td>コンパイルエラー</td></tr><tr><td>2. 起動・読み込み</td><td>クラス名、クラスパス、main、依存クラス</td><td>起動失敗・リンク時エラー</td></tr><tr><td>3. 初期化</td><td>static初期化、クラス初期化</td><td><code>ExceptionInInitializerError</code>など</td></tr><tr><td>4. 実行</td><td>null、添字、キャスト、算術、明示的throw</td><td>実行時例外または正常終了</td></tr></tbody></table></div>
+<p>試験の多くは1と4の区別ですが、コマンド問題では2、static初期化を含む問題では3も分けると精度が上がります。</p>
+<details class="article-card"><summary><strong>nullフィールド</strong></summary><p>参照型フィールドを初期化せず、メソッドで<code>field.length()</code>を呼ぶとどうなりますか。</p><div class="article-callout"><strong>発生フェーズ：</strong>フィールド自体は<code>null</code>で初期化されるためコンパイルは通り、実行時に<code>NullPointerException</code>です。</div></details><details class="article-card"><summary><strong>未初期化ローカル</strong></summary><p>ローカル参照変数を宣言だけして<code>local.length()</code>とするとどうなりますか。</p><div class="article-callout"><strong>コンパイル時検査：</strong>使用前の確実な代入がないためコンパイルエラーです。</div></details></section>
+<section class="article-section">
+<h2>コンパイルエラーの典型</h2>
+<pre class="article-code"><code>int a;
+System.out.println(a); // 未初期化ローカル変数
+
+byte b = 1;
+b = b + 1;             // b + 1 はint
+
+class A { private void test() {} }
+class B extends A { @Override void test() {} } // privateはoverride対象外</code></pre><p>コンパイルエラーは、JVMが実行する前に発生します。したがって「途中まで表示される」は原則ありません。</p>
+</section>
+<section class="article-section">
+<h2>実行時例外の典型</h2>
+<pre class="article-code"><code>String s = null;
+System.out.println(s.length()); // NullPointerException
+
+int[] a = new int[0];
+a[0] = 10;                     // ArrayIndexOutOfBoundsException
+
+Object obj = "abc";
+Integer n = (Integer) obj;      // ClassCastException</code></pre><p>実行時例外は、該当行に到達して初めて起きます。到達しない行の例外は発生しません。</p>
+</section>
+<section class="article-section">
+<h2>到達不能コードとcatch順序</h2>
+<p>catchは上から順に評価されます。スーパークラスの例外を先にcatchすると、サブクラスのcatchは到達不能になりコンパイルエラーです。</p><pre class="article-code"><code>try {
+    throw new java.io.IOException();
+} catch (Exception e) {
+} catch (java.io.IOException e) { // NG: 先にExceptionで捕まる
+}</code></pre>
+</section>
+<section class="article-section">
+<h2>何も表示されないケース</h2>
+<p>「何も表示されない」は、コンパイルエラーや例外とは別です。正常に実行されたが <code>println</code> に到達しない、または空文字を出力するなどのケースです。</p><pre class="article-code"><code>String s = "";
+System.out.print(s); // 正常終了。ただし見た目は何も出ない</code></pre>
+</section>
+<section class="article-section">
+<h2>失敗するフェーズを分類する</h2>
+<details class="article-card"><summary><strong>Q. <code>String s = null; System.out.println(s);</code> は例外？</strong></summary><p>例外ではありません。<code>println(Object)</code> はnullを文字列 <code>null</code> として表示します。<code>s.length()</code> のようにインスタンスメソッドを呼ぶと例外です。</p></details><details class="article-card"><summary><strong>Q. コンパイルエラーのコードは、途中のprintlnだけ実行される？</strong></summary><p>されません。そもそも実行用のclassファイルを作れないので、出力はありません。</p></details><p class="inline-note">関連: <a href="decision-flow.html">判定フロー</a> / <a href="compile-runtime.html">コンパイル・実行時例外</a> / <a href="exam-traps.html">ひっかけ集</a></p>
+</section>
+<section class="article-section deep-extra">
+<h2>「途中まで出る」かどうかの境界</h2>
+<p>コンパイルエラーなら何も実行されません。実行時例外なら、例外発生前の出力は残ります。この違いが選択肢を切る鍵です。</p><pre class="article-code"><code>// コンパイルエラー: 何も表示されない
+int a;
+System.out.println("A");
+System.out.println(a);
+
+// 実行時例外: Aは表示される
+System.out.println("A");
+String s = null;
+s.length();
+System.out.println("B");</code></pre>
+</section><section class="article-section">
+<h2>出力がどこまで行われるかを追う</h2>
+<pre class="article-code"><code>System.out.print("A");
+      int[] values = new int[0];
+      System.out.print(values[0]);
+      System.out.print("B");
+      // Aを表示後、ArrayIndexOutOfBoundsException。Bは表示されない</code></pre>
+<p>例外発生前に完了した副作用は残ります。式の途中で例外が起きる場合は、左からどこまで評価済みかを確認します。</p>
+<details class="article-card"><summary><strong>catchされない例外</strong></summary><p>try内で例外が発生しても、型がどのcatchにも適合しない場合はfinallyが実行されますか。</p><div class="article-callout"><strong>伝播までの処理：</strong>finallyがあれば実行され、その後例外が呼び出し元へ伝播します。</div></details></section>
+<section class="article-section deep-extra">
+<h2>例外がcatchされる場合とされない場合</h2>
+<p>発生した例外型がcatchの型に代入可能ならcatchされます。代入可能でなければ、そこで呼び出し元へ伝播します。</p><pre class="article-code"><code>try {
+    Object o = "abc";
+    Integer i = (Integer) o;
+} catch (NullPointerException e) {
+    System.out.println("NPE");
+}
+// ClassCastExceptionはcatchされない。異常終了。</code></pre>
+</section><section class="article-section">
+<h2>よくある分類ミス</h2>
+<div class="table-wrap"><table class="ref-table"><thead><tr><th>コードの特徴</th><th>正しい分類</th></tr></thead><tbody><tr><td>未初期化ローカル変数を読む</td><td>コンパイルエラー</td></tr><tr><td>配列要素の既定値<code>null</code>へメソッド呼び出し</td><td>コンパイル可、実行時<code>NullPointerException</code></td></tr><tr><td>不可能と判定できる型キャスト</td><td>コンパイルエラー</td></tr><tr><td>親子関係はあるが実体不一致のダウンキャスト</td><td>コンパイル可、実行時<code>ClassCastException</code></td></tr><tr><td>広いcatchの後に狭いcatch</td><td>コンパイルエラー</td></tr><tr><td><code>10 / 0</code></td><td>定数式ならコンパイル時エラーになり得る</td></tr><tr><td>変数を使った整数0除算</td><td>コンパイル可、実行時<code>ArithmeticException</code></td></tr></tbody></table></div>
+</section>
+
+
+
+
+</main>
+</div>
+<script src="data/questions.js?v=round-wrong-groups-v15"></script>
+<script src="assets/js/app.js?v=round-wrong-groups-v15"></script>
+</body>
+</html>
