@@ -3523,3 +3523,36 @@ details.article-card[open] summary { margin-bottom: 10px; }
     grid-template-columns: 1fr;
   }
 }
+
+/* Wrong-practice missed-again grouping */
+.practice-wrong-summary-card {
+  border-color: rgba(185, 28, 28, .18);
+  background: #fffafa;
+}
+
+.practice-wrong-summary-card.is-empty {
+  background: rgba(255,255,255,.86);
+}
+
+.practice-wrong-card {
+  border-color: rgba(185, 28, 28, .18);
+}
+
+.practice-wrong-item {
+  border-color: rgba(185, 28, 28, .18);
+  background: #fffafa;
+}
+
+.wrong-practice-scope-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0 4px;
+}
+
+@media (max-width: 560px) {
+  .wrong-practice-scope-tabs,
+  .wrong-practice-scope-tabs .btn {
+    width: 100%;
+  }
+}

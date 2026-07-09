@@ -117,11 +117,11 @@
     return { progress, exam, rounds, meta: payload };
   }
 
-  function mergeRoundWrongHistoryRecords(left, right) {
+  function mergeRoundScopedWrongHistoryRecords(left, right, fieldName) {
     const merged = {};
     [left, right].forEach(record => {
-      const history = record && record.roundWrongHistory && typeof record.roundWrongHistory === "object" && !Array.isArray(record.roundWrongHistory)
-        ? record.roundWrongHistory
+      const history = record && record[fieldName] && typeof record[fieldName] === "object" && !Array.isArray(record[fieldName])
+        ? record[fieldName]
         : {};
       Object.entries(history).forEach(([key, value]) => {
         if (!value || typeof value !== "object") return;
@@ -140,6 +140,14 @@
       });
     });
     return merged;
+  }
+
+  function mergeRoundWrongHistoryRecords(left, right) {
+    return mergeRoundScopedWrongHistoryRecords(left, right, "roundWrongHistory");
+  }
+
+  function mergeWrongPracticeWrongHistoryRecords(left, right) {
+    return mergeRoundScopedWrongHistoryRecords(left, right, "wrongPracticeWrongHistory");
   }
 
   function mergeProgress(current, incoming) {
@@ -174,12 +182,14 @@
         .sort((a, b) => (Date.parse(a || "") || 0) - (Date.parse(b || "") || 0));
       const wrongResolvedAt = resolvedCandidates.length ? resolvedCandidates[resolvedCandidates.length - 1] : base.wrongResolvedAt;
       const roundWrongHistory = mergeRoundWrongHistoryRecords(currentRecord, incomingRecord);
+      const wrongPracticeWrongHistory = mergeWrongPracticeWrongHistoryRecords(currentRecord, incomingRecord);
       merged[qid] = {
         ...base,
         flagged: Boolean(currentRecord.flagged || incomingRecord.flagged),
         tags: tags.length ? tags : base.tags,
         attempts,
         ...(Object.keys(roundWrongHistory).length ? { roundWrongHistory } : {}),
+        ...(Object.keys(wrongPracticeWrongHistory).length ? { wrongPracticeWrongHistory } : {}),
         ...(wrongResolvedAt ? { wrongResolvedAt } : {})
       };
     });
@@ -1245,6 +1255,13 @@ service cloud.firestore {
     return history;
   }
 
+  function wrongPracticeWrongHistoryOf(record) {
+    const history = record && record.wrongPracticeWrongHistory && typeof record.wrongPracticeWrongHistory === "object" && !Array.isArray(record.wrongPracticeWrongHistory)
+      ? record.wrongPracticeWrongHistory
+      : {};
+    return history;
+  }
+
   function wrongAttemptsOfRound(record, round = currentRound) {
     const r = normalizeRound(round);
     return attemptsOf(record).filter(attempt => attemptRound(attempt) === r && attempt && attempt.isCorrect === false);
@@ -1297,6 +1314,52 @@ service cloud.firestore {
       wrongCount: Math.max(0, Math.floor(Number(previous && (previous.wrongCount || previous.count) || 0))) + 1
     };
     return history;
+  }
+
+  function addWrongPracticeWrongHistory(record, attempt) {
+    const r = normalizeRound(attempt && attempt.round || currentRound);
+    const key = String(r);
+    const history = { ...wrongPracticeWrongHistoryOf(record) };
+    const previous = history[key] && typeof history[key] === "object" ? history[key] : null;
+    history[key] = {
+      round: r,
+      firstWrongAt: previous && previous.firstWrongAt ? previous.firstWrongAt : attempt.answeredAt,
+      lastWrongAt: attempt.answeredAt,
+      wrongCount: Math.max(0, Math.floor(Number(previous && (previous.wrongCount || previous.count) || 0))) + 1
+    };
+    return history;
+  }
+
+  function wrongPracticeWrongAttemptsOfRound(record, round = currentRound) {
+    const r = normalizeRound(round);
+    return attemptsOf(record).filter(attempt => attemptRound(attempt) === r && attempt && attempt.isCorrect === false && attempt.source === "wrong-practice");
+  }
+
+  function wrongPracticeWrongEntry(record, round = currentRound) {
+    if (!record) return null;
+    const r = normalizeRound(round);
+    const history = wrongPracticeWrongHistoryOf(record);
+    const stored = history[String(r)];
+    if (stored && typeof stored === "object") {
+      const count = Math.max(1, Math.floor(Number(stored.wrongCount || stored.count || 1)));
+      return {
+        ...stored,
+        round: r,
+        wrongCount: count,
+        firstWrongAt: stored.firstWrongAt || stored.lastWrongAt || "",
+        lastWrongAt: stored.lastWrongAt || stored.firstWrongAt || ""
+      };
+    }
+    const attempts = wrongPracticeWrongAttemptsOfRound(record, r);
+    if (attempts.length) {
+      return {
+        round: r,
+        wrongCount: attempts.length,
+        firstWrongAt: attempts[0].answeredAt || "",
+        lastWrongAt: attempts[attempts.length - 1].answeredAt || ""
+      };
+    }
+    return null;
   }
 
   function hasWrongInRound(record, round = currentRound) {
@@ -1515,13 +1578,15 @@ service cloud.firestore {
     const answeredAt = new Date().toISOString();
     const isCorrect = arraysEqual(selected, q.answer);
     const ownerId = owningChapterId(q);
+    const inWrongPractice = isWrongPracticePage();
     const attempt = {
       selected: [...selected],
       isCorrect,
       answeredAt,
       chapterId: ownerId,
       tags: getQuestionTags(q),
-      round: currentRound
+      round: currentRound,
+      source: inWrongPractice ? "wrong-practice" : "chapter"
     };
     const nextRecord = {
       ...previous,
@@ -1535,8 +1600,14 @@ service cloud.firestore {
     };
     if (!isCorrect) {
       nextRecord.roundWrongHistory = addRoundWrongHistory(previous, attempt);
+      if (inWrongPractice) {
+        nextRecord.wrongPracticeWrongHistory = addWrongPracticeWrongHistory(previous, attempt);
+      }
     } else if (previous.roundWrongHistory) {
       nextRecord.roundWrongHistory = roundWrongHistoryOf(previous);
+    }
+    if (isCorrect && previous.wrongPracticeWrongHistory) {
+      nextRecord.wrongPracticeWrongHistory = wrongPracticeWrongHistoryOf(previous);
     }
     progress[q.id] = nextRecord;
     writeProgress(progress);
@@ -1862,8 +1933,10 @@ service cloud.firestore {
       renderChapterStats();
       renderRoundPanel();
       updateResetCurrentButton(q);
-      if (isCorrect && isWrongPracticePage()) {
-        setWrongPracticeMessage("正解です。間違えた履歴は残したまま、次の問題へ進めます。");
+      if (isWrongPracticePage()) {
+        setWrongPracticeMessage(isCorrect
+          ? "正解です。間違えた履歴は残したまま、次の問題へ進めます。"
+          : "不正解です。この問題は「間違い演習で間違えた問題」に記録されます。");
       }
     }
   }
@@ -3132,14 +3205,103 @@ service cloud.firestore {
         });
       }
     }
-    return items.sort((a, b) => {
-      if (b.sortTime !== a.sortTime) return b.sortTime - a.sortTime;
-      if (a.round !== b.round) return b.round - a.round;
-      const ca = DATA.chapters.findIndex(ch => ch.id === a.chapter.id);
-      const cb = DATA.chapters.findIndex(ch => ch.id === b.chapter.id);
-      if (ca !== cb) return ca - cb;
-      return Number(a.question.number || 0) - Number(b.question.number || 0);
+    return items.sort(compareWrongItems);
+  }
+
+  function compareWrongItems(a, b) {
+    if (b.sortTime !== a.sortTime) return b.sortTime - a.sortTime;
+    if (a.round !== b.round) return b.round - a.round;
+    const ca = DATA.chapters.findIndex(ch => ch.id === a.chapter.id);
+    const cb = DATA.chapters.findIndex(ch => ch.id === b.chapter.id);
+    if (ca !== cb) return ca - cb;
+    return Number(a.question.number || 0) - Number(b.question.number || 0);
+  }
+
+  function wrongPracticeWrongRoundNumbersOf(record) {
+    if (!record) return [];
+    const rounds = new Set();
+    Object.keys(wrongPracticeWrongHistoryOf(record)).forEach(key => rounds.add(normalizeRound(key)));
+    attemptsOf(record).forEach(attempt => {
+      if (attempt && attempt.isCorrect === false && attempt.source === "wrong-practice") rounds.add(attemptRound(attempt));
     });
+    return Array.from(rounds).filter(n => n >= 1).sort((a, b) => a - b);
+  }
+
+  function wrongPracticeWrongEntryTime(entry, record) {
+    return Date.parse(entry && (entry.lastWrongAt || entry.firstWrongAt) || "") || latestProgressTime(record);
+  }
+
+  function wrongPracticeWrongItems(options = {}) {
+    const targetRound = Math.floor(Number(options.round || 0));
+    const progress = readProgress();
+    const items = [];
+    for (const ch of DATA.chapters) {
+      for (const q of DATA.questions[ch.id] || []) {
+        const record = progress[q.id];
+        if (!record) continue;
+        const rounds = targetRound >= 1 ? [targetRound] : wrongPracticeWrongRoundNumbersOf(record);
+        rounds.forEach(round => {
+          const entry = wrongPracticeWrongEntry(record, round);
+          if (!entry) return;
+          items.push({
+            chapter: ch,
+            question: q,
+            record,
+            round: normalizeRound(round),
+            wrongEntry: entry,
+            practiceWrongEntry: entry,
+            sortTime: wrongPracticeWrongEntryTime(entry, record),
+            scope: "practice-wrong"
+          });
+        });
+      }
+    }
+    return items.sort(compareWrongItems);
+  }
+
+  function wrongPracticeWrongAttemptCount(record, round = 0) {
+    if (!record) return 0;
+    const r = Math.floor(Number(round || 0));
+    if (Number.isFinite(r) && r >= 1) {
+      const attempts = wrongPracticeWrongAttemptsOfRound(record, r).length;
+      const entry = wrongPracticeWrongEntry(record, r);
+      const history = entry ? Math.max(1, Math.floor(Number(entry.wrongCount || entry.count || 1))) : 0;
+      return Math.max(attempts, history);
+    }
+    const attemptCount = attemptsOf(record).filter(attempt => attempt && attempt.isCorrect === false && attempt.source === "wrong-practice").length;
+    const historyCount = Object.values(wrongPracticeWrongHistoryOf(record)).reduce((sum, item) => {
+      if (!item || typeof item !== "object") return sum;
+      const count = Math.max(1, Math.floor(Number(item.wrongCount || item.count || 1)));
+      return sum + count;
+    }, 0);
+    return Math.max(attemptCount, historyCount);
+  }
+
+  function latestWrongPracticeWrongAttempt(record, round = 0) {
+    const r = Math.floor(Number(round || 0));
+    const wrongAttempts = attemptsOf(record).filter(attempt => {
+      if (!(attempt && attempt.isCorrect === false && attempt.source === "wrong-practice")) return false;
+      return !(Number.isFinite(r) && r >= 1) || attemptRound(attempt) === r;
+    });
+    if (!wrongAttempts.length) return null;
+    return wrongAttempts[wrongAttempts.length - 1];
+  }
+
+  function wrongPracticeWrongGroups() {
+    const map = new Map();
+    wrongPracticeWrongItems().forEach(item => {
+      const round = normalizeRound(item.round);
+      const group = map.get(round) || { round, items: [], questionCount: 0, latestTime: 0, chapterIds: new Set() };
+      group.items.push(item);
+      group.questionCount += 1;
+      group.latestTime = Math.max(group.latestTime, item.sortTime || 0);
+      group.chapterIds.add(item.chapter.id);
+      map.set(round, group);
+    });
+    return Array.from(map.values()).sort((a, b) => b.round - a.round).map(group => ({
+      ...group,
+      chapterCount: group.chapterIds.size
+    }));
   }
 
   function shuffleItems(items) {
@@ -3172,18 +3334,31 @@ service cloud.firestore {
     }));
   }
 
-  function wrongPracticeHref(round = 0, questionId = "") {
+  function normalizeWrongPracticeScope(value) {
+    return value === "practice-wrong" ? "practice-wrong" : "round-wrong";
+  }
+
+  function getWrongPracticeScope() {
+    const params = new URLSearchParams(location.search || "");
+    return normalizeWrongPracticeScope(params.get("scope"));
+  }
+
+  function wrongPracticeHref(round = 0, questionId = "", scope = "round-wrong") {
     const params = new URLSearchParams();
     const r = Math.floor(Number(round || 0));
+    const normalizedScope = normalizeWrongPracticeScope(scope);
+    if (normalizedScope === "practice-wrong") params.set("scope", normalizedScope);
     if (Number.isFinite(r) && r >= 1) params.set("round", String(r));
     if (questionId) params.set("q", questionId);
     const query = params.toString();
     return query ? `wrong-practice.html?${query}` : "wrong-practice.html";
   }
 
-  function wrongPracticeTargetLabel(round) {
+  function wrongPracticeTargetLabel(round, scope = "round-wrong") {
     const r = Math.floor(Number(round || 0));
-    return Number.isFinite(r) && r >= 1 ? `${roundLabel(r)}のミス` : "全周回のミス";
+    const prefix = normalizeWrongPracticeScope(scope) === "practice-wrong" ? "間違い演習で再ミスした" : "";
+    if (Number.isFinite(r) && r >= 1) return prefix ? `${prefix}${roundLabel(r)}の問題` : `${roundLabel(r)}のミス`;
+    return prefix ? "間違い演習で再ミスした問題" : "全周回のミス";
   }
 
   function renderWrongSummary() {
@@ -3191,9 +3366,11 @@ service cloud.firestore {
     if (!root) return;
     const items = wrongQuestionItems();
     const groups = wrongRoundGroups();
+    const practiceItems = wrongPracticeWrongItems();
+    const practiceGroups = wrongPracticeWrongGroups();
     const stats = globalStats();
     const weak = weakTagStats().slice(0, 10);
-    if (!items.length) {
+    if (!items.length && !practiceItems.length) {
       root.innerHTML = `<section class="empty-state">
         <h2>間違えた問題はありません</h2>
         <a class="btn primary" href="index.html">トップへ戻る</a>
@@ -3201,6 +3378,63 @@ service cloud.firestore {
       return;
     }
     const tagHtml = weak.length ? `<div class="weak-tags">${weak.map(item => `<span class="weak-tag">${escapeHtml(item.tag)} <b>${item.wrong}</b>/<small>${item.answered}</small></span>`).join("")}</div>` : "";
+    const practiceSelectorHtml = practiceItems.length ? `<section class="wrong-chapter-card wrong-round-selector-card practice-wrong-summary-card">
+      <div class="wrong-chapter-head">
+        <h2>間違い演習で間違えた問題</h2>
+        <span class="badge todo">${practiceItems.length}問</span>
+      </div>
+      <p class="inline-note">間違い演習中にさらに間違えた問題だけをまとめています。ここで正解しても、この再ミス履歴は残ります。</p>
+      <div class="wrong-round-card-grid">
+        <a class="wrong-round-card practice-wrong-card" href="${wrongPracticeHref(0, "", "practice-wrong")}">
+          <span>再ミス全体</span>
+          <strong>${practiceItems.length}問</strong>
+          <small>間違い演習で間違えた問題</small>
+        </a>
+        ${practiceGroups.map(group => `<a class="wrong-round-card practice-wrong-card" href="${wrongPracticeHref(group.round, "", "practice-wrong")}">
+          <span>${escapeHtml(roundLabel(group.round))}の再ミス</span>
+          <strong>${group.questionCount}問</strong>
+          <small>${group.chapterCount}章にまたがる復習</small>
+        </a>`).join("")}
+      </div>
+    </section>` : `<section class="wrong-chapter-card practice-wrong-summary-card is-empty">
+      <div class="wrong-chapter-head">
+        <h2>間違い演習で間違えた問題</h2>
+        <span class="badge">0問</span>
+      </div>
+      <p class="inline-note">まだ間違い演習中の再ミスはありません。通常の間違い演習で間違えると、ここへ自動でまとまります。</p>
+    </section>`;
+    const practiceListHtml = practiceItems.length ? `<section class="wrong-chapter-card wrong-random-card practice-wrong-list-card">
+      <div class="wrong-chapter-head">
+        <h2>再ミス一覧</h2>
+        <span class="badge todo">${practiceItems.length}問</span>
+      </div>
+      <div class="wrong-item-list">
+        ${practiceItems.map(({ chapter, question, record, round, wrongEntry }) => {
+          const latestWrong = latestWrongPracticeWrongAttempt(record, round);
+          const selected = answerKeysHtml(latestWrong && Array.isArray(latestWrong.selected) ? latestWrong.selected : record.selected || [], question);
+          const answer = answerKeysHtml(question.answer || [], question);
+          const wrongCount = wrongPracticeWrongAttemptCount(record, round);
+          const totalCount = totalAttemptCount(record, round);
+          const tags = getQuestionTags(question).slice(0, 4).map(tag => `<span class="tag-chip">${escapeHtml(tag)}</span>`).join("");
+          const lastWrong = wrongEntry && wrongEntry.lastWrongAt ? new Date(wrongEntry.lastWrongAt).toLocaleString("ja-JP") : "";
+          return `<article class="wrong-item practice-wrong-item">
+            <div class="wrong-item-main">
+              <h3>${escapeHtml(roundLabel(round))} / 元の問題: ${escapeHtml(chapter.title)} 問${question.number}</h3>
+              <p><span>演習中のミス解答</span><strong class="bad-text answer-key-compact">${selected}</strong></p>
+              <p><span>正解</span><strong class="ok-text answer-key-compact">${answer}</strong></p>
+              <p><span>再ミス回数</span><strong>${wrongCount}回</strong></p>
+              <p><span>この周回の解答</span><strong>${totalCount}回</strong></p>
+              ${lastWrong ? `<p><span>最終再ミス</span><strong>${escapeHtml(lastWrong)}</strong></p>` : ""}
+              ${tags ? `<div class="tag-list">${tags}</div>` : ""}
+            </div>
+            <div class="wrong-item-actions">
+              <a class="btn primary" href="${wrongPracticeHref(round, question.id, "practice-wrong")}">再ミスだけで解く</a>
+              <a class="btn ghost" href="${wrongPracticeHref(round, question.id)}">通常ミスとして解く</a>
+            </div>
+          </article>`;
+        }).join("")}
+      </div>
+    </section>` : "";
     const roundSelectorHtml = `<section class="wrong-chapter-card wrong-round-selector-card">
       <div class="wrong-chapter-head">
         <h2>周回別の間違い演習</h2>
@@ -3258,12 +3492,18 @@ service cloud.firestore {
         </div>
         <div class="summary-stats">
           <div class="stat-card"><span>周回別ミス</span><strong>${items.length}</strong></div>
+          <div class="stat-card"><span>再ミス</span><strong>${practiceItems.length}</strong></div>
           <div class="stat-card"><span>対象周回</span><strong>${groups.length}</strong></div>
           <div class="stat-card"><span>解答済み</span><strong>${stats.answered}</strong></div>
         </div>
-        <div class="summary-actions"><a class="btn primary" href="${wrongPracticeHref()}">全周回ランダム演習</a></div>
+        <div class="summary-actions">
+          <a class="btn primary" href="${wrongPracticeHref()}">全周回ランダム演習</a>
+          ${practiceItems.length ? `<a class="btn" href="${wrongPracticeHref(0, "", "practice-wrong")}">再ミスだけ演習</a>` : ""}
+        </div>
         ${tagHtml}
       </section>
+      ${practiceSelectorHtml}
+      ${practiceListHtml}
       ${roundSelectorHtml}
       ${listHtml}`;
     root.querySelectorAll("[data-wrong-reset]").forEach(btn => {
@@ -3290,24 +3530,33 @@ service cloud.firestore {
     return Number.isFinite(n) && n >= 1 ? n : 0;
   }
 
-  function wrongPracticeRoundSelectorHtml(selectedRound, groups) {
+  function wrongPracticeRoundSelectorHtml(selectedRound, groups, scope = "round-wrong") {
     if (!groups.length) return "";
-    const allCount = wrongQuestionItems().length;
+    const normalizedScope = normalizeWrongPracticeScope(scope);
+    const allCount = normalizedScope === "practice-wrong" ? wrongPracticeWrongItems().length : wrongQuestionItems().length;
     const activeAll = !selectedRound;
+    const heading = normalizedScope === "practice-wrong" ? "再ミスの周回を選択" : "周回を選択";
+    const note = normalizedScope === "practice-wrong"
+      ? "間違い演習中にさらに間違えた問題だけを対象にできます。正解しても再ミス履歴は消えません。"
+      : "周回ごとに保存されたミスだけを対象にできます。正解してもミス履歴は消えません。";
     return `<section class="wrong-round-selector-panel">
       <div class="wrong-round-selector-head">
         <div>
-          <h2>周回を選択</h2>
-          <p>周回ごとに保存されたミスだけを対象にできます。正解してもミス履歴は消えません。</p>
+          <h2>${escapeHtml(heading)}</h2>
+          <p>${escapeHtml(note)}</p>
         </div>
       </div>
+      <div class="wrong-practice-scope-tabs">
+        <a class="btn ${normalizedScope === "round-wrong" ? "primary" : "ghost"}" href="${wrongPracticeHref(0, "", "round-wrong")}">通常のミス</a>
+        <a class="btn ${normalizedScope === "practice-wrong" ? "primary" : "ghost"}" href="${wrongPracticeHref(0, "", "practice-wrong")}">演習中の再ミス</a>
+      </div>
       <div class="wrong-round-card-grid">
-        <a class="wrong-round-card ${activeAll ? "active" : ""}" href="${wrongPracticeHref()}">
+        <a class="wrong-round-card ${activeAll ? "active" : ""}" href="${wrongPracticeHref(0, "", normalizedScope)}">
           <span>全周回</span>
           <strong>${allCount}問</strong>
-          <small>すべての周回ミス</small>
+          <small>${normalizedScope === "practice-wrong" ? "すべての再ミス" : "すべての周回ミス"}</small>
         </a>
-        ${groups.map(group => `<a class="wrong-round-card ${selectedRound === group.round ? "active" : ""}" href="${wrongPracticeHref(group.round)}">
+        ${groups.map(group => `<a class="wrong-round-card ${selectedRound === group.round ? "active" : ""}" href="${wrongPracticeHref(group.round, "", normalizedScope)}">
           <span>${escapeHtml(roundLabel(group.round))}</span>
           <strong>${group.questionCount}問</strong>
           <small>${group.chapterCount}章</small>
@@ -3335,7 +3584,10 @@ service cloud.firestore {
     const params = new URLSearchParams(location.search || "");
     const requested = params.get("q");
     const targetRound = getWrongPracticeTargetRound();
-    const all = wrongQuestionItems({ round: targetRound });
+    const scope = getWrongPracticeScope();
+    const all = scope === "practice-wrong"
+      ? wrongPracticeWrongItems({ round: targetRound })
+      : wrongQuestionItems({ round: targetRound });
     if (!all.length) return [];
     const shuffled = shuffleItems(all);
     const ordered = requested
@@ -3345,7 +3597,10 @@ service cloud.firestore {
     return ordered.map(item => ({
       ...item,
       record: progress[item.question.id] || item.record
-    })).filter(item => item && item.question && hasWrongInRound(item.record, item.round));
+    })).filter(item => {
+      if (!(item && item.question)) return false;
+      return scope === "practice-wrong" ? Boolean(wrongPracticeWrongEntry(item.record, item.round)) : hasWrongInRound(item.record, item.round);
+    });
   }
 
   function originalQuestionLabel(chapter, question) {
@@ -3355,10 +3610,12 @@ service cloud.firestore {
 
   function wrongPracticeQuestionHtml(item) {
     const q = item.question;
-    const sourceLabel = `${roundLabel(item.round)} / ${originalQuestionLabel(item.chapter, q)}`;
+    const scope = normalizeWrongPracticeScope(item.scope);
+    const sourcePrefix = scope === "practice-wrong" ? "再ミス対象" : "対象";
+    const sourceLabel = `${sourcePrefix}: ${roundLabel(item.round)} / ${originalQuestionLabel(item.chapter, q)}`;
     const html = questionHtml(q)
       .replace(`<h2 class="q-title">問${q.number}</h2>`, `<h2 class="q-title">問${q.number}</h2>`)
-      .replace(`<div class="q-meta"><span data-select-status>${escapeHtml(selectInstruction(q))}</span></div>`, `<div class="q-meta"><span class="source-question-label">対象: ${escapeHtml(sourceLabel)}</span><span data-select-status>${escapeHtml(selectInstruction(q))}</span></div>`);
+      .replace(`<div class="q-meta"><span data-select-status>${escapeHtml(selectInstruction(q))}</span></div>`, `<div class="q-meta"><span class="source-question-label">${escapeHtml(sourceLabel)}</span><span data-select-status>${escapeHtml(selectInstruction(q))}</span></div>`);
     return html;
   }
 
@@ -3367,7 +3624,7 @@ service cloud.firestore {
     if (!shell) return;
     if (!wrongPracticeList.length) wrongPracticeList = ensureWrongPracticeList();
     if (!wrongPracticeList.length) {
-      shell.innerHTML = `<div class="empty-state"><h2>${escapeHtml(wrongPracticeTargetLabel(getWrongPracticeTargetRound()))}はありません</h2><a class="btn primary" href="wrong-summary.html">間違いまとめへ戻る</a></div>`;
+      shell.innerHTML = `<div class="empty-state"><h2>${escapeHtml(wrongPracticeTargetLabel(getWrongPracticeTargetRound(), getWrongPracticeScope()))}はありません</h2><a class="btn primary" href="wrong-summary.html">間違いまとめへ戻る</a></div>`;
       const pos = document.getElementById("wrongPracticePosition");
       if (pos) pos.textContent = "0 / 0";
       document.querySelectorAll("[data-wrong-practice-prev], [data-wrong-practice-next], [data-wrong-practice-submit]").forEach(btn => { btn.disabled = true; });
@@ -3388,7 +3645,9 @@ service cloud.firestore {
     }
     const saved = readProgress()[q.id];
     const roundRecord = roundAnswerRecord(saved, currentRound);
-    if (saved && hasWrongInRound(saved, currentRound) && isAnswered(roundRecord)) {
+    const scope = getWrongPracticeScope();
+    const keepsPracticeTarget = scope === "practice-wrong" ? Boolean(wrongPracticeWrongEntry(saved, currentRound)) : hasWrongInRound(saved, currentRound);
+    if (saved && keepsPracticeTarget && isAnswered(roundRecord)) {
       clearAnswer(q);
     }
     restoreQuestion(card, q);
@@ -3418,13 +3677,14 @@ service cloud.firestore {
     const root = document.getElementById("wrongPracticeRoot");
     if (!root) return;
     const targetRound = getWrongPracticeTargetRound();
-    const groups = wrongRoundGroups();
+    const scope = getWrongPracticeScope();
+    const groups = scope === "practice-wrong" ? wrongPracticeWrongGroups() : wrongRoundGroups();
     wrongPracticeList = ensureWrongPracticeList();
     wrongPracticeIndex = 0;
     root.innerHTML = `<div class="study-panel wrong-practice-panel">
-      ${wrongPracticeRoundSelectorHtml(targetRound, groups)}
+      ${wrongPracticeRoundSelectorHtml(targetRound, groups, scope)}
       <div class="wrong-practice-target-line">
-        <span>対象: <strong>${escapeHtml(wrongPracticeTargetLabel(targetRound))}</strong></span>
+        <span>対象: <strong>${escapeHtml(wrongPracticeTargetLabel(targetRound, scope))}</strong></span>
         <span>${wrongPracticeList.length}問</span>
       </div>
       <div class="question-toolbar wrong-practice-toolbar">
@@ -3456,7 +3716,7 @@ service cloud.firestore {
       wrongPracticeList = ensureWrongPracticeList();
       wrongPracticeIndex = 0;
       renderWrongPracticeQuestion({ focus: true });
-      setWrongPracticeMessage(`${wrongPracticeTargetLabel(targetRound)}のランダム順を更新しました。`);
+      setWrongPracticeMessage(`${wrongPracticeTargetLabel(targetRound, scope)}のランダム順を更新しました。`);
     });
     root.querySelector("[data-wrong-practice-submit]")?.addEventListener("click", () => {
       const card = document.querySelector("#wrongPracticeShell .question-card");
