@@ -16,6 +16,7 @@
   const examStorageKey = "java-study-exam-v1";
   const examModeStorageKey = "java-study-exam-mode-v1";
   const roundStateStorageKey = "java-study-round-state-v1";
+  const wrongPracticeStateStorageKey = "java-study-wrong-practice-state-v1";
   const cloudConfigStorageKey = "java-study-cloud-sync-config-v1";
   const cloudStateStorageKey = "java-study-cloud-sync-state-v1";
   const CLOUD_STORAGE_FORMAT = "chunked-json-v1";
@@ -99,7 +100,8 @@
       storage: {
         [storageKey]: readJson(storageKey, {}),
         [examStorageKey]: readJson(examStorageKey, {}),
-        [roundStateStorageKey]: readRoundState()
+        [roundStateStorageKey]: readRoundState(),
+        [wrongPracticeStateStorageKey]: readWrongPracticeState()
       }
     };
   }
@@ -111,10 +113,12 @@
     const progress = storage[storageKey] || payload.progress || {};
     const exam = storage[examStorageKey] || payload.exam || {};
     const rounds = storage[roundStateStorageKey] || payload.roundState || {};
+    const wrongPractice = storage[wrongPracticeStateStorageKey] || payload.wrongPracticeState || {};
     if (!progress || typeof progress !== "object" || Array.isArray(progress)) throw new Error("学習履歴データが見つかりません。");
     if (!exam || typeof exam !== "object" || Array.isArray(exam)) throw new Error("模擬試験履歴データの形式が正しくありません。");
     if (!rounds || typeof rounds !== "object" || Array.isArray(rounds)) throw new Error("周回履歴データの形式が正しくありません。");
-    return { progress, exam, rounds, meta: payload };
+    if (!wrongPractice || typeof wrongPractice !== "object" || Array.isArray(wrongPractice)) throw new Error("間違い演習の再開データの形式が正しくありません。");
+    return { progress, exam, rounds, wrongPractice, meta: payload };
   }
 
   function mergeRoundScopedWrongHistoryRecords(left, right, fieldName) {
@@ -209,6 +213,35 @@
     };
   }
 
+  function normalizeWrongPracticeState(state) {
+    const raw = state && typeof state === "object" && !Array.isArray(state) ? state : {};
+    const completed = raw.completed && typeof raw.completed === "object" && !Array.isArray(raw.completed) ? raw.completed : {};
+    const sessions = raw.sessions && typeof raw.sessions === "object" && !Array.isArray(raw.sessions) ? raw.sessions : {};
+    return { completed: { ...completed }, sessions: { ...sessions } };
+  }
+
+  function mergeWrongPracticeState(current, incoming) {
+    const left = normalizeWrongPracticeState(current);
+    const right = normalizeWrongPracticeState(incoming);
+    const completed = { ...left.completed };
+    Object.entries(right.completed).forEach(([key, value]) => {
+      if (!value || typeof value !== "object") return;
+      const previous = completed[key];
+      const incomingTime = Date.parse(value.answeredAt || value.updatedAt || "") || 0;
+      const previousTime = Date.parse(previous && (previous.answeredAt || previous.updatedAt) || "") || 0;
+      if (!previous || incomingTime >= previousTime) completed[key] = value;
+    });
+    const sessions = { ...left.sessions };
+    Object.entries(right.sessions).forEach(([key, value]) => {
+      if (!value || typeof value !== "object") return;
+      const previous = sessions[key];
+      const incomingTime = Date.parse(value.updatedAt || value.createdAt || "") || 0;
+      const previousTime = Date.parse(previous && (previous.updatedAt || previous.createdAt) || "") || 0;
+      if (!previous || incomingTime >= previousTime) sessions[key] = value;
+    });
+    return { completed, sessions };
+  }
+
   function mergeExamStore(current, incoming) {
     const merged = { ...(current && typeof current === "object" ? current : {}) };
     Object.entries(incoming && typeof incoming === "object" ? incoming : {}).forEach(([id, raw]) => {
@@ -243,10 +276,12 @@
       writeProgress(parsed.progress);
       writeExamStore(parsed.exam);
       writeRoundState(parsed.rounds);
+      writeWrongPracticeState(parsed.wrongPractice);
     } else {
       writeProgress(mergeProgress(readProgress(), parsed.progress));
       writeExamStore(mergeExamStore(readExamStore(), parsed.exam));
       writeRoundState(mergeRoundState(readRoundState(), parsed.rounds));
+      writeWrongPracticeState(mergeWrongPracticeState(readWrongPracticeState(), parsed.wrongPractice));
     }
     return true;
   }
@@ -795,6 +830,15 @@ service cloud.firestore {
 
   function writeRoundState(state) {
     writeJson(roundStateStorageKey, state && typeof state === "object" ? state : {});
+    scheduleCloudUpload();
+  }
+
+  function readWrongPracticeState() {
+    return normalizeWrongPracticeState(readJson(wrongPracticeStateStorageKey, {}));
+  }
+
+  function writeWrongPracticeState(state) {
+    writeJson(wrongPracticeStateStorageKey, normalizeWrongPracticeState(state));
     scheduleCloudUpload();
   }
 
@@ -1934,9 +1978,10 @@ service cloud.firestore {
       renderRoundPanel();
       updateResetCurrentButton(q);
       if (isWrongPracticePage()) {
+        markWrongPracticeCurrentItemDone(q, isCorrect);
         setWrongPracticeMessage(isCorrect
-          ? "正解です。間違えた履歴は残したまま、次の問題へ進めます。"
-          : "不正解です。この問題は「間違い演習で間違えた問題」に記録されます。");
+          ? "正解です。ミス履歴は残し、この演習対象では解答済みとして次回から出しません。"
+          : "不正解です。再ミスに記録し、この演習対象では解答済みとして次回から出しません。");
       }
     }
   }
@@ -3370,6 +3415,8 @@ service cloud.firestore {
     const practiceGroups = wrongPracticeWrongGroups();
     const stats = globalStats();
     const weak = weakTagStats().slice(0, 10);
+    const roundPracticeStats = wrongPracticeTargetStats(0, "round-wrong");
+    const practiceWrongPracticeStats = wrongPracticeTargetStats(0, "practice-wrong");
     if (!items.length && !practiceItems.length) {
       root.innerHTML = `<section class="empty-state">
         <h2>間違えた問題はありません</h2>
@@ -3381,20 +3428,23 @@ service cloud.firestore {
     const practiceSelectorHtml = practiceItems.length ? `<section class="wrong-chapter-card wrong-round-selector-card practice-wrong-summary-card">
       <div class="wrong-chapter-head">
         <h2>間違い演習で間違えた問題</h2>
-        <span class="badge todo">${practiceItems.length}問</span>
+        <span class="badge todo">残り${practiceWrongPracticeStats.remaining}問</span>
       </div>
-      <p class="inline-note">間違い演習中にさらに間違えた問題だけをまとめています。ここで正解しても、この再ミス履歴は残ります。</p>
+      <p class="inline-note">間違い演習中にさらに間違えた問題だけをまとめています。解答済みの問題は、同じ演習対象では再出題しません。</p>
       <div class="wrong-round-card-grid">
         <a class="wrong-round-card practice-wrong-card" href="${wrongPracticeHref(0, "", "practice-wrong")}">
           <span>再ミス全体</span>
-          <strong>${practiceItems.length}問</strong>
-          <small>間違い演習で間違えた問題</small>
+          <strong>${practiceWrongPracticeStats.remaining}問</strong>
+          <small>残り / 全${practiceItems.length}問</small>
         </a>
-        ${practiceGroups.map(group => `<a class="wrong-round-card practice-wrong-card" href="${wrongPracticeHref(group.round, "", "practice-wrong")}">
-          <span>${escapeHtml(roundLabel(group.round))}の再ミス</span>
-          <strong>${group.questionCount}問</strong>
-          <small>${group.chapterCount}章にまたがる復習</small>
-        </a>`).join("")}
+        ${practiceGroups.map(group => {
+          const groupStats = wrongPracticeTargetStats(group.round, "practice-wrong");
+          return `<a class="wrong-round-card practice-wrong-card" href="${wrongPracticeHref(group.round, "", "practice-wrong")}">
+            <span>${escapeHtml(roundLabel(group.round))}の再ミス</span>
+            <strong>${groupStats.remaining}問</strong>
+            <small>残り / 全${groupStats.total}問</small>
+          </a>`;
+        }).join("")}
       </div>
     </section>` : `<section class="wrong-chapter-card practice-wrong-summary-card is-empty">
       <div class="wrong-chapter-head">
@@ -3440,18 +3490,21 @@ service cloud.firestore {
         <h2>周回別の間違い演習</h2>
         <span class="badge todo">${groups.length}周回</span>
       </div>
-      <p class="inline-note">周回ごとに「一度でも間違えた問題」を固定して選べます。ここで正解しても、その周回のミス履歴は残ります。</p>
+      <p class="inline-note">周回ごとに「一度でも間違えた問題」を固定して選べます。解答済みの問題は、同じ演習対象では再出題しません。</p>
       <div class="wrong-round-card-grid">
         <a class="wrong-round-card" href="${wrongPracticeHref()}">
           <span>全周回ランダム</span>
-          <strong>${items.length}問</strong>
-          <small>周回をまたいで復習</small>
+          <strong>${roundPracticeStats.remaining}問</strong>
+          <small>残り / 全${items.length}問</small>
         </a>
-        ${groups.map(group => `<a class="wrong-round-card" href="${wrongPracticeHref(group.round)}">
-          <span>${escapeHtml(roundLabel(group.round))}のミス</span>
-          <strong>${group.questionCount}問</strong>
-          <small>${group.chapterCount}章にまたがる復習</small>
-        </a>`).join("")}
+        ${groups.map(group => {
+          const groupStats = wrongPracticeTargetStats(group.round, "round-wrong");
+          return `<a class="wrong-round-card" href="${wrongPracticeHref(group.round)}">
+            <span>${escapeHtml(roundLabel(group.round))}のミス</span>
+            <strong>${groupStats.remaining}問</strong>
+            <small>残り / 全${groupStats.total}問</small>
+          </a>`;
+        }).join("")}
       </div>
     </section>`;
     const listHtml = `<section class="wrong-chapter-card wrong-random-card">
@@ -3497,8 +3550,8 @@ service cloud.firestore {
           <div class="stat-card"><span>解答済み</span><strong>${stats.answered}</strong></div>
         </div>
         <div class="summary-actions">
-          <a class="btn primary" href="${wrongPracticeHref()}">全周回ランダム演習</a>
-          ${practiceItems.length ? `<a class="btn" href="${wrongPracticeHref(0, "", "practice-wrong")}">再ミスだけ演習</a>` : ""}
+          <a class="btn primary" href="${wrongPracticeHref()}">全周回ランダム演習（残り${roundPracticeStats.remaining}問）</a>
+          ${practiceItems.length ? `<a class="btn" href="${wrongPracticeHref(0, "", "practice-wrong")}">再ミスだけ演習（残り${practiceWrongPracticeStats.remaining}問）</a>` : ""}
         </div>
         ${tagHtml}
       </section>
@@ -3530,15 +3583,184 @@ service cloud.firestore {
     return Number.isFinite(n) && n >= 1 ? n : 0;
   }
 
+  function wrongPracticeSessionKey(round = getWrongPracticeTargetRound(), scope = getWrongPracticeScope()) {
+    const normalizedScope = normalizeWrongPracticeScope(scope);
+    const r = Math.floor(Number(round || 0));
+    return `${normalizedScope}:${Number.isFinite(r) && r >= 1 ? `round-${r}` : "all"}`;
+  }
+
+  function wrongPracticeItemKey(item) {
+    if (!item || !item.question) return "";
+    const scope = normalizeWrongPracticeScope(item.scope);
+    return `${scope}:${normalizeRound(item.round)}:${item.question.id}`;
+  }
+
+  function wrongPracticeRawItems(round = getWrongPracticeTargetRound(), scope = getWrongPracticeScope()) {
+    const normalizedScope = normalizeWrongPracticeScope(scope);
+    const targetRound = Math.floor(Number(round || 0));
+    const baseItems = normalizedScope === "practice-wrong"
+      ? wrongPracticeWrongItems({ round: targetRound })
+      : wrongQuestionItems({ round: targetRound });
+    const progress = readProgress();
+    return baseItems.map(item => ({
+      ...item,
+      scope: normalizedScope,
+      record: progress[item.question.id] || item.record
+    })).filter(item => {
+      if (!(item && item.question)) return false;
+      return normalizedScope === "practice-wrong" ? Boolean(wrongPracticeWrongEntry(item.record, item.round)) : hasWrongInRound(item.record, item.round);
+    });
+  }
+
+  function isWrongPracticeItemCompleted(item, state = readWrongPracticeState()) {
+    const key = wrongPracticeItemKey(item);
+    return Boolean(key && state.completed && state.completed[key]);
+  }
+
+  function wrongPracticeTargetStats(round = getWrongPracticeTargetRound(), scope = getWrongPracticeScope()) {
+    const state = readWrongPracticeState();
+    const raw = wrongPracticeRawItems(round, scope);
+    const keys = raw.map(wrongPracticeItemKey).filter(Boolean);
+    const completed = keys.filter(key => state.completed && state.completed[key]).length;
+    return {
+      total: raw.length,
+      completed,
+      remaining: Math.max(0, raw.length - completed)
+    };
+  }
+
+  function getWrongPracticeSavedIndex(maxLength) {
+    const state = readWrongPracticeState();
+    const session = state.sessions[wrongPracticeSessionKey()];
+    const rawIndex = session && Number.isFinite(Number(session.currentIndex)) ? Math.floor(Number(session.currentIndex)) : 0;
+    if (!maxLength) return 0;
+    return Math.min(Math.max(rawIndex, 0), maxLength - 1);
+  }
+
+  function saveWrongPracticePosition(index = wrongPracticeIndex) {
+    const state = readWrongPracticeState();
+    const sessionKey = wrongPracticeSessionKey();
+    const previous = state.sessions[sessionKey] && typeof state.sessions[sessionKey] === "object" ? state.sessions[sessionKey] : {};
+    state.sessions[sessionKey] = {
+      ...previous,
+      currentIndex: Math.max(0, Math.floor(Number(index || 0))),
+      updatedAt: new Date().toISOString()
+    };
+    writeWrongPracticeState(state);
+  }
+
+  function ensureWrongPracticeList(options = {}) {
+    const params = new URLSearchParams(location.search || "");
+    const requested = params.get("q");
+    const targetRound = getWrongPracticeTargetRound();
+    const scope = getWrongPracticeScope();
+    const raw = wrongPracticeRawItems(targetRound, scope);
+    if (!raw.length) return [];
+
+    const itemByKey = new Map();
+    raw.forEach(item => {
+      const key = wrongPracticeItemKey(item);
+      if (key) itemByKey.set(key, item);
+    });
+
+    const state = readWrongPracticeState();
+    const sessionKey = wrongPracticeSessionKey(targetRound, scope);
+    const session = state.sessions[sessionKey] && typeof state.sessions[sessionKey] === "object" ? state.sessions[sessionKey] : {};
+    const savedOrder = Array.isArray(session.order) ? session.order.filter(key => itemByKey.has(key)) : [];
+    const savedSet = new Set(savedOrder);
+    const newKeys = Array.from(itemByKey.keys()).filter(key => !savedSet.has(key));
+    let order = savedOrder.length ? [...savedOrder, ...shuffleItems(newKeys)] : shuffleItems(Array.from(itemByKey.keys()));
+
+    if (requested) {
+      const requestedKeys = order.filter(key => itemByKey.get(key)?.question?.id === requested);
+      if (requestedKeys.length) {
+        const requestedSet = new Set(requestedKeys);
+        order = [...requestedKeys, ...order.filter(key => !requestedSet.has(key))];
+      }
+    }
+
+    state.sessions[sessionKey] = {
+      ...session,
+      scope: normalizeWrongPracticeScope(scope),
+      round: Math.floor(Number(targetRound || 0)) || 0,
+      order,
+      totalKnown: itemByKey.size,
+      createdAt: session.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    writeWrongPracticeState(state);
+
+    const pending = order
+      .filter(key => itemByKey.has(key))
+      .filter(key => !(state.completed && state.completed[key]))
+      .map(key => itemByKey.get(key));
+
+    if (requested) {
+      const requestedPending = pending.filter(item => item.question.id === requested);
+      if (requestedPending.length) {
+        const requestedSet = new Set(requestedPending.map(wrongPracticeItemKey));
+        return [...requestedPending, ...pending.filter(item => !requestedSet.has(wrongPracticeItemKey(item)))];
+      }
+    }
+    return pending;
+  }
+
+  function resetWrongPracticeSession(round = getWrongPracticeTargetRound(), scope = getWrongPracticeScope()) {
+    const raw = wrongPracticeRawItems(round, scope);
+    const keys = new Set(raw.map(wrongPracticeItemKey).filter(Boolean));
+    const state = readWrongPracticeState();
+    Object.keys(state.completed || {}).forEach(key => {
+      if (keys.has(key)) delete state.completed[key];
+    });
+    delete state.sessions[wrongPracticeSessionKey(round, scope)];
+    writeWrongPracticeState(state);
+  }
+
+  function markWrongPracticeCurrentItemDone(q, isCorrect) {
+    if (!isWrongPracticePage() || !q) return false;
+    const item = wrongPracticeList[wrongPracticeIndex];
+    if (!item || !item.question || item.question.id !== q.id) return false;
+    const key = wrongPracticeItemKey(item);
+    if (!key) return false;
+    const state = readWrongPracticeState();
+    state.completed[key] = {
+      questionId: q.id,
+      round: normalizeRound(item.round),
+      scope: normalizeWrongPracticeScope(item.scope),
+      isCorrect: Boolean(isCorrect),
+      answeredAt: new Date().toISOString()
+    };
+    const sessionKey = wrongPracticeSessionKey();
+    const session = state.sessions[sessionKey] && typeof state.sessions[sessionKey] === "object" ? state.sessions[sessionKey] : {};
+    state.sessions[sessionKey] = {
+      ...session,
+      currentIndex: Math.max(0, Math.floor(Number(wrongPracticeIndex || 0))),
+      updatedAt: new Date().toISOString()
+    };
+    writeWrongPracticeState(state);
+    updateWrongPracticeTargetLine();
+    return true;
+  }
+
+  function updateWrongPracticeTargetLine() {
+    const stats = wrongPracticeTargetStats();
+    const remaining = document.querySelector("[data-wrong-practice-remaining]");
+    const completed = document.querySelector("[data-wrong-practice-completed]");
+    const total = document.querySelector("[data-wrong-practice-total]");
+    if (remaining) remaining.textContent = String(stats.remaining);
+    if (completed) completed.textContent = String(stats.completed);
+    if (total) total.textContent = String(stats.total);
+  }
+
   function wrongPracticeRoundSelectorHtml(selectedRound, groups, scope = "round-wrong") {
     if (!groups.length) return "";
     const normalizedScope = normalizeWrongPracticeScope(scope);
-    const allCount = normalizedScope === "practice-wrong" ? wrongPracticeWrongItems().length : wrongQuestionItems().length;
+    const allStats = wrongPracticeTargetStats(0, normalizedScope);
     const activeAll = !selectedRound;
     const heading = normalizedScope === "practice-wrong" ? "再ミスの周回を選択" : "周回を選択";
     const note = normalizedScope === "practice-wrong"
-      ? "間違い演習中にさらに間違えた問題だけを対象にできます。正解しても再ミス履歴は消えません。"
-      : "周回ごとに保存されたミスだけを対象にできます。正解してもミス履歴は消えません。";
+      ? "間違い演習中にさらに間違えた問題だけを対象にできます。解答済みの再ミスは、同じ演習対象では再出題しません。"
+      : "周回ごとに保存されたミスだけを対象にできます。解答済みの問題は、同じ演習対象では再出題しません。";
     return `<section class="wrong-round-selector-panel">
       <div class="wrong-round-selector-head">
         <div>
@@ -3553,54 +3775,34 @@ service cloud.firestore {
       <div class="wrong-round-card-grid">
         <a class="wrong-round-card ${activeAll ? "active" : ""}" href="${wrongPracticeHref(0, "", normalizedScope)}">
           <span>全周回</span>
-          <strong>${allCount}問</strong>
-          <small>${normalizedScope === "practice-wrong" ? "すべての再ミス" : "すべての周回ミス"}</small>
+          <strong>${allStats.remaining}問</strong>
+          <small>残り / 全${allStats.total}問</small>
         </a>
-        ${groups.map(group => `<a class="wrong-round-card ${selectedRound === group.round ? "active" : ""}" href="${wrongPracticeHref(group.round, "", normalizedScope)}">
-          <span>${escapeHtml(roundLabel(group.round))}</span>
-          <strong>${group.questionCount}問</strong>
-          <small>${group.chapterCount}章</small>
-        </a>`).join("")}
+        ${groups.map(group => {
+          const stats = wrongPracticeTargetStats(group.round, normalizedScope);
+          return `<a class="wrong-round-card ${selectedRound === group.round ? "active" : ""}" href="${wrongPracticeHref(group.round, "", normalizedScope)}">
+            <span>${escapeHtml(roundLabel(group.round))}</span>
+            <strong>${stats.remaining}問</strong>
+            <small>残り / 全${stats.total}問</small>
+          </a>`;
+        }).join("")}
       </div>
     </section>`;
   }
 
   function removeSolvedFromWrongPractice(q) {
     if (!isWrongPracticePage() || !q) return;
-    setWrongPracticeMessage("正解です。ミス履歴は残るため、この周回の間違い演習には残ります。");
+    setWrongPracticeMessage("解答済みにしました。ミス履歴は残し、次回表示からこの演習対象には出しません。");
   }
 
   function scheduleWrongPracticeRemoval(q) {
     if (!isWrongPracticePage() || !q) return;
-    setWrongPracticeMessage("正解です。ミス履歴は残るため、この周回の間違い演習には残ります。");
+    setWrongPracticeMessage("解答済みにしました。ミス履歴は残し、次回表示からこの演習対象には出しません。");
   }
 
   function setWrongPracticeMessage(text) {
     const el = document.getElementById("wrongPracticeMessage");
     if (el) el.textContent = text || "";
-  }
-
-  function ensureWrongPracticeList() {
-    const params = new URLSearchParams(location.search || "");
-    const requested = params.get("q");
-    const targetRound = getWrongPracticeTargetRound();
-    const scope = getWrongPracticeScope();
-    const all = scope === "practice-wrong"
-      ? wrongPracticeWrongItems({ round: targetRound })
-      : wrongQuestionItems({ round: targetRound });
-    if (!all.length) return [];
-    const shuffled = shuffleItems(all);
-    const ordered = requested
-      ? [...shuffled.filter(item => item.question.id === requested), ...shuffled.filter(item => item.question.id !== requested)]
-      : shuffled;
-    const progress = readProgress();
-    return ordered.map(item => ({
-      ...item,
-      record: progress[item.question.id] || item.record
-    })).filter(item => {
-      if (!(item && item.question)) return false;
-      return scope === "practice-wrong" ? Boolean(wrongPracticeWrongEntry(item.record, item.round)) : hasWrongInRound(item.record, item.round);
-    });
   }
 
   function originalQuestionLabel(chapter, question) {
@@ -3624,13 +3826,22 @@ service cloud.firestore {
     if (!shell) return;
     if (!wrongPracticeList.length) wrongPracticeList = ensureWrongPracticeList();
     if (!wrongPracticeList.length) {
-      shell.innerHTML = `<div class="empty-state"><h2>${escapeHtml(wrongPracticeTargetLabel(getWrongPracticeTargetRound(), getWrongPracticeScope()))}はありません</h2><a class="btn primary" href="wrong-summary.html">間違いまとめへ戻る</a></div>`;
+      const stats = wrongPracticeTargetStats();
+      const title = stats.total && !stats.remaining
+        ? `${wrongPracticeTargetLabel(getWrongPracticeTargetRound(), getWrongPracticeScope())}は一通り解答済みです`
+        : `${wrongPracticeTargetLabel(getWrongPracticeTargetRound(), getWrongPracticeScope())}はありません`;
+      const note = stats.total && !stats.remaining
+        ? "ミス履歴は残っています。もう一度この演習対象を解く場合は、上部のリセットを使ってください。"
+        : "対象になるミス履歴がまだありません。";
+      shell.innerHTML = `<div class="empty-state"><h2>${escapeHtml(title)}</h2><p>${escapeHtml(note)}</p><a class="btn primary" href="wrong-summary.html">間違いまとめへ戻る</a></div>`;
       const pos = document.getElementById("wrongPracticePosition");
       if (pos) pos.textContent = "0 / 0";
       document.querySelectorAll("[data-wrong-practice-prev], [data-wrong-practice-next], [data-wrong-practice-submit]").forEach(btn => { btn.disabled = true; });
+      updateWrongPracticeTargetLine();
       return;
     }
     wrongPracticeIndex = Math.min(Math.max(wrongPracticeIndex, 0), wrongPracticeList.length - 1);
+    saveWrongPracticePosition(wrongPracticeIndex);
     const item = wrongPracticeList[wrongPracticeIndex];
     currentRound = normalizeRound(item.round || item.record && item.record.round || getActiveRound(item.chapter && item.chapter.id) || 1);
     const q = item.question;
@@ -3656,20 +3867,40 @@ service cloud.firestore {
     document.querySelectorAll("[data-wrong-practice-prev]").forEach(btn => { btn.disabled = wrongPracticeIndex <= 0; });
     document.querySelectorAll("[data-wrong-practice-next]").forEach(btn => { btn.disabled = wrongPracticeIndex >= wrongPracticeList.length - 1; });
     document.querySelectorAll("[data-wrong-practice-submit]").forEach(btn => { btn.disabled = false; });
+    updateWrongPracticeTargetLine();
     if (options.focus) scrollToQuestionFocus();
   }
 
   function flushSolvedWrongPracticeCurrent(delta) {
-    return false;
+    const current = wrongPracticeList[wrongPracticeIndex];
+    const wasCompleted = current ? isWrongPracticeItemCompleted(current) : false;
+    const previousIndex = wrongPracticeIndex;
+    wrongPracticeList = ensureWrongPracticeList();
+    if (!wrongPracticeList.length) {
+      wrongPracticeIndex = 0;
+      return;
+    }
+    if (wasCompleted) {
+      wrongPracticeIndex = delta < 0 ? previousIndex - 1 : previousIndex;
+    } else {
+      const currentKey = wrongPracticeItemKey(current);
+      const currentIndex = currentKey ? wrongPracticeList.findIndex(item => wrongPracticeItemKey(item) === currentKey) : previousIndex;
+      wrongPracticeIndex = (currentIndex >= 0 ? currentIndex : previousIndex) + delta;
+    }
+    wrongPracticeIndex = Math.min(Math.max(wrongPracticeIndex, 0), wrongPracticeList.length - 1);
   }
 
   function moveWrongPractice(delta) {
-    if (!wrongPracticeList.length) return;
     if (wrongPracticeRemovalTimer) {
       window.clearTimeout(wrongPracticeRemovalTimer);
       wrongPracticeRemovalTimer = null;
     }
-    wrongPracticeIndex = Math.min(Math.max(wrongPracticeIndex + delta, 0), wrongPracticeList.length - 1);
+    if (!wrongPracticeList.length) {
+      wrongPracticeList = ensureWrongPracticeList();
+      if (!wrongPracticeList.length) return;
+    }
+    flushSolvedWrongPracticeCurrent(delta);
+    saveWrongPracticePosition(wrongPracticeIndex);
     renderWrongPracticeQuestion({ focus: true });
   }
 
@@ -3680,12 +3911,14 @@ service cloud.firestore {
     const scope = getWrongPracticeScope();
     const groups = scope === "practice-wrong" ? wrongPracticeWrongGroups() : wrongRoundGroups();
     wrongPracticeList = ensureWrongPracticeList();
-    wrongPracticeIndex = 0;
+    wrongPracticeIndex = getWrongPracticeSavedIndex(wrongPracticeList.length);
+    const stats = wrongPracticeTargetStats(targetRound, scope);
     root.innerHTML = `<div class="study-panel wrong-practice-panel">
       ${wrongPracticeRoundSelectorHtml(targetRound, groups, scope)}
       <div class="wrong-practice-target-line">
         <span>対象: <strong>${escapeHtml(wrongPracticeTargetLabel(targetRound, scope))}</strong></span>
-        <span>${wrongPracticeList.length}問</span>
+        <span>残り <strong data-wrong-practice-remaining>${stats.remaining}</strong>問 / 全<strong data-wrong-practice-total>${stats.total}</strong>問</span>
+        <span>解答済み <strong data-wrong-practice-completed>${stats.completed}</strong>問</span>
       </div>
       <div class="question-toolbar wrong-practice-toolbar">
         <div class="question-toolbar-main">
@@ -3695,6 +3928,7 @@ service cloud.firestore {
         </div>
         <div class="question-toolbar-sub">
           <button class="btn" id="shuffleWrongPractice">並び替え</button>
+          <button class="btn ghost" id="resetWrongPracticeSession">この演習をリセット</button>
           <a class="btn ghost" href="wrong-summary.html">一覧へ戻る</a>
         </div>
       </div>
@@ -3713,10 +3947,22 @@ service cloud.firestore {
         window.clearTimeout(wrongPracticeRemovalTimer);
         wrongPracticeRemovalTimer = null;
       }
+      const state = readWrongPracticeState();
+      delete state.sessions[wrongPracticeSessionKey(targetRound, scope)];
+      writeWrongPracticeState(state);
       wrongPracticeList = ensureWrongPracticeList();
       wrongPracticeIndex = 0;
+      saveWrongPracticePosition(0);
       renderWrongPracticeQuestion({ focus: true });
-      setWrongPracticeMessage(`${wrongPracticeTargetLabel(targetRound, scope)}のランダム順を更新しました。`);
+      setWrongPracticeMessage(`${wrongPracticeTargetLabel(targetRound, scope)}の未解答分を並び替えました。解答済みの問題は戻しません。`);
+    });
+    document.getElementById("resetWrongPracticeSession")?.addEventListener("click", () => {
+      resetWrongPracticeSession(targetRound, scope);
+      wrongPracticeList = ensureWrongPracticeList();
+      wrongPracticeIndex = 0;
+      saveWrongPracticePosition(0);
+      renderWrongPracticeQuestion({ focus: true });
+      setWrongPracticeMessage("この演習対象の解答済み状態をリセットしました。ミス履歴は削除していません。");
     });
     root.querySelector("[data-wrong-practice-submit]")?.addEventListener("click", () => {
       const card = document.querySelector("#wrongPracticeShell .question-card");
