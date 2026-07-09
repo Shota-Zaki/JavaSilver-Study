@@ -3419,3 +3419,107 @@ details.article-card[open] summary { margin-bottom: 10px; }
     width: fit-content;
   }
 }
+
+/* Wrong-practice round grouping */
+.wrong-round-selector-card .inline-note,
+.wrong-round-selector-panel p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.wrong-round-selector-panel {
+  margin-bottom: 12px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255,255,255,.88);
+}
+
+.wrong-round-selector-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.wrong-round-selector-head h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.wrong-round-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.wrong-round-card {
+  display: grid;
+  gap: 4px;
+  min-height: 92px;
+  padding: 13px 14px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: #fff;
+  color: var(--ink);
+  text-decoration: none;
+  box-shadow: 0 6px 16px rgba(31, 41, 55, .05);
+}
+
+.wrong-round-card:hover {
+  border-color: rgba(37, 99, 235, .36);
+  transform: translateY(-1px);
+}
+
+.wrong-round-card.active {
+  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.wrong-round-card span {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.wrong-round-card strong {
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+.wrong-round-card small {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.wrong-round-card.active small {
+  color: rgba(255,255,255,.86);
+}
+
+.wrong-practice-target-line {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(37, 99, 235, .18);
+  border-radius: 13px;
+  background: #f8fbff;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.wrong-practice-target-line strong {
+  color: var(--ink);
+}
+
+@media (max-width: 560px) {
+  .wrong-round-card-grid {
+    grid-template-columns: 1fr;
+  }
+}
