@@ -117,6 +117,31 @@
     return { progress, exam, rounds, meta: payload };
   }
 
+  function mergeRoundWrongHistoryRecords(left, right) {
+    const merged = {};
+    [left, right].forEach(record => {
+      const history = record && record.roundWrongHistory && typeof record.roundWrongHistory === "object" && !Array.isArray(record.roundWrongHistory)
+        ? record.roundWrongHistory
+        : {};
+      Object.entries(history).forEach(([key, value]) => {
+        if (!value || typeof value !== "object") return;
+        const round = normalizeRound(value.round || key);
+        const normalizedKey = String(round);
+        const previous = merged[normalizedKey];
+        const count = Math.max(1, Math.floor(Number(value.wrongCount || value.count || 1)));
+        const firstWrongAt = value.firstWrongAt || value.lastWrongAt || "";
+        const lastWrongAt = value.lastWrongAt || value.firstWrongAt || "";
+        merged[normalizedKey] = {
+          round,
+          firstWrongAt: [previous && previous.firstWrongAt, firstWrongAt].filter(Boolean).sort()[0] || "",
+          lastWrongAt: [previous && previous.lastWrongAt, lastWrongAt].filter(Boolean).sort().slice(-1)[0] || "",
+          wrongCount: Math.max(previous ? previous.wrongCount || 1 : 1, count)
+        };
+      });
+    });
+    return merged;
+  }
+
   function mergeProgress(current, incoming) {
     const merged = { ...(current || {}) };
     Object.entries(incoming || {}).forEach(([qid, incomingRecord]) => {
@@ -148,11 +173,13 @@
         .filter(Boolean)
         .sort((a, b) => (Date.parse(a || "") || 0) - (Date.parse(b || "") || 0));
       const wrongResolvedAt = resolvedCandidates.length ? resolvedCandidates[resolvedCandidates.length - 1] : base.wrongResolvedAt;
+      const roundWrongHistory = mergeRoundWrongHistoryRecords(currentRecord, incomingRecord);
       merged[qid] = {
         ...base,
         flagged: Boolean(currentRecord.flagged || incomingRecord.flagged),
         tags: tags.length ? tags : base.tags,
         attempts,
+        ...(Object.keys(roundWrongHistory).length ? { roundWrongHistory } : {}),
         ...(wrongResolvedAt ? { wrongResolvedAt } : {})
       };
     });
@@ -1211,9 +1238,73 @@ service cloud.firestore {
     return isAnswered(roundRecord) && Boolean(roundRecord.isCorrect);
   }
 
+  function roundWrongHistoryOf(record) {
+    const history = record && record.roundWrongHistory && typeof record.roundWrongHistory === "object" && !Array.isArray(record.roundWrongHistory)
+      ? record.roundWrongHistory
+      : {};
+    return history;
+  }
+
+  function wrongAttemptsOfRound(record, round = currentRound) {
+    const r = normalizeRound(round);
+    return attemptsOf(record).filter(attempt => attemptRound(attempt) === r && attempt && attempt.isCorrect === false);
+  }
+
+  function roundWrongEntry(record, round = currentRound) {
+    if (!record) return null;
+    const r = normalizeRound(round);
+    const history = roundWrongHistoryOf(record);
+    const stored = history[String(r)];
+    if (stored && typeof stored === "object") {
+      const count = Math.max(1, Math.floor(Number(stored.wrongCount || stored.count || 1)));
+      return {
+        ...stored,
+        round: r,
+        wrongCount: count,
+        firstWrongAt: stored.firstWrongAt || stored.lastWrongAt || "",
+        lastWrongAt: stored.lastWrongAt || stored.firstWrongAt || ""
+      };
+    }
+    const attempts = wrongAttemptsOfRound(record, r);
+    if (attempts.length) {
+      return {
+        round: r,
+        wrongCount: attempts.length,
+        firstWrongAt: attempts[0].answeredAt || "",
+        lastWrongAt: attempts[attempts.length - 1].answeredAt || ""
+      };
+    }
+    if (isAnswered(record) && record.isCorrect === false && normalizeRound(record.round || 1) === r) {
+      return {
+        round: r,
+        wrongCount: 1,
+        firstWrongAt: record.answeredAt || "",
+        lastWrongAt: record.answeredAt || ""
+      };
+    }
+    return null;
+  }
+
+  function addRoundWrongHistory(record, attempt) {
+    const r = normalizeRound(attempt && attempt.round || currentRound);
+    const key = String(r);
+    const history = { ...roundWrongHistoryOf(record) };
+    const previous = history[key] && typeof history[key] === "object" ? history[key] : null;
+    history[key] = {
+      round: r,
+      firstWrongAt: previous && previous.firstWrongAt ? previous.firstWrongAt : attempt.answeredAt,
+      lastWrongAt: attempt.answeredAt,
+      wrongCount: Math.max(0, Math.floor(Number(previous && (previous.wrongCount || previous.count) || 0))) + 1
+    };
+    return history;
+  }
+
   function hasWrongInRound(record, round = currentRound) {
-    const roundRecord = roundAnswerRecord(record, round);
-    return isAnswered(roundRecord) && roundRecord.isCorrect === false;
+    return Boolean(roundWrongEntry(record, round));
+  }
+
+  function isRoundWrongPracticeMode() {
+    return !isWrongPracticePage() && !isMockExamMode(chapterId) && currentMode === "wrong";
   }
 
   function roundLabel(round) {
@@ -1278,9 +1369,11 @@ service cloud.firestore {
     const questions = DATA.questions[id] || [];
     questions.forEach(q => {
       const record = progress[q.id];
+      if (record && record.round) rounds.add(normalizeRound(record.round));
       attemptsOf(record).forEach(attempt => rounds.add(attemptRound(attempt)));
       const clears = record && record.roundClears && typeof record.roundClears === "object" ? record.roundClears : {};
       Object.keys(clears).forEach(key => rounds.add(normalizeRound(key)));
+      Object.keys(roundWrongHistoryOf(record)).forEach(key => rounds.add(normalizeRound(key)));
     });
     return Array.from(rounds).filter(n => n >= 1).sort((a, b) => a - b);
   }
@@ -1299,15 +1392,14 @@ service cloud.firestore {
 
   function wrongAttemptCount(record) {
     if (!record) return 0;
-    const resolvedAt = Date.parse(record.wrongResolvedAt || "") || 0;
-    const attempts = attemptsOf(record).filter(attempt => {
-      const attemptAt = Date.parse(attempt && attempt.answeredAt || "") || 0;
-      return !resolvedAt || !attemptAt || attemptAt > resolvedAt;
-    });
-    const count = attempts.filter(attempt => attempt && attempt.isCorrect === false).length;
-    if (count > 0) return count;
-    const answeredAt = Date.parse(record.answeredAt || "") || 0;
-    return isAnswered(record) && record.isCorrect === false && (!resolvedAt || !answeredAt || answeredAt > resolvedAt) ? 1 : 0;
+    const attemptCount = attemptsOf(record).filter(attempt => attempt && attempt.isCorrect === false).length;
+    const historyCount = Object.values(roundWrongHistoryOf(record)).reduce((sum, item) => {
+      if (!item || typeof item !== "object") return sum;
+      const count = Math.max(1, Math.floor(Number(item.wrongCount || item.count || 1)));
+      return sum + count;
+    }, 0);
+    if (attemptCount || historyCount) return Math.max(attemptCount, historyCount);
+    return isAnswered(record) && record.isCorrect === false ? 1 : 0;
   }
 
   function totalAttemptCount(record) {
@@ -1319,6 +1411,13 @@ service cloud.firestore {
 
   function hasWrongHistory(record) {
     return wrongAttemptCount(record) > 0;
+  }
+
+
+  function latestWrongAttempt(record) {
+    const wrongAttempts = attemptsOf(record).filter(attempt => attempt && attempt.isCorrect === false);
+    if (!wrongAttempts.length) return null;
+    return wrongAttempts[wrongAttempts.length - 1];
   }
 
   function latestProgressTime(record) {
@@ -1390,7 +1489,8 @@ service cloud.firestore {
   }
 
   function shouldResolveWrongHistory(previous, isCorrect) {
-    return Boolean(isCorrect && previous && hasWrongHistory(previous) && isWrongReviewMode());
+    // 間違い履歴は復習対象の根拠として残す。間違い演習で正解しても自動解決扱いにしない。
+    return false;
   }
 
   function saveAnswer(q, selected) {
@@ -1407,7 +1507,7 @@ service cloud.firestore {
       tags: getQuestionTags(q),
       round: currentRound
     };
-    progress[q.id] = {
+    const nextRecord = {
       ...previous,
       selected: [...selected],
       isCorrect,
@@ -1415,9 +1515,14 @@ service cloud.firestore {
       chapterId: ownerId,
       tags: getQuestionTags(q),
       round: currentRound,
-      attempts: [...attemptsOf(previous), attempt],
-      ...(shouldResolveWrongHistory(previous, isCorrect) ? { wrongResolvedAt: answeredAt } : {})
+      attempts: [...attemptsOf(previous), attempt]
     };
+    if (!isCorrect) {
+      nextRecord.roundWrongHistory = addRoundWrongHistory(previous, attempt);
+    } else if (previous.roundWrongHistory) {
+      nextRecord.roundWrongHistory = roundWrongHistoryOf(previous);
+    }
+    progress[q.id] = nextRecord;
     writeProgress(progress);
   }
 
@@ -1741,8 +1846,8 @@ service cloud.firestore {
       renderChapterStats();
       renderRoundPanel();
       updateResetCurrentButton(q);
-      if (isCorrect && isWrongReviewMode() && hasWrongHistory(readProgress()[q.id]) === false) {
-        setWrongPracticeMessage("正解です。解説を確認してから次の問題へ進むと、この問題は間違い演習から外れます。");
+      if (isCorrect && isWrongPracticePage()) {
+        setWrongPracticeMessage("正解です。間違えた履歴は残したまま、次の問題へ進めます。");
       }
     }
   }
@@ -1860,6 +1965,10 @@ service cloud.firestore {
     const progress = readProgress();
     const saved = progress[q.id];
     if (!saved) return;
+    if (isRoundWrongPracticeMode() && hasWrongInRound(saved, currentRound)) {
+      updateSelectionStatus(card, q);
+      return;
+    }
     if (getRouteParams().retry === "1" && hasWrongHistory(saved)) {
       clearAnswer(q);
       updateSelectionStatus(card, q);
@@ -2241,10 +2350,11 @@ service cloud.firestore {
   function modeLabel(mode) {
     if (mode === "flagged" && currentExamReviewFilter === "flagged-wrong") return "見直し不正解";
     if (mode === "flagged" && currentExamReviewFilter === "flagged-correct") return "見直し正解";
+    if (mode === "wrong" && isMockExamMode(chapterId)) return "不正解だけ";
     return {
       all: "全問",
       unanswered: "未回答",
-      wrong: "間違いのみ",
+      wrong: "この周回のミス",
       flagged: "見直し",
       tag: currentTagFilter ? `タグ: ${currentTagFilter}` : "タグ復習"
     }[mode] || "全問";
@@ -2301,7 +2411,7 @@ service cloud.firestore {
       <div class="round-panel-head">
         <div>
           <h2>周回</h2>
-          <p>${roundLabel(currentRound)}の解答だけをこの画面に表示します。前の周回の履歴は残ります。</p>
+          <p>${roundLabel(currentRound)}の解答とミス履歴を分けて保存します。「この周回のミス」では一度間違えた問題だけを解けます。</p>
         </div>
         <button class="btn primary" id="startNextRound">次の周回を開始</button>
       </div>
@@ -2310,7 +2420,7 @@ service cloud.firestore {
         <span>現在: <strong>${roundLabel(currentRound)}</strong></span>
         <span>解答済み ${current.answered}/${current.total}</span>
         <span>正解 ${current.correct}</span>
-        <span>不正解 ${current.wrong}</span>
+        <span>ミス履歴 ${current.wrong}</span>
       </div>
     </div>`;
     root.querySelectorAll("[data-round]").forEach(btn => {
@@ -2344,7 +2454,7 @@ service cloud.firestore {
       <div class="stat-card"><span>周回</span><strong>${roundLabel(s.round)}</strong></div>
       <div class="stat-card"><span>解答済み</span><strong>${s.answered}/${s.total}</strong></div>
       <div class="stat-card"><span>正解率</span><strong>${s.rate}%</strong></div>
-      <div class="stat-card"><span>復習対象</span><strong>${s.wrong + s.flagged}</strong></div>
+      <div class="stat-card"><span>ミス履歴+見直し</span><strong>${s.wrong + s.flagged}</strong></div>
     </div>
     <div class="palette-legend" aria-label="問題番号の状態">
       <span><i class="legend-dot unanswered"></i>未回答</span>
@@ -2506,10 +2616,11 @@ service cloud.firestore {
       const saved = examMode ? examAnswerRecord(q) : roundAnswerRecord(readProgress()[q.id], currentRound);
       if (isExamActive(chapterId)) bottomSubmit.textContent = isAnswered(saved) ? "保存し直す" : "解答を保存";
       else if (isExamReviewing(chapterId)) bottomSubmit.textContent = "採点済み";
+      else if (isRoundWrongPracticeMode()) bottomSubmit.textContent = "解答する";
       else bottomSubmit.textContent = isAnswered(saved) ? "もう一度解く" : "解答する";
       bottomSubmit.disabled = isExamReviewing(chapterId);
       bottomSubmit.onclick = () => {
-        if (isAnswered(saved) && !isExamActive(chapterId) && !isExamReviewing(chapterId)) resetQuestion(card, q);
+        if (isAnswered(saved) && !isRoundWrongPracticeMode() && !isExamActive(chapterId) && !isExamReviewing(chapterId)) resetQuestion(card, q);
         else card.querySelector("[data-submit]")?.click();
       };
     }
@@ -3015,7 +3126,8 @@ service cloud.firestore {
       </div>
       <div class="wrong-item-list">
         ${items.map(({ chapter, question, record }) => {
-          const selected = answerKeysHtml(record.selected || [], question);
+          const latestWrong = latestWrongAttempt(record);
+          const selected = answerKeysHtml(latestWrong && Array.isArray(latestWrong.selected) ? latestWrong.selected : record.selected || [], question);
           const answer = answerKeysHtml(question.answer || [], question);
           const wrongCount = wrongAttemptCount(record);
           const totalCount = totalAttemptCount(record);
@@ -3023,7 +3135,7 @@ service cloud.firestore {
           return `<article class="wrong-item">
             <div class="wrong-item-main">
               <h3>元の問題: ${escapeHtml(chapter.title)} 問${question.number}</h3>
-              <p><span>現在の解答</span><strong class="bad-text answer-key-compact">${selected}</strong></p>
+              <p><span>直近のミス解答</span><strong class="bad-text answer-key-compact">${selected}</strong></p>
               <p><span>正解</span><strong class="ok-text answer-key-compact">${answer}</strong></p>
               <p><span>履歴</span><strong>${wrongCount}回ミス / ${totalCount}回解答</strong></p>
               ${tags ? `<div class="tag-list">${tags}</div>` : ""}
