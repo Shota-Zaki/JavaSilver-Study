@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="クラス、インスタンス、フィールド、参照変数の関係を図にするように読みます。" name="description"/>
+<title>Lesson 12 クラスとオブジェクト｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="Lesson 12 クラスとオブジェクト｜Java Practice Lab" property="og:title"/>
+<meta content="クラス、インスタンス、フィールド、参照変数の関係を図にするように読みます。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../../manifest.webmanifest" rel="manifest"/>
+<link href="../../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="Java基礎">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="Java基礎"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">Java基礎</span><span class="site-context-title">クラスとオブジェクト</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../../index.html">トップ</a><a aria-current="page" class="is-active" href="../index.html">基礎</a><a href="../../bronze/index.html">Bronze</a><a href="../../java11-silver/index.html">Silver 11</a><a href="../../java17-silver/index.html">Silver 17</a><a href="../../gold11/index.html">Gold 11</a><a href="../../gold17/index.html">Gold 17</a><a href="../../../articles/index.html">単元別解説</a><a href="../../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main lesson-main" id="mainContent">
+<article class="card lesson-hero">
+<p class="meta">Java基礎 Lesson 12</p>
+<h1>クラスとオブジェクト</h1>
+<p class="lead">クラス、オブジェクト、インスタンス、参照、フィールド、メソッド、thisを定義します。</p>
+<div class="box goal-box"><strong>このレッスンのゴール</strong><p>クラス定義と生成されたインスタンスを区別し、複数の参照が同じオブジェクトを指す状態を説明できること。</p></div>
+</article><section class="card lesson-section basic-term-intro">
+<h2>基本用語の定義</h2>
+<div class="term-side-layout">
+<div>
+<p>クラスは型と構造の定義です。`new`で生成される個別の実体がオブジェクトまたはインスタンスです。</p>
+</div>
+<div class="term-note-grid">
+<div class="term-note basic-term-mini"><strong>クラスとは</strong>オブジェクトを作るための設計図。フィールドやメソッドを定義する。</div><div class="term-note basic-term-mini"><strong>オブジェクトとは</strong>プログラム上で扱う実体。Javaでは多くの場合、newで作る。</div><div class="term-note basic-term-mini"><strong>インスタンスとは</strong>クラスから実際に作られたオブジェクト。</div><div class="term-note basic-term-mini"><strong>メンバとは</strong>クラスの中に直接定義される要素。主にフィールド、メソッド、コンストラクタ。</div><div class="term-note basic-term-mini"><strong>フィールドとは</strong>インスタンスやクラスが保持するデータ。</div><div class="term-note basic-term-mini"><strong>メソッドとは</strong>クラスの中に定義する処理。</div>
+</div>
+</div>
+</section><section class="card lesson-section basic-term-check core-rule-section"><h2>クラス・インスタンス・参照の関係</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>項目</th><th>定義・規則</th><th>具体例</th></tr></thead><tbody><tr><td data-label="項目"><span>クラス</span></td><td data-label="定義・規則"><span>フィールド、メソッド、コンストラクタなどをまとめた型の定義。</span></td><td data-label="具体例"><span><code>class User { ... }</code></span></td></tr><tr><td data-label="項目"><span>オブジェクト</span></td><td data-label="定義・規則"><span>実行時に生成されるデータと振る舞いの実体。</span></td><td data-label="具体例"><span><code>new User()</code>で生成します。</span></td></tr><tr><td data-label="項目"><span>インスタンス</span></td><td data-label="定義・規則"><span>あるクラスから生成されたオブジェクトを、そのクラスとの関係で呼ぶ語。</span></td><td data-label="具体例"><span>Userクラスのインスタンス。</span></td></tr><tr><td data-label="項目"><span>参照</span></td><td data-label="定義・規則"><span>オブジェクトへ到達するための値。</span></td><td data-label="具体例"><span>参照型変数が保持します。</span></td></tr><tr><td data-label="項目"><span>フィールド</span></td><td data-label="定義・規則"><span>オブジェクトまたはクラスの状態を保持する変数。</span></td><td data-label="具体例"><span>インスタンスフィールドは各オブジェクトが持ちます。</span></td></tr><tr><td data-label="項目"><span>this</span></td><td data-label="定義・規則"><span>現在処理しているインスタンスを表す参照。</span></td><td data-label="具体例"><span>インスタンスメソッドやコンストラクタで使えます。</span></td></tr></tbody></table></div></section>
+<section class="card lesson-section"><h2>クラスの基本構造</h2><pre><code>class Item {
+    String name;      // フィールド
+    int price;        // フィールド
+
+    void printInfo() { // メソッド
+        System.out.println(name + ":" + price);
+    }
+}</code></pre><p><code>name</code>と<code>price</code>は各インスタンスが持つ状態。<code>printInfo</code>はその状態を使って処理するメソッド。</p></section><section class="card lesson-section"><h2>インスタンスは別々に状態を持つ</h2><pre><code>Item a = new Item();
+Item b = new Item();
+
+a.name = "apple";
+b.name = "banana";
+
+System.out.println(a.name); // apple
+System.out.println(b.name); // banana</code></pre><p><code>a</code>と<code>b</code>は別々のインスタンスを指しているため、フィールドの値も別々に持てる。</p></section><section class="card lesson-section"><h2>参照を代入すると同じ実体を見る</h2><pre><code>Item a = new Item();
+Item b = new Item();
+a.name = "apple";
+
+b = a;
+b.name = "orange";
+
+System.out.println(a.name); // orange</code></pre><p><code>b = a</code>で、<code>b</code>は<code>a</code>と同じインスタンスを指す。中身をコピーしているわけではない。</p></section><section class="card lesson-section"><h2>フィールドとローカル変数</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>種類</th><th>宣言場所</th><th>初期化</th><th>寿命のイメージ</th></tr></thead><tbody><tr><td data-label="種類">フィールド</td><td data-label="宣言場所">クラス直下</td><td data-label="初期化">デフォルト値あり</td><td data-label="寿命のイメージ">インスタンスが生きている間</td></tr><tr><td data-label="種類">ローカル変数</td><td data-label="宣言場所">メソッド内</td><td data-label="初期化">自動初期化なし</td><td data-label="寿命のイメージ">メソッド実行中</td></tr></tbody></table></div><div class="lesson-note"><strong>混同しない</strong><p>同じ<code>int</code>でも、フィールドなのかローカル変数なのかで初期化ルールが変わる。</p></div></section><section class="card lesson-section"><h2>2つの参照が同じインスタンスを指す例</h2><p class="code-caption">`Main.java`として保存する完全なコード</p><pre><code>class User {
+    String name;
+}
+
+public class Main {
+    public static void main(String[] args) {
+        User first = new User();
+        first.name = "A";
+
+        User second = first;
+        second.name = "B";
+
+        System.out.println(first.name);
+    }
+}</code></pre><p><span><code>second = first</code>でコピーされるのは参照です。新しいUserは生成されないため、<code>first</code>と<code>second</code>は同じインスタンスを指し、出力は<code>B</code>です。</span></p></section><section class="card lesson-section"><h2>関連する用語との違い</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>混同しやすいもの</th><th>違い</th><th>見分け方</th></tr></thead><tbody><tr><td data-label="混同しやすいもの">クラス / インスタンス</td><td data-label="違い">クラスは定義。インスタンスは実体。</td><td data-label="見分け方"><code>new</code>されているかを見る。</td></tr><tr><td data-label="混同しやすいもの">フィールド / ローカル変数</td><td data-label="違い">フィールドはオブジェクトの状態。ローカル変数はメソッド内の一時変数。</td><td data-label="見分け方">宣言場所を見る。</td></tr><tr><td data-label="混同しやすいもの">同じ値 / 同じインスタンス</td><td data-label="違い">同じ値を持っていても別インスタンスの場合がある。</td><td data-label="見分け方"><code>==</code>は参照の同一性を見る。</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>オブジェクトの状態を追う規則</h2><ol><li><span><code>new</code>が実行された回数を確認する。</span></li><li><span>各参照型変数がどのオブジェクトを指すか記録する。</span></li><li><span>参照の代入では、オブジェクトではなく参照値がコピーされる。</span></li><li><span>フィールド代入がどのオブジェクトに対して行われるか確認する。</span></li><li><span>参照が<code>null</code>なら、フィールドやインスタンスメソッドへアクセスできない。</span></li></ol><p class="code-caption">確認用コード</p><pre><code>class Item {
+    int price;
+}
+
+Item a = new Item();
+Item b = new Item();
+a.price = 100;
+b.price = 200;
+a = b;
+System.out.println(a.price);</code></pre><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>見る点</th><th>このコードでの判断</th><th>結論</th></tr></thead><tbody><tr><td data-label="見る点"><code>new</code></td><td data-label="このコードでの判断">2回実行</td><td data-label="結論">別々のItemインスタンス</td></tr><tr><td data-label="見る点"><code>a = b</code></td><td data-label="このコードでの判断"><code>a</code>が<code>b</code>と同じ参照になる</td><td data-label="結論">最初のインスタンスへの参照を失う</td></tr><tr><td data-label="見る点">出力</td><td data-label="このコードでの判断"><code>a</code>は<code>b</code>側を見る</td><td data-label="結論"><code>200</code></td></tr></tbody></table></div></section>
+<section class="card lesson-section flow-section"><h2>変数とインスタンスを分けて考える</h2>
+<p>クラスはインスタンスを作るための定義です。コードを読むときは、クラス名だけでなく、newで作られた各インスタンスと、それを参照する変数を分けます。</p>
+<pre><code>class Item {
+    int price;
+}
+
+Item a = new Item();
+Item b = new Item();
+a.price = 100;
+b.price = 200;
+a = b;
+System.out.println(a.price); // 200</code></pre>
+<p><code>a = b</code> の時点で、<code>a</code> は <code>b</code> と同じインスタンスを参照します。最初に <code>a</code> が参照していたインスタンスは、ほかに参照がなければガベージコレクションの対象になり得ます。</p>
+<div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>読む対象</th><th>見ること</th><th>例</th></tr></thead><tbody><tr><td data-label="読む対象"><code>new</code></td><td data-label="見ること">新しいインスタンスが作られる</td><td data-label="例"><code>new Item()</code></td></tr><tr><td data-label="読む対象">フィールド代入</td><td data-label="見ること">どのインスタンスの状態を変えるか</td><td data-label="例"><code>a.price = 100</code></td></tr><tr><td data-label="読む対象">参照代入</td><td data-label="見ること">変数の参照先が変わる</td><td data-label="例"><code>a = b</code></td></tr><tr><td data-label="読む対象">メソッド呼び出し</td><td data-label="見ること">どのインスタンスに対して呼ぶか</td><td data-label="例"><code>a.print()</code></td></tr></tbody></table></div>
+<p><code>this</code>は「今動いているインスタンス自身」を指します。フィールドとローカル変数の名前が同じとき、<code>this.price</code>ならフィールド、<code>price</code>だけなら近いスコープの変数を指す、という区別に使います。</p>
+<div class="mistake-callout"><strong>クラス名だけで状態を判断しない</strong><p>クラス名だけを見ても、インスタンスの状態は分かりません。インスタンスが何個作られ、変数がどのインスタンスを参照しているかを図にすると一気に読みやすくなります。</p></div>
+</section>
+<section class="card lesson-section basic-stumble-check"><h2>定義と規則の整理</h2><h3>クラスとオブジェクトで混ざる点</h3><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>つまずき</th><th>正しい考え方</th></tr></thead><tbody><tr><td data-label="つまずき">クラス自体が動いていると思う</td><td data-label="正しい考え方">通常はクラスを元にインスタンスを作り、そのインスタンスのメンバを使う。</td></tr><tr><td data-label="つまずき">参照型変数にオブジェクト本体が入っていると思う</td><td data-label="正しい考え方">参照型変数にはオブジェクトへの参照が入る。</td></tr><tr><td data-label="つまずき">フィールドとローカル変数を同じ扱いにする</td><td data-label="正しい考え方">フィールドはメンバ。ローカル変数はメソッド内などの一時的な変数。</td></tr></tbody></table></div><h3>確認できれば次へ</h3><ul class="check-list compact-check-list"><li>クラス・オブジェクト・インスタンスを区別できる</li><li>参照コピーで何がコピーされるか説明できる</li><li>メンバの代表例を挙げられる</li></ul><div class="lesson-note"><strong>理解の基準</strong></div></section>
+<section class="card lesson-section code-trio-section">
+<h2>成立するコードと成立しないコード</h2>
+<div class="code-trio-grid">
+<article class="code-trio-card good"><h3>成立する例：クラス・インスタンス・参照</h3><pre><code>Item a = new Item();
+Item b = new Item();
+a.price = 100;
+b.price = 200;</code></pre></article>
+<article class="code-trio-card bad"><h3>成立しない例</h3><pre><code>Item a;
+a.price = 100;</code></pre></article>
+<article class="code-trio-card fix"><h3>成立する形</h3><pre><code>Item a = new Item();
+a.price = 100;</code></pre></article>
+</div>
+<div class="lesson-note"><strong>確認ポイント</strong><p>参照型変数を宣言しただけではインスタンスは作られていません。newが必要です。</p></div>
+</section>
+<section class="card lesson-section basic-understanding-quiz quiz-level-section"><h2>定義と規則を確認する</h2><div class="quiz-level-list"><article class="quiz-level-card"><h3>用語の確認</h3><p>クラス、オブジェクト、インスタンス、メンバを説明できますか。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>クラスは設計図、インスタンスはnewで作られた実体、オブジェクトは扱う対象、メンバはクラスに定義するフィールドやメソッドなどです。</p></details></article><article class="quiz-level-card"><h3>コードの確認</h3><p>次のコードで出力は何ですか。</p><pre><code>class Item { int price; }
+Item a = new Item();
+Item b = a;
+b.price = 100;
+System.out.println(a.price);</code></pre><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>100です。aとbは同じインスタンスを参照しています。</p></details></article><article class="quiz-level-card"><h3>仕組みを説明する</h3><p>参照型変数を代入してもオブジェクト本体がコピーされない理由を説明してください。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>参照型変数に入っているのはオブジェクト本体ではなく参照です。代入でコピーされるのは参照であり、本体ではありません。</p></details></article></div></section><section class="card lesson-section check-section"><h2>基本ルールのまとめ</h2><ul><li>クラスとインスタンスの違いを説明できる。</li><li>newの回数から作られるインスタンス数を判断できる。</li><li>参照変数の代入で同じインスタンスを共有する場合を説明できる。</li></ul></section><section class="card lesson-section"><h2>コードに規則を当てはめる</h2><p>次の出力を答える。</p><p class="code-caption">確認用コード</p><pre><code>class Box { int value; }
+
+Box x = new Box();
+Box y = x;
+y.value = 7;
+System.out.println(x.value);</code></pre><details class="answer-panel"><summary>説明を見る</summary><p>出力は<code>7</code>。</p><p><code>y = x</code>により、<code>x</code>と<code>y</code>は同じ<code>Box</code>インスタンスを参照する。<code>y.value</code>の変更は、その同じインスタンスのフィールド変更。</p></details></section><section class="card lesson-nav-bottom"><div><a class="btn ghost" href="11.html">← 前のLesson</a><a class="btn" href="../index.html">Lesson一覧</a><a class="btn primary" href="13.html">次のLesson →</a></div></section>
+</main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../../site/about.html">このサイトについて</a><a href="../../../site/editorial-policy.html">編集方針</a><a href="../../../site/site-map.html">サイトマップ</a><a href="../../../site/privacy.html">プライバシーポリシー</a><a href="../../../site/terms.html">利用規約</a><a href="../../../site/disclaimer.html">免責事項</a><a href="../../../site/advertising.html">広告・アフィリエイト</a><a href="../../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../../";window.CURRENT_PAGE="java-basic-12.html";</script>
+<script src="../../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

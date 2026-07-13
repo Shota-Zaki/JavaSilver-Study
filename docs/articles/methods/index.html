@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Javaよく使うメソッドの戻り値、破壊的変更、例外条件、混同しやすい点を詳しく整理。" name="description"/>
+<title>よく使うメソッドリスト 詳細版｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="よく使うメソッドリスト 詳細版｜Java Practice Lab" property="og:title"/>
+<meta content="Javaよく使うメソッドの戻り値、破壊的変更、例外条件、混同しやすい点を詳しく整理。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">メソッド・引数・戻り値の基礎</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent"><section class="content-page article-body wide-article upgraded-article">
+<h1>メソッド・引数・戻り値の基礎</h1>
+<p class="lead">基礎・Bronze向けの記事です。メソッドを「処理に名前を付けたもの」として捉え、宣言、呼び出し、引数、戻り値、値渡しを最小コードから説明します。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<section class="article-section"><h2>メソッドは入力を受け取り、処理し、必要なら結果を返す</h2>
+<pre class="article-code"><code>public class MethodBasics {
+    static int add(int left, int right) {
+        int result = left + right;
+        return result;
+    }
+
+    public static void main(String[] args) {
+        int answer = add(2, 3);
+        System.out.println(answer); // 5
+    }
+}</code></pre>
+<table class="ref-table study-table responsive-card-table"><thead><tr><th>部分</th><th>この例</th><th>意味</th></tr></thead><tbody>
+<tr><td data-label="部分">戻り値型</td><td data-label="この例"><code>int</code></td><td data-label="意味">呼び出し元へ返す値の型。</td></tr>
+<tr><td data-label="部分">メソッド名</td><td data-label="この例"><code>add</code></td><td data-label="意味">呼び出すときに使う名前。</td></tr>
+<tr><td data-label="部分">仮引数</td><td data-label="この例"><code>int left, int right</code></td><td data-label="意味">メソッド側が受け取る変数。</td></tr>
+<tr><td data-label="部分">実引数</td><td data-label="この例"><code>2, 3</code></td><td data-label="意味">呼び出し側から渡す値。</td></tr>
+<tr><td data-label="部分"><code>return</code></td><td data-label="この例"><code>return result;</code></td><td data-label="意味">メソッドを終了し、値を呼び出し元へ返す。</td></tr>
+</tbody></table></section>
+<section class="article-section"><h2>voidは値を返さない</h2>
+<pre class="article-code"><code>static void printMessage(String message) {
+    System.out.println(message);
+    return; // 値を付けないreturnは使用できる。省略も可能。
+}</code></pre>
+<p><code>void</code>メソッドで<code>return 10;</code>のように値を返すとコンパイルエラーです。逆に、戻り値型が<code>int</code>なのに正常終了する経路で値を返さない場合もコンパイルエラーです。</p></section>
+<section class="article-section"><h2>引数は左から評価され、仮引数へコピーされる</h2>
+<pre class="article-code"><code>public class ArgumentOrder {
+    static int show(String label, int value) {
+        System.out.print(label);
+        return value;
+    }
+
+    static void use(int a, int b) {
+        System.out.print(a + b);
+    }
+
+    public static void main(String[] args) {
+        use(show("A", 1), show("B", 2));
+    }
+}</code></pre>
+<p>実引数は左から評価されるため、<code>A</code>、<code>B</code>、合計の<code>3</code>の順に表示され、出力は<code>AB3</code>です。</p></section>
+<section class="article-section"><h2>Javaは参照型でも値渡し</h2>
+<pre class="article-code"><code>class Box { int value; }
+public class PassByValue {
+    static void change(Box box) {
+        box.value = 10; // 同じオブジェクトの状態を変更
+        box = new Box(); // 仮引数だけを別の参照へ変更
+        box.value = 20;
+    }
+
+    public static void main(String[] args) {
+        Box original = new Box();
+        change(original);
+        System.out.println(original.value); // 10
+    }
+}</code></pre>
+<p>呼び出し時に参照値が仮引数へコピーされます。最初の<code>box.value = 10</code>は共有している実体を変更します。<code>box = new Box()</code>は仮引数のコピーだけを変更するため、<code>original</code>の参照先は変わりません。</p></section>
+<section class="article-section"><h2>staticメソッドとインスタンスメソッド</h2>
+<pre class="article-code"><code>class Counter {
+    static int total;
+    int value;
+
+    static void resetTotal() { total = 0; }
+    void increment() { value++; total++; }
+}
+</code></pre>
+<p><code>static</code>メソッドはクラスに属し、インスタンスを作らずに呼べます。インスタンスメソッドは特定のオブジェクトに対して呼び出します。static文脈からインスタンスフィールド<code>value</code>をオブジェクトなしで直接参照することはできません。</p></section>
+<section class="article-section"><h2>コンストラクタはメソッドではない</h2>
+<p>コンストラクタはクラス名と同じ名前で、戻り値型を書きません。<code>void Sample()</code>はコンストラクタではなく、<code>Sample</code>という名前のメソッドです。</p>
+<pre class="article-code"><code>class Sample {
+    Sample() { }       // コンストラクタ
+    void Sample() { }  // メソッド
+}</code></pre></section>
+<section class="article-section"><h2>次に学ぶ内容</h2><p>同名メソッドが複数ある場合の選択、<code>null</code>や可変長引数による曖昧さは、<a href="../java-silver-method-resolution/index.html">メソッド呼び出し解決</a>で扱います。コンストラクタ連鎖は<a href="../class-design/index.html">クラス・コンストラクタ</a>へ進んでください。</p></section>
+<section class="article-section"><h2>記事末尾の確認</h2><ul class="article-list"><li>仮引数と実引数を区別できる。</li><li><code>void</code>と値を返すメソッドの<code>return</code>を区別できる。</li><li>参照型を「参照渡し」と説明せず、参照値のコピーとして追える。</li><li>コンストラクタに戻り値型を書かない理由を説明できる。</li></ul></section>
+</section></main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="methods.html";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

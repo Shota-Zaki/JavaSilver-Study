@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Java Silverで落ちる原因を、型変換・String・参照・継承・例外・模試復習の観点から具体例で整理します。" name="description"/>
+<meta content="Java Silver,落ちる理由,不合格" name="keywords"/>
+<title>Java Silverで落ちる理由｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="article" property="og:type"/>
+<meta content="Java Silverで落ちる理由｜Java Practice Lab" property="og:title"/>
+<meta content="Java Silverで落ちる原因を、型変換・String・参照・継承・例外・模試復習の観点から具体例で整理します。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Java Silverで落ちる理由","description":"Java Silverで落ちる原因を、型変換・String・参照・継承・例外・模試復習の観点から具体例で整理します。","inLanguage":"ja","publisher":{"@type":"Organization","name":"Java Practice Lab"},"dateModified":"2026-07-07"}</script>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">Java Silverで落ちる理由</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent">
+<section class="content-page article-body">
+<h1>Java Silverで落ちる理由</h1>
+<p class="lead">Java Silverで落ちる原因は、知識量だけではありません。多くは、コードを読む順番が崩れ、コンパイル可否・実行時例外・出力結果の切り分けに失敗することです。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<p class="muted-text article-updated">最終更新日：<time datetime="2026-07-07">2026年7月7日</time>。試験範囲や再受験条件は変更されるため、受験前に公式情報を確認してください。</p>
+<section class="panel column-editorial-summary" id="first-answer">
+<h2>先に結論</h2>
+<p>不合格後に最初にやることは、問題集の周回数を増やすことではなく、失点の種類を分けることです。Silverは、出力候補を覚える試験ではなく、型、参照、例外、実行順を順番に切る試験です。</p>
+<div class="term-note-grid">
+<div class="term-note"><strong>見る基準</strong><ul><li>出力を見る前にコンパイル可否を見ているか</li><li>型変換と数値昇格を式の型で判断しているか</li><li>参照型と実体型を分けているか</li><li>例外発生後の制御の移動を追っているか</li><li>模試後に弱点単元へ戻っているか</li></ul></div>
+<div class="term-note"><strong>Java Practice Labでの使い方</strong>模試の誤答をタグ単位で分け、該当する単元別解説と通常演習へ戻します。正答率より、同じ理由で再度間違えない状態を優先します。</div>
+</div>
+</section>
+<nav aria-label="ページ内メニュー" class="toc-card"><h2>このページの内容</h2><ul><li><a href="#compile">出力より前にコンパイル可否を見る</a></li><li><a href="#type">型変換を式の型で見る</a></li><li><a href="#reference">参照型と実体型を分ける</a></li><li><a href="#exception">例外後の流れを見る</a></li><li><a href="#mock">模試後に戻る単元を決める</a></li></ul></nav>
+<section class="panel" id="compile"><h2>原因1：出力より前にコンパイル可否を見ていない</h2><p>出力候補から考えると、コンパイルエラーを見落とします。Silverでは、出力問題でも最初に型、アクセス修飾子、例外処理、override条件を見ます。</p><pre><code>byte a = 10;
+byte b = 20;
+byte c = a + b;
+System.out.println(c);</code></pre><p><code>a + b</code> の結果は <code>int</code> です。<code>byte</code> へそのまま代入できないため、出力まで進みません。</p></section>
+<section class="panel" id="type"><h2>原因2：型変換を値の大きさだけで読んでいる</h2><p>Javaでは、値が小さく見えても式の型が合わなければ代入できません。定数式と変数を使った式も分けます。</p><table class="responsive-card-table"><thead><tr><th>コード</th><th>判定</th><th>理由</th></tr></thead><tbody><tr><td data-label="コード"><code>byte c = 10 + 20;</code></td><td data-label="判定">コンパイルできる</td><td data-label="理由">定数式でbyte範囲内</td></tr><tr><td data-label="コード"><code>byte c = a + b;</code></td><td data-label="判定">コンパイルエラー</td><td data-label="理由">変数同士の計算結果はint</td></tr></tbody></table></section>
+<section class="panel" id="reference"><h2>原因3：参照型と実体型を分けていない</h2><p><code>Parent p = new Child();</code> のようなコードでは、コンパイル時に見る型は <code>Parent</code>、実行時の実体は <code>Child</code> です。呼び出せるかは参照型で判定し、overrideされたインスタンスメソッドだけが実体型で選ばれます。</p><p>フィールド、staticメソッド、privateメソッドは同じ扱いではありません。ここをまとめて読むと、継承問題の正答率が不安定になります。</p></section>
+<section class="panel" id="exception"><h2>原因4：例外発生後もtryの続きを読む</h2><p>例外が発生すると、tryブロックの後続行には戻りません。対応するcatchへ移り、finallyがあれば最後に実行します。</p><pre><code>try {
+    String s = null;
+    System.out.println(s.length());
+    System.out.println("A");
+} catch (NullPointerException e) {
+    System.out.println("B");
+} finally {
+    System.out.println("C");
+}</code></pre><p>出力は <code>B</code>、<code>C</code> です。<code>"A"</code> は実行されません。</p></section>
+<section class="panel" id="mock"><h2>原因5：模試を解くだけで弱点単元に戻っていない</h2><p>模試は弱点を見つける道具です。採点して終わると、次の模試でも同じ単元で落とします。</p><ol><li>間違えた問題をタグで分ける</li><li>一番多いタグの単元別解説へ戻る</li><li>対応する通常演習を解く</li><li>同じ論点を別問題で解けるか確認する</li><li>固定模試で時間配分も確認する</li></ol></section>
+<section class="panel"><h2>不合格を避けるためのチェック表</h2><table class="responsive-card-table"><thead><tr><th>状態</th><th>失点理由</th><th>戻る場所</th></tr></thead><tbody><tr><td data-label="状態">出力問題で出力から考える</td><td data-label="失点理由">コンパイルエラーを見落とす</td><td data-label="戻る場所">コンパイルエラー / 型変換</td></tr><tr><td data-label="状態">StringとStringBuilderを混同する</td><td data-label="失点理由">変更有無を誤る</td><td data-label="戻る場所">String・配列・コレクション</td></tr><tr><td data-label="状態">継承問題で宣言型だけを見る</td><td data-label="失点理由">overrideとフィールド参照を混同する</td><td data-label="戻る場所">継承・interface</td></tr><tr><td data-label="状態">例外後の処理を上から読み続ける</td><td data-label="失点理由">catch / finally の順序を誤る</td><td data-label="戻る場所">例外処理</td></tr><tr><td data-label="状態">模試だけ解く</td><td data-label="失点理由">同じ弱点が残る</td><td data-label="戻る場所">弱点タグ別復習</td></tr></tbody></table></section>
+<section class="article-section related-practice-section column-next-actions" id="next-actions"><h2>次に使うページ</h2><div class="related-grid"><a class="related-card" href="../java-silver-after-fail/index.html"><strong>Silverに落ちた後にやること</strong><span>再受験までの復習順。</span></a><a class="related-card" href="../java-silver-mock-review-method/index.html"><strong>Silver模試の復習方法</strong><span>模試後に立て直す。</span></a><a class="related-card" href="../../app/dashboard.html"><strong>ダッシュボード</strong><span>復習対象を確認。</span></a></div></section>
+</section>
+</main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="article";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="継承では、変数の宣言型と実際のインスタンス型を分けてメソッド呼び出しを読みます。" name="description"/>
+<title>Lesson 15 継承の入口｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="Lesson 15 継承の入口｜Java Practice Lab" property="og:title"/>
+<meta content="継承では、変数の宣言型と実際のインスタンス型を分けてメソッド呼び出しを読みます。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../../manifest.webmanifest" rel="manifest"/>
+<link href="../../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="Java基礎">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="Java基礎"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">Java基礎</span><span class="site-context-title">継承の入口</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../../index.html">トップ</a><a aria-current="page" class="is-active" href="../index.html">基礎</a><a href="../../bronze/index.html">Bronze</a><a href="../../java11-silver/index.html">Silver 11</a><a href="../../java17-silver/index.html">Silver 17</a><a href="../../gold11/index.html">Gold 11</a><a href="../../gold17/index.html">Gold 17</a><a href="../../../articles/index.html">単元別解説</a><a href="../../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main lesson-main" id="mainContent">
+<article class="card lesson-hero">
+<p class="meta">Java基礎 Lesson 15</p>
+<h1>継承の入口</h1>
+<p class="lead">継承、サブクラス、オーバーライド、宣言型、実行時型、動的ディスパッチを定義します。</p>
+<div class="box goal-box"><strong>このレッスンのゴール</strong><p>親型の変数が子クラスのインスタンスを参照するとき、呼べるメンバと実行されるメソッドを説明できること。</p></div>
+</article><section class="card lesson-section basic-term-intro">
+<h2>基本用語の定義</h2>
+<div class="term-side-layout">
+<div>
+<p>継承は既存クラスを基に新しいクラスを定義する仕組みです。Javaのクラス継承は直接の親クラスを1つだけ持ちます。</p>
+</div>
+<div class="term-note-grid">
+<div class="term-note basic-term-mini"><strong>継承とは</strong>既存クラスを元にして、新しいクラスを定義する仕組み。</div><div class="term-note basic-term-mini"><strong>スーパークラスとは</strong>継承元の親クラス。</div><div class="term-note basic-term-mini"><strong>サブクラスとは</strong>継承して作られる子クラス。</div><div class="term-note basic-term-mini"><strong>オーバーライドとは</strong>サブクラスで、親クラスのメソッドを同じシグネチャで再定義すること。</div><div class="term-note basic-term-mini"><strong>ポリモーフィズムとは</strong>同じ型の変数で、実体に応じて異なる動作をさせる仕組み。</div>
+</div>
+</div>
+</section><section class="card lesson-section basic-term-check core-rule-section"><h2>クラス継承とオーバーライドの規則</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>項目</th><th>定義・規則</th><th>具体例</th></tr></thead><tbody><tr><td data-label="項目"><span>extends</span></td><td data-label="定義・規則"><span>直接の親クラスを指定します。</span></td><td data-label="具体例"><span><code>class Dog extends Animal</code></span></td></tr><tr><td data-label="項目"><span>サブクラス</span></td><td data-label="定義・規則"><span>親クラスを継承して定義されたクラス。</span></td><td data-label="具体例"><span>子クラスとも呼びます。</span></td></tr><tr><td data-label="項目"><span>オーバーライド</span></td><td data-label="定義・規則"><span>継承したインスタンスメソッドを同じシグネチャで再定義します。</span></td><td data-label="具体例"><span>アクセス範囲を狭くできません。</span></td></tr><tr><td data-label="項目"><span>宣言型</span></td><td data-label="定義・規則"><span>変数宣言に書かれた型。</span></td><td data-label="具体例"><span>コンパイル時に参照できるメンバの範囲を決めます。</span></td></tr><tr><td data-label="項目"><span>実行時型</span></td><td data-label="定義・規則"><span>実際に参照しているオブジェクトのクラス。</span></td><td data-label="具体例"><span>オーバーライドされたインスタンスメソッドの実装を決めます。</span></td></tr><tr><td data-label="項目"><span>継承されないもの</span></td><td data-label="定義・規則"><span>コンストラクタは継承されません。privateメンバは子クラスから直接アクセスできません。</span></td><td data-label="具体例"><span>親のprivate状態自体は親部分に存在します。</span></td></tr></tbody></table></div></section>
+<section class="card lesson-section"><h2>継承の基本</h2><pre><code>class Animal {
+    void speak() {
+        System.out.println("...");
+    }
+}
+
+class Dog extends Animal {
+    @Override
+    void speak() {
+        System.out.println("bow");
+    }
+}</code></pre></section><section class="card lesson-section"><h2>親型の変数で子を参照する</h2><pre><code>Animal a = new Dog();
+a.speak(); // bow</code></pre><p><code>a</code>の宣言型は<code>Animal</code>だが、実体は<code>Dog</code>。<code>speak</code>はオーバーライドされているため、実行時には<code>Dog</code>側が呼ばれる。</p></section><section class="card lesson-section"><h2>呼べるかどうかは宣言型で決まる</h2><p class="code-caption">実体がDogでも呼べない</p><pre><code>class Dog extends Animal {
+    void run() { }
+}
+
+Animal a = new Dog();
+a.run(); // コンパイルエラー</code></pre><p><code>Animal</code>型の変数からは、<code>Animal</code>として見えるメソッドしか呼べない。実体が何かは、コンパイル時の呼び出し可否には使われない。</p></section><section class="card lesson-section"><h2>フィールドはオーバーライドされない</h2><pre><code>class A {
+    String name = "A";
+}
+class B extends A {
+    String name = "B";
+}
+
+A x = new B();
+System.out.println(x.name); // A</code></pre><p>メソッドとフィールドは同じ仕組みで動かない。フィールドアクセスは変数の宣言型で決まる。</p></section><section class="card lesson-section"><h2>継承で引き継がないもの</h2><ul><li>コンストラクタは引き継がない。</li><li><code>private</code>メンバーは子クラスから直接アクセスできない。</li><li>親に引数なしコンストラクタがない場合、子は明示的に<code>super(引数)</code>を書く必要がある。</li></ul></section><section class="card lesson-section"><h2>宣言型と実行時型の違い</h2><p class="code-caption">`Main.java`として保存する完全なコード</p><pre><code>class Animal {
+    void speak() {
+        System.out.println("animal");
+    }
+}
+
+class Dog extends Animal {
+    @Override
+    void speak() {
+        System.out.println("dog");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Animal animal = new Dog();
+        animal.speak();
+    }
+}</code></pre><p><span>変数の宣言型は<code>Animal</code>、実行時型は<code>Dog</code>です。<code>speak()</code>はオーバーライドされた<code>Dog</code>側が実行されます。</span></p></section><section class="card lesson-section"><h2>関連する用語との違い</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>混同しやすいもの</th><th>違い</th><th>見分け方</th></tr></thead><tbody><tr><td data-label="混同しやすいもの">継承 / インスタンス生成</td><td data-label="違い">継承しただけでは実体は作られない。<code>new</code>が必要。</td><td data-label="見分け方">クラス定義と実行を分ける。</td></tr><tr><td data-label="混同しやすいもの">コンストラクタ / メソッド</td><td data-label="違い">メソッドは継承されうるが、コンストラクタは継承されない。</td><td data-label="見分け方">子の生成時は親コンストラクタを呼ぶが、子のコンストラクタとして使えるわけではない。</td></tr><tr><td data-label="混同しやすいもの">メソッド / フィールド</td><td data-label="違い">オーバーライドはメソッド。フィールドは同名でも隠蔽であり動きが違う。</td><td data-label="見分け方">呼び出しているのが<code>()</code>付きかを見る。</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>継承コードを判断する規則</h2><ol><li><span>変数の宣言型を確認し、コンパイル時に呼べるメンバを決める。</span></li><li><span>右辺の<code>new</code>などから実行時型を確認する。</span></li><li><span>対象がインスタンスメソッドで、オーバーライドされているか確認する。</span></li><li><span>オーバーライドされていれば実行時型側の実装を呼ぶ。</span></li><li><span>フィールドとstaticメソッドは、インスタンスメソッドの動的ディスパッチと分けて扱う。</span></li></ol><p class="code-caption">確認用コード</p><pre><code>class A {
+    String name = "A";
+    String getName() { return "A"; }
+}
+class B extends A {
+    String name = "B";
+    String getName() { return "B"; }
+}
+A obj = new B();
+System.out.println(obj.name);
+System.out.println(obj.getName());</code></pre><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>見る点</th><th>このコードでの判断</th><th>結論</th></tr></thead><tbody><tr><td data-label="見る点">変数型</td><td data-label="このコードでの判断"><code>A obj</code></td><td data-label="結論">フィールドはA側を見る</td></tr><tr><td data-label="見る点">実体</td><td data-label="このコードでの判断"><code>new B()</code></td><td data-label="結論">メソッドはB側のオーバーライドが効く</td></tr><tr><td data-label="見る点">出力</td><td data-label="このコードでの判断"><code>obj.name</code>はA、<code>obj.getName()</code>はB</td><td data-label="結論">A / B</td></tr></tbody></table></div></section>
+<section class="card lesson-section flow-section"><h2>宣言型と実体型を分ける</h2>
+<p>継承のコードでは、コンパイル時に見る変数の型と、実行時に存在するインスタンスの型を分けます。呼び出せるメソッドは宣言型で確認し、オーバーライドされた実行先は実体型で決まります。</p>
+<pre><code>class Animal {
+    void speak() { System.out.println("?"); }
+}
+class Dog extends Animal {
+    void speak() { System.out.println("wan"); }
+    void run() { System.out.println("run"); }
+}
+
+Animal a = new Dog();
+a.speak(); // wan
+// a.run(); // コンパイルエラー</code></pre>
+<p><code>a</code>の宣言型は<code>Animal</code>なので、コンパイル時に<code>Animal</code>として扱われます。そのため<code>run</code>は呼べません。一方、<code>speak</code>は<code>Animal</code>に存在し、<code>Dog</code>でオーバーライドされているため、実行時には<code>Dog</code>側が呼ばれます。</p>
+<div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>見ること</th><th>決まるタイミング</th><th>例</th></tr></thead><tbody><tr><td data-label="見ること">そのメソッドを呼べるか</td><td data-label="決まるタイミング">コンパイル時</td><td data-label="例">変数の宣言型を見る</td></tr><tr><td data-label="見ること">どの実装が動くか</td><td data-label="決まるタイミング">実行時</td><td data-label="例">実体のクラスを見る</td></tr><tr><td data-label="見ること">フィールド参照</td><td data-label="決まるタイミング">基本的に宣言型で決まる</td><td data-label="例">フィールドはオーバーライドされない</td></tr><tr><td data-label="見ること">コンストラクタ</td><td data-label="決まるタイミング">継承されない</td><td data-label="例">子の生成時に親のコンストラクタは呼ばれる</td></tr></tbody></table></div>
+<div class="mistake-callout"><strong>ここで整理する誤解</strong><p>中身がDogでも、Animal型変数からはDog専用メソッドを呼べません。呼べるメソッドは、まず変数の宣言型で決まります。</p></div>
+</section>
+<section class="card lesson-section basic-stumble-check"><h2>定義と規則の整理</h2><h3>継承で誤解しやすい点</h3><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>つまずき</th><th>正しい考え方</th></tr></thead><tbody><tr><td data-label="つまずき">継承はコードをコピーすることだと思う</td><td data-label="正しい考え方">概念的には機能を引き継ぐが、単純なソースコードコピーではない。</td></tr><tr><td data-label="つまずき">コンストラクタも継承されると思う</td><td data-label="正しい考え方">コンストラクタは継承されない。ただし生成時にスーパークラスのコンストラクタは呼ばれる。</td></tr><tr><td data-label="つまずき">フィールドも動的に切り替わると思う</td><td data-label="正しい考え方">オーバーライドされるのはメソッド。フィールドアクセスは参照変数の型で決まる。</td></tr></tbody></table></div><h3>確認できれば次へ</h3><ul class="check-list compact-check-list"><li>extendsの意味を説明できる</li><li>オーバーライドとオーバーロードを区別できる</li><li>ポリモーフィズムで動的に選ばれる対象を説明できる</li></ul><div class="lesson-note"><strong>理解の基準</strong></div></section>
+<section class="card lesson-section code-trio-section">
+<h2>成立するコードと成立しないコード</h2>
+<div class="code-trio-grid">
+<article class="code-trio-card good"><h3>成立する例：継承とオーバーライド</h3><pre><code>class Parent {
+    void hello() { System.out.println("P"); }
+}
+class Child extends Parent {
+    @Override
+    void hello() { System.out.println("C"); }
+}</code></pre></article>
+<article class="code-trio-card bad"><h3>成立しない例</h3><pre><code>class Child extends Parent {
+    @Override
+    void hello(String s) { System.out.println(s); }
+}</code></pre></article>
+<article class="code-trio-card fix"><h3>成立する形</h3><pre><code>class Child extends Parent {
+    @Override
+    void hello() { System.out.println("C"); }
+}</code></pre></article>
+</div>
+<div class="lesson-note"><strong>確認ポイント</strong><p>オーバーライドはメソッド名だけでなく、引数リストまで一致する必要があります。</p></div>
+</section>
+<section class="card lesson-section basic-understanding-quiz quiz-level-section"><h2>定義と規則を確認する</h2><div class="quiz-level-list"><article class="quiz-level-card"><h3>用語の確認</h3><p>継承、スーパークラス、サブクラス、overrideを説明できますか。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>継承は既存クラスをもとに新しいクラスを作る仕組みです。継承元がスーパークラス、継承先がサブクラス、overrideは親のメソッドを子で再定義することです。</p></details></article><article class="quiz-level-card"><h3>コードの確認</h3><p>次のコードはoverrideになりますか。</p><pre><code>class A { void test(int n) {} }
+class B extends A { void test(String s) {} }</code></pre><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>overrideになりません。引数型が違うためオーバーロードです。</p></details></article><article class="quiz-level-card"><h3>仕組みを説明する</h3><p>Parent p = new Child(); で呼び出すメソッドがChild側になる場合がある理由を説明してください。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>インスタンスの実体がChildで、メソッドは実行時の実体に基づいて動的に選択されるためです。フィールド直接参照とは分けます。</p></details></article></div></section><section class="card lesson-section check-section"><h2>基本ルールのまとめ</h2><ul><li>extendsによる親子関係を説明できる。</li><li>宣言型から呼び出せるメソッドを判断できる。</li><li>オーバーライドされたメソッドの実行先を判断できる。</li></ul></section><section class="card lesson-section"><h2>コードに規則を当てはめる</h2><p>次の出力を答える。</p><p class="code-caption">確認用コード</p><pre><code>class Parent {
+    void show() { System.out.println("P"); }
+}
+class Child extends Parent {
+    void show() { System.out.println("C"); }
+}
+Parent p = new Child();
+p.show();</code></pre><details class="answer-panel"><summary>説明を見る</summary><p>出力は<code>C</code>。</p><p>変数の型は<code>Parent</code>だが、実際のインスタンスは<code>Child</code>。<code>show</code>はオーバーライドされたメソッドなので、実行時の実体である<code>Child</code>側が呼ばれる。</p></details></section><section class="card lesson-nav-bottom"><div><a class="btn ghost" href="14.html">← 前のLesson</a><a class="btn" href="../index.html">Lesson一覧</a><a class="btn primary" href="16.html">次のLesson →</a></div></section>
+</main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../../site/about.html">このサイトについて</a><a href="../../../site/editorial-policy.html">編集方針</a><a href="../../../site/site-map.html">サイトマップ</a><a href="../../../site/privacy.html">プライバシーポリシー</a><a href="../../../site/terms.html">利用規約</a><a href="../../../site/disclaimer.html">免責事項</a><a href="../../../site/advertising.html">広告・アフィリエイト</a><a href="../../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../../";window.CURRENT_PAGE="java-basic-15.html";</script>
+<script src="../../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="間違えやすい原因をパターン別に整理したページ。" name="description"/>
+<title>理解のつまずき確認表｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="理解のつまずき確認表｜Java Practice Lab" property="og:title"/>
+<meta content="間違えやすい原因をパターン別に整理したページ。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">理解のつまずきから戻る確認表</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent"><section class="content-page article-body wide-article upgraded-article">
+<h1>理解のつまずきから戻る確認表</h1>
+<p class="lead">結論だけを覚えず、「どの前提を取り違えたか」から復習先を決める補助記事です。仕様の詳細は各解説記事へ分離しています。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<section class="article-section"><h2>結果を間違えたときの分類</h2>
+<table class="ref-table study-table responsive-card-table"><thead><tr><th>誤りの症状</th><th>取り違えた前提</th><th>戻る記事</th></tr></thead><tbody>
+<tr><td data-label="誤りの症状">出力を選んだが実際はコンパイルエラー</td><td data-label="取り違えた前提">型、初期化、アクセス、checked例外を後回しにした</td><td data-label="戻る記事"><a href="../compile-errors/index.html">コンパイルエラー</a></td></tr>
+<tr><td data-label="誤りの症状">例外後の文も出力へ含めた</td><td data-label="取り違えた前提">例外発生後も同じブロックを続行すると思った</td><td data-label="戻る記事"><a href="../runtime-errors/index.html">実行時例外</a></td></tr>
+<tr><td data-label="誤りの症状"><code>==</code>と<code>equals</code>の結果を混同</td><td data-label="取り違えた前提">同一性と同値性、クラスごとの<code>equals</code>実装を分けていない</td><td data-label="戻る記事"><a href="../string/index.html">Stringと参照比較</a></td></tr>
+<tr><td data-label="誤りの症状">親型変数なら親メソッドが動くと判断</td><td data-label="取り違えた前提">オーバーロード選択とオーバーライド実行を一段階で考えた</td><td data-label="戻る記事"><a href="../inheritance/index.html">継承</a></td></tr>
+<tr><td data-label="誤りの症状">Stringのメソッド後に元変数が変わったと判断</td><td data-label="取り違えた前提">不変オブジェクトと可変オブジェクトを分けていない</td><td data-label="戻る記事"><a href="../string/index.html">String / StringBuilder</a></td></tr>
+<tr><td data-label="誤りの症状">順序が明示されていないのに一つへ断定</td><td data-label="取り違えた前提">APIが保証する順序と現在の実装結果を区別していない</td><td data-label="戻る記事"><a href="../pitfalls/index.html">仕様保証の境界</a></td></tr>
+</tbody></table></section>
+<section class="article-section"><h2>理解を確認するときに一文で根拠を書く</h2><ul class="article-list"><li>「未初期化ローカル変数を読むため、実行前にコンパイルエラー」</li><li>「実体がString[]なので、Integer格納時にArrayStoreException」</li><li>「宣言型Parentでオーバーロードを選び、実体Childのoverrideを実行」</li><li>「終端操作がないためStreamの中間操作は評価されない」</li></ul><p>この一文が書けない場合、結論が合っていても判断手順が再現できていません。</p></section>
+<section class="article-section"><h2>記事末尾の確認</h2><ul class="article-list"><li>誤りを「暗記不足」だけでまとめていない。</li><li>コンパイル時・実行時・API仕様・評価順のどこで誤ったか分類できる。</li><li>同じ誤りを別のコードへ持ち込まないための判断文を書ける。</li></ul></section>
+</section></main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="mistake-patterns.html";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

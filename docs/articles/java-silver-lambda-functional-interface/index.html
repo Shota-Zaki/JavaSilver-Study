@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Java Silverで出るラムダ式と関数型インターフェースを、ターゲット型、引数、戻り値、Predicate、Consumer、Function、Supplierで整理します。" name="description"/>
+<meta content="Java Silver ラムダ式,関数型インターフェース,Predicate,Function" name="keywords"/>
+<title>Java Silverのラムダ式・関数型インターフェース問題の解き方｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="article" property="og:type"/>
+<meta content="Java Silverのラムダ式・関数型インターフェース問題の解き方｜Java Practice Lab" property="og:title"/>
+<meta content="Java Silverで出るラムダ式と関数型インターフェースを、ターゲット型、引数、戻り値、Predicate、Consumer、Function、Supplierで整理します。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Java Silverのラムダ式・関数型インターフェース問題の解き方","description":"Java Silverで出るラムダ式と関数型インターフェースを、ターゲット型、引数、戻り値、Predicate、Consumer、Function、Supplierで整理します。","inLanguage":"ja","publisher":{"@type":"Organization","name":"Java Practice Lab"},"dateModified":"2026-07-07"}</script>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout article-detail-page java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a>
+<header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">Java Silverのラムダ式・関数型インターフェース問題の解き方</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent">
+<article class="content-page article-body wide-article seo-guide-page">
+<p class="eyebrow">論点攻略</p>
+<h1>Java Silverのラムダ式・関数型インターフェース問題の解き方</h1>
+<p class="lead">Java Silverで出るラムダ式と関数型インターフェースを、ターゲット型、引数、戻り値、Predicate、Consumer、Function、Supplierで整理します。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<p class="muted-text article-updated">最終更新日：<time datetime="2026-07-07">2026年7月7日</time>。Java SE 17の試験範囲を中心に、演習前後の読み方を整理しています。</p>
+<section class="panel column-editorial-summary" id="first-answer">
+<h2>先に結論</h2>
+<p>ラムダ式は、単体では型が決まりません。代入先、引数、メソッド呼び出しからターゲット型を決め、抽象メソッドの引数と戻り値に合うかを見ます。見た目の短さに反して、型の判定が得点差になります。</p>
+<div class="term-note-grid">
+<div class="term-note"><strong>見る基準</strong><ul><li>関数型インターフェースか</li><li>抽象メソッドの引数数と戻り値型が合っているか</li><li>ブロックラムダでreturnの要否を見ているか</li><li>ローカル変数が実質的finalか</li><li>Predicate、Function、Consumer、Supplierを混同していないか</li></ul></div>
+<div class="term-note"><strong>Java Practice Labでの使い方</strong>ラムダ式は、選択肢だけで判断しない方が安定します。単元別解説でターゲット型を確認し、演習では各選択肢がどの抽象メソッドに合うかを1つずつ切ります。</div>
+</div>
+</section>
+<nav aria-label="ページ内メニュー" class="toc-card"><h2>このページの内容</h2><ul><li><a href="#target">ラムダ式は代入先の型から読む</a></li><li><a href="#interface">主要な関数型インターフェース</a></li><li><a href="#syntax">構文の判定</a></li><li><a href="#mistake">よくある誤答</a></li><li><a href="#practice">練習方法</a></li></ul></nav><section class="panel" id="target"><h2>ラムダ式は代入先の型から読む</h2><p>ラムダ式だけを見ても型は確定しません。代入先、引数、メソッドの仮引数などのターゲット型を見て、抽象メソッドの引数型と戻り値を確認します。</p></section><section class="panel" id="interface"><h2>主要な関数型インターフェース</h2><table class="responsive-card-table"><thead><tr><th>型</th><th>抽象メソッドのイメージ</th><th>戻り値</th></tr></thead><tbody><tr><td data-label="型">Predicate&lt;T&gt;</td><td data-label="抽象メソッドのイメージ">Tを受け取り判定する</td><td data-label="戻り値">boolean</td></tr><tr><td data-label="型">Consumer&lt;T&gt;</td><td data-label="抽象メソッドのイメージ">Tを受け取って処理する</td><td data-label="戻り値">void</td></tr><tr><td data-label="型">Function&lt;T,R&gt;</td><td data-label="抽象メソッドのイメージ">TからRへ変換する</td><td data-label="戻り値">R</td></tr><tr><td data-label="型">Supplier&lt;T&gt;</td><td data-label="抽象メソッドのイメージ">値を供給する</td><td data-label="戻り値">T</td></tr></tbody></table></section><section class="panel" id="syntax"><h2>構文の判定</h2><p>引数が1つなら括弧を省略できますが、型を書く場合や引数が複数ある場合は省略条件が変わります。処理本体が式なら戻り値に使いますが、ブロックにした場合は必要に応じてreturnを書きます。</p></section><section class="panel" id="mistake"><h2>よくある誤答</h2><ul><li>Consumerなのに戻り値を返している。</li><li>Predicateなのにboolean以外を返している。</li><li>ブロック本体でreturnを書き忘れる。</li><li>effectively finalでないローカル変数をラムダ内から参照する。</li></ul></section><section class="panel" id="practice"><h2>練習方法</h2><p>ラムダ式は暗記よりターゲット型の確認が外せません。通常演習で型を先に書き出し、<a href="../java-silver-common-mistakes/index.html">Silverで間違えやすい問題パターン</a>と合わせて復習します。</p></section>
+<section class="article-section related-practice-section column-next-actions" id="next-actions">
+<h2>次に使うページ</h2>
+<div class="related-grid"><a class="related-card" href="../java-gold-lambda-first/index.html"><strong>ラムダ式の前提</strong><span>ラムダ・関数型の整理。</span></a><a class="related-card" href="../java-silver-common-mistakes/index.html"><strong>Silver頻出ミス</strong><span>ラムダ式の誤答理由。</span></a></div>
+</section>
+</article>
+</main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="article.html";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

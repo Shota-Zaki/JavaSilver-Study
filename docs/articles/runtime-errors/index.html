@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="実行時例外の原因と、コンパイルエラーとの違いを例で整理します。" name="description"/>
+<title>実行時例外まとめ｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="実行時例外まとめ｜Java Practice Lab" property="og:title"/>
+<meta content="実行時例外の原因と、コンパイルエラーとの違いを例で整理します。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">実行時例外の発生位置を読む</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent"><section class="content-page article-body wide-article upgraded-article">
+<h1>実行時例外の発生位置を読む</h1>
+<p class="lead">コンパイルに成功した後、どの式を評価した瞬間に例外が発生するかを整理します。例外名だけでなく、発生条件、発生時点、後続処理が実行されるかを追います。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<section class="article-section"><h2>最初に見るのは例外クラスではなく危険な式</h2>
+<table class="ref-table study-table responsive-card-table"><thead><tr><th>式</th><th>例外</th><th>発生条件</th></tr></thead><tbody>
+<tr><td data-label="式"><code>ref.method()</code></td><td data-label="例外"><code>NullPointerException</code></td><td data-label="発生条件"><code>ref</code>が<code>null</code>。</td></tr>
+<tr><td data-label="式"><code>array[index]</code></td><td data-label="例外"><code>ArrayIndexOutOfBoundsException</code></td><td data-label="発生条件"><code>index &lt; 0</code>または<code>index &gt;= array.length</code>。</td></tr>
+<tr><td data-label="式"><code>(Child) parent</code></td><td data-label="例外"><code>ClassCastException</code></td><td data-label="発生条件">実体が<code>Child</code>として扱えない。</td></tr>
+<tr><td data-label="式"><code>Integer.parseInt(text)</code></td><td data-label="例外"><code>NumberFormatException</code></td><td data-label="発生条件">文字列が<code>int</code>表現として不正。</td></tr>
+<tr><td data-label="式"><code>integer / 0</code></td><td data-label="例外"><code>ArithmeticException</code></td><td data-label="発生条件">整数の除算または剰余で除数が0。</td></tr>
+<tr><td data-label="式">変更不可Listの<code>add</code></td><td data-label="例外"><code>UnsupportedOperationException</code></td><td data-label="発生条件">操作がその実装でサポートされない。</td></tr>
+<tr><td data-label="式">消費済みStreamの再利用</td><td data-label="例外"><code>IllegalStateException</code></td><td data-label="発生条件">終端操作後の同じStreamを再度操作。</td></tr>
+</tbody></table></section>
+<section class="article-section"><h2>nullは代入時ではなく、参照を使う式で問題になる</h2>
+<pre class="article-code"><code>String text = null;           // 正常
+System.out.println(text);     // "null"を表示
+System.out.println(text.length()); // ここでNullPointerException</code></pre>
+<p><code>null</code>を参照型変数へ代入すること自体は有効です。フィールド参照、メソッド呼び出し、配列長取得、アンボクシングなど、実体を必要とする操作で例外になります。</p></section>
+<section class="article-section"><h2>配列と文字列は上限が「長さ - 1」</h2>
+<pre class="article-code"><code>int[] values = {10, 20};
+System.out.println(values[1]); // 20
+System.out.println(values[2]); // ArrayIndexOutOfBoundsException</code></pre>
+<p>長さが2なら有効な添字は0と1です。文字列の<code>charAt</code>や<code>substring</code>も境界条件を別に確認します。</p></section>
+<section class="article-section"><h2>キャストは実体を変換しない</h2>
+<pre class="article-code"><code>class Parent {}
+class Child extends Parent {}
+class Other extends Parent {}
+
+Parent value = new Other();
+Child child = (Child) value; // 実体はOtherなのでClassCastException</code></pre>
+<p>このコードは、型の継承関係があるためコンパイルできます。実行時に実体<code>Other</code>を<code>Child</code>として扱えないことが判明し、キャスト式で停止します。</p></section>
+<section class="article-section"><h2>整数0除算と浮動小数点0除算を分ける</h2>
+<pre class="article-code"><code>System.out.println(10 / 0);     // ArithmeticException
+System.out.println(10.0 / 0.0); // Infinity</code></pre>
+<p>浮動小数点演算はIEEE 754の値として<code>Infinity</code>や<code>NaN</code>を作るため、整数演算と同じ例外にはなりません。</p></section>
+<section class="article-section"><h2>catchされた場合は、そのcatchから処理が続く</h2>
+<pre class="article-code"><code>try {
+    System.out.print("A");
+    Integer.parseInt("x");
+    System.out.print("B");
+} catch (NumberFormatException e) {
+    System.out.print("C");
+}
+System.out.print("D");</code></pre>
+<p>出力は<code>ACD</code>です。例外後のtry内<code>B</code>は飛ばされ、catch終了後にtry-catchの次の文<code>D</code>へ進みます。</p></section>
+<section class="article-section"><h2>コードを読むときの記録</h2><ol class="article-list"><li>例外候補となる式へ印を付ける。</li><li>値・参照・添字をその式の直前まで追う。</li><li>最初に発生する例外だけを確定する。</li><li>対応するcatchがあるか、型の親子関係を確認する。</li><li>例外発生前、catch、finally、後続文の出力を並べる。</li></ol></section>
+<section class="article-section"><h2>記事末尾の確認</h2><ul class="article-list"><li>例外名と発生する式をセットで説明できる。</li><li>実行時例外とコンパイルエラーを区別している。</li><li>整数と浮動小数点の0除算を区別できる。</li><li>catch後にどこへ進むかを追える。</li></ul></section>
+</section></main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="articles";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script><script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script><script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

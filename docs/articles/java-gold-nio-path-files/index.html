@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="NIO.2、Path、Files、resolve、relativize、copy、move、walkを整理" name="description"/>
+<title>PathとFilesの読み方｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="PathとFilesの読み方｜Java Practice Lab" property="og:title"/>
+<meta content="NIO.2、Path、Files、resolve、relativize、copy、move、walkを整理" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">PathとFilesの読み方</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent">
+<article class="content-page long-article gold-deep-article">
+<h1>PathとFilesの読み方</h1>
+<p class="lead">NIO.2では、<code>Path</code>を「場所の表現」、<code>Files</code>を「ファイルシステム上の実体への操作」として分けます。例外が発生するタイミングも、Pathの操作とFilesの操作で異なります。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<section class="article-section">
+<h2>まず分ける: Pathはパス、Filesは操作</h2>
+<p><code>Path</code>はファイルやディレクトリの場所を表すオブジェクトです。<code>Path</code>を作っただけでは、ファイルやディレクトリの存在確認、作成、読み込みは行われません。存在判定やI/Oは<code>Files</code>の操作で発生します。</p>
+<pre class="article-code"><code>import java.nio.file.*;
+
+public class Main {
+  public static void main(String[] args) {
+    Path p = Path.of("data", "sample.txt");
+    System.out.println(p);              // data/sample.txt など
+    System.out.println(p.getFileName()); // sample.txt
+  }
+}</code></pre>
+<p>上のコードは、<code>data/sample.txt</code> が実在しなくてもコンパイル・実行できます。存在判定や読み書きは <code>Files</code> の仕事です。</p>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>分類</th><th>代表API</th><th>読むべきポイント</th></tr></thead>
+<tbody>
+<tr><td data-label="分類">Path生成</td><td data-label="代表API"><code>Path.of(...)</code><br/><code>Paths.get(...)</code></td><td data-label="読むべきポイント">パス表現を作るだけ。存在判定はしない。</td></tr>
+<tr><td data-label="分類">Path加工</td><td data-label="代表API"><code>resolve</code><br/><code>relativize</code><br/><code>normalize</code></td><td data-label="読むべきポイント">多くは文字列的なパス操作。実体に触れない。</td></tr>
+<tr><td data-label="分類">存在・属性判定</td><td data-label="代表API"><code>Files.exists</code><br/><code>Files.isDirectory</code><br/><code>Files.size</code></td><td data-label="読むべきポイント">ファイルシステムに問い合わせる。結果や例外を分ける。</td></tr>
+<tr><td data-label="分類">読み書き</td><td data-label="代表API"><code>Files.readString</code><br/><code>Files.writeString</code><br/><code>Files.lines</code></td><td data-label="読むべきポイント"><code>IOException</code> 処理が必要。Streamはcloseも意識。</td></tr>
+<tr><td data-label="分類">作成・削除・移動</td><td data-label="代表API"><code>createFile</code><br/><code>createDirectories</code><br/><code>delete</code><br/><code>copy</code><br/><code>move</code></td><td data-label="読むべきポイント">既存有無、親ディレクトリ、空ディレクトリ、上書き指定が確認点。</td></tr>
+</tbody>
+</table>
+<div class="bad-good"><div><strong>悪い判断</strong><p><code>Path.of()</code> が成功したので、ファイルが存在すると読みます。</p></div><div><strong>良い判断</strong><p>Path作成、存在判定、読み書き、削除を別の段階として判定する。</p></div></div>
+</section>
+<section class="article-section">
+<h2>Path.of と Paths.get</h2>
+<p><code>Path.of</code> はJava 11以降で使える書き方です。<code>Paths.get</code> も同じ目的で使えます。コードを読むときは両方出る可能性があります。</p>
+<pre class="article-code"><code>Path a = Path.of("data", "sample.txt");
+Path b = Paths.get("data", "sample.txt");
+
+System.out.println(a.getFileName()); // sample.txt
+System.out.println(b.getParent());   // data</code></pre>
+<p>引数を複数に分けると、環境に応じた区切り文字でPathが構成されます。Windowsなら <code>\</code>、macOS/Linuxなら <code>/</code> が使われます。ただし、表示は環境依存です。コードを読むときは「完全に同じ文字列が出る」と大まかに決めつけない方が安全です。</p>
+</section>
+<section class="article-section">
+<h2>Pathの基本メソッド</h2>
+<p>Pathの読解では、<code>getRoot</code>、<code>getParent</code>、<code>getFileName</code>、<code>getNameCount</code>、<code>getName</code>、<code>subpath</code> がよく違いを確認します。</p>
+<pre class="article-code"><code>Path p = Path.of("/home/user/work/sample.txt");
+
+System.out.println(p.getRoot());      // / など
+System.out.println(p.getParent());    // /home/user/work
+System.out.println(p.getFileName());  // sample.txt
+System.out.println(p.getNameCount()); // 4
+System.out.println(p.getName(0));     // home
+System.out.println(p.subpath(1, 3));  // user/work</code></pre>
+<p><code>getName(0)</code> はルートではありません。ルート <code>/</code> は <code>getRoot()</code> で扱います。<code>getRoot()</code>と名前要素を分けないと、<code>getNameCount()</code>や<code>getName(index)</code>の結果を一つ多く数えてしまいます。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>メソッド</th><th>意味</th><th>注意</th></tr></thead><tbody>
+<tr><td data-label="メソッド"><code>getRoot()</code></td><td data-label="意味">ルート部分</td><td data-label="注意">相対パスなら <code>null</code> になりうる。</td></tr>
+<tr><td data-label="メソッド"><code>getParent()</code></td><td data-label="意味">親パス</td><td data-label="注意">親がなければ <code>null</code>。</td></tr>
+<tr><td data-label="メソッド"><code>getFileName()</code></td><td data-label="意味">末尾の名前</td><td data-label="注意">ファイルとは限らない。ディレクトリ名でもよい。</td></tr>
+<tr><td data-label="メソッド"><code>getNameCount()</code></td><td data-label="意味">名前要素数</td><td data-label="注意">ルートは数えない。</td></tr>
+<tr><td data-label="メソッド"><code>getName(i)</code></td><td data-label="意味">i番目の名前要素</td><td data-label="注意">0始まり。範囲外なら例外。</td></tr>
+<tr><td data-label="メソッド"><code>subpath(a, b)</code></td><td data-label="意味">a以上b未満の部分パス</td><td data-label="注意">終端indexは含まない。</td></tr>
+</tbody></table>
+</section>
+<section class="article-section">
+<h2>絶対パスと相対パス</h2>
+<p><code>isAbsolute()</code> は、そのPathが絶対パスかどうかを返します。<code>toAbsolutePath()</code> は現在の作業ディレクトリを基準に絶対パスを作りますが、これも実体の存在判定ではありません。</p>
+<pre class="article-code"><code>Path p = Path.of("data/sample.txt");
+
+System.out.println(p.isAbsolute());       // false
+System.out.println(p.toAbsolutePath());   // カレントディレクトリ基準の絶対パス</code></pre>
+<p><code>toAbsolutePath()</code> と <code>toRealPath()</code> は別物です。<code>toRealPath()</code> は実ファイルシステムに問い合わせ、存在しなければ <code>IOException</code> になります。</p>
+</section>
+<section class="article-section">
+<h2>normalize と toRealPath を混同しない</h2>
+<p><code>normalize()</code> は、パス文字列上の <code>.</code> や <code>..</code> を整理するだけです。ファイルの存在判定はしません。</p>
+<pre class="article-code"><code>Path p = Path.of("a", ".", "b", "..", "c");
+System.out.println(p);             // a/./b/../c など
+System.out.println(p.normalize()); // a/c</code></pre>
+<p><code>toRealPath()</code> は実体にアクセスします。存在しないパスに対して呼ぶと <code>IOException</code> が発生します。</p>
+<pre class="article-code"><code>Path p = Path.of("missing.txt");
+// p.toRealPath(); // 実体がなければ IOException</code></pre>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>API</th><th>実体判定</th><th>例外</th></tr></thead><tbody>
+<tr><td data-label="API"><code>normalize()</code></td><td data-label="実体判定">しない</td><td data-label="例外">通常はファイル未存在で失敗しない。</td></tr>
+<tr><td data-label="API"><code>toAbsolutePath()</code></td><td data-label="実体判定">しない</td><td data-label="例外">通常はファイル未存在で失敗しない。</td></tr>
+<tr><td data-label="API"><code>toRealPath()</code></td><td data-label="実体判定">する</td><td data-label="例外"><code>IOException</code> の可能性。</td></tr>
+</tbody></table>
+</section>
+<section class="article-section">
+<h2>resolve: パスを後ろにつなげる</h2>
+<p><code>resolve</code> は、基準パスに別のパスをつなげます。</p>
+<pre class="article-code"><code>Path base = Path.of("data");
+Path p = base.resolve("sample.txt");
+System.out.println(p); // data/sample.txt など</code></pre>
+<p>注意点は、右側に絶対パスを渡した場合です。この場合、基準パスは無視され、右側の絶対パスが結果になります。</p>
+<pre class="article-code"><code>Path base = Path.of("data");
+Path absolute = Path.of("/tmp/sample.txt");
+
+System.out.println(base.resolve(absolute)); // /tmp/sample.txt など</code></pre>
+<p><code>resolve</code>は単純な文字列連結ではなく、基準Pathに別のPathを解決する操作です。<code>data/tmp/sample.txt</code> のようにつながる、ではありません。</p>
+</section>
+<section class="article-section">
+<h2>resolveSibling: 同じ親にある別名へ差し替える</h2>
+<p><code>resolveSibling</code> は、末尾の名前を同じ階層の別名に差し替えるイメージです。</p>
+<pre class="article-code"><code>Path p = Path.of("data", "old.txt");
+System.out.println(p.resolveSibling("new.txt")); // data/new.txt</code></pre>
+<p>ファイル名だけ変えたいコードでは <code>resolve</code> ではなく <code>resolveSibling</code> が自然です。</p>
+</section>
+<section class="article-section">
+<h2>relativize: 片方から片方への相対パス</h2>
+<p><code>relativize</code> は、基準Pathから対象Pathへ到達するための相対パスを作ります。</p>
+<pre class="article-code"><code>Path a = Path.of("work", "src");
+Path b = Path.of("work", "out", "Main.class");
+
+System.out.println(a.relativize(b)); // ../out/Main.class など</code></pre>
+<p>相対パスと絶対パスを混ぜて <code>relativize</code> すると、<code>IllegalArgumentException</code> になることがあります。</p>
+<pre class="article-code"><code>Path relative = Path.of("data", "a.txt");
+Path absolute = Path.of("/tmp/a.txt");
+
+// relative.relativize(absolute); // IllegalArgumentException になりうる</code></pre>
+<p>この例外は <code>IOException</code> ではありません。Pathの組み合わせが不適切なため、実ファイルの読み書き前に失敗するイメージです。</p>
+</section>
+<section class="article-section">
+<h2>Files.exists と notExists の注意</h2>
+<p><code>Files.exists(path)</code> は存在すれば <code>true</code>、存在しなければ通常 <code>false</code> です。ただし権限などで判断できない場合があります。<code>Files.notExists(path)</code> は単純に <code>!exists(path)</code> と同じではありません。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>状態</th><th><code>exists</code></th><th><code>notExists</code></th></tr></thead><tbody>
+<tr><td data-label="状態">存在する</td><td data-label="exists"><code>true</code></td><td data-label="notExists"><code>false</code></td></tr>
+<tr><td data-label="状態">存在しない</td><td data-label="exists"><code>false</code></td><td data-label="notExists"><code>true</code></td></tr>
+<tr><td data-label="状態">判定不能</td><td data-label="exists"><code>false</code> になりうる</td><td data-label="notExists"><code>false</code> になりうる</td></tr>
+</tbody></table>
+<p>存在判定APIの戻り値はbooleanであり、読み込みAPIのように必ず例外処理が必要な形ではない、という差も判定の軸です。</p>
+</section>
+<section class="article-section">
+<h2>Files.isDirectory / isRegularFile / isSameFile</h2>
+<p>属性判定系は、Pathが指す実体の種類を判定します。</p>
+<pre class="article-code"><code>Path p = Path.of("data");
+
+System.out.println(Files.isDirectory(p));
+System.out.println(Files.isRegularFile(p));
+System.out.println(Files.isReadable(p));</code></pre>
+<p><code>Files.isSameFile(a, b)</code> は、2つのPathが同じ実体を指すかを調べます。単なる文字列比較ではありません。実ファイルシステムに問い合わせるため、<code>IOException</code> が発生しえます。</p>
+<pre class="article-code"><code>Path a = Path.of("data", "sample.txt");
+Path b = Path.of("data", ".", "sample.txt");
+
+// 実体があれば true になりうる
+// System.out.println(Files.isSameFile(a, b));</code></pre>
+</section>
+<section class="article-section">
+<h2>readString / readAllLines / lines</h2>
+<p>読み込みAPIは似ていますが、戻り値とリソース管理が違います。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>API</th><th>戻り値</th><th>特徴</th></tr></thead><tbody>
+<tr><td data-label="API"><code>Files.readString(path)</code></td><td data-label="戻り値"><code>String</code></td><td data-label="特徴">ファイル全体を文字列として読む。</td></tr>
+<tr><td data-label="API"><code>Files.readAllLines(path)</code></td><td data-label="戻り値"><code>List&lt;String&gt;</code></td><td data-label="特徴">全行をListに読み込む。</td></tr>
+<tr><td data-label="API"><code>Files.lines(path)</code></td><td data-label="戻り値"><code>Stream&lt;String&gt;</code></td><td data-label="特徴">遅延処理。Streamを閉じる意識が必要。</td></tr>
+</tbody></table>
+<pre class="article-code"><code>Path p = Path.of("data", "sample.txt");
+
+String text = Files.readString(p);
+List&lt;String&gt; lines = Files.readAllLines(p);
+
+try (Stream&lt;String&gt; stream = Files.lines(p)) {
+  stream.filter(s -&gt; !s.isBlank())
+        .forEach(System.out::println);
+}</code></pre>
+<p><code>Files.lines</code> はStreamを返します。Streamは再利用できません。さらに、ファイルを開いたStreamなので、try-with-resourcesで閉じる形が安全です。</p>
+<pre class="article-code"><code>Stream&lt;String&gt; s = Files.lines(Path.of("data.txt"));
+s.count();
+// s.count(); // IllegalStateException: stream has already been operated upon or closed</code></pre>
+</section>
+<section class="article-section">
+<h2>writeString / write / OpenOption</h2>
+<p><code>Files.writeString</code> は文字列を書き込みます。標準では既存ファイルを上書きする挙動を取ります。追記したい場合は <code>StandardOpenOption.APPEND</code> を指定します。</p>
+<pre class="article-code"><code>Path p = Path.of("out", "memo.txt");
+
+Files.createDirectories(p.getParent());
+Files.writeString(p, "A
+");
+Files.writeString(p, "B
+", StandardOpenOption.APPEND);</code></pre>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>Option</th><th>意味</th><th>注意</th></tr></thead><tbody>
+<tr><td data-label="Option"><code>CREATE</code></td><td data-label="意味">なければ作る</td><td data-label="注意">よく使う。</td></tr>
+<tr><td data-label="Option"><code>CREATE_NEW</code></td><td data-label="意味">新規作成のみ</td><td data-label="注意">既にあれば <code>FileAlreadyExistsException</code>。</td></tr>
+<tr><td data-label="Option"><code>APPEND</code></td><td data-label="意味">追記</td><td data-label="注意">先頭ではなく末尾に書く。</td></tr>
+<tr><td data-label="Option"><code>TRUNCATE_EXISTING</code></td><td data-label="意味">既存内容を空にする</td><td data-label="注意">上書き系の挙動。</td></tr>
+</tbody></table>
+</section>
+<section class="article-section">
+<h2>createFile / createDirectory / createDirectories</h2>
+<p>作成系APIは、既存有無と親ディレクトリの有無が判定の軸です。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>API</th><th>親がない場合</th><th>対象が既にある場合</th></tr></thead><tbody>
+<tr><td data-label="API"><code>Files.createFile(path)</code></td><td data-label="親がない場合"><code>NoSuchFileException</code> になりうる</td><td data-label="対象が既にある場合"><code>FileAlreadyExistsException</code></td></tr>
+<tr><td data-label="API"><code>Files.createDirectory(path)</code></td><td data-label="親がない場合"><code>NoSuchFileException</code> になりうる</td><td data-label="対象が既にある場合"><code>FileAlreadyExistsException</code></td></tr>
+<tr><td data-label="API"><code>Files.createDirectories(path)</code></td><td data-label="親がない場合">親もまとめて作る</td><td data-label="対象が既にある場合">既にあっても通常成功</td></tr>
+</tbody></table>
+<pre class="article-code"><code>Files.createDirectory(Path.of("a"));        // aだけ作る。親が必要
+Files.createDirectories(Path.of("a/b/c"));  // 親もまとめて作る</code></pre>
+<p><code>createDirectory</code> と <code>createDirectories</code> の違いは実務でも確認が必要です。親も作るのは複数形の <code>createDirectories</code> です。</p>
+</section>
+<section class="article-section">
+<h2>copy / move と上書き指定</h2>
+<p><code>Files.copy</code> と <code>Files.move</code> は、コピー先・移動先が既に存在する場合に注意します。上書きしたいなら <code>StandardCopyOption.REPLACE_EXISTING</code> を指定します。</p>
+<pre class="article-code"><code>Path src = Path.of("data", "a.txt");
+Path dst = Path.of("backup", "a.txt");
+
+Files.createDirectories(dst.getParent());
+Files.copy(src, dst, StandardCopyOption.REPLACE_EXISTING);
+Files.move(dst, Path.of("backup", "b.txt"), StandardCopyOption.REPLACE_EXISTING);</code></pre>
+<p><code>ATOMIC_MOVE</code> は、可能なら原子的に移動する指定です。環境やファイルシステムによりサポートされない場合があります。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>Option</th><th>用途</th><th>注意</th></tr></thead><tbody>
+<tr><td data-label="Option"><code>REPLACE_EXISTING</code></td><td data-label="用途">既存先を置き換える</td><td data-label="注意">指定しないと既存先で失敗しやすい。</td></tr>
+<tr><td data-label="Option"><code>COPY_ATTRIBUTES</code></td><td data-label="用途">属性もコピー</td><td data-label="注意">コピー系で使う。</td></tr>
+<tr><td data-label="Option"><code>ATOMIC_MOVE</code></td><td data-label="用途">原子的移動</td><td data-label="注意">サポートされない可能性。</td></tr>
+</tbody></table>
+</section>
+<section class="article-section">
+<h2>delete と deleteIfExists</h2>
+<p><code>Files.delete</code> は対象が存在しないと例外です。<code>Files.deleteIfExists</code> は、存在しなければ <code>false</code> を返します。</p>
+<pre class="article-code"><code>Path p = Path.of("out", "memo.txt");
+
+Files.deleteIfExists(p); // なければfalse
+// Files.delete(p);      // なければNoSuchFileException</code></pre>
+<p>ディレクトリ削除では、空でないディレクトリを <code>delete</code> しようとすると <code>DirectoryNotEmptyException</code> になります。<code>delete</code> は中身を再帰的に消してくれるAPIではありません。</p>
+</section>
+<section class="article-section">
+<h2>list / walk / find</h2>
+<p>ディレクトリをStreamとして扱うAPIもGoldで判定の軸です。これらはStreamを返すため、try-with-resourcesで閉じるのが安全です。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>API</th><th>対象</th><th>特徴</th></tr></thead><tbody>
+<tr><td data-label="API"><code>Files.list(dir)</code></td><td data-label="対象">直下のみ</td><td data-label="特徴">再帰しない。</td></tr>
+<tr><td data-label="API"><code>Files.walk(dir)</code></td><td data-label="対象">再帰</td><td data-label="特徴">起点自身もStreamに含まれる。</td></tr>
+<tr><td data-label="API"><code>Files.find(dir, depth, predicate)</code></td><td data-label="対象">条件付き再帰</td><td data-label="特徴">属性も使って判定できる。</td></tr>
+</tbody></table>
+<pre class="article-code"><code>Path dir = Path.of("src");
+
+try (Stream&lt;Path&gt; s = Files.walk(dir)) {
+  s.filter(Files::isRegularFile)
+   .forEach(System.out::println);
+}</code></pre>
+<p><code>walk</code> は起点ディレクトリ自身も含みます。ファイルだけを対象にしたい場合は <code>Files.isRegularFile</code> で絞ります。</p>
+</section>
+<section class="article-section">
+<h2>walkで再帰削除するときの順序</h2>
+<p>ディレクトリを再帰削除する場合、親を先に除外すると中身が残っていて失敗します。深い要素から除外する必要があります。</p>
+<pre class="article-code"><code>Path dir = Path.of("work");
+
+try (Stream&lt;Path&gt; s = Files.walk(dir)) {
+  s.sorted(Comparator.reverseOrder())
+   .forEach(path -&gt; {
+     try {
+       Files.delete(path);
+     } catch (IOException e) {
+       throw new UncheckedIOException(e);
+     }
+   });
+}</code></pre>
+<p>ラムダ式内ではchecked例外をそのまま投げられない場面があります。そのため、<code>UncheckedIOException</code> に包む例がよく使われます。</p>
+</section>
+<section class="article-section">
+<h2>FileVisitor / walkFileTree</h2>
+<p><code>Files.walkFileTree</code> は、ファイルツリーを歩くためのAPIです。<code>SimpleFileVisitor</code> を継承し、必要なメソッドだけオーバーライドする形が基本です。</p>
+<pre class="article-code"><code>Path start = Path.of("src");
+
+Files.walkFileTree(start, new SimpleFileVisitor&lt;Path&gt;() {
+  @Override
+  public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+      throws IOException {
+    System.out.println(file);
+    return FileVisitResult.CONTINUE;
+  }
+});</code></pre>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>戻り値</th><th>意味</th></tr></thead><tbody>
+<tr><td data-label="戻り値"><code>CONTINUE</code></td><td data-label="意味">探索を続ける。</td></tr>
+<tr><td data-label="戻り値"><code>SKIP_SUBTREE</code></td><td data-label="意味">現在のディレクトリ配下をスキップ。</td></tr>
+<tr><td data-label="戻り値"><code>SKIP_SIBLINGS</code></td><td data-label="意味">兄弟要素をスキップ。</td></tr>
+<tr><td data-label="戻り値"><code>TERMINATE</code></td><td data-label="意味">探索終了。</td></tr>
+</tbody></table>
+</section>
+<section class="article-section">
+<h2>シンボリックリンクと NOFOLLOW_LINKS</h2>
+<p>Filesの属性判定や探索では、シンボリックリンクをたどるかどうかで結果が変わります。<code>LinkOption.NOFOLLOW_LINKS</code> を指定すると、リンク先ではなくリンク自体を対象にする方向になります。</p>
+<pre class="article-code"><code>Path p = Path.of("link.txt");
+
+System.out.println(Files.exists(p));
+System.out.println(Files.exists(p, LinkOption.NOFOLLOW_LINKS));</code></pre>
+<p>Goldで深く出る場合は、リンク先を見ているのか、リンクそのものを見ているのかを分けます。</p>
+</section>
+<section class="article-section">
+<h2>IOExceptionとRuntimeExceptionを分ける</h2>
+<p>NIO.2の失敗は全部 <code>IOException</code> ではありません。ファイルシステムに触る操作は <code>IOException</code> が多い一方、Pathの形式不整合やStream再利用は実行時例外です。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>状況</th><th>例</th><th>主な結果</th></tr></thead><tbody>
+<tr><td data-label="状況">存在しないファイルを読む</td><td data-label="例"><code>Files.readString(p)</code></td><td data-label="主な結果"><code>IOException</code> 系</td></tr>
+<tr><td data-label="状況">存在しないファイルをdelete</td><td data-label="例"><code>Files.delete(p)</code></td><td data-label="主な結果"><code>NoSuchFileException</code></td></tr>
+<tr><td data-label="状況">空でないディレクトリをdelete</td><td data-label="例"><code>Files.delete(dir)</code></td><td data-label="主な結果"><code>DirectoryNotEmptyException</code></td></tr>
+<tr><td data-label="状況">既存先にcopy</td><td data-label="例"><code>Files.copy(src, dst)</code></td><td data-label="主な結果"><code>FileAlreadyExistsException</code></td></tr>
+<tr><td data-label="状況">相対Pathと絶対Pathをrelativize</td><td data-label="例"><code>relative.relativize(absolute)</code></td><td data-label="主な結果"><code>IllegalArgumentException</code></td></tr>
+<tr><td data-label="状況">Stream再利用</td><td data-label="例"><code>stream.count(); stream.count();</code></td><td data-label="主な結果"><code>IllegalStateException</code></td></tr>
+</tbody></table>
+</section>
+<section class="article-section">
+<h2>コンパイルエラー・実行時例外になりやすいパターン</h2>
+<div class="mistake-list">
+<div class="mistake-card"><h3>Path生成だけでIOExceptionをcatchする</h3><pre class="article-code"><code>try {
+  Path p = Path.of("missing.txt");
+} catch (IOException e) { // コンパイルエラー
+}</code></pre><p><code>Path.of</code> は通常 <code>IOException</code> を投げません。到達不能catchとして扱われます。</p></div>
+<div class="mistake-card"><h3>Files.readStringのIOException処理漏れ</h3><pre class="article-code"><code>String s = Files.readString(Path.of("a.txt")); // コンパイルエラー</code></pre><p><code>readString</code> はchecked例外の <code>IOException</code> を投げうるため、catchまたはthrowsが必要です。</p></div>
+<div class="mistake-card"><h3>Files.linesのStreamを2回使う</h3><pre class="article-code"><code>Stream&lt;String&gt; s = Files.lines(Path.of("a.txt"));
+s.count();
+s.forEach(System.out::println); // 実行時例外</code></pre><p>Streamは終端操作後に再利用できません。</p></div>
+<div class="mistake-card"><h3>deleteでディレクトリを丸ごと除外できると思う</h3><pre class="article-code"><code>Files.delete(Path.of("dir")); // dirが空でなければ失敗</code></pre><p>中身のあるディレクトリはそのままでは削除できません。</p></div>
+<div class="mistake-card"><h3>copyの上書き指定忘れ</h3><pre class="article-code"><code>Files.copy(src, dst); // dstが既存なら失敗</code></pre><p>上書きしたいなら <code>StandardCopyOption.REPLACE_EXISTING</code> が必要です。</p></div>
+</div>
+</section>
+<section class="article-section">
+<h2>コードの読み方</h2>
+<ol class="step-list">
+<li><strong>Path操作かFiles操作かを見る。</strong><br/>Pathだけなら存在判定は基本的にしない。Filesなら実体アクセスやIOExceptionを疑う。</li>
+<li><strong>絶対パス・相対パスを判定する。</strong><br/><code>resolve</code>、<code>relativize</code>、<code>normalize</code> の結果が変わる。</li>
+<li><strong>対象がファイルかディレクトリかを見る。</strong><br/><code>delete</code>、<code>walk</code>、<code>list</code> の挙動に影響する。</li>
+<li><strong>既存ファイルの扱いを見る。</strong><br/><code>copy</code>、<code>move</code>、<code>createFile</code>、<code>createDirectory</code> は既存有無で結果が変わる。</li>
+<li><strong>Streamを返すAPIかを見る。</strong><br/><code>Files.lines</code>、<code>Files.list</code>、<code>Files.walk</code> はStream。遅延評価、再利用不可、closeを意識する。</li>
+</ol>
+</section>
+<section class="article-section">
+<h2>読解ミニ演習</h2>
+<div class="mini-quiz-block">
+<h3>確認例1</h3>
+<pre class="article-code"><code>Path p = Path.of("a", "b", "..", "c.txt");
+System.out.println(p.normalize());</code></pre>
+<p><strong>結果:</strong> <code>a/c.txt</code> など。<code>b/..</code> が整理されます。ファイルが実在する必要はありません。</p>
+</div>
+<div class="mini-quiz-block">
+<h3>確認例2</h3>
+<pre class="article-code"><code>Path p = Path.of("missing.txt");
+System.out.println(p.getFileName());</code></pre>
+<p><strong>結果:</strong> <code>missing.txt</code>。Path操作だけなので、ファイルが存在しなくても問題ありません。</p>
+</div>
+<div class="mini-quiz-block">
+<h3>確認例3</h3>
+<pre class="article-code"><code>Path p = Path.of("missing.txt");
+System.out.println(Files.readString(p));</code></pre>
+<p><strong>結果:</strong> 例外処理がなければコンパイルエラーです。<code>Files.readString</code> は <code>IOException</code> を投げうるchecked例外APIです。</p>
+</div>
+<div class="mini-quiz-block">
+<h3>確認例4</h3>
+<pre class="article-code"><code>Path a = Path.of("work", "src");
+Path b = Path.of("work", "out", "Main.class");
+System.out.println(a.relativize(b));</code></pre>
+<p><strong>結果:</strong> <code>../out/Main.class</code> など。<code>work/src</code> から一度上がって <code>out/Main.class</code> に向かいます。</p>
+</div>
+<div class="mini-quiz-block">
+<h3>確認例5</h3>
+<pre class="article-code"><code>try (Stream&lt;Path&gt; s = Files.walk(Path.of("src"))) {
+  System.out.println(s.count());
+  System.out.println(s.count());
+}</code></pre>
+<p><strong>結果:</strong> 2回目の <code>count()</code> で実行時例外です。Streamは終端操作後に再利用できません。</p>
+</div>
+</section>
+<section class="article-section">
+<h2>まとめ</h2>
+<p>NIO.2は、メソッド名を覚えるだけでは不十分です。特に以下を機械的に判定します。</p>
+<ul class="article-list">
+<li><code>Path</code> は場所の表現。実在判定ではない。</li>
+<li><code>Files</code> は実体操作。<code>IOException</code> 処理を疑う。</li>
+<li><code>normalize</code> は文字列的整理、<code>toRealPath</code> は実体判定。</li>
+<li><code>resolve</code> は絶対パスを渡すと右側優先。</li>
+<li><code>relativize</code> は相対・絶対の混在に注意。</li>
+<li><code>Files.lines</code>、<code>list</code>、<code>walk</code> はStream。再利用不可。</li>
+<li><code>copy</code>、<code>move</code>、<code>createFile</code>、<code>delete</code> は既存有無で結果が変わる。</li>
+</ul>
+<p>この単元で曖昧にしてはいけないのは「Pathを作る」と「ファイルに触る」の境界です。ここが混ざっていると、コンパイルエラー・実行時例外・正常出力の判定を外します。</p>
+</section>
+</article>
+<section class="article-section quality-audit-section" id="semantic-audit-nio"><h2>確認ポイントの補足</h2>
+<p>NIO.2コードでは、<code>Path</code>の文字列操作と<code>Files</code>の実ファイル操作を分けて読む必要があります。<code>Path.of</code>、<code>resolve</code>、<code>relativize</code>、<code>normalize</code>は、基本的にパス表現を組み立てる処理です。実在判定や入出力は<code>Files</code>側の処理です。</p>
+<table class="study-table responsive-card-table"><thead><tr><th>見る対象</th><th>判定</th><th>誤読例</th></tr></thead><tbody>
+<tr><td data-label="見る対象"><code>Path.resolve</code></td><td data-label="判定">右辺が絶対パスなら右辺が優先される</td><td data-label="誤読例">常に左辺へ連結されると読んでしまう</td></tr>
+<tr><td data-label="見る対象"><code>Path.relativize</code></td><td data-label="判定">同じ種類のパス同士で相対パスを作る</td><td data-label="誤読例">絶対パスと相対パスの混在を見落とす</td></tr>
+<tr><td data-label="見る対象"><code>Files.lines</code></td><td data-label="判定"><code>Stream&lt;String&gt;</code>を返し、閉じる対象になる</td><td data-label="誤読例">終端操作前に再利用できると読む</td></tr>
+<tr><td data-label="見る対象"><code>Files.copy</code> / <code>move</code></td><td data-label="判定">既存ファイル、オプション、<code>IOException</code>を読む</td><td data-label="誤読例">戻り値や例外処理を飛ばして出力だけを見る</td></tr>
+</tbody></table>
+<p>出力を追うコードでは、OS依存の区切り文字をそのまま固定しない方が安全です。候補に<code>a/b</code>と<code>a\b</code>の両方が絡む場合は、実行環境が指定されているかを先に見ます。</p>
+</section><section class="study-route-panel related-practice-panel">
+<h2>関連演習</h2>
+<p>関連する演習です。</p>
+<div class="study-route-grid"><a class="study-route-card" href="../../courses/gold11/practice/nio-datetime.html"><span class="route-badge">演習</span><strong>NIO・DateTime</strong><span>Path、Files、DateTime</span></a><a class="study-route-card" href="../../courses/gold11/practice/concurrency-nio.html"><span class="route-badge">演習</span><strong>並行処理・NIO</strong><span>NIOと並行処理</span></a><a class="study-route-card" href="../../courses/gold11/practice/nio-concurrency-module-extra.html"><span class="route-badge">演習</span><strong>NIO・並行処理・モジュール関連演習</strong><span>複合読解</span></a></div>
+</section>
+</main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="articles.html";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

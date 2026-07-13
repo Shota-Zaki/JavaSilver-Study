@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Javaアプリケーションの入口となるmainメソッドを、各部分の意味から読みます。" name="description"/>
+<title>Lesson 4 mainメソッド｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="Lesson 4 mainメソッド｜Java Practice Lab" property="og:title"/>
+<meta content="Javaアプリケーションの入口となるmainメソッドを、各部分の意味から読みます。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../../manifest.webmanifest" rel="manifest"/>
+<link href="../../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="Java基礎">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="Java基礎"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">Java基礎</span><span class="site-context-title">mainメソッド</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../../index.html">トップ</a><a aria-current="page" class="is-active" href="../index.html">基礎</a><a href="../../bronze/index.html">Bronze</a><a href="../../java11-silver/index.html">Silver 11</a><a href="../../java17-silver/index.html">Silver 17</a><a href="../../gold11/index.html">Gold 11</a><a href="../../gold17/index.html">Gold 17</a><a href="../../../articles/index.html">単元別解説</a><a href="../../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main lesson-main" id="mainContent">
+<article class="card lesson-hero">
+<p class="meta">Java基礎 Lesson 4</p>
+<h1>mainメソッド</h1>
+<p class="lead">mainメソッドを、JVMがプログラムの開始位置として探すための宣言規則として説明します。</p>
+<div class="box goal-box"><strong>このレッスンのゴール</strong><p>起動用mainメソッドの各要素と、受け付けられる宣言形を説明できること。</p></div>
+</article><section class="card lesson-section basic-term-intro">
+<h2>基本用語の定義</h2>
+<div class="term-side-layout">
+<div>
+<p>mainは特別なキーワードではなく、JVMのランチャーが規定の形で探すstaticメソッドです。</p>
+</div>
+<div class="term-note-grid">
+<div class="term-note basic-term-mini"><strong>mainメソッドとは</strong>Javaアプリケーションを起動したときに最初に呼ばれる入口。</div><div class="term-note basic-term-mini"><strong><code>public</code>とは</strong>外部からアクセスできることを示すアクセス修飾子。</div><div class="term-note basic-term-mini"><strong><code>static</code>とは</strong>インスタンスを作らなくてもクラス側から使えること。</div><div class="term-note basic-term-mini"><strong><code>void</code>とは</strong>戻り値がないことを表す戻り値型。</div><div class="term-note basic-term-mini"><strong><code>String[] args</code>とは</strong>コマンドライン引数を受け取るString配列。</div>
+</div>
+</div>
+</section><section class="card lesson-section basic-term-check core-rule-section"><h2>起動用mainメソッドの宣言規則</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>項目</th><th>定義・規則</th><th>具体例</th></tr></thead><tbody><tr><td data-label="項目"><span>public</span></td><td data-label="定義・規則"><span>ランチャーから呼び出せるアクセス範囲にする修飾子。</span></td><td data-label="具体例"><span>省略すると起動用mainとして扱えません。</span></td></tr><tr><td data-label="項目"><span>static</span></td><td data-label="定義・規則"><span>インスタンスを生成せずクラスに対して呼び出せることを表します。</span></td><td data-label="具体例"><span>JVMはMainオブジェクトを作らずに呼び出します。</span></td></tr><tr><td data-label="項目"><span>void</span></td><td data-label="定義・規則"><span>呼び出し元へ値を返さない戻り値型。</span></td><td data-label="具体例"><span><code>int main</code>は起動用mainではありません。</span></td></tr><tr><td data-label="項目"><span>main</span></td><td data-label="定義・規則"><span>ランチャーが探すメソッド名。</span></td><td data-label="具体例"><span>大文字・小文字を区別します。</span></td></tr><tr><td data-label="項目"><span>String[]</span></td><td data-label="定義・規則"><span>コマンドライン引数を文字列の配列として受け取る型。</span></td><td data-label="具体例"><span>変数名は<code>args</code>以外でもかまいません。</span></td></tr><tr><td data-label="項目"><span>可変長引数</span></td><td data-label="定義・規則"><span><code>String... args</code>も<code>String[] args</code>と同等の引数型として使えます。</span></td><td data-label="具体例"><span>起動用mainとして認識されます。</span></td></tr></tbody></table></div></section><section class="card lesson-section basic-syntax-section"><h2>起動用mainメソッドの最小形</h2><p class="code-caption">`Main.java`として保存する完全なコード</p><pre><code>public class Main {
+    public static void main(String[] args) {
+        System.out.println("arguments: " + args.length);
+    }
+}</code></pre><p><span><code>java Main A B</code>と実行すると、<code>args</code>は<code>{"A", "B"}</code>に相当する2要素の配列を参照します。</span></p></section><section class="card lesson-section"><h2>mainを分解する</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>部分</th><th>意味</th><th>なぜ必要か</th></tr></thead><tbody><tr><td data-label="部分"><code>public</code></td><td data-label="意味">外部から呼び出せる</td><td data-label="なぜ必要か">JVMがクラス外から呼び出すため</td></tr><tr><td data-label="部分"><code>static</code></td><td data-label="意味">インスタンスなしで呼べる</td><td data-label="なぜ必要か">プログラム開始前にオブジェクトを作らなくてよいため</td></tr><tr><td data-label="部分"><code>void</code></td><td data-label="意味">戻り値なし</td><td data-label="なぜ必要か">入口メソッドとして戻り値を返さない</td></tr><tr><td data-label="部分"><code>main</code></td><td data-label="意味">決められた名前</td><td data-label="なぜ必要か">JVMがこの名前を探す</td></tr><tr><td data-label="部分"><code>String[] args</code></td><td data-label="意味">コマンドライン引数</td><td data-label="なぜ必要か">起動時に渡した文字列を受け取る</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>argsの読み方</h2><p><code>args</code>は配列。<code>java Main apple banana</code>と実行すると、<code>args[0]</code>が<code>"apple"</code>、<code>args[1]</code>が<code>"banana"</code>になる。<code>Main</code>自体は<code>args</code>には入らない。</p><p class="code-caption">java Main apple で実行すると apple</p><pre><code>public class Main {
+    public static void main(String[] args) {
+        System.out.println(args[0]);
+    }
+}</code></pre><div class="lesson-note"><strong>引数なしの注意点</strong><p>引数を渡さずに<code>args[0]</code>を読むと、配列の範囲外アクセスになり実行時例外が起きる。コンパイルエラーではない。</p></div></section><section class="card lesson-section"><h2>許される形と紛らわしい形</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>形</th><th>入口として認識されるか</th><th>補足</th></tr></thead><tbody><tr><td data-label="形"><code>public static void main(String[] args)</code></td><td data-label="入口として認識されるか">される</td><td data-label="補足">基本形</td></tr><tr><td data-label="形"><code>public static void main(String... args)</code></td><td data-label="入口として認識されるか">される</td><td data-label="補足">可変長引数も配列として扱える</td></tr><tr><td data-label="形"><code>static public void main(String[] x)</code></td><td data-label="入口として認識されるか">される</td><td data-label="補足">修飾子の順序や引数名は本質ではない</td></tr><tr><td data-label="形"><code>public void main(String[] args)</code></td><td data-label="入口として認識されるか">されない</td><td data-label="補足"><code>static</code>がない</td></tr><tr><td data-label="形"><code>public static int main(String[] args)</code></td><td data-label="入口として認識されるか">されない</td><td data-label="補足">戻り値型が<code>void</code>ではない</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>staticがあることの影響</h2><p><code>main</code>はstaticなので、同じクラスのインスタンスフィールドを直接読めません。インスタンス側の値を使いたいなら、オブジェクトを作ってから参照する。</p><p class="code-caption">成立しない例</p><pre><code>public class Main {
+    int value = 10;
+
+    public static void main(String[] args) {
+        System.out.println(value); // コンパイルエラー
+    }
+}</code></pre><p class="code-caption">修正例</p><pre><code>public class Main {
+    int value = 10;
+
+    public static void main(String[] args) {
+        Main m = new Main();
+        System.out.println(m.value);
+    }
+}</code></pre></section><section class="card lesson-section"><h2>関連する用語との違い</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>混同しやすいもの</th><th>違い</th><th>見分け方</th></tr></thead><tbody><tr><td data-label="混同しやすいもの"><code>main</code>メソッド / 普通のメソッド</td><td data-label="違い"><code>main</code>は入口としてJVMから呼ばれる。普通のメソッドは自分のコードから呼ぶ。</td><td data-label="見分け方">メソッド名と引数の形を見る。</td></tr><tr><td data-label="混同しやすいもの">static / インスタンス</td><td data-label="違い">staticはクラス側。インスタンスフィールドはオブジェクト側。</td><td data-label="見分け方">mainから直接使えるかで判断する。</td></tr><tr><td data-label="混同しやすいもの"><code>String[] args</code> / 出力</td><td data-label="違い"><code>args</code>は入力側。<code>System.out.println</code>は出力側。</td><td data-label="見分け方">コマンドから入るのが<code>args</code>、画面に出るのが出力。</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>mainを判定する規則</h2><ol><li><span>メソッド名が小文字の<code>main</code>か確認する。</span></li><li><span>戻り値型が<code>void</code>か確認する。</span></li><li><span><code>public</code>と<code>static</code>が付いているか確認する。</span></li><li><span>引数型が<code>String[]</code>または<code>String...</code>か確認する。</span></li><li><span>メソッド本体ではstatic文脈のため、インスタンスメンバを直接参照できないことを確認する。</span></li></ol><p class="code-caption">確認用コード</p><pre><code>public class Main {
+    int value = 10;
+
+    public static void main(String[] args) {
+        System.out.println(value);
+    }
+}</code></pre><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>見る点</th><th>このコードでの判断</th><th>結論</th></tr></thead><tbody><tr><td data-label="見る点">mainの形</td><td data-label="このコードでの判断">入口としての形はある</td><td data-label="結論">ここはOK</td></tr><tr><td data-label="見る点"><code>value</code></td><td data-label="このコードでの判断">インスタンスフィールド</td><td data-label="結論">staticなmainから直接参照不可</td></tr><tr><td data-label="見る点">結論</td><td data-label="このコードでの判断">インスタンス生成がない</td><td data-label="結論">コンパイルエラー</td></tr></tbody></table></div></section><section class="card lesson-section flow-section"><h2>mainはJVMが探す起動入口</h2>
+<p>mainは単なる決まり文句ではなく、javaコマンドで起動したときにJVMが探す入口です。名前、戻り値型、修飾子、引数の形が条件に合っている必要があります。</p>
+<div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>要素</th><th>意味</th><th>ずれるとどうなるか</th></tr></thead><tbody><tr><td data-label="要素"><code>public</code></td><td data-label="意味">JVMから呼び出せる入口として公開する</td><td data-label="ずれるとどうなるか">入口として認識されない</td></tr><tr><td data-label="要素"><code>static</code></td><td data-label="意味">インスタンス生成なしで呼べる</td><td data-label="ずれるとどうなるか">JVMが最初に呼び出せない</td></tr><tr><td data-label="要素"><code>void</code></td><td data-label="意味">戻り値を返さない</td><td data-label="ずれるとどうなるか">入口の形式と合わない</td></tr><tr><td data-label="要素"><code>String[] args</code></td><td data-label="意味">コマンドライン引数を受け取る</td><td data-label="ずれるとどうなるか">実行時引数を受け取れない</td></tr></tbody></table></div>
+<pre><code>public static void main(String[] args) {
+    System.out.println(args.length);
+}</code></pre>
+<p><code>args</code>は「実行時に外から渡された文字列の配列」です。引数を渡さずに実行しても、<code>args</code>自体が<code>null</code>になるわけではありません。要素数0の配列として扱われます。</p>
+<pre><code>java Main one two
+// args[0] は "one"
+// args[1] は "two"</code></pre>
+<p>ここで<code>java Main</code>という実行コマンドの<code>Main</code>はクラス名であり、<code>args</code>には入りません。これも混同しやすいので、早い段階で切り分けます。</p>
+<div class="mistake-callout"><strong>ここで整理する誤解</strong><p><code>main</code>は「よく見る形」だから正しいのではありません。JVMが入口として探す条件を満たしているから実行されます。</p></div>
+</section><section class="card lesson-section basic-stumble-check"><h2>定義と規則の整理</h2><h3>mainメソッドで混同しやすい点</h3><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>つまずき</th><th>正しい考え方</th></tr></thead><tbody><tr><td data-label="つまずき"><code>main</code>なら何でも起動できると思う</td><td data-label="正しい考え方">起動対象は原則 <code>public static void main(String[] args)</code> または同等形。</td></tr><tr><td data-label="つまずき"><code>String args[]</code> と <code>String[] args</code> を別物と思う</td><td data-label="正しい考え方">どちらも配列引数として有効。ただし読みやすさでは<code>String[] args</code>が標準的。</td></tr><tr><td data-label="つまずき">引数なしなら<code>args</code>が<code>null</code>だと思う</td><td data-label="正しい考え方">引数なしでも<code>args</code>は長さ0の配列。<code>args[0]</code>は範囲外例外。</td></tr></tbody></table></div><h3>確認できれば次へ</h3><ul class="check-list compact-check-list"><li>mainメソッドに必要な4要素を言える</li><li><code>String...</code> と <code>String[]</code> の関係を説明できる</li><li>起動引数なしの<code>args.length</code>を答えられる</li></ul><div class="lesson-note"><strong>理解の基準</strong></div></section>
+<section class="card lesson-section code-trio-section">
+<h2>成立するコードと成立しないコード</h2>
+<div class="code-trio-grid">
+<article class="code-trio-card good"><h3>成立する例：mainメソッドの可変長引数</h3><pre><code>public static void main(String... args) {
+    System.out.println("start");
+}</code></pre></article>
+<article class="code-trio-card bad"><h3>成立しない例：staticがないため起動用mainにならない</h3><pre><code>public void main(String[] args) {
+    System.out.println("start");
+}</code></pre></article>
+<article class="code-trio-card fix"><h3>成立する形：public static void mainにする</h3><pre><code>public static void main(String[] args) {
+    System.out.println("start");
+}</code></pre></article>
+</div>
+<div class="lesson-note"><strong>確認ポイント</strong><p>mainはJVMから呼び出される入口です。staticがないと通常の起動入口として扱えません。</p></div>
+</section>
+<section class="card lesson-section basic-understanding-quiz quiz-level-section"><h2>定義と規則を確認する</h2><div class="quiz-level-list"><article class="quiz-level-card"><h3>用語の確認</h3><p>mainメソッドは何のためにありますか。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>javaコマンドでプログラムを開始するときの入口です。mainがあるクラスを指定して実行します。</p></details></article><article class="quiz-level-card"><h3>コードの確認</h3><p>次のmainは入口として使えますか。</p><pre><code>public static void main(String args) {
+    System.out.println("A");
+}</code></pre><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>使えません。引数はString[] argsまたはString... argsである必要があります。String args単体は入口のmainになりません。</p></details></article><article class="quiz-level-card"><h3>仕組みを説明する</h3><p>mainがあるだけで何でも直接は使えない理由を説明してください。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>javaコマンドが探すのは決まった形のpublic static void main(String[] args)です。<br/>名前がmainでも、戻り値・static・引数の形がずれると入口になりません。</p></details></article></div></section><section class="card lesson-section check-section"><h2>基本ルールのまとめ</h2><ul><li>起動用mainの基本形を説明できる。</li><li>argsは起動時に渡された文字列の配列だと理解している。</li><li>staticなmainからインスタンスメンバを直接使えない理由を説明できる。</li></ul></section><section class="card lesson-section"><h2>コードに規則を当てはめる</h2><p>次のコードで<code>name</code>を表示したい。何を直すべきか。</p><p class="code-caption">確認用コード</p><pre><code>public class Main {
+    String name = "Java";
+
+    public static void main(String[] args) {
+        System.out.println(name);
+    }
+}</code></pre><details class="answer-panel"><summary>説明を見る</summary><p><code>main</code>はstaticなので、<code>name</code>を直接参照できない。</p><p><code>Main m = new Main();</code>でインスタンスを作り、<code>System.out.println(m.name);</code>のように参照する。</p></details></section><section class="card lesson-nav-bottom"><div><a class="btn ghost" href="03.html">← 前のLesson</a><a class="btn" href="../index.html">Lesson一覧</a><a class="btn primary" href="05.html">次のLesson →</a></div></section>
+</main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../../site/about.html">このサイトについて</a><a href="../../../site/editorial-policy.html">編集方針</a><a href="../../../site/site-map.html">サイトマップ</a><a href="../../../site/privacy.html">プライバシーポリシー</a><a href="../../../site/terms.html">利用規約</a><a href="../../../site/disclaimer.html">免責事項</a><a href="../../../site/advertising.html">広告・アフィリエイト</a><a href="../../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../../";window.CURRENT_PAGE="java-basic-04.html";</script>
+<script src="../../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

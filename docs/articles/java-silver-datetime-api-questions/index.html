@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Java Silverで出るLocalDate、LocalTime、LocalDateTime、Period、Duration、format、parseの問題を整理します。" name="description"/>
+<meta content="Java Silver Date Time API,LocalDate,Period,Duration" name="keywords"/>
+<title>Java SilverのDate and Time API問題の解き方｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="article" property="og:type"/>
+<meta content="Java SilverのDate and Time API問題の解き方｜Java Practice Lab" property="og:title"/>
+<meta content="Java Silverで出るLocalDate、LocalTime、LocalDateTime、Period、Duration、format、parseの問題を整理します。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Java SilverのDate and Time API問題の解き方","description":"Java Silverで出るLocalDate、LocalTime、LocalDateTime、Period、Duration、format、parseの問題を整理します。","inLanguage":"ja","publisher":{"@type":"Organization","name":"Java Practice Lab"},"dateModified":"2026-07-07"}</script>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout article-detail-page java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a>
+<header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">Java SilverのDate and Time API問題の解き方</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent">
+<article class="content-page article-body wide-article seo-guide-page">
+<p class="eyebrow">論点攻略</p>
+<h1>Java SilverのDate and Time API問題の解き方</h1>
+<p class="lead">Java Silverで出るLocalDate、LocalTime、LocalDateTime、Period、Duration、format、parseの問題を整理します。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<p class="muted-text article-updated">最終更新日：<time datetime="2026-07-07">2026年7月7日</time>。Java SE 17の試験範囲を中心に、演習前後の読み方を整理しています。</p>
+<section class="panel column-editorial-summary" id="first-answer">
+<h2>先に結論</h2>
+<p>Date and Time APIは、型と不変性を分けて読みます。<code>plus</code> や <code>minus</code> は元のオブジェクトを書き換えません。戻り値を受け取っているか、<code>Period</code> と <code>Duration</code> の対象が合うかを確認します。</p>
+<div class="term-note-grid">
+<div class="term-note"><strong>見る基準</strong><ul><li>LocalDate、LocalTime、LocalDateTimeのどれか</li><li>メソッドの戻り値を受け取っているか</li><li>PeriodとDurationの対象を混同していないか</li><li>formatとparseの型が合っているか</li><li>存在しない日付や時刻で例外が出るか</li></ul></div>
+<div class="term-note"><strong>Java Practice Labでの使い方</strong>日付APIは、暗記だけだと似たメソッドで崩れます。演習では、変数に再代入しているか、戻り値型が何かを必ず書き出します。</div>
+</div>
+</section>
+<nav aria-label="ページ内メニュー" class="toc-card"><h2>このページの内容</h2><ul><li><a href="#objects">まず型を分ける</a></li><li><a href="#immutable">immutableを前提に読む</a></li><li><a href="#period">PeriodとDuration</a></li><li><a href="#format">formatとparse</a></li><li><a href="#practice">練習方法</a></li></ul></nav><section class="panel" id="objects"><h2>まず型を分ける</h2><p>Date and Time APIでは、日付だけ、時刻だけ、日付時刻のどれを扱っているかを最初に分けます。<code>LocalDate</code> に時刻はなく、<code>LocalTime</code> に日付はありません。</p></section><section class="panel" id="immutable"><h2>immutableを前提に読む</h2><p><code>plusDays</code> や <code>minusMonths</code> は、元のオブジェクトを変更せず、新しい値を返します。戻り値を代入していないコードでは、元の変数は変わりません。</p></section><section class="panel" id="period"><h2>PeriodとDuration</h2><table class="responsive-card-table"><thead><tr><th>型</th><th>主な対象</th><th>注意点</th></tr></thead><tbody><tr><td data-label="型">Period</td><td data-label="主な対象">年・月・日</td><td data-label="注意点">日付ベースで扱う</td></tr><tr><td data-label="型">Duration</td><td data-label="主な対象">時・分・秒</td><td data-label="注意点">時間ベースで扱う</td></tr></tbody></table></section><section class="panel" id="format"><h2>formatとparse</h2><p>formatは日時オブジェクトを文字列へ変換し、parseは文字列から日時オブジェクトを作ります。書式と文字列が一致しない場合は例外が発生します。</p></section><section class="panel" id="practice"><h2>練習方法</h2><p>Date and Time APIは、表で型とメソッドを整理してから問題を解くと安定します。Goldではローカライズと絡むため、Silver段階で基本型を固めておきます。</p></section>
+<section class="article-section related-practice-section column-next-actions" id="next-actions">
+<h2>次に使うページ</h2>
+<div class="related-grid"><a class="related-card" href="../java-gold-datetime-localization/index.html"><strong>日時・ローカライズ</strong><span>Gold範囲も含む整理。</span></a><a class="related-card" href="../java-silver-common-mistakes/index.html"><strong>Silver頻出ミス</strong><span>日付APIの見落とし。</span></a></div>
+</section>
+</article>
+</main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="article.html";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

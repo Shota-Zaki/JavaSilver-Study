@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="試験直前に見るべき頻出論点だけを短時間で整理します。" name="description"/>
+<title>直前チェックモード｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="直前チェックモード｜Java Practice Lab" property="og:title"/>
+<meta content="試験直前に見るべき頻出論点だけを短時間で整理します。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">直前チェックモード</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent">
+<section class="hero"><h1>直前チェックモード</h1><p>試験直前に見るべき頻出論点だけを短時間で整理します。</p></section><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<section class="panel"></section>
+<section class="content-page article-body wide-article upgraded-article">
+<section class="article-section quality-upgrade-section"><h2>コンパイルエラーと実行時例外を混ぜない</h2>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>分類</th><th>例</th><th>判断</th></tr></thead><tbody>
+<tr><td data-label="分類">コンパイルエラー</td><td data-label="例">型不一致、未初期化ローカル変数、アクセス不可</td><td data-label="判断">実行前に止まる。出力はない。</td></tr>
+<tr><td data-label="分類">実行時例外</td><td data-label="例">null参照、配列範囲外、キャスト失敗</td><td data-label="判断">そこまでの出力は残る可能性がある。</td></tr>
+<tr><td data-label="分類">正常出力</td><td data-label="例">型・アクセス・例外がすべて通る</td><td data-label="判断">最後に評価順を追う。</td></tr>
+</tbody></table></section>
+<section class="article-section deep-followup-section"><h2>この単元をコードに適用する手順</h2><ol class="article-list priority-list"><li>まず宣言を読みます。型、修飾子、メソッド名、引数を固定する。</li><li>次に変更される値を探します。代入、メソッド呼び出し、副作用を表にする。</li><li>最後に出力を組み立てます。途中で止まる場合は、そこまでの出力だけを残します。</li></ol><div class="article-callout">理解したつもりのままでは、似たコードに変えたときに誤答しやすくなります。本文の例を1行ずつ書き換えると、どこで結果が変わるか整理しやすいです。</div></section><section class="article-section misconception-section"><h2>よくある誤解と修正</h2><table class="study-table ref-table responsive-card-table"><thead><tr><th>誤解</th><th>正しい見方</th><th>判定方法</th></tr></thead><tbody><tr><td data-label="誤解">見た目が似ていれば同じ動きになる</td><td data-label="正しい見方">型、戻り値、参照、修飾子が1つ違うだけで結果は変わる。</td><td data-label="判定方法">行ごとに「型」「値」「参照先」をメモする。</td></tr><tr><td data-label="誤解">実行結果だけ追えばよい</td><td data-label="正しい見方">コンパイルできなければ実行されない。例外で止まれば後続行は動かない。</td><td data-label="判定方法">コンパイル可否 → 実行時例外 → 出力の順に判定する。</td></tr><tr><td data-label="誤解">暗記した用語だけで判断できる</td><td data-label="正しい見方">用語は入口にすぎない。コード上のどの行に効いているかまで見る。</td><td data-label="判定方法">本文の例を1行変更し、結果が変わる理由を説明できる形にする。</td></tr></tbody></table></section>
+<section class="article-section mini-drill-section"><h2>ミニドリル</h2><p>次の形式で、自分の答えを文章にします。正解だけを出しても、弱点は減りません。</p><ol class="article-list priority-list"><li>このコードはコンパイルできるか。</li><li>実行時に例外が起きるなら、どの行で起きるか。</li><li>正常に動くなら、出力は何か。</li><li>自分が間違えた場合、原因は「型」「参照」「戻り値」「アクセス」「例外」「評価順」のどれか。</li></ol><div class="article-callout">学習時は、選択肢を見る前に自分の判定を作ると整理しやすいです。選択肢を先に見ると、もっともらしい誤答に引っ張られます。</div></section>
+</section></main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="before-exam.html";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

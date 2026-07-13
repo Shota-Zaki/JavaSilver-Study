@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="for、while、do-whileを、条件判定と更新の順番を書き出して追います。" name="description"/>
+<title>Lesson 9 for・while｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="Lesson 9 for・while｜Java Practice Lab" property="og:title"/>
+<meta content="for、while、do-whileを、条件判定と更新の順番を書き出して追います。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../../manifest.webmanifest" rel="manifest"/>
+<link href="../../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="Java基礎">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="Java基礎"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">Java基礎</span><span class="site-context-title">for・while</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../../index.html">トップ</a><a aria-current="page" class="is-active" href="../index.html">基礎</a><a href="../../bronze/index.html">Bronze</a><a href="../../java11-silver/index.html">Silver 11</a><a href="../../java17-silver/index.html">Silver 17</a><a href="../../gold11/index.html">Gold 11</a><a href="../../gold17/index.html">Gold 17</a><a href="../../../articles/index.html">単元別解説</a><a href="../../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main lesson-main" id="mainContent">
+<article class="card lesson-hero">
+<p class="meta">Java基礎 Lesson 9</p>
+<h1>for・while</h1>
+<p class="lead">for、while、do-whileの構文と、条件評価・更新・break・continueの制御規則を説明します。</p>
+<div class="box goal-box"><strong>このレッスンのゴール</strong><p>各ループで条件式と本体が評価される順序を説明し、終了条件を判断できること。</p></div>
+</article><section class="card lesson-section basic-term-intro">
+<h2>基本用語の定義</h2>
+<div class="term-side-layout">
+<div>
+<p>繰り返し文は「何回回るか」ではなく、初期化、条件、本体、更新がどの順で実行されるかで定義します。</p>
+</div>
+<div class="term-note-grid">
+<div class="term-note basic-term-mini"><strong>ループとは</strong>条件を満たす間、同じ処理を繰り返す構文。</div><div class="term-note basic-term-mini"><strong>初期化式とは</strong>for文の最初に一度だけ実行される部分。</div><div class="term-note basic-term-mini"><strong>更新式とは</strong>for文の各周回後に実行される部分。</div><div class="term-note basic-term-mini"><strong><code>break</code>とは</strong>ループやswitchを抜ける文。</div><div class="term-note basic-term-mini"><strong><code>continue</code>とは</strong>現在の周回の残りを飛ばして次の周回へ進む文。</div>
+</div>
+</div>
+</section><section class="card lesson-section basic-term-check core-rule-section"><h2>繰り返し文の実行規則</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>項目</th><th>定義・規則</th><th>具体例</th></tr></thead><tbody><tr><td data-label="項目"><span>for文</span></td><td data-label="定義・規則"><span>初期化、条件、本体、更新の順で繰り返します。</span></td><td data-label="具体例"><span><code>for (int i=0; i&lt;3; i++)</code></span></td></tr><tr><td data-label="項目"><span>while文</span></td><td data-label="定義・規則"><span>本体の前に条件を評価します。</span></td><td data-label="具体例"><span>最初から<code>false</code>なら本体は0回です。</span></td></tr><tr><td data-label="項目"><span>do-while文</span></td><td data-label="定義・規則"><span>本体の後に条件を評価します。</span></td><td data-label="具体例"><span>本体は最低1回実行されます。</span></td></tr><tr><td data-label="項目"><span>break</span></td><td data-label="定義・規則"><span>最も内側のループまたはswitchを終了します。</span></td><td data-label="具体例"><span>ラベル付きbreakでは指定文を終了できます。</span></td></tr><tr><td data-label="項目"><span>continue</span></td><td data-label="定義・規則"><span>現在の反復の残りを飛ばし、次の反復へ進みます。</span></td><td data-label="具体例"><span>forでは更新式へ進みます。</span></td></tr><tr><td data-label="項目"><span>スコープ</span></td><td data-label="定義・規則"><span>forの初期化部で宣言した変数は、そのfor文の範囲で有効です。</span></td><td data-label="具体例"><span>ループ終了後には参照できません。</span></td></tr></tbody></table></div></section><section class="card lesson-section"><h2>for文の読み方</h2><p class="code-caption">0, 1, 2が表示される</p><pre><code>for (int i = 0; i &lt; 3; i++) {
+    System.out.println(i);
+}</code></pre><ol><li><code>int i = 0</code>を最初に1回だけ実行する。</li><li><code>i &lt; 3</code>を判定する。</li><li>trueなら本体を実行する。</li><li><code>i++</code>を実行する。</li><li>条件判定へ戻る。</li></ol></section><section class="card lesson-section"><h2>whileとdo-while</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>構文</th><th>条件判定のタイミング</th><th>最低実行回数</th></tr></thead><tbody><tr><td data-label="構文"><code>while</code></td><td data-label="条件判定のタイミング">本体の前</td><td data-label="最低実行回数">0回</td></tr><tr><td data-label="構文"><code>do-while</code></td><td data-label="条件判定のタイミング">本体の後</td><td data-label="最低実行回数">1回</td></tr></tbody></table></div><pre><code>int x = 10;
+while (x &lt; 5) {
+    System.out.println("while");
+}
+
+do {
+    System.out.println("do");
+} while (x &lt; 5);</code></pre></section><section class="card lesson-section"><h2>breakとcontinue</h2><p><code>break</code>はループ自体を終了する。<code>continue</code>は現在の反復をそこで終え、次の反復へ進む。for文では<code>continue</code>後に更新式へ進む。</p><p class="code-caption">0, 1, 3が表示される</p><pre><code>for (int i = 0; i &lt; 5; i++) {
+    if (i == 2) {
+        continue;
+    }
+    if (i == 4) {
+        break;
+    }
+    System.out.println(i);
+}</code></pre></section><section class="card lesson-section"><h2>到達不能コード</h2><p><code>break</code> や <code>continue</code> の直後に同じブロック内の文を書くと、その文へ到達できないためコンパイルエラーになります。</p><p class="code-caption">成立しない例</p><pre><code>while (true) {
+    break;
+    System.out.println("never"); // 到達不能
+}</code></pre></section><section class="card lesson-section"><h2>for文の実行順序を確認する</h2><p class="code-caption">`Main.java`として保存する完全なコード</p><pre><code>public class Main {
+    public static void main(String[] args) {
+        for (int i = 0; i &lt; 5; i++) {
+            if (i == 2) {
+                continue;
+            }
+            if (i == 4) {
+                break;
+            }
+            System.out.print(i);
+        }
+    }
+}</code></pre><p><span><code>i == 2</code>では出力を飛ばして更新式へ進み、<code>i == 4</code>ではループを終了します。出力は<code>013</code>です。</span></p></section><section class="card lesson-section"><h2>関連する用語との違い</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>混同しやすいもの</th><th>違い</th><th>見分け方</th></tr></thead><tbody><tr><td data-label="混同しやすいもの"><code>while</code> / <code>do-while</code></td><td data-label="違い"><code>while</code>は先に判定。<code>do-while</code>は後で判定。</td><td data-label="見分け方">条件が最初からfalseのときに差が出る。</td></tr><tr><td data-label="混同しやすいもの"><code>break</code> / <code>continue</code></td><td data-label="違い"><code>break</code>は終了。<code>continue</code>は次へ。</td><td data-label="見分け方">ループを抜けるか、次回へ進むか。</td></tr><tr><td data-label="混同しやすいもの">更新式 / 本体</td><td data-label="違い"><code>for</code>の更新式は本体実行後。</td><td data-label="見分け方">出力してから増えるのか、増えてから出力かを追う。</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>ループを追跡する規則</h2><ol><li><span>初期化部を1回だけ実行する。</span></li><li><span>条件式を評価し、<code>false</code>なら終了する。</span></li><li><span>本体を上から実行する。</span></li><li><span><code>continue</code>、<code>break</code>、例外、returnの有無を確認する。</span></li><li><span>通常のfor文では更新式を実行してから次の条件評価へ戻る。</span></li></ol><p class="code-caption">確認用コード</p><pre><code>for (int i = 0; i &lt; 3; i++) {
+    System.out.println(i);
+}</code></pre><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>見る点</th><th>このコードでの判断</th><th>結論</th></tr></thead><tbody><tr><td data-label="見る点">1回目</td><td data-label="このコードでの判断"><code>i=0</code>、条件true、出力0、更新で1</td><td data-label="結論">継続</td></tr><tr><td data-label="見る点">2回目</td><td data-label="このコードでの判断"><code>i=1</code>、条件true、出力1、更新で2</td><td data-label="結論">継続</td></tr><tr><td data-label="見る点">3回目</td><td data-label="このコードでの判断"><code>i=2</code>、条件true、出力2、更新で3</td><td data-label="結論">次で終了</td></tr></tbody></table></div></section>
+<section class="card lesson-section flow-section"><h2>ループは順番を書き出して追う</h2>
+<p>繰り返し回数を感覚で決めると、1回多い・少ないという誤りが起きます。for文では、初期化、条件判定、本体、更新の順番を固定して追います。</p>
+<pre><code>for (int i = 0; i &lt; 3; i++) {
+    System.out.println(i);
+}</code></pre>
+<div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>順番</th><th>処理</th><th>この例</th></tr></thead><tbody><tr><td data-label="順番">1</td><td data-label="処理">初期化</td><td data-label="この例"><code>int i = 0</code>。最初に1回だけ。</td></tr><tr><td data-label="順番">2</td><td data-label="処理">条件判定</td><td data-label="この例"><code>i &lt; 3</code>。trueなら本体へ。</td></tr><tr><td data-label="順番">3</td><td data-label="処理">本体</td><td data-label="この例"><code>println(i)</code>を実行。</td></tr><tr><td data-label="順番">4</td><td data-label="処理">更新</td><td data-label="この例"><code>i++</code>。その後、条件判定へ戻る。</td></tr></tbody></table></div>
+<p><code>while</code>は条件判定が先、<code>do-while</code>は本体が先です。つまり<code>do-while</code>は条件が最初からfalseでも最低1回は実行されます。</p>
+<pre><code>int i = 10;
+do {
+    System.out.println(i);
+} while (i &lt; 3); // 10が1回表示される</code></pre>
+<div class="mistake-callout"><strong>ここで整理する誤解</strong><p>ループ回数は見た目で決めず、初期値から条件がfalseになるまでを追います。初期値、条件、更新の3点がそろって初めて回数が決まります。</p></div>
+</section>
+<section class="card lesson-section basic-stumble-check"><h2>定義と規則の整理</h2><h3>ループで読み間違える点</h3><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>つまずき</th><th>正しい考え方</th></tr></thead><tbody><tr><td data-label="つまずき">for文を左から1回ずつ読む</td><td data-label="正しい考え方">初期化→条件→本体→更新→条件…の順。更新式は本体の後。</td></tr><tr><td data-label="つまずき"><code>continue</code>で更新式も飛ぶと思う</td><td data-label="正しい考え方">通常のfor文では<code>continue</code>後に更新式へ進む。</td></tr><tr><td data-label="つまずき">do-whileをwhileと同じだと思う</td><td data-label="正しい考え方">do-whileは条件判定前に本体が最低1回実行される。</td></tr></tbody></table></div><h3>確認できれば次へ</h3><ul class="check-list compact-check-list"><li>for文の実行順を説明できる</li><li>breakとcontinueの違いを説明できる</li><li>whileとdo-whileの違いを説明できる</li></ul><div class="lesson-note"><strong>理解の基準</strong></div></section>
+<section class="card lesson-section code-trio-section">
+<h2>成立するコードと成立しないコード</h2>
+<div class="code-trio-grid">
+<article class="code-trio-card good"><h3>成立する例：ループの更新</h3><pre><code>for (int i = 0; i &lt; 3; i++) {
+    System.out.println(i);
+}</code></pre></article>
+<article class="code-trio-card bad"><h3>成立しない例</h3><pre><code>int i = 0;
+while (i &lt; 3) {
+    System.out.println(i);
+}</code></pre></article>
+<article class="code-trio-card fix"><h3>成立する形</h3><pre><code>int i = 0;
+while (i &lt; 3) {
+    System.out.println(i);
+    i++;
+}</code></pre></article>
+</div>
+<div class="lesson-note"><strong>確認ポイント</strong><p>whileでは更新処理を書き忘れると無限ループになります。</p></div>
+</section>
+<section class="card lesson-section basic-understanding-quiz quiz-level-section"><h2>定義と規則を確認する</h2><div class="quiz-level-list"><article class="quiz-level-card"><h3>用語の確認</h3><p>for文の初期化、条件、更新、本体の実行順を説明できますか。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>初期化 → 条件判定 → 本体 → 更新 → 条件判定、の順です。更新式は本体の後に動きます。</p></details></article><article class="quiz-level-card"><h3>コードの確認</h3><p>次のコードは何回表示しますか。</p><pre><code>for (int i = 0; i &lt; 3; i++) {
+    System.out.print(i);
+}</code></pre><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>3回です。表示は012です。iが0,1,2のとき本体が実行され、3で条件がfalseになります。</p></details></article><article class="quiz-level-card"><h3>仕組みを説明する</h3><p>拡張for文で要素変数を書き換えても配列本体が変わらない場合がある理由を説明してください。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>拡張for文の変数は要素値または参照のコピーを受け取ります。プリミティブ値を書き換えても配列要素そのものは書き換わりません。</p></details></article></div></section><section class="card lesson-section check-section"><h2>基本ルールのまとめ</h2><ul><li>for文の実行順を説明できる。</li><li>whileとdo-whileの違いを説明できる。</li><li>breakとcontinueが次にどこへ進むか判断できる。</li></ul></section><section class="card lesson-section"><h2>コードに規則を当てはめる</h2><p>次の出力を答える。</p><p class="code-caption">確認用コード</p><pre><code>for (int i = 0; i &lt; 5; i++) {
+    if (i == 2) continue;
+    if (i == 4) break;
+    System.out.print(i);
+}</code></pre><details class="answer-panel"><summary>説明を見る</summary><p>出力は<code>013</code>。</p><p><code>i=2</code>では<code>continue</code>により出力を飛ばす。<code>i=4</code>では<code>break</code>によりループを終了する。</p></details></section><section class="card lesson-nav-bottom"><div><a class="btn ghost" href="08.html">← 前のLesson</a><a class="btn" href="../index.html">Lesson一覧</a><a class="btn primary" href="10.html">次のLesson →</a></div></section>
+</main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../../site/about.html">このサイトについて</a><a href="../../../site/editorial-policy.html">編集方針</a><a href="../../../site/site-map.html">サイトマップ</a><a href="../../../site/privacy.html">プライバシーポリシー</a><a href="../../../site/terms.html">利用規約</a><a href="../../../site/disclaimer.html">免責事項</a><a href="../../../site/advertising.html">広告・アフィリエイト</a><a href="../../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../../";window.CURRENT_PAGE="java-basic-09.html";</script>
+<script src="../../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

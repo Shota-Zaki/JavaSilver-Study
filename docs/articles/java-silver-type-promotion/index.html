@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="byte・short・charの計算結果、複合代入、キャストを例で整理します。" name="description"/>
+<title>数値昇格で間違える理由｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="数値昇格で間違える理由｜Java Practice Lab" property="og:title"/>
+<meta content="byte・short・charの計算結果、複合代入、キャストを例で整理します。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">数値昇格で間違える理由</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent"><section class="content-page article-body wide-article upgraded-article">
+<h1>数値昇格で間違える理由</h1>
+<p class="lead">byte・short・charの計算結果、複合代入、キャストを例で整理します。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside><div class="article-callout strong"><strong>関連解説:</strong> <code>Number n = 10;</code>や<code>Long n = 10;</code>を含む、リテラル・ボクシング・ラッパークラスの関係は、<a href="../number-literals-number/index.html">数値リテラル・ラッパークラス・Numberの関係</a>で詳しく扱います。</div>
+<section class="article-section foundation-bridge-section" id="foundation-type-variable-literal">
+<h2>値・型・変数・リテラル・式・文を分ける</h2>
+<p>型のコードで詰まる原因の多くは、用語を全部まとめて「値」として扱ってしまうことです。Javaは、コード上の見た目ではなく、各式が持つ <strong>型</strong> で判定します。</p>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>用語</th><th>意味</th><th>例</th><th>注意点</th></tr></thead>
+<tbody>
+<tr><td data-label="用語">値</td><td data-label="意味">実際に扱うデータ。</td><td data-label="例"><code>10</code>, <code>true</code>, <code>'A'</code>, オブジェクト</td><td data-label="注意点">見た目が似ていても型が違えば別物。</td></tr>
+<tr><td data-label="用語">型</td><td data-label="意味">値の扱い方を決める分類。</td><td data-label="例"><code>int</code>, <code>char</code>, <code>String</code></td><td data-label="注意点">代入、演算、比較、メソッド呼び出しの可否を決める。</td></tr>
+<tr><td data-label="用語">変数</td><td data-label="意味">値または参照値を保持する名前付き領域。</td><td data-label="例"><code>int n</code>, <code>String s</code></td><td data-label="注意点">プリミティブ型は値、参照型はオブジェクトへの参照を持つ。</td></tr>
+<tr><td data-label="用語">リテラル</td><td data-label="意味">コードに直接書いた値。</td><td data-label="例"><code>10</code>, <code>10L</code>, <code>"10"</code>, <code>null</code></td><td data-label="注意点">リテラル自体にも型がある。</td></tr>
+<tr><td data-label="用語">式</td><td data-label="意味">評価すると値と型を持つコード片。</td><td data-label="例"><code>a + 1</code>, <code>str.length()</code></td><td data-label="注意点"><code>byte + byte</code> の式は <code>int</code> になる。</td></tr>
+<tr><td data-label="用語">文</td><td data-label="意味">処理の単位。</td><td data-label="例"><code>int a = 1;</code>, <code>if (...) {}</code></td><td data-label="注意点">式と文を混同すると、代入式や戻り値の判定を誤る。</td></tr>
+</tbody>
+</table>
+<div class="article-callout warn"><strong>判定の芯:</strong> <code>byte b = 1;</code> は「1が小さいから入る」ではなく、「<code>int</code> リテラルだが、定数で範囲内なので特例で代入できる」と読みます。</div>
+<h3>プリミティブ型と参照型の根本差</h3>
+<pre><code>int a = 10;       // 変数aは数値10そのものを持つ
+String s = "abc"; // 変数sはStringオブジェクトへの参照を持つ
+String t = s;     // 参照値がコピーされ、同じオブジェクトを見る</code></pre>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>分類</th><th>変数が持つもの</th><th><code>null</code></th><th><code>==</code> の意味</th></tr></thead>
+<tbody>
+<tr><td data-label="分類">プリミティブ型</td><td data-label="変数が持つもの">値そのもの</td><td data-label="null">代入不可</td><td data-label="== の意味">値の比較</td></tr>
+<tr><td data-label="分類">参照型</td><td data-label="変数が持つもの">オブジェクトへの参照</td><td data-label="null">代入可</td><td data-label="== の意味">参照先が同じかの比較</td></tr>
+</tbody>
+</table>
+<p><code>null</code> は空文字でも0でもありません。参照型変数が <strong>どのオブジェクトも参照していない状態</strong> を表す特別なリテラルです。したがって <code>null.length()</code> のような呼び出しは、コンパイルは通っても実行時に <code>NullPointerException</code> になります。</p>
+</section>
+<section class="article-section article-card important">
+<h2>この単元の結論: 数値式は「値」ではなく「式の型」で読む</h2>
+<p>数値式は、見た目の値だけではなく各オペランドと式全体の型を確認します。次の順番で処理します。</p>
+<ol class="article-list priority-list">
+<li><strong>各リテラルの型</strong>を決める。整数は基本 <code>int</code>、小数は基本 <code>double</code>。</li>
+<li><strong>演算があるか</strong>を見る。<code>byte</code>/<code>short</code>/<code>char</code> は演算で原則 <code>int</code> に昇格。</li>
+<li><strong>定数式か変数式か</strong>を見る。範囲内の定数式だけ特別に小さい型へ代入できる場合がある。</li>
+<li><strong>代入先の型へ暗黙変換できるか</strong>を見る。</li>
+<li><strong>複合代入</strong>なら、暗黙キャストを含むことを考慮する。</li>
+</ol>
+<div class="article-callout warn"><strong>重要:</strong> <code>byte b = 1 + 2;</code> と <code>byte b = a + 2;</code> は同じではありません。前者は定数式、後者は変数を含む式です。</div>
+</section><section class="article-section">
+<h2>数値リテラルの基本型</h2>
+<p>まず、ソースコードに直接書いた数値が何型として扱われるかを決めます。</p>
+<table class="ref-table study-table responsive-card-table">
+<thead><tr><th>リテラル</th><th>型</th><th>例</th><th>注意</th></tr></thead>
+<tbody>
+<tr><td data-label="リテラル">整数リテラル</td><td data-label="型"><code>int</code></td><td data-label="例"><code>10</code></td><td data-label="注意">範囲を超える整数は <code>L</code> が必要。</td></tr>
+<tr><td data-label="リテラル"><code>L</code>/<code>l</code>付き整数</td><td data-label="型"><code>long</code></td><td data-label="例"><code>10L</code></td><td data-label="注意">小文字 <code>l</code> は <code>1</code> と紛らわしい。</td></tr>
+<tr><td data-label="リテラル">小数リテラル</td><td data-label="型"><code>double</code></td><td data-label="例"><code>1.0</code></td><td data-label="注意"><code>float</code> へ直接代入不可。</td></tr>
+<tr><td data-label="リテラル"><code>F</code>/<code>f</code>付き小数</td><td data-label="型"><code>float</code></td><td data-label="例"><code>1.0F</code></td><td data-label="注意"><code>float</code> へ入れるなら基本これ。</td></tr>
+<tr><td data-label="リテラル"><code>D</code>/<code>d</code>付き小数</td><td data-label="型"><code>double</code></td><td data-label="例"><code>1.0D</code></td><td data-label="注意">明示しなくても小数は基本 <code>double</code>。</td></tr>
+</tbody>
+</table>
+<pre class="article-code"><code>int a = 10;       // 10 は int
+long b = 10;      // int から long へ拡大変換
+long c = 10L;     // 10L は long
+
+// float d = 1.0; // NG: 1.0 は double
+float e = 1.0F;   // OK
+double f = 1.0F;  // OK: float から double へ拡大変換</code></pre>
+</section><section class="article-section">
+<h2>整数リテラルの進数表記</h2>
+<p>同じ整数でも、先頭の書き方で基数が変わります。特に8進数の <code>0</code> 始まりは見混同しやすいです。</p>
+<table class="ref-table study-table responsive-card-table">
+<thead><tr><th>表記</th><th>例</th><th>10進での値</th><th>注意</th></tr></thead>
+<tbody>
+<tr><td data-label="表記">10進数</td><td data-label="例"><code>17</code></td><td data-label="10進での値">17</td><td data-label="注意">通常の表記。</td></tr>
+<tr><td data-label="表記">2進数</td><td data-label="例"><code>0b10001</code></td><td data-label="10進での値">17</td><td data-label="注意"><code>0b</code> または <code>0B</code>。</td></tr>
+<tr><td data-label="表記">8進数</td><td data-label="例"><code>021</code></td><td data-label="10進での値">17</td><td data-label="注意">先頭が <code>0</code>。<code>8</code> と <code>9</code> は使えない。</td></tr>
+<tr><td data-label="表記">16進数</td><td data-label="例"><code>0x11</code></td><td data-label="10進での値">17</td><td data-label="注意"><code>0x</code> または <code>0X</code>。</td></tr>
+</tbody>
+</table>
+<pre class="article-code"><code>int a = 17;
+int b = 0b10001;
+int c = 021;
+int d = 0x11;
+System.out.println(a + b + c + d); // 68
+
+// int e = 089; // NG: 8進数に 8/9 は使えない</code></pre>
+</section><section class="article-section">
+<h2>アンダースコアのルール</h2>
+<p>数値リテラルの途中には <code>_</code> を置けます。読みやすくするための記号で、値には影響しません。ただし置ける場所に制限があります。</p>
+<table class="ref-table study-table responsive-card-table">
+<thead><tr><th>コード</th><th>可否</th><th>理由</th></tr></thead>
+<tbody>
+<tr><td data-label="コード"><code>int a = 123_456;</code></td><td data-label="可否">OK</td><td data-label="理由">数字の間。</td></tr>
+<tr><td data-label="コード"><code>int b = 1__2__3;</code></td><td data-label="可否">OK</td><td data-label="理由">連続しても数字の間なら可。</td></tr>
+<tr><td data-label="コード"><code>int c = _123;</code></td><td data-label="可否">NG</td><td data-label="理由">リテラルの先頭。</td></tr>
+<tr><td data-label="コード"><code>int d = 123_;</code></td><td data-label="可否">NG</td><td data-label="理由">リテラルの末尾。</td></tr>
+<tr><td data-label="コード"><code>float e = 3_.14F;</code></td><td data-label="可否">NG</td><td data-label="理由">小数点の直前。</td></tr>
+<tr><td data-label="コード"><code>float f = 3._14F;</code></td><td data-label="可否">NG</td><td data-label="理由">小数点の直後。</td></tr>
+<tr><td data-label="コード"><code>long g = 100_L;</code></td><td data-label="可否">NG</td><td data-label="理由">接尾辞 <code>L</code> の直前。</td></tr>
+<tr><td data-label="コード"><code>int h = 0x_FF;</code></td><td data-label="可否">NG</td><td data-label="理由">基数接頭辞 <code>0x</code> の直後。</td></tr>
+<tr><td data-label="コード"><code>int i = 0xF_F;</code></td><td data-label="可否">OK</td><td data-label="理由">数字の間。</td></tr>
+</tbody>
+</table>
+</section><section class="article-section">
+<h2>拡大変換と縮小変換</h2>
+<p>代入では、右辺の型から左辺の型へ安全に変換できるかを見ます。広い型へは暗黙変換できますが、狭い型へは原則キャストが必要です。</p>
+<pre class="article-code"><code>int i = 10;
+long l = i;       // OK: int から long
+float f = l;      // OK: long から float
+// int x = l;     // NG: long から int
+int y = (int) l;  // OK: 明示キャスト</code></pre>
+<p>ただし、浮動小数では「範囲」と「精度」は別です。<code>long</code> から <code>float</code> への変換は許されますが、精度が失われる可能性はあります。コードでは主にコンパイル可否を見ます。</p>
+</section><section class="article-section">
+<h2>byte・short・charは演算でintに昇格する</h2>
+<p>ここが最判定の軸です。<code>byte</code>、<code>short</code>、<code>char</code> は、算術演算に入ると基本的に <code>int</code> に昇格します。</p>
+<pre class="article-code"><code>byte a = 1;
+byte b = 2;
+// byte c = a + b; // NG: a + b は int
+int d = a + b;     // OK
+byte e = (byte)(a + b); // OK: 明示キャスト</code></pre>
+<pre class="article-code"><code>char c = 'A';
+// char next = c + 1; // NG: c + 1 は int
+char next = (char)(c + 1); // OK</code></pre>
+<div class="article-callout warn"><strong>覚え方:</strong> 小さい整数型の演算結果は、だいたい <code>int</code> になる。代入先が <code>byte</code>/<code>short</code>/<code>char</code> なら警戒。</div>
+</section><section class="article-section">
+<h2>二項数値昇格の優先順位</h2>
+<p>左右のオペランドの型が違う場合、広い型に寄せられます。大まかな優先順位は次の通りです。</p>
+<table class="ref-table study-table responsive-card-table">
+<thead><tr><th>含まれる型</th><th>演算結果の型</th><th>例</th></tr></thead>
+<tbody>
+<tr><td data-label="含まれる型"><code>double</code> が含まれる</td><td data-label="演算結果の型"><code>double</code></td><td data-label="例"><code>1 + 2.0</code> は <code>double</code></td></tr>
+<tr><td data-label="含まれる型"><code>float</code> が含まれる</td><td data-label="演算結果の型"><code>float</code></td><td data-label="例"><code>1L + 2.0F</code> は <code>float</code></td></tr>
+<tr><td data-label="含まれる型"><code>long</code> が含まれる</td><td data-label="演算結果の型"><code>long</code></td><td data-label="例"><code>1 + 2L</code> は <code>long</code></td></tr>
+<tr><td data-label="含まれる型">それ以外の整数型</td><td data-label="演算結果の型"><code>int</code></td><td data-label="例"><code>byte + short</code> は <code>int</code></td></tr>
+</tbody>
+</table>
+<pre class="article-code"><code>int a = 10;
+long b = 20L;
+// int c = a + b;  // NG: a + b は long
+long d = a + b;    // OK
+
+float f = 1.0F;
+double g = 2.0;
+// float h = f + g; // NG: f + g は double
+double i = f + g;   // OK</code></pre>
+</section><section class="article-section">
+<h2>定数式なら小さい型へ代入できる場合がある</h2>
+<p>右辺がコンパイル時に値を確定できる定数式で、代入先の範囲内なら、<code>byte</code>、<code>short</code>、<code>char</code> へ代入できます。</p>
+<pre class="article-code"><code>byte a = 10;        // OK
+byte b = 10 + 20;   // OK: 定数式で範囲内
+// byte c = 100 + 100; // NG: 200 は byte の範囲外
+
+short s = 1000 + 2000; // OK
+char ch = 65;          // OK</code></pre>
+<p>定数式の例外を知らないと、「整数リテラルはintだから全部NG」と誤判定します。逆に、変数を含む式までOKにしてしまうのも誤りです。</p>
+</section><section class="article-section">
+<h2>final変数とコンパイル時定数</h2>
+<p><code>final</code> が付いていて、宣言時に定数式で初期化されている場合、コンパイル時定数として扱われることがあります。</p>
+<pre class="article-code"><code>final int x = 10;
+byte a = x;       // OK: x はコンパイル時定数で範囲内
+byte b = x + 20;  // OK
+
+int y = 10;
+// byte c = y;    // NG: y は変数
+// byte d = y + 20; // NG</code></pre>
+<pre class="article-code"><code>final int z;
+z = 10;
+// byte e = z; // NGになり得る: 宣言時初期化のコンパイル時定数ではない</code></pre>
+<div class="article-callout"><strong>コード読解用判断:</strong> <code>final int x = 10;</code>のように宣言と同時に定数で初期化されているか</div>
+</section><section class="article-section">
+<h2>複合代入は暗黙キャストを含む</h2>
+<p><code>+=</code>、<code>-=</code>、<code>*=</code>、<code>/=</code> などの複合代入は、左辺の型へのキャストを含むように動きます。</p>
+<pre class="article-code"><code>byte b = 1;
+// b = b + 1; // NG: b + 1 は int
+b += 1;       // OK: b = (byte)(b + 1) 相当</code></pre>
+<p>ただし、これは安全という意味ではありません。値が範囲を超えれば、オーバーフローした結果になります。</p>
+<pre class="article-code"><code>byte b = 127;
+b += 1;
+System.out.println(b); // -128</code></pre>
+</section><section class="article-section">
+<h2>オーバーフロー: コンパイル可否と値を分ける</h2>
+<p>整数型は範囲を超えると循環します。キャストや複合代入では、コンパイルできるが値が予想外になることがあります。</p>
+<pre class="article-code"><code>byte b = (byte)128;
+System.out.println(b); // -128
+
+int max = Integer.MAX_VALUE;
+System.out.println(max + 1); // -2147483648</code></pre>
+<p>Javaでは「コンパイルエラー」なのか「実行できるが値が変わる」のかを分けることが判定の軸です。</p>
+</section><section class="article-section">
+<h2>整数除算と小数除算</h2>
+<p>割り算は、オペランドの型で結果が変わります。整数同士なら小数部は切り捨てです。</p>
+<pre class="article-code"><code>System.out.println(5 / 2);     // 2
+System.out.println(5 / 2.0);   // 2.5
+System.out.println(5.0 / 2);   // 2.5
+
+int a = 5;
+int b = 2;
+double c = a / b;
+System.out.println(c);         // 2.0</code></pre>
+<p><code>double c = a / b;</code> は、先に <code>int / int</code> が計算されて <code>2</code> になり、その後 <code>double</code> に代入されます。<code>2.5</code> にはなりません。</p>
+</section><section class="article-section">
+<h2>余り演算子 %</h2>
+<p><code>%</code> は割った余りを返します。出力追跡コードでよく使われます。</p>
+<pre class="article-code"><code>System.out.println(10 % 3); // 1
+System.out.println(10 % 5); // 0
+System.out.println(3 % 10); // 3</code></pre>
+<p>符号付きの余りも扱われる可能性はありますが、Javaではまず正の整数の基本を確実に処理できれば十分です。</p>
+</section><section class="article-section">
+<h2>charの演算と出力</h2>
+<p><code>char</code> は文字ですが、演算では数値として扱われ、結果は原則 <code>int</code> です。</p>
+<pre class="article-code"><code>char c = 'A';
+System.out.println(c);     // A
+System.out.println(c + 1); // 66
+System.out.println((char)(c + 1)); // B</code></pre>
+<p><code>println</code> に <code>char</code> 単体を渡すと文字として出ますが、<code>c + 1</code> は <code>int</code> なので数値として出ます。</p>
+</section><section class="article-section">
+<h2>String結合が混ざる数値式</h2>
+<p><code>+</code> は数値加算にも文字列結合にも使われます。左から評価され、途中で <code>String</code> が出ると以後は文字列結合になります。</p>
+<pre class="article-code"><code>System.out.println(1 + 2 + "A"); // 3A
+System.out.println("A" + 1 + 2); // A12
+System.out.println("A" + (1 + 2)); // A3</code></pre>
+<p>これは数値型昇格そのものではありませんが、数値式の出力候補でよく使うです。</p>
+</section><section class="article-section">
+<h2>キャストの優先順位</h2>
+<p>キャストはどこにかかっているかを正確に見ます。</p>
+<pre class="article-code"><code>byte a = 10;
+byte b = 20;
+
+byte c = (byte)(a + b); // OK: 合計結果を byte にキャスト
+// byte d = (byte)a + b; // NG: (byte)a は byte だが、+ b で int になる</code></pre>
+<p>キャストを見つけたら「式全体にかかっているのか、一部だけか」を括弧で判定します。</p>
+</section><section class="article-section">
+<h2>出力追跡の例: 型を表にして追う</h2>
+<pre class="article-code"><code>byte b = 10;
+int i = 20;
+long l = 30L;
+System.out.println(b + i + l);</code></pre>
+<table class="ref-table study-table responsive-card-table">
+<thead><tr><th>処理</th><th>型</th><th>値</th></tr></thead>
+<tbody>
+<tr><td data-label="処理"><code>b + i</code></td><td data-label="型"><code>int</code></td><td data-label="値">30</td></tr>
+<tr><td data-label="処理"><code>30 + l</code></td><td data-label="型"><code>long</code></td><td data-label="値">60</td></tr>
+<tr><td data-label="処理"><code>println</code></td><td data-label="型"><code>long</code>値の表示</td><td data-label="値"><code>60</code></td></tr>
+</tbody>
+</table>
+<p>出力には <code>L</code> は付きません。<code>L</code> はソースコード上のリテラル表記です。</p>
+</section><section class="article-section">
+<h2>混同しやすいコード例</h2>
+<details class="article-card"><summary><strong>1. <code>byte b = 128;</code></strong></summary><p>コンパイルエラー。 byte の範囲は -128〜127</p></details>
+<details class="article-card"><summary><strong>2. <code>short s = 10 + 20;</code></strong></summary><p>OK。リテラルだけの定数式で、結果30は short の範囲内</p></details>
+<details class="article-card"><summary><strong>3. <code>short a = 10, b = 20; short c = a + b;</code></strong></summary><p>コンパイルエラー。 a + b は int</p></details>
+<details class="article-card"><summary><strong>4. <code>float f = 10.0;</code></strong></summary><p>コンパイルエラー。 10.0 は double です。 10.0F にします</p></details>
+<details class="article-card"><summary><strong>5. <code>int x = 2 * 3L;</code></strong></summary><p>コンパイルエラー。 3L があるので演算結果は long</p></details>
+<details class="article-card"><summary><strong>6. <code>int x = 08;</code></strong></summary><p>コンパイルエラー。先頭 0 は8進数で、8進数に 8 は使えません</p></details>
+</section><section class="article-section">
+<h2>ミニ演習</h2>
+<details class="article-card"><summary><strong>確認例1. <code>byte b = 1 + 2;</code> は？</strong></summary><p>OKです。リテラルだけの定数式で、結果3は byte の範囲内</p></details>
+<details class="article-card"><summary><strong>確認例2. <code>byte a = 1; byte b = 2; byte c = a + b;</code> は？</strong></summary><p>コンパイルエラーです。 a + b は int になります</p></details>
+<details class="article-card"><summary><strong>確認例3. <code>byte b = 127; b += 1; System.out.println(b);</code> は？</strong></summary><p>-128 と表示されます。 b += 1 はコンパイルできますが、 byte の範囲を超えてオーバーフローします</p></details>
+<details class="article-card"><summary><strong>確認例4. <code>double d = 5 / 2;</code> の値は？</strong></summary><p>2.0 です。先に int / int で 2 になり、その後 double に代入されます</p></details>
+<details class="article-card"><summary><strong>確認例5. <code>System.out.println('A' + 1);</code> は？</strong></summary><p>66 と表示されます。 'A' は演算で int に昇格します</p></details>
+</section><section class="article-section">
+<h2>この単元の最終チェック</h2>
+<ul class="article-list check-list">
+<li>整数リテラルは基本 <code>int</code>、小数リテラルは基本 <code>double</code> と判断できる。</li>
+<li><code>L</code>、<code>F</code>、<code>D</code> 接尾辞の意味を説明できる。</li>
+<li>2進数・8進数・16進数表記を見分けられる。</li>
+<li>数値リテラルの <code>_</code> を置ける場所・置けない場所を判断できる。</li>
+<li><code>byte</code>/<code>short</code>/<code>char</code> の演算結果が原則 <code>int</code> になると判断できる。</li>
+<li>定数式と変数式を区別できる。</li>
+<li>複合代入が暗黙キャストを含むことを説明できる。</li>
+<li>整数除算と小数除算の出力差を追跡できる。</li>
+</ul>
+<p class="inline-note article-callout">前に戻る: <a href="../types/index.html">型・変数・リテラル</a> / 次に読む: <a href="../types/index.html">var・スコープ</a> / 関連: <a href="../operators-control/index.html">演算子・制御</a></p>
+</section>
+</section></main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="index.html";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

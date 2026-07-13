@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Java Silver合格後にJava Goldへ進む前へ見るべき基礎力、Goldで増える読み方、最初の学習順、模試へ進む基準を具体例つきで整理します。" name="description"/>
+<meta content="Java Gold,Silver後,勉強順" name="keywords"/>
+<title>Java Silver合格後にJava Goldへ進む前にやること｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="article" property="og:type"/>
+<meta content="Java Silver合格後にJava Goldへ進む前にやること｜Java Practice Lab" property="og:title"/>
+<meta content="Java Silver合格後にJava Goldへ進む前へ見るべき基礎力、Goldで増える読み方、最初の学習順、模試へ進む基準を具体例つきで整理します。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Java Silver合格後にJava Goldへ進む前にやること","description":"Java Silver合格後、Java Goldへ進む前に見るべき知識と学習順を整理します。","inLanguage":"ja","publisher":{"@type":"Organization","name":"Java Practice Lab"}}</script>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">Java Silver合格後にJava Goldへ進む前にやること</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent">
+<section class="content-page article-body guide-article">
+<h1>Java Silver合格後にJava Goldへ進む前にやること</h1>
+<p class="lead">Silver合格直後にGoldへ進むなら、最初に見るべきなのは「Goldの新しいAPI」ではありません。<br/>Silver範囲の読解力が残っているか、Goldで増える戻り値型・例外・ジェネリクスの読み方へ移れるかを判定します。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<div class="callout-box">
+<strong>結論</strong>
+<p>Silverの出力問題を感覚で解いていた状態のままGoldへ入ると、Stream、Collectors、Genericsで止まります。<br/>Goldでは「何が表示されるか」より先に、型、戻り値、例外、終端操作、変更可能性を読む必要があります。</p>
+</div>
+<h2>Silver合格後すぐにGoldへ進める状態</h2>
+<p>Silverに合格していても、Goldへすぐ進める状態とは限りません。次の項目が説明できるなら、Goldへ入ってよい状態です。</p>
+<table class="guide-table responsive-card-table">
+<thead><tr><th>見る項目</th><th>進める状態</th><th>戻るべき状態</th></tr></thead>
+<tbody>
+<tr><td data-label="見る項目">コンパイル可否</td><td data-label="進める状態">出力を考える前に、宣言・型・アクセス修飾子を判定できる</td><td data-label="戻るべき状態">出力候補から先に選んでしまう</td></tr>
+<tr><td data-label="見る項目">型変換</td><td data-label="進める状態"><code>byte + byte</code> が <code>int</code> になる理由を説明できる</td><td data-label="戻るべき状態">小さい型同士の計算結果も小さい型になると思っている</td></tr>
+<tr><td data-label="見る項目">継承</td><td data-label="進める状態">オーバーライドとフィールド隠蔽を分けて読めます</td><td data-label="戻るべき状態">変数の宣言型と実体型を混同する</td></tr>
+<tr><td data-label="見る項目">例外</td><td data-label="進める状態">checked例外、catch順序、finallyの実行順を説明できる</td><td data-label="戻るべき状態">例外発生後にtryの続きへ戻ると思っている</td></tr>
+<tr><td data-label="見る項目">API読解</td><td data-label="進める状態">メソッド名だけでなく戻り値型と例外を読む</td><td data-label="戻るべき状態">メソッド名の雰囲気だけで挙動を決める</td></tr>
+</tbody>
+</table>
+<h2>Goldで最初に増える負荷</h2>
+<p>Goldでは、Silverよりも「APIの仕様を読む問題」が増えます。暗記量が増えるだけではなく、戻り値型と総称型を読み失点すると正解できない問題が増えます。</p>
+<h3>1. 戻り値型を読む量が増える</h3>
+<p>Goldでは、メソッド名を知っているだけでは足りません。戻り値型が <code>Optional&lt;T&gt;</code> なのか、<code>List&lt;T&gt;</code> なのか、<code>Stream&lt;T&gt;</code> なのかで次に呼べるメソッドが変わります。</p>
+<pre><code>var result = List.of("a", "bb", "ccc")
+    .stream()
+    .filter(s -&gt; s.length() &gt; 1)
+    .map(String::length)
+    .toList();</code></pre>
+<p>このコードでは、<code>filter</code> 後も <code>Stream&lt;String&gt;</code>、<code>map</code> 後は <code>Stream&lt;Integer&gt;</code>、<code>toList()</code> 後は <code>List&lt;Integer&gt;</code> です。Goldではこの型の流れを追います。</p>
+<h3>2. ジェネリクスで「入れられる」「取り出せる」が分かれる</h3>
+<pre><code>List&lt;? extends Number&gt; a = List.of(1, 2, 3);
+Number n = a.get(0);
+// a.add(10); // コンパイルできない</code></pre>
+<p><code>? extends Number</code> は、Numberとして取り出せます。ただし、具体的な要素型が <code>Integer</code> なのか <code>Double</code> なのか確定しないため、値を追加できません。</p>
+<pre><code>List&lt;? super Integer&gt; b = new ArrayList&lt;Number&gt;();
+b.add(10);
+Object value = b.get(0);</code></pre>
+<p><code>? super Integer</code> は、Integerを追加できます。ただし、取り出すときは最低限 <code>Object</code> として扱います。Goldでは、この差を曖昧にすると失点します。</p>
+<h3>3. Streamは中間操作だけでは動かない</h3>
+<pre><code>var s = Stream.of("a", "bb", "ccc")
+    .filter(x -&gt; {
+        System.out.println(x);
+        return x.length() &gt; 1;
+    });</code></pre>
+<p>この時点では何も表示されません。<code>filter</code> は中間操作です。終端操作が呼ばれるまで処理は実行されません。</p>
+<pre><code>long count = s.count();</code></pre>
+<p><code>count()</code> が終端操作なので、この時点で評価されます。Goldでは、コードの上から順番に全部動くわけではありません。</p>
+<h2>Goldへ入る前にSilverで戻るべき単元</h2>
+<p>Goldへ進む前に、次の単元で崩れるなら先にSilverへ戻った方が効率的です。</p>
+<table class="guide-table responsive-card-table">
+<thead><tr><th>崩れる単元</th><th>Goldで困る理由</th><th>戻る演習</th></tr></thead>
+<tbody>
+<tr><td data-label="崩れる単元">型変換・var</td><td data-label="Goldで困る理由">Generics、Streamの型推論で止まる</td><td data-label="戻る演習">型・変数・リテラル</td></tr>
+<tr><td data-label="崩れる単元">String / ArrayList</td><td data-label="Goldで困る理由">Collections、List、toListの変更可能性で迷う</td><td data-label="戻る演習">String・配列・コレクション基礎</td></tr>
+<tr><td data-label="崩れる単元">継承・interface</td><td data-label="Goldで困る理由">関数型インタフェース、defaultメソッド、Comparatorで崩れる</td><td data-label="戻る演習">継承・interface・ポリモーフィズム</td></tr>
+<tr><td data-label="崩れる単元">例外処理</td><td data-label="Goldで困る理由">try-with-resources、SQLException、Future.getで崩れる</td><td data-label="戻る演習">例外処理</td></tr>
+<tr><td data-label="崩れる単元">Java 17追加分</td><td data-label="Goldで困る理由">Gold 17のrecord、sealed、switch式の読解で崩れる</td><td data-label="戻る演習">17追加分</td></tr>
+</tbody>
+</table>
+<h2>Goldの最初の学習順</h2>
+<p>Goldは、いきなりStreamから入るより、土台になる順番で進めた方が安定します。</p>
+<ol>
+<li><strong>ジェネリクス</strong>：<code>&lt;T&gt;</code>、<code>? extends</code>、<code>? super</code>、型消去を先に固める。</li>
+<li><strong>ラムダ式・関数型インタフェース</strong>：Predicate、Function、Consumer、Supplierの形を覚える。</li>
+<li><strong>Optional</strong>：empty、map、flatMap、orElse、orElseGetの差を判定する。</li>
+<li><strong>Stream</strong>：中間操作、終端操作、遅延評価、再利用不可を読む。</li>
+<li><strong>Collectors</strong>：toMap、groupingBy、partitioningBy、下流Collectorを読む。</li>
+<li><strong>NIO / 日時 / JDBC</strong>：API仕様とchecked例外を整理する。</li>
+<li><strong>並行処理 / モジュール</strong>：出力順、Future、module-infoを整理する。</li>
+</ol>
+<h2>Silver合格直後の1週間でやること</h2>
+<table class="guide-table responsive-card-table">
+<thead><tr><th>日</th><th>やること</th><th>目的</th></tr></thead>
+<tbody>
+<tr><td data-label="日">1日目</td><td data-label="やること">Silverで間違えたタグを見る</td><td data-label="目的">Goldへ持ち込む弱点を把握する</td></tr>
+<tr><td data-label="日">2日目</td><td data-label="やること">型変換、継承、例外を復習する</td><td data-label="目的">Goldの前提を固める</td></tr>
+<tr><td data-label="日">3日目</td><td data-label="やること">ジェネリクスを読む</td><td data-label="目的">StreamとCollectionsの型を読む準備</td></tr>
+<tr><td data-label="日">4日目</td><td data-label="やること">ラムダ式を読む</td><td data-label="目的">Streamの条件式とメソッド参照に慣れる</td></tr>
+<tr><td data-label="日">5日目</td><td data-label="やること">OptionalとStreamの入口を読む</td><td data-label="目的">戻り値型の流れを追う</td></tr>
+<tr><td data-label="日">6日目</td><td data-label="やること">Streamの基本演習を解く</td><td data-label="目的">遅延評価と終端操作を見る</td></tr>
+<tr><td data-label="日">7日目</td><td data-label="やること">Gold通常演習を少量解く</td><td data-label="目的">Goldへ進む負荷を見る</td></tr>
+</tbody>
+</table>
+<h2>Gold模試へ進む基準</h2>
+<p>Gold模試は、最初から点数を取りに行くものではありません。最初の模試は、時間内にどの分類で崩れるかを見るために使います。</p>
+<ul>
+<li>Generics、Lambda、Streamの通常演習で6割以上取れる</li>
+<li>OptionalとCollectorsの戻り値型を説明できる</li>
+<li>NIOと例外処理の関係を説明できる</li>
+<li>解説を読んだあと、なぜ誤答が誤りか説明できる</li>
+</ul>
+<p>この条件を満たす前に模試だけ回すと、点数は出ても復習対象が多すぎて整理できません。</p>
+<h2>よくある誤解を整理する</h2>
+<h3>Silverに合格しただけではGoldのAPI問題は解けません</h3>
+<p>Silverの読解力は前提です。Goldでは、戻り値型、総称型、例外、変更可能性を読む力が追加で必要です。</p>
+<h3>Streamはfor文の書き換えだけでは終わらない</h3>
+<p>Streamでは、遅延評価、終端操作、短絡操作、再利用不可を判定します。for文と同じ感覚で上から順に実行すると読み間違えます。</p>
+<h3>ジェネリクスは書き方の暗記だけでは足りない</h3>
+<p><code>? extends</code> と <code>? super</code> は、値を入れる側と取り出す側で制約が変わります。PECSを使って、どちらの立場で使っているか判定します。</p>
+<h3>Goldは問題文が長いだけの試験ではない</h3>
+<p>長文を読む力より、型とAPI仕様を順番に切る力が必要です。読解の中心は文章量ではなく、コード上の型の流れです。</p>
+<h2>このサイトでの進め方</h2>
+<div class="callout-box">
+<strong>おすすめ順</strong>
+<ol>
+<li><a href="../java-gold-generics-deep/index.html">ジェネリクス完全整理</a></li>
+<li><a href="../java-gold-lambda-first/index.html">ラムダ式と関数型インタフェース完全整理</a></li>
+<li><a href="../java-gold-optional-first/index.html">Optional完全整理</a></li>
+<li><a href="../java-gold-stream-deep/index.html">Stream API完全整理</a></li>
+<li><a href="../java-gold-collector-first/index.html">Collectors完全整理</a></li>
+<li><a href="../../courses/gold/index.html">Gold通常演習・模試</a></li>
+</ol>
+</div>
+</section>
+</main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="article";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

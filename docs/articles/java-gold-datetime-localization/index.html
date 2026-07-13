@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Java Gold向けにDate and Time API、LocalDate、LocalDateTime、ZonedDateTime、Period、Duration、DateTimeFormatter、Locale、ResourceBundle、NumberFormatを整理します。" name="description"/>
+<title>日時APIとローカライズ｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="日時APIとローカライズ｜Java Practice Lab" property="og:title"/>
+<meta content="Java Gold向けにDate and Time API、LocalDate、LocalDateTime、ZonedDateTime、Period、Duration、DateTimeFormatter、Locale、ResourceBundle、NumberFormatを整理します。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout article-page gold-deep-article java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">日時APIとローカライズ</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout"><main class="main" id="mainContent">
+<article class="content-page long-article">
+<h1>日時APIとローカライズ</h1>
+<p class="lead">Date and Time APIとローカライズでは、保持している情報の種類を先に分けます。<br/>日付、時刻、タイムゾーン、期間、書式、Locale、ResourceBundleは、似た名前でも役割が異なります。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<section class="article-section"><h2>Date and Time APIの全体像</h2>
+<p>Java 8以降の日時APIは、主に<code>java.time</code>パッケージにあります。多くのクラスは不変です。メソッドを呼んでも元のオブジェクトは変更されず、新しいオブジェクトを返します。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>クラス</th><th>表すもの</th><th>例</th><th>確認する点</th></tr></thead><tbody>
+<tr><td data-label="クラス"><code>LocalDate</code></td><td data-label="表すもの">日付</td><td data-label="例">2026-06-01</td><td data-label="確認する点">時刻を持たない</td></tr>
+<tr><td data-label="クラス"><code>LocalTime</code></td><td data-label="表すもの">時刻</td><td data-label="例">09:30:00</td><td data-label="確認する点">日付を持たない</td></tr>
+<tr><td data-label="クラス"><code>LocalDateTime</code></td><td data-label="表すもの">日付と時刻</td><td data-label="例">2026-06-01T09:30</td><td data-label="確認する点">タイムゾーンを持たない</td></tr>
+<tr><td data-label="クラス"><code>ZonedDateTime</code></td><td data-label="表すもの">日付・時刻・タイムゾーン</td><td data-label="例">2026-06-01T09:30+09:00[Asia/Tokyo]</td><td data-label="確認する点">ゾーン差・夏時間に注意</td></tr>
+<tr><td data-label="クラス"><code>Instant</code></td><td data-label="表すもの">UTC基準の瞬間</td><td data-label="例">2026-06-01T00:30:00Z</td><td data-label="確認する点">機械的な時刻に近い</td></tr>
+<tr><td data-label="クラス"><code>Period</code></td><td data-label="表すもの">年月日単位の期間</td><td data-label="例">P1Y2M3D</td><td data-label="確認する点">日付向け</td></tr>
+<tr><td data-label="クラス"><code>Duration</code></td><td data-label="表すもの">時分秒単位の期間</td><td data-label="例">PT2H30M</td><td data-label="確認する点">時刻・瞬間向け</td></tr>
+</tbody></table>
+<div class="article-callout"><code>LocalDateTime</code>を「タイムゾーン付き日時」と読まないことが判定の軸です。<code>LocalDateTime</code>はローカルな日時であり、ゾーン情報を持ちません。</div>
+</section>
+<section class="article-section"><h2>作成方法</h2>
+<p><code>now()</code>は実行時点に依存するため、理解上の出力を追うコードでは<code>of(...)</code>や<code>parse(...)</code>がよく使われます。</p>
+<pre class="article-code"><code>import java.time.*;
+
+class Main {
+    public static void main(String[] args) {
+        LocalDate d = LocalDate.of(2026, 6, 1);
+        LocalTime t = LocalTime.of(9, 30);
+        LocalDateTime dt = LocalDateTime.of(d, t);
+        ZonedDateTime zdt = ZonedDateTime.of(dt, ZoneId.of("Asia/Tokyo"));
+
+        System.out.println(d);
+        System.out.println(t);
+        System.out.println(dt);
+        System.out.println(zdt);
+    }
+}</code></pre>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>作成方法</th><th>意味</th><th>注意</th></tr></thead><tbody>
+<tr><td data-label="作成方法"><code>LocalDate.now()</code></td><td data-label="意味">現在日付</td><td data-label="注意">実行環境に依存</td></tr>
+<tr><td data-label="作成方法"><code>LocalDate.of(2026, 6, 1)</code></td><td data-label="意味">指定日付</td><td data-label="注意">月は1〜12。0始まりではない</td></tr>
+<tr><td data-label="作成方法"><code>LocalDate.parse("2026-06-01")</code></td><td data-label="意味">ISO形式文字列から作成</td><td data-label="注意">標準形式と合わないと例外</td></tr>
+<tr><td data-label="作成方法"><code>ZoneId.of("Asia/Tokyo")</code></td><td data-label="意味">タイムゾーンID</td><td data-label="注意">存在しないIDは例外</td></tr>
+</tbody></table>
+</section>
+<section class="article-section"><h2>不変性</h2>
+<p>Date and Time APIの主要クラスは不変です。<code>plusDays</code>や<code>minusMonths</code>は元の値を変更せず、変更後の新しい値を返します。</p>
+<pre class="article-code"><code>LocalDate d = LocalDate.of(2026, 6, 1);
+d.plusDays(10);
+System.out.println(d);       // 2026-06-01
+
+LocalDate next = d.plusDays(10);
+System.out.println(next);    // 2026-06-11</code></pre>
+<div class="article-callout"><code>String</code>と同じく、戻り値を受け取らないと結果を捨てています。</div>
+</section>
+<section class="article-section"><h2>plus / minus / with</h2>
+<p>日時APIでは、足し引きするメソッドと、特定の項目を置き換えるメソッドを区別します。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>メソッド</th><th>意味</th><th>例</th></tr></thead><tbody>
+<tr><td data-label="メソッド"><code>plusDays(3)</code></td><td data-label="意味">3日後</td><td data-label="例">2026-06-01 → 2026-06-04</td></tr>
+<tr><td data-label="メソッド"><code>minusMonths(1)</code></td><td data-label="意味">1か月前</td><td data-label="例">2026-06-01 → 2026-05-01</td></tr>
+<tr><td data-label="メソッド"><code>withYear(2030)</code></td><td data-label="意味">年を2030へ置換</td><td data-label="例">2026-06-01 → 2030-06-01</td></tr>
+<tr><td data-label="メソッド"><code>withDayOfMonth(1)</code></td><td data-label="意味">日を1へ置換</td><td data-label="例">2026-06-18 → 2026-06-01</td></tr>
+</tbody></table>
+<pre class="article-code"><code>LocalDate d = LocalDate.of(2026, 1, 31);
+System.out.println(d.plusMonths(1)); // 2026-02-28</code></pre>
+<p>存在しない日付になる場合、APIが有効な日付へ調整するケースがあります。単純な文字列置換ではありません。</p>
+</section>
+<section class="article-section"><h2>PeriodとDuration</h2>
+<p><code>Period</code>は年月日、<code>Duration</code>は時分秒を扱います。日付に時分秒を足す、時刻に年月日を足す、といった読み方をすると混乱します。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>クラス</th><th>単位</th><th>向いている対象</th><th>例</th></tr></thead><tbody>
+<tr><td data-label="クラス"><code>Period</code></td><td data-label="単位">年・月・日</td><td data-label="向いている対象"><code>LocalDate</code></td><td data-label="例"><code>Period.of(1, 2, 3)</code></td></tr>
+<tr><td data-label="クラス"><code>Duration</code></td><td data-label="単位">時・分・秒・ナノ秒</td><td data-label="向いている対象"><code>LocalTime</code> / <code>Instant</code></td><td data-label="例"><code>Duration.ofHours(2)</code></td></tr>
+</tbody></table>
+<pre class="article-code"><code>LocalDate d = LocalDate.of(2026, 6, 1);
+System.out.println(d.plus(Period.ofDays(3))); // 2026-06-04
+
+LocalTime t = LocalTime.of(9, 0);
+System.out.println(t.plus(Duration.ofMinutes(30))); // 09:30</code></pre>
+<div class="article-callout"><code>Period.of(1, 2, 3)</code>は1年2か月3日です。合計日数へ自動変換して考えません。</div>
+</section>
+<section class="article-section"><h2>betweenの戻り値</h2>
+<p><code>between</code>は、開始から終了までの差を返します。引数の順番が逆になると負の値になります。</p>
+<pre class="article-code"><code>LocalDate a = LocalDate.of(2026, 6, 1);
+LocalDate b = LocalDate.of(2026, 6, 10);
+System.out.println(Period.between(a, b)); // P9D
+
+LocalTime x = LocalTime.of(9, 0);
+LocalTime y = LocalTime.of(10, 30);
+System.out.println(Duration.between(x, y).toMinutes()); // 90</code></pre>
+</section>
+<section class="article-section"><h2>DateTimeFormatter</h2>
+<p><code>DateTimeFormatter</code>は、日時を文字列へ変換したり、文字列から日時を作ったりするための書式です。</p>
+<pre class="article-code"><code>import java.time.*;
+import java.time.format.*;
+
+LocalDate d = LocalDate.of(2026, 6, 1);
+DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+System.out.println(d.format(f)); // 2026/06/01
+
+LocalDate parsed = LocalDate.parse("2026/06/01", f);
+System.out.println(parsed); // 2026-06-01</code></pre>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>記号</th><th>意味</th><th>注意</th></tr></thead><tbody>
+<tr><td data-label="記号"><code>y</code></td><td data-label="意味">年</td><td data-label="注意"><code>yyyy</code>で4桁年</td></tr>
+<tr><td data-label="記号"><code>M</code></td><td data-label="意味">月</td><td data-label="注意">大文字。小文字<code>m</code>は分</td></tr>
+<tr><td data-label="記号"><code>d</code></td><td data-label="意味">日</td><td data-label="注意">日付の日</td></tr>
+<tr><td data-label="記号"><code>H</code></td><td data-label="意味">時</td><td data-label="注意">0〜23</td></tr>
+<tr><td data-label="記号"><code>m</code></td><td data-label="意味">分</td><td data-label="注意">月ではない</td></tr>
+<tr><td data-label="記号"><code>s</code></td><td data-label="意味">秒</td><td data-label="注意">秒</td></tr>
+</tbody></table>
+<div class="article-callout"><code>MM</code>と<code>mm</code>の取り違えは定番です。月は大文字M、分は小文字mです。</div>
+</section>
+<section class="article-section"><h2>Locale</h2>
+<p><code>Locale</code>は、言語・国・地域などのローカル設定を表します。表示形式やメッセージ選択に影響します。</p>
+<pre class="article-code"><code>import java.util.*;
+
+Locale ja = Locale.JAPAN;
+Locale us = Locale.US;
+Locale fr = Locale.FRANCE;
+
+System.out.println(ja.getLanguage()); // ja
+System.out.println(ja.getCountry());  // JP</code></pre>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>作成方法</th><th>意味</th><th>注意</th></tr></thead><tbody>
+<tr><td data-label="作成方法"><code>Locale.JAPAN</code></td><td data-label="意味">日本</td><td data-label="注意">言語ja、国JP</td></tr>
+<tr><td data-label="作成方法"><code>Locale.US</code></td><td data-label="意味">米国</td><td data-label="注意">言語en、国US</td></tr>
+<tr><td data-label="作成方法"><code>new Locale("ja", "JP")</code></td><td data-label="意味">言語・国を指定</td><td data-label="注意">古い書き方として出る可能性</td></tr>
+<tr><td data-label="作成方法"><code>Locale.of("ja", "JP")</code></td><td data-label="意味">言語・国を指定</td><td data-label="注意">Java 19以降。Java 17では利用できない</td></tr>
+</tbody></table>
+</section>
+<section class="article-section"><h2>NumberFormat</h2>
+<p><code>NumberFormat</code>は、数値や通貨をLocaleに応じた文字列へ整形します。戻り値は文字列です。</p>
+<pre class="article-code"><code>import java.text.*;
+import java.util.*;
+
+NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
+System.out.println(nf.format(1234567)); // 1,234,567
+
+NumberFormat cf = NumberFormat.getCurrencyInstance(Locale.US);
+System.out.println(cf.format(1234.5));</code></pre>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>メソッド</th><th>意味</th><th>注意</th></tr></thead><tbody>
+<tr><td data-label="メソッド"><code>getNumberInstance</code></td><td data-label="意味">通常の数値形式</td><td data-label="注意">桁区切りなどがLocale依存</td></tr>
+<tr><td data-label="メソッド"><code>getCurrencyInstance</code></td><td data-label="意味">通貨形式</td><td data-label="注意">通貨記号・小数桁がLocale依存</td></tr>
+<tr><td data-label="メソッド"><code>getPercentInstance</code></td><td data-label="意味">パーセント形式</td><td data-label="注意">0.25 → 25%のように扱う</td></tr>
+<tr><td data-label="メソッド"><code>parse</code></td><td data-label="意味">文字列から数値を読む</td><td data-label="注意"><code>ParseException</code>に注意</td></tr>
+</tbody></table>
+</section>
+<section class="article-section"><h2>ResourceBundle</h2>
+<p><code>ResourceBundle</code>は、Localeに応じたメッセージを読み分ける仕組みです。プロパティファイル名とLocaleの対応を読みます。</p>
+<pre class="article-code"><code>// messages_ja_JP.properties
+// hello=こんにちは
+
+import java.util.*;
+
+Locale locale = Locale.JAPAN;
+ResourceBundle rb = ResourceBundle.getBundle("messages", locale);
+System.out.println(rb.getString("hello"));</code></pre>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>ファイル例</th><th>対象</th><th>注意</th></tr></thead><tbody>
+<tr><td data-label="ファイル例"><code>messages.properties</code></td><td data-label="対象">基本</td><td data-label="注意">最後の fallback</td></tr>
+<tr><td data-label="ファイル例"><code>messages_ja.properties</code></td><td data-label="対象">日本語</td><td data-label="注意">言語だけ</td></tr>
+<tr><td data-label="ファイル例"><code>messages_ja_JP.properties</code></td><td data-label="対象">日本語・日本</td><td data-label="注意">より具体的</td></tr>
+<tr><td data-label="ファイル例"><code>messages_en_US.properties</code></td><td data-label="対象">英語・米国</td><td data-label="注意">Locale.US</td></tr>
+</tbody></table>
+<p>キーが存在しない場合は、単に<code>null</code>を返すのではなく例外になります。</p>
+</section>
+<section class="article-section"><h2>よくある誤解を整理する</h2>
+<div class="article-grid-2">
+<div class="article-mini-card"><h3>LocalDateTimeはタイムゾーンを持たない</h3><p><code>LocalDateTime</code>は日付と時刻だけを持ちます。時差や夏時間を考えるなら<code>ZonedDateTime</code>を見ます。</p></div>
+<div class="article-mini-card"><h3>plusDaysは元の値を変更しない</h3><p>日時APIの主要クラスは不変です。戻り値を受け取らないと変更後の値を使えません。</p></div>
+<div class="article-mini-card"><h3>Periodは時間を扱わない</h3><p><code>Period</code>は年・月・日です。時・分・秒は<code>Duration</code>で扱います。</p></div>
+<div class="article-mini-card"><h3>DateTimeFormatterのMMは分にならない</h3><p>月は大文字<code>M</code>、分は小文字<code>m</code>です。<code>yyyy/mm/dd</code>は月ではなく分を使います。</p></div>
+<div class="article-mini-card"><h3>ResourceBundleはキーなしでnullを返さない</h3><p>存在しないキーを読むと例外です。戻り値のnull判定だけで処理しません。</p></div>
+<div class="article-mini-card"><h3>Localeは翻訳そのものをしない</h3><p><code>Locale</code>は地域設定です。メッセージ翻訳は<code>ResourceBundle</code>などのデータが必要です。</p></div>
+</div>
+</section>
+<section class="article-section"><h2>不可能・誤りパターン</h2>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>コード・考え方</th><th>結果</th><th>理由</th></tr></thead><tbody>
+<tr><td data-label="コード・考え方"><code>LocalDate.of(2026, 0, 1)</code></td><td data-label="結果">実行時例外</td><td data-label="理由">月は1〜12</td></tr>
+<tr><td data-label="コード・考え方"><code>LocalDate.parse("2026/06/01")</code></td><td data-label="結果">実行時例外</td><td data-label="理由">標準は<code>yyyy-MM-dd</code></td></tr>
+<tr><td data-label="コード・考え方"><code>d.plusDays(1);</code>だけで<code>d</code>が変わる</td><td data-label="結果">変わらない</td><td data-label="理由">不変オブジェクト</td></tr>
+<tr><td data-label="コード・考え方"><code>Period.ofHours(1)</code></td><td data-label="結果">コンパイルエラー</td><td data-label="理由"><code>Period</code>は時間単位を持たない</td></tr>
+<tr><td data-label="コード・考え方"><code>DateTimeFormatter.ofPattern("yyyy/mm/dd")</code></td><td data-label="結果">意図と違う書式</td><td data-label="理由"><code>mm</code>は分</td></tr>
+<tr><td data-label="コード・考え方"><code>ResourceBundle.getString("missing")</code></td><td data-label="結果">実行時例外</td><td data-label="理由">キーが存在しない</td></tr>
+</tbody></table>
+</section>
+<section class="article-section"><h2>コードの読み方</h2>
+<ol class="article-list ordered">
+<li>クラスが何を持つか判定します。日付だけか、時刻だけか、日時か、ゾーン付きか。</li>
+<li>メソッドが元の値を変更するか、戻り値を返すだけかを判定します。</li>
+<li><code>Period</code>と<code>Duration</code>の単位を判定します。</li>
+<li>書式では大文字・小文字を判定します。特に<code>M</code>と<code>m</code>。</li>
+<li>Localeは表示ルール、ResourceBundleはメッセージ取得と切り分けます。</li>
+</ol>
+</section>
+<section class="article-section related-practice"><h2>関連演習</h2>
+<div class="study-route-grid">
+<a class="study-route-card" href="../../courses/gold11/practice/nio-datetime.html"><span class="route-badge">演習</span><strong>NIO・Date and Time</strong><span>Path、Files、LocalDate、DateTimeFormatter</span></a>
+<a class="study-route-card" href="../../courses/gold11/practice/concurrency-nio.html"><span class="route-badge">演習</span><strong>並行処理・NIO</strong><span>DateTime APIを含む複合演習</span></a>
+<a class="study-route-card" href="../../courses/gold11/practice/stream-collectors.html"><span class="route-badge">総合</span><strong>関連単元演習</strong><span>日時・ローカライズを含む横断的な内容</span></a>
+</div>
+</section>
+<section class="article-section"><p><a class="btn primary" href="../index.html">単元別解説一覧へ戻る</a></p></section>
+</article>
+<section class="content-section"><h2>日時・ローカライズの確認</h2><div class="note-card"><p>日時APIはimmutableです。<code>plusDays</code> や <code>minusMonths</code> は元のインスタンスを変更せず、新しいインスタンスを返します。</p><ul><li><code>LocalDate</code>、<code>LocalTime</code>、<code>LocalDateTime</code>、<code>ZonedDateTime</code> の扱う情報量を分けます。</li><li><code>Period</code> は日付ベース、<code>Duration</code> は時間ベースです。</li><li>フォーマットとパースでは、パターン不一致による例外を見ます。</li><li><code>ResourceBundle</code> はLocaleに応じた探索順を見ます。</li></ul></div></section>
+</main></div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="java-gold-datetime-localization.html";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script><script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script><script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body></html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Java GoldでつまずきやすいStream、Optional、Collectors、NIO、JDBC、並行処理、モジュールなどの論点を整理します。" name="description"/>
+<title>Java Goldでつまずきやすい論点まとめ｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="article" property="og:type"/>
+<meta content="Java Goldでつまずきやすい論点まとめ｜Java Practice Lab" property="og:title"/>
+<meta content="Java GoldでつまずきやすいStream、Optional、Collectors、NIO、JDBC、並行処理、モジュールなどの論点を整理します。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","name":"Java Goldでつまずきやすい論点まとめ","description":"Java GoldでつまずきやすいStream、Optional、Collectors、NIO、JDBC、並行処理、モジュールなどの論点を整理します。","inLanguage":"ja","isPartOf":{"@type":"WebSite","name":"Java Practice Lab"},"dateModified":"2026-07-07"}</script>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout article-detail-page java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a>
+<header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">Java Goldでつまずきやすい論点まとめ</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent">
+<article class="content-page article-body legal-page seo-guide-page">
+<p class="eyebrow">Gold対策</p>
+<h1>Java Goldでつまずきやすい論点まとめ</h1>
+<p class="lead">Goldは範囲が広く、API仕様の細かい差で正誤が決まります。つまずきやすい論点を先に把握して、演習の復習効率を上げます。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<p class="muted-text article-updated">最終更新日：<time datetime="2026-07-07">2026年7月7日</time>。Java SE 17の試験範囲を中心に、演習前後の読み方を整理しています。</p>
+<section class="panel column-editorial-summary" id="first-answer">
+<h2>先に結論</h2>
+<p>Goldで失点しやすい原因は、API名の暗記ではなく、戻り値、例外、評価タイミングの見落としです。Stream、NIO.2、並行処理、JDBCは、似たメソッドを大まかにまとめると選択肢で崩れます。</p>
+<div class="term-note-grid">
+<div class="term-note"><strong>見る基準</strong><ul><li>Streamの終端操作があるか</li><li>Optionalの空値処理で例外が出るか</li><li>Files系メソッドの戻り値と例外を見ているか</li><li>並行処理で順序保証を決めつけていないか</li><li>JDBCのカーソル位置や例外条件を見ているか</li></ul></div>
+<div class="term-note"><strong>Java Practice Labでの使い方</strong>Gold演習では、誤答したAPIを一覧で覚えるより、なぜその選択肢が除外されるかを整理します。単元別解説と模試を往復して、APIごとの弱点を潰します。</div>
+</div>
+</section>
+<nav aria-label="ページ内メニュー" class="toc-card"><h2>このページの内容</h2><ul><li><a href="#stream">Stream / Optional / Collectors</a></li><li><a href="#nio">NIO / 入出力</a></li><li><a href="#concurrency">並行処理</a></li><li><a href="#jdbc">JDBC / トランザクション</a></li><li><a href="#module">モジュール</a></li><li><a href="#practice">復習方法</a></li></ul></nav>
+<section class="panel" id="stream"><h2>Stream / Optional / Collectors</h2><p>Goldで最も差が出やすい領域です。中間操作、終端操作、遅延評価、Optionalの空値処理、Collectorsの戻り値を分けて確認します。</p><ul><li><a href="../java-gold-stream-deep/index.html">Stream API完全整理</a></li><li><a href="../java-gold-optional-first/index.html">Optional完全整理</a></li><li><a href="../java-gold-collector-first/index.html">Collectors完全整理</a></li></ul></section><section class="panel" id="nio"><h2>NIO / 入出力</h2><p>Pathの解決、Filesの戻り値、例外条件、try-with-resourcesのclose順を確認します。ファイル操作は、コードの見た目よりもメソッド仕様が外せません。</p><p><a href="../java-gold-nio-path-files/index.html">NIO / Path / Files完全整理</a></p></section><section class="panel" id="concurrency"><h2>並行処理</h2><p>ExecutorService、Callable、Future、synchronized、並行コレクションは、出力順を固定できるかが問われます。スレッドを開始しただけでは、実行順は単純に上から確定しません。</p><p><a href="../java-gold-concurrency-basic/index.html">並行処理 / Executor / Future</a></p></section><section class="panel" id="jdbc"><h2>JDBC / トランザクション</h2><p>Connection、PreparedStatement、ResultSet、commit、rollback、autoCommitの扱いを整理します。SQLの結果ではなく、Java側のAPI使用手順が問われる問題もあります。</p><p><a href="../java-gold-jdbc/index.html">JDBC完全整理</a></p></section><section class="panel" id="module"><h2>モジュール</h2><p>module-info.javaでは、requires、exports、opens、uses、providesの意味を分けます。クラスパスとモジュールパスの混同も誤答原因になります。</p><p><a href="../java-gold-module-info-check/index.html">module-info.java / Javaモジュール</a></p></section><section class="panel" id="practice"><h2>復習方法</h2><p>Goldでは、1問ごとの解説を読んだ後に該当APIの単元別解説へ戻る流れが有効です。特にStream、NIO、JDBC、並行処理は、正答できても根拠が曖昧なら再演習します。</p><p><a class="button" href="../../courses/gold/index.html">Gold演習へ</a></p></section>
+<section class="article-section related-practice-section column-next-actions" id="next-actions">
+<h2>次に使うページ</h2>
+<div class="related-grid"><a class="related-card" href="../java-gold-stream-api-questions/index.html"><strong>Stream API問題</strong><span>Gold最重要論点。</span></a><a class="related-card" href="../java-gold-nio2-questions/index.html"><strong>NIO.2問題</strong><span>PathとFilesの整理。</span></a><a class="related-card" href="../java-gold-concurrency-questions/index.html"><strong>並行処理問題</strong><span>順序と状態の整理。</span></a></div>
+</section>
+</article>
+</main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="article.html";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

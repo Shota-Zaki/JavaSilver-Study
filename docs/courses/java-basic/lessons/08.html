@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="if文の条件がbooleanになるかを確認し、比較と短絡評価を順に読みます。" name="description"/>
+<title>Lesson 8 if文と条件式｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="Lesson 8 if文と条件式｜Java Practice Lab" property="og:title"/>
+<meta content="if文の条件がbooleanになるかを確認し、比較と短絡評価を順に読みます。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../../manifest.webmanifest" rel="manifest"/>
+<link href="../../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="Java基礎">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="Java基礎"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">Java基礎</span><span class="site-context-title">if文と条件式</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../../index.html">トップ</a><a aria-current="page" class="is-active" href="../index.html">基礎</a><a href="../../bronze/index.html">Bronze</a><a href="../../java11-silver/index.html">Silver 11</a><a href="../../java17-silver/index.html">Silver 17</a><a href="../../gold11/index.html">Gold 11</a><a href="../../gold17/index.html">Gold 17</a><a href="../../../articles/index.html">単元別解説</a><a href="../../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main lesson-main" id="mainContent">
+<article class="card lesson-hero">
+<p class="meta">Java基礎 Lesson 8</p>
+<h1>if文と条件式</h1>
+<p class="lead">if文の構文、boolean条件、比較演算、論理演算、短絡評価の規則を説明します。</p>
+<div class="box goal-box"><strong>このレッスンのゴール</strong><p>条件式がbooleanでなければならない理由と、`&amp;&amp;`・`||`が右辺を評価しない条件を説明できること。</p></div>
+</article><section class="card lesson-section basic-term-intro">
+<h2>基本用語の定義</h2>
+<div class="term-side-layout">
+<div>
+<p>Javaのif文は数値を真偽値として扱いません。丸かっこ内の式は必ず`boolean`へ評価される必要があります。</p>
+</div>
+<div class="term-note-grid">
+<div class="term-note basic-term-mini"><strong>条件式とは</strong><code>true</code> または <code>false</code> になる式。</div><div class="term-note basic-term-mini"><strong><code>boolean</code>とは</strong>真偽値だけを扱う型。<code>true</code>/<code>false</code>。</div><div class="term-note basic-term-mini"><strong>比較演算子とは</strong><code>&gt;</code>、<code>==</code>など、比較結果をbooleanで返す演算子。</div><div class="term-note basic-term-mini"><strong>短絡評価とは</strong><code>&amp;&amp;</code>や<code>||</code>で右側の評価が省略されること。</div><div class="term-note basic-term-mini"><strong>ブロックとは</strong><code>{ }</code>で囲んだ処理のまとまり。</div>
+</div>
+</div>
+</section><section class="card lesson-section basic-term-check core-rule-section"><h2>if文と条件式の成立条件</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>項目</th><th>定義・規則</th><th>具体例</th></tr></thead><tbody><tr><td data-label="項目"><span>条件式</span></td><td data-label="定義・規則"><span>評価結果が<code>boolean</code>になる式。</span></td><td data-label="具体例"><span><code>age &gt;= 18</code></span></td></tr><tr><td data-label="項目"><span>if文</span></td><td data-label="定義・規則"><span>条件が<code>true</code>のときに文またはブロックを実行します。</span></td><td data-label="具体例"><span><code>if (condition) { ... }</code></span></td></tr><tr><td data-label="項目"><span>else</span></td><td data-label="定義・規則"><span>直前の対応可能なifに結び付きます。</span></td><td data-label="具体例"><span>波かっこで対応関係を明示できます。</span></td></tr><tr><td data-label="項目"><span>比較演算子</span></td><td data-label="定義・規則"><span><code>&lt;</code>、<code>&lt;=</code>、<code>&gt;</code>、<code>&gt;=</code>、<code>==</code>、<code>!=</code>。</span></td><td data-label="具体例"><span>結果型は<code>boolean</code>です。</span></td></tr><tr><td data-label="項目"><span>短絡AND</span></td><td data-label="定義・規則"><span><code>&amp;&amp;</code>は左辺が<code>false</code>なら右辺を評価しません。</span></td><td data-label="具体例"><span>危険な処理を右辺で避けられます。</span></td></tr><tr><td data-label="項目"><span>短絡OR</span></td><td data-label="定義・規則"><span><code>||</code>は左辺が<code>true</code>なら右辺を評価しません。</span></td><td data-label="具体例"><span>右辺の副作用が実行されない場合があります。</span></td></tr></tbody></table></div></section><section class="card lesson-section"><h2>ifの基本</h2><pre><code>if (条件式) {
+    条件がtrueのときの処理
+} else {
+    条件がfalseのときの処理
+}</code></pre><p>条件式に書けるのは<code>true</code>または<code>false</code>になる式。<code>if (1)</code>や<code>if (0)</code>はJavaでは使えない。</p></section><section class="card lesson-section"><h2>比較演算子</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>演算子</th><th>意味</th><th>例</th></tr></thead><tbody><tr><td data-label="演算子"><code>==</code></td><td data-label="意味">等しい</td><td data-label="例"><code>a == b</code></td></tr><tr><td data-label="演算子"><code>!=</code></td><td data-label="意味">等しくない</td><td data-label="例"><code>a != b</code></td></tr><tr><td data-label="演算子"><code>&lt;</code></td><td data-label="意味">小さい</td><td data-label="例"><code>a &lt; b</code></td></tr><tr><td data-label="演算子"><code>&gt;</code></td><td data-label="意味">大きい</td><td data-label="例"><code>a &gt; b</code></td></tr><tr><td data-label="演算子"><code>&lt;=</code></td><td data-label="意味">以下</td><td data-label="例"><code>a &lt;= b</code></td></tr><tr><td data-label="演算子"><code>&gt;=</code></td><td data-label="意味">以上</td><td data-label="例"><code>a &gt;= b</code></td></tr></tbody></table></div><div class="lesson-note"><strong>参照型の==</strong><p><code>String</code>などの参照型で<code>==</code>を使うと、内容ではなく参照先が同じかを見る。</p></div></section><section class="card lesson-section"><h2>短絡評価</h2><p><code>&amp;&amp;</code>は左がfalseなら全体がfalseなので右を評価しない。<code>||</code>は左がtrueなら全体がtrueなので右を評価しない。</p><p class="code-caption">右側が実行されない例</p><pre><code>int x = 0;
+if (x &gt; 0 &amp;&amp; ++x &gt; 0) {
+    System.out.println("A");
+}
+System.out.println(x); // 0</code></pre><p><code>&amp;</code>や<code>|</code>をbooleanに使うと短絡しない。右側も評価される。</p></section><section class="card lesson-section"><h2>代入と比較の混同</h2><p class="code-caption">これはコンパイルできる</p><pre><code>boolean flag = false;
+if (flag = true) {
+    System.out.println("run");
+}</code></pre><p><code>flag = true</code>は代入式で、結果として<code>true</code>になるため<code>if</code>に書ける。比較のつもりなら<code>flag == true</code>だが、通常は<code>if (flag)</code>で十分。</p></section><section class="card lesson-section"><h2>条件式と短絡評価の最小例</h2><p class="code-caption">`Main.java`として保存する完全なコード</p><pre><code>public class Main {
+    public static void main(String[] args) {
+        String text = null;
+        if (text != null &amp;&amp; text.length() &gt; 0) {
+            System.out.println(text);
+        } else {
+            System.out.println("empty");
+        }
+    }
+}</code></pre><p><span>左辺<code>text != null</code>が<code>false</code>なので、右辺<code>text.length() &gt; 0</code>は評価されません。そのため、このコードでは<code>NullPointerException</code>は発生しません。</span></p></section><section class="card lesson-section"><h2>関連する用語との違い</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>混同しやすいもの</th><th>違い</th><th>見分け方</th></tr></thead><tbody><tr><td data-label="混同しやすいもの"><code>=</code> / <code>==</code></td><td data-label="違い"><code>=</code>は代入、<code>==</code>は比較。</td><td data-label="見分け方">条件式内で代入していないか見る。</td></tr><tr><td data-label="混同しやすいもの"><code>&amp;&amp;</code> / <code>&amp;</code></td><td data-label="違い"><code>&amp;&amp;</code>は短絡評価あり。<code>&amp;</code>は右辺も評価する。</td><td data-label="見分け方">右辺に副作用があると差が出る。</td></tr><tr><td data-label="混同しやすいもの">数値 / boolean</td><td data-label="違い">Javaでは数値を真偽値として使えない。</td><td data-label="見分け方"><code>if (x)</code>は<code>x</code>がbooleanでなければ不可。</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>条件分岐を評価する規則</h2><ol><li><span>条件式全体が<code>boolean</code>型か確認する。</span></li><li><span>演算子の優先順位に従って式をグループ化する。</span></li><li><span>オペランドを左から評価する。</span></li><li><span><code>&amp;&amp;</code>または<code>||</code>なら短絡条件を適用する。</span></li><li><span>最終結果が<code>true</code>の分岐だけを実行する。</span></li></ol><p class="code-caption">確認用コード</p><pre><code>int a = 10;
+int b = 0;
+if (a &lt; 5 &amp;&amp; ++b &gt; 0) {
+    a++;
+}
+System.out.println(a + ":" + b);</code></pre><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>見る点</th><th>このコードでの判断</th><th>結論</th></tr></thead><tbody><tr><td data-label="見る点">左辺</td><td data-label="このコードでの判断"><code>a &lt; 5</code>はfalse</td><td data-label="結論"><code>&amp;&amp;</code>なので右辺を評価しない</td></tr><tr><td data-label="見る点"><code>++b</code></td><td data-label="このコードでの判断">実行されない</td><td data-label="結論"><code>b</code>は0のまま</td></tr><tr><td data-label="見る点">出力</td><td data-label="このコードでの判断"><code>a</code>は10、<code>b</code>は0</td><td data-label="結論"><code>10:0</code></td></tr></tbody></table></div></section>
+<section class="card lesson-section flow-section"><h2>ifが受け取るのはboolean</h2>
+<p>Javaのif文では、条件式の結果が必ずbooleanでなければなりません。0や1を自動的にfalseやtrueとして扱うことはありません。</p>
+<pre><code>int n = 1;
+// if (n) { }      // コンパイルエラー
+if (n == 1) {      // OK。比較結果はboolean
+    System.out.println("ok");
+}</code></pre>
+<p>もう1つ重要なのが短絡評価です。<code>&amp;&amp;</code>は左がfalseなら右を評価しません。<code>||</code>は左がtrueなら右を評価しません。これは単なる高速化ではなく、例外を避けるためにも使われます。</p>
+<pre><code>String s = null;
+if (s != null &amp;&amp; s.length() &gt; 0) {
+    System.out.println(s);
+}</code></pre>
+<p>上のコードは、左側の<code>s != null</code>がfalseなので、右側の<code>s.length()</code>は実行されません。逆に<code>&amp;</code>を使うと右側まで評価され、<code>NullPointerException</code>になります。</p>
+<div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>演算子</th><th>右辺評価</th><th>主な使いどころ</th></tr></thead><tbody><tr><td data-label="演算子"><code>&amp;&amp;</code></td><td data-label="右辺評価">必要なときだけ評価</td><td data-label="主な使いどころ">通常の条件分岐</td></tr><tr><td data-label="演算子"><code>||</code></td><td data-label="右辺評価">必要なときだけ評価</td><td data-label="主な使いどころ">どちらか満たせばよい条件</td></tr><tr><td data-label="演算子"><code>&amp;</code> / <code>|</code></td><td data-label="右辺評価">基本的に両辺を評価</td><td data-label="主な使いどころ">booleanでは意図がある場合だけ使う</td></tr></tbody></table></div>
+<div class="mistake-callout"><strong>条件式で見る順番</strong><p>まず型がbooleanになるか判定し、その後に左から評価順序を追います。見た目の自然言語ではなく、Javaの評価順序で読むと整理しやすいです。</p></div>
+</section>
+<section class="card lesson-section basic-stumble-check"><h2>定義と規則の整理</h2><h3>ifと条件式の誤解</h3><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>つまずき</th><th>正しい考え方</th></tr></thead><tbody><tr><td data-label="つまずき">Javaでも<code>0</code>や<code>1</code>を真偽値にできると思う</td><td data-label="正しい考え方">Javaの<code>if</code>条件は<code>boolean</code>だけ。数値とは互換性がない。</td></tr><tr><td data-label="つまずき"><code>=</code>と<code>==</code>を混同する</td><td data-label="正しい考え方"><code>=</code>は代入、<code>==</code>は比較です。boolean変数への代入式もboolean値になるため、条件式の中で<code>flag = true</code>と書くと比較ではなく代入が実行されます。</td></tr><tr><td data-label="つまずき"><code>else</code>の対応先を感覚で読む</td><td data-label="正しい考え方"><code>else</code>は直前の未対応の<code>if</code>に結びつく。</td></tr></tbody></table></div><h3>確認できれば次へ</h3><ul class="check-list compact-check-list"><li>if条件に置ける型を答えられる</li><li>代入式が値を持つことを説明できる</li><li>dangling elseを説明できる</li></ul><div class="lesson-note"><strong>理解の基準</strong></div></section>
+<section class="card lesson-section code-trio-section">
+<h2>成立するコードと成立しないコード</h2>
+<div class="code-trio-grid">
+<article class="code-trio-card good"><h3>成立する例：boolean変数で判定する</h3><pre><code>boolean passed = true;
+if (passed) {
+    System.out.println("pass");
+}</code></pre></article>
+<article class="code-trio-card bad"><h3>成立しない例：intを条件式にしている</h3><pre><code>int score = 80;
+if (score) {
+    System.out.println("pass");
+}</code></pre></article>
+<article class="code-trio-card fix"><h3>成立する形：比較式でbooleanを作る</h3><pre><code>int score = 80;
+if (score &gt;= 60) {
+    System.out.println("pass");
+}</code></pre></article>
+</div>
+<div class="lesson-note"><strong>確認ポイント</strong><p>Javaのif条件はbooleanだけです。数値をそのまま条件にはできません。</p></div>
+</section>
+<section class="card lesson-section basic-understanding-quiz quiz-level-section"><h2>定義と規則を確認する</h2><div class="quiz-level-list"><article class="quiz-level-card"><h3>用語の確認</h3><p>条件式に必要な型は何ですか。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>Javaのif、while、forの条件式はbooleanです。数値の0/1を真偽値として扱いません。</p></details></article><article class="quiz-level-card"><h3>コードの確認</h3><p>次のコードはコンパイルできますか。</p><pre><code>int n = 1;
+if (n) {
+    System.out.println("A");
+}</code></pre><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>コンパイルできません。ifの条件式はbooleanが必要です。n == 1 のように比較式にします。</p></details></article><article class="quiz-level-card"><h3>仕組みを説明する</h3><p>if (a = true) がコンパイルできる場合がある理由を説明してください。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>aがboolean変数なら、代入式a = true自体の値もbooleanです。そのため条件式として成立します。ただし比較ではなく代入です。</p></details></article></div></section><section class="card lesson-section check-section"><h2>基本ルールのまとめ</h2><ul><li>ifの条件式がbooleanになるか確認できる。</li><li>=と==を区別できる。</li><li>&amp;&amp;と||の短絡評価で右辺が実行されるか判断できる。</li></ul></section><section class="card lesson-section"><h2>コードに規則を当てはめる</h2><p>次のコードの出力を答える。</p><p class="code-caption">確認用コード</p><pre><code>int x = 0;
+if (true || ++x &gt; 0) {
+    System.out.println(x);
+}</code></pre><details class="answer-panel"><summary>説明を見る</summary><p>出力は<code>0</code>。</p><p><code>||</code>は左辺がtrueなら右辺を評価しない。したがって<code>++x</code>は実行されず、<code>x</code>は0のまま。</p></details></section><section class="card lesson-nav-bottom"><div><a class="btn ghost" href="07.html">← 前のLesson</a><a class="btn" href="../index.html">Lesson一覧</a><a class="btn primary" href="09.html">次のLesson →</a></div></section>
+</main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../../site/about.html">このサイトについて</a><a href="../../../site/editorial-policy.html">編集方針</a><a href="../../../site/site-map.html">サイトマップ</a><a href="../../../site/privacy.html">プライバシーポリシー</a><a href="../../../site/terms.html">利用規約</a><a href="../../../site/disclaimer.html">免責事項</a><a href="../../../site/advertising.html">広告・アフィリエイト</a><a href="../../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../../";window.CURRENT_PAGE="java-basic-08.html";</script>
+<script src="../../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Java Gold SE 11とSE 17の学習上の違い、学習順、教材選び、模試の使い分け、17追加分の扱いを整理します。" name="description"/>
+<meta content="Java Gold,SE 11,SE 17,違い,Oracle Java" name="keywords"/>
+<title>Java Gold SE 11とSE 17の違い｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="Java Gold SE 11とSE 17の違い｜Java Practice Lab" property="og:title"/>
+<meta content="Java Gold SE 11とSE 17の学習上の違い、学習順、教材選び、模試の使い分け、17追加分の扱いを整理します。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Java Gold SE 11とSE 17の違い","description":"Java Gold SE 11とSE 17の違いを、共通部分、17追加分、教材選び、模試の使い分け、学習順で整理します。","inLanguage":"ja","publisher":{"@type":"Organization","name":"Java Practice Lab"},"dateModified":"2026-07-07"}</script>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">Java Gold SE 11とSE 17の違い</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent">
+<section class="content-page article-body wide-article">
+<h1>Java Gold SE 11とSE 17の違い</h1>
+<p class="lead">Java Goldは、SE 11とSE 17で「勉強する単元の名前」よりも、問題の読み方と模試の時間配分が変わります。<br/>共通部分を先に固めてから、受験するバージョンの追加要素へ進むのが安全です。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<p class="muted-text article-updated">最終更新日：<time datetime="2026-07-07">2026年7月7日</time>。試験提供状況と試験範囲は変更されるため、申込み前に公式情報を確認してください。</p>
+<div class="notice"><strong>この記事の使い方</strong><p>この記事では、SE 11とSE 17の選び方だけでなく、選んだ後にどの順番で学習し、どの教材を使い、どの模試へ進むかまで接続します。<br/>受験区分が未確定ならこのページ、学習順を固めるならロードマップ、教材を買う前なら教材選びを見ると分かりやすいです。</p></div>
+<div class="related-grid">
+<a class="course-card" href="../java-gold-study-roadmap/index.html"><h3>Java Gold学習ロードマップ</h3><p>共通部分から模試復習までの順番。</p></a>
+<a class="course-card" href="../java-gold-materials-guide/index.html"><h3>Java Gold教材の選び方</h3><p>参考書、問題集、模試、リファレンスの役割分担。</p></a>
+<a class="course-card" href="../../courses/gold/index.html"><h3>Java Gold対策</h3><p>通常演習、SE 11模試、SE 17模試。</p></a>
+</div>
+<section class="guide-section">
+<h2>結論：最初は共通部分を優先する</h2>
+<p>SE 11とSE 17で迷っている段階でも、最初にやることはほぼ同じです。<br/>Generics、ラムダ式、Stream、Collectors、Optional、NIO、並行処理、module-infoを先に固めます。<br/>ここが弱いまま17追加分へ進むと、追加文法だけ覚えても点数が伸びません。</p>
+<table class="guide-table responsive-card-table"><thead><tr><th>比較</th><th>SE 11</th><th>SE 17</th></tr></thead><tbody>
+<tr><td data-label="比較">中心になる学習</td><td data-label="SE 11">Generics、Lambda、Stream、NIO、並行処理、module-info</td><td data-label="SE 17">SE 11共通部分に加えて、record、sealed、switch式、パターンマッチング</td></tr>
+<tr><td data-label="比較">模試の重さ</td><td data-label="SE 11">長時間で広く読む。集中力と戻り判定が必要</td><td data-label="SE 17">問題数と時間は軽めでも、追加構文の判定が混ざる</td></tr>
+<tr><td data-label="比較">向いている人</td><td data-label="SE 11">既存教材や業務環境がJava 11寄りの人</td><td data-label="SE 17">今後の学習や開発でJava 17以降を使う予定がある人</td></tr>
+<tr><td data-label="比較">失点しやすい場所</td><td data-label="SE 11">Stream、Collectors、Generics、NIO、並行処理</td><td data-label="SE 17">共通部分に加えて、record / sealed / switch式 / instanceofパターン</td></tr>
+</tbody></table>
+<h3>先に決める3項目</h3>
+<table class="guide-table responsive-card-table"><thead><tr><th>見る項目</th><th>SE 11寄り</th><th>SE 17寄り</th></tr></thead><tbody>
+<tr><td data-label="見る項目">仕事・研修環境</td><td data-label="SE 11寄り">Java 11を使う予定がある</td><td data-label="SE 17寄り">Java 17以降を使う予定がある</td></tr>
+<tr><td data-label="見る項目">教材状況</td><td data-label="SE 11寄り">手元の教材や研修資料がSE 11中心</td><td data-label="SE 17寄り">17追加分まで扱う教材を用意できる</td></tr>
+<tr><td data-label="見る項目">学習時間</td><td data-label="SE 11寄り">共通部分に集中したい</td><td data-label="SE 17寄り">共通部分に加えて追加構文を判定できる</td></tr>
+</tbody></table>
+<p>迷っているなら、先に共通部分を進めます。<br/>Generics、Lambda、Stream、Collectors、NIO、Concurrency、Moduleはどちらでも必要です。<br/>受験区分の判断で止まる時間は損です。</p>
+</section>
+<section class="guide-section">
+<h2>SE 11とSE 17で変わる読み方</h2>
+<p>Goldでは、単語を知っているだけでは足りません。SE 17では構文が増えるので、コードの形から意味を素早く判断する必要があります。</p>
+<div class="guide-steps">
+<div class="guide-step"><strong>recordは、ただの短いクラス宣言ではありません。</strong><br/>フィールド、コンストラクタ、アクセサ、equals、hashCode、toStringの扱いまでまとめて判定します。</div>
+<div class="guide-step"><strong>sealedは、継承できるクラスを制限します。</strong><br/>permitsに書かれていないクラスは継承できません。継承先はfinal、sealed、non-sealedのいずれかで宣言します。</div>
+<div class="guide-step"><strong>switch式は値を返します。</strong><br/>switch文とは読み方が変わります。ブロック形式ではyieldを判定します。</div>
+<div class="guide-step"><strong>instanceofパターンでは、変数のスコープを判定します。</strong><br/>型判定した後に使える変数が、どこまで有効かを見ます。</div>
+</div>
+</section>
+<section class="guide-section">
+<h2>recordで見るポイント</h2>
+<p>recordは、値をまとめて扱うためのクラスです。見た目は短いですが、試験では「何が自動生成されるか」「何を自分で書けるか」を問われます。</p>
+<pre><code>record Item(String name, int price) { }
+
+public class Main {
+    public static void main(String[] args) {
+        var item = new Item("book", 1200);
+        System.out.println(item.name());
+        System.out.println(item.price());
+    }
+}</code></pre>
+<p>アクセサは<code>getName()</code>ではなく<code>name()</code>です。ここをJavaBeansの感覚で読むと失点します。</p>
+<table class="guide-table responsive-card-table"><thead><tr><th>見る場所</th><th>判断</th></tr></thead><tbody>
+<tr><td data-label="見る場所">アクセサ</td><td data-label="判断">コンポーネント名と同じメソッド名になる</td></tr>
+<tr><td data-label="見る場所">継承</td><td data-label="判断">recordは暗黙的にfinalなので、通常のクラスから継承できない</td></tr>
+<tr><td data-label="見る場所">フィールド</td><td data-label="判断">コンポーネントに対応するフィールドはprivate final</td></tr>
+<tr><td data-label="見る場所">コンストラクタ</td><td data-label="判断">正規コンストラクタ、コンパクトコンストラクタを区別する</td></tr>
+</tbody></table>
+</section>
+<section class="guide-section">
+<h2>sealedで見るポイント</h2>
+<p>sealedは「継承の許可リスト」です。許可されたクラス以外は継承できません。</p>
+<pre><code>sealed class Parent permits ChildA, ChildB { }
+final class ChildA extends Parent { }
+non-sealed class ChildB extends Parent { }
+
+class ChildC extends Parent { } // コンパイルできない</code></pre>
+<p>Goldでは、sealedそのものよりも、継承先の修飾子を見落としやすいです。<br/>許可されたサブクラスでも、final、sealed、non-sealedのどれも付いていなければコンパイルできません。</p>
+</section>
+<section class="guide-section">
+<h2>switch式で見るポイント</h2>
+<p>switch式は結果を返します。従来のswitch文と同じ感覚で読むと、<code>yield</code>や網羅性を見落とします。</p>
+<pre><code>static String label(int n) {
+    return switch (n) {
+        case 1 -&gt; "one";
+        case 2 -&gt; "two";
+        default -&gt; {
+            var value = "other";
+            yield value;
+        }
+    };
+}</code></pre>
+<p>ブロックを使うcaseでは、最後に<code>yield</code>で値を返します。<code>return</code>ではありません。</p>
+</section>
+<section class="guide-section">
+<h2>instanceofパターンで見るポイント</h2>
+<p>パターンマッチングでは、型判定と変数宣言を同時に書けます。ただし、パターン変数はどこでも使えるわけではありません。</p>
+<pre><code>static void print(Object obj) {
+    if (obj instanceof String s) {
+        System.out.println(s.length());
+    }
+    // System.out.println(s); // この場所では使えない
+}</code></pre>
+<p>試験では、スコープ外でパターン変数を使っていないかを判定します。</p>
+</section>
+<section class="guide-section">
+<h2>SE 11を選ぶ判断</h2>
+<p>SE 11を選ぶのは、既存教材や職場環境がJava 11中心の場合です。教材量が多く、Gold共通部分に集中しやすい利点があります。</p>
+<ul class="guide-check-list">
+<li>Java 11環境の仕事や研修に合わせたい</li>
+<li>Generics、Stream、NIO、並行処理を優先して固めたい</li>
+<li>Java 17追加構文に時間を使う余裕が少ない</li>
+<li>長めの模試で集中力と読解順を鍛えたい</li>
+</ul>
+</section>
+<section class="guide-section">
+<h2>SE 17を選ぶ判断</h2>
+<p>SE 17を選ぶのは、これからの開発や学習でJava 17以降を使う可能性が高い場合です。ただし、17追加分だけ先にやる進め方は不十分です。<br/>共通部分が固まってから追加構文へ進みます。</p>
+<ul class="guide-check-list">
+<li>Java 17以降の文法を試験対策と一緒に整理したい</li>
+<li>record、sealed、switch式を読めるようにしたい</li>
+<li>Silver 17の追加分を学習済み</li>
+<li>Gold共通部分の演習で正答率が安定している</li>
+</ul>
+</section>
+<section class="guide-section">
+<h2>学習順はこう分ける</h2>
+<table class="guide-table responsive-card-table"><thead><tr><th>段階</th><th>やること</th><th>進む基準</th></tr></thead><tbody>
+<tr><td data-label="段階">1</td><td data-label="やること">Silverの継承、例外、型変換を判定</td><td data-label="進む基準">コンパイル可否を先に判断できる</td></tr>
+<tr><td data-label="段階">2</td><td data-label="やること">Generics、Lambda、Optionalを学習</td><td data-label="進む基準">型と戻り値を追える</td></tr>
+<tr><td data-label="段階">3</td><td data-label="やること">Stream、Collectorsを学習</td><td data-label="進む基準">中間操作と終端操作を区別できる</td></tr>
+<tr><td data-label="段階">4</td><td data-label="やること">NIO、日時、JDBC、並行処理、module-info</td><td data-label="進む基準">例外、リソース、実行順を説明できる</td></tr>
+<tr><td data-label="段階">5</td><td data-label="やること">SE 17追加分</td><td data-label="進む基準">共通部分の標準問題で大きく崩れない</td></tr>
+<tr><td data-label="段階">6</td><td data-label="やること">受験対象の模試</td><td data-label="進む基準">カテゴリ別の弱点が見えている</td></tr>
+</tbody></table>
+<h3>共通部分と17追加分の接続</h3>
+<table class="guide-table responsive-card-table"><thead><tr><th>17追加分</th><th>先に固める共通論点</th><th>接続して見るポイント</th></tr></thead><tbody>
+<tr><td data-label="17追加分">record</td><td data-label="先に固める共通論点">クラス、コンストラクタ、equals、hashCode、toString</td><td data-label="接続して見るポイント">自動生成されるメンバと、自分で書けるメンバを分ける</td></tr>
+<tr><td data-label="17追加分">sealed</td><td data-label="先に固める共通論点">継承、抽象クラス、ポリモーフィズム、アクセス修飾子</td><td data-label="接続して見るポイント">許可リスト、サブクラス側のfinal / sealed / non-sealedを見る</td></tr>
+<tr><td data-label="17追加分">switch式</td><td data-label="先に固める共通論点">switch文、式と文、戻り値、網羅性</td><td data-label="接続して見るポイント">値を返す構文として読み、yieldとdefaultを見る</td></tr>
+<tr><td data-label="17追加分">instanceofパターン</td><td data-label="先に固める共通論点">参照型、キャスト、スコープ、短絡評価</td><td data-label="接続して見るポイント">パターン変数が使える範囲と条件式の流れを見る</td></tr>
+</tbody></table>
+</section>
+<section class="guide-section">
+<h2>模試の使い分け</h2>
+<p>SE 11を受けるならSE 11模試を中心に使います。SE 17を受けるなら、共通部分を通常演習で固めてからSE 17模試へ進みます。<br/>SE 17模試だけを回すと、共通部分の穴を見落とします。</p>
+<table class="guide-table responsive-card-table"><thead><tr><th>状態</th><th>使う模試</th><th>見る結果</th></tr></thead><tbody>
+<tr><td data-label="状態">Gold共通部分の判定中</td><td data-label="使う模試">通常演習、Gold共通総合</td><td data-label="見る結果">Stream、Generics、NIOの弱点</td></tr>
+<tr><td data-label="状態">SE 11受験前</td><td data-label="使う模試">SE 11模試</td><td data-label="見る結果">80問を最後まで読み切れるか</td></tr>
+<tr><td data-label="状態">SE 17受験前</td><td data-label="使う模試">SE 17模試</td><td data-label="見る結果">追加構文と共通APIの混合問題で崩れないか</td></tr>
+<tr><td data-label="状態">点数が伸びない</td><td data-label="使う模試">間違えた問題だけ復習</td><td data-label="見る結果">カテゴリ別・難易度別の正答率</td></tr>
+</tbody></table>
+</section>
+<section class="guide-section">
+<h2>このサイトでの使い方</h2>
+<ol class="guide-check-list">
+<li>受験区分が未確定なら、このページでSE 11 / SE 17の判断基準を見る</li>
+<li><a href="../java-gold-study-roadmap/index.html">Java Gold学習ロードマップ</a>で、共通部分から模試までの順番を決める</li>
+<li><a href="../java-gold-materials-guide/index.html">Java Gold教材の選び方</a>で、参考書・問題集・模試・リファレンスの役割を分ける</li>
+<li><a href="../../courses/gold/index.html">Java Gold対策</a>で共通部分を解く</li>
+<li><a href="../java-gold-generics-deep/index.html">ジェネリクス完全整理</a>、<a href="../java-gold-lambda-first/index.html">ラムダ式</a>、<a href="../java-gold-stream-deep/index.html">Stream API完全整理</a>へ戻る</li>
+<li>SE 17を受ける場合は、record、sealed、switch式、instanceofパターンを追加で見る</li>
+<li>受験するバージョンに合わせてSE 11模試またはSE 17模試を解き、模試後は弱点カテゴリから通常演習へ戻る</li>
+</ol>
+</section>
+<section class="guide-section">
+<h2>よくある誤解を整理する</h2>
+<ul class="guide-check-list">
+<li>SE 17は追加文法だけ覚えても点数にならない</li>
+<li>SE 11対策でもStreamとGenericsは避けられない</li>
+<li>recordはただの省略記法にならない</li>
+<li>sealedは継承先の修飾子まで見る</li>
+<li>switch式はswitch文と同じ読み方にならない</li>
+<li>模試の点数だけでは受験判断できない。カテゴリ別の崩れを見る</li>
+</ul>
+</section>
+<section class="guide-section">
+<h2>次に読むページ</h2>
+<div class="related-grid">
+<a class="course-card" href="../java-gold-study-roadmap/index.html"><h3>Java Gold学習ロードマップ</h3><p>学習順、週間計画、模試復習まで判定する。</p></a>
+<a class="course-card" href="../java-gold-materials-guide/index.html"><h3>Java Gold教材の選び方</h3><p>教材を増やす前に、役割と弱点への刺さり方を見る。</p></a>
+<a class="course-card" href="../../courses/gold/index.html"><h3>Java Gold対策</h3><p>通常演習、SE 11模試、SE 17模試へ進む。</p></a>
+<a class="course-card" href="../java-gold-after-silver/index.html"><h3>Silver合格後にGoldへ進む前に</h3><p>Goldへ入る前に戻るべきSilver論点を判定する。</p></a>
+</div>
+</section>
+</section>
+</main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="index.html";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="Java Silver代表的な型変換、数値リテラル、定数式、var、配列、null、ラッパークラスを具体例で整理します。" name="description"/>
+<title>型・変数・リテラルの読み方｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="型・変数・リテラルの読み方｜Java Practice Lab" property="og:title"/>
+<meta content="Java Silver代表的な型変換、数値リテラル、定数式、var、配列、null、ラッパークラスを具体例で整理します。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">型・変数・リテラルの読み方</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent">
+<section class="content-page article-body wide-article upgraded-article">
+<h1>型・変数・リテラルの読み方</h1>
+<p class="lead">型を扱うコードでは、リテラルの型、式全体の型、代入変換、初期化、スコープ、<code>var</code>、配列、参照型を順に確認します。この順序で、コンパイル可否、実行時例外、出力を分けて追跡できます。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside><div class="article-callout strong"><strong>数値型の詳細:</strong> 数値リテラルからプリミティブ値、ラッパークラス、<code>Number</code>型へ変換される流れは、<a href="../number-literals-number/index.html">数値リテラル・ラッパークラス・Numberの関係</a>で独立して整理しています。</div><div class="article-callout strong"><strong>関連解説:</strong> 「型」と「実体（インスタンス）」の違いを、継承とキャストまで含めて初学者向けに整理しています。 <a href="../type-and-instance/index.html">詳細解説を読む</a></div>
+<section class="article-section article-card important">
+<h2>最初の結論: 型を扱うコードはこの順番で読む</h2>
+<p>「値が小さいから代入できる」「見た目が同じだから同じ型」と判断すると、定数式・数値昇格・キャストの規則を取り違えます。Javaは、各式がコンパイル時に持つ型で判定します。</p>
+<ol class="article-list ordered">
+<li><strong>宣言できる場所か</strong>を見る。フィールド、ローカル変数、引数、戻り値で使える構文が違う。</li>
+<li><strong>初期化済みか</strong>を見る。ローカル変数とフィールドで扱いが違う。</li>
+<li><strong>右辺の式の型</strong>を決める。整数は基本<code>int</code>、小数は基本<code>double</code>。</li>
+<li><strong>演算で型が昇格するか</strong>を見る。<code>byte</code>/<code>short</code>/<code>char</code>は演算で原則<code>int</code>。</li>
+<li><strong>左辺へ代入できるか</strong>を見る。拡大変換、縮小変換、定数式の特例、キャストを分ける。</li>
+<li><strong>参照型なら参照先</strong>を見る。<code>null</code>、同一性、配列、ラッパークラスを分ける。</li>
+</ol>
+<div class="article-callout warn"><strong>コードを読むときにの混同しやすい点:</strong> <code>byte b = 1 + 2;</code> と <code>byte b = a + 2;</code> は同じではありません。前者は定数式、後者は変数を含む式です。</div>
+</section>
+<section class="article-section">
+<h2>値・型・変数・リテラル・式・文を分ける</h2>
+<p>用語を分けないままコードを読むと、リテラルの型と式全体の型を取り違えます。特に「リテラル」と「式の型」は別物です。</p>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>用語</th><th>意味</th><th>例</th><th>判定ポイント</th></tr></thead>
+<tbody>
+<tr><td data-label="用語">値</td><td data-label="意味">実際に扱うデータ。</td><td data-label="例"><code>10</code>, <code>true</code>, <code>'A'</code>, オブジェクト</td><td data-label="判定ポイント">値だけで代入可否は決まらない。</td></tr>
+<tr><td data-label="用語">型</td><td data-label="意味">値の扱い方を決める分類。</td><td data-label="例"><code>int</code>, <code>char</code>, <code>String</code></td><td data-label="判定ポイント">代入、演算、比較、メソッド呼び出しを決める。</td></tr>
+<tr><td data-label="用語">変数</td><td data-label="意味">値または参照値を保持する名前。</td><td data-label="例"><code>int n</code>, <code>String s</code></td><td data-label="判定ポイント">プリミティブ型と参照型で保持するものが違う。</td></tr>
+<tr><td data-label="用語">リテラル</td><td data-label="意味">コードに直接書いた値。</td><td data-label="例"><code>10</code>, <code>10L</code>, <code>"abc"</code>, <code>null</code></td><td data-label="判定ポイント">リテラル自体にも型がある。</td></tr>
+<tr><td data-label="用語">式</td><td data-label="意味">評価すると値と型を持つコード片。</td><td data-label="例"><code>a + 1</code>, <code>s.length()</code></td><td data-label="判定ポイント"><code>byte + byte</code>の式は<code>int</code>。</td></tr>
+<tr><td data-label="用語">文</td><td data-label="意味">処理の単位。</td><td data-label="例"><code>int a = 1;</code>, <code>if (...) {}</code></td><td data-label="判定ポイント">代入式は文の中にあるが、式として値も持つ。</td></tr>
+</tbody>
+</table>
+</section>
+<section class="article-section">
+<h2>プリミティブ型と参照型</h2>
+<p>Javaの型は、大きくプリミティブ型と参照型に分かれます。この区別によって、<code>null</code>を代入できるか、<code>==</code>が何を比較するか、アンボクシングが起きるかが変わります。</p>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>分類</th><th>変数が持つもの</th><th><code>null</code></th><th><code>==</code>の意味</th><th>例</th></tr></thead>
+<tbody>
+<tr><td data-label="分類">プリミティブ型</td><td data-label="変数が持つもの">値そのもの</td><td data-label="null">代入不可</td><td data-label="== の意味">値の比較</td><td data-label="例"><code>int</code>, <code>double</code>, <code>boolean</code>, <code>char</code></td></tr>
+<tr><td data-label="分類">参照型</td><td data-label="変数が持つもの">オブジェクトへの参照</td><td data-label="null">代入可</td><td data-label="== の意味">同じオブジェクトを参照しているか</td><td data-label="例"><code>String</code>, 配列, <code>ArrayList</code>, 自作クラス</td></tr>
+</tbody>
+</table>
+<pre class="article-code"><code>int a = 10;
+int b = a;
+b = 20;
+System.out.println(a); // 10: 値がコピーされただけ
+
+String s = "abc";
+String t = s;
+System.out.println(s == t); // true: 同じ参照値をコピー</code></pre>
+<div class="article-callout warn"><strong><code>null</code>の位置:</strong> <code>null</code>は参照型専用です。<code>int n = null;</code>はコンパイルエラーです。<code>String s = null;</code>はコンパイルできますが、<code>s.length()</code>を実行した時点で<code>NullPointerException</code>が発生します。</div>
+</section>
+<section class="article-section">
+<h2>8つのプリミティブ型</h2>
+<p>範囲を丸暗記だけする必要は限られますが、<code>byte</code>、<code>short</code>、<code>char</code>、<code>int</code>、<code>long</code>、<code>float</code>、<code>double</code>、<code>boolean</code> の役割は正確に分けます。</p>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>型</th><th>分類</th><th>代表値</th><th>注意点</th></tr></thead>
+<tbody>
+<tr><td data-label="型"><code>byte</code></td><td data-label="分類">整数</td><td data-label="代表値">-128〜127</td><td data-label="注意点">演算すると原則<code>int</code>。範囲内定数式だけ代入特例あり。</td></tr>
+<tr><td data-label="型"><code>short</code></td><td data-label="分類">整数</td><td data-label="代表値">-32768〜32767</td><td data-label="注意点"><code>short + short</code>は<code>int</code>。</td></tr>
+<tr><td data-label="型"><code>char</code></td><td data-label="分類">文字・符号なし整数</td><td data-label="代表値"><code>'A'</code></td><td data-label="注意点">数値として扱えるが、演算すると<code>int</code>。</td></tr>
+<tr><td data-label="型"><code>int</code></td><td data-label="分類">整数</td><td data-label="代表値"><code>10</code></td><td data-label="注意点">整数リテラルの基本型。</td></tr>
+<tr><td data-label="型"><code>long</code></td><td data-label="分類">整数</td><td data-label="代表値"><code>10L</code></td><td data-label="注意点"><code>L</code>なしの巨大整数は、代入先が<code>long</code>でも不可。</td></tr>
+<tr><td data-label="型"><code>float</code></td><td data-label="分類">浮動小数</td><td data-label="代表値"><code>1.0F</code></td><td data-label="注意点">小数リテラルは基本<code>double</code>なので<code>F</code>が必要。</td></tr>
+<tr><td data-label="型"><code>double</code></td><td data-label="分類">浮動小数</td><td data-label="代表値"><code>1.0</code></td><td data-label="注意点">小数リテラルの基本型。</td></tr>
+<tr><td data-label="型"><code>boolean</code></td><td data-label="分類">真偽値</td><td data-label="代表値"><code>true</code>, <code>false</code></td><td data-label="注意点">数値型と互換性なし。<code>0</code>/<code>1</code>で代用不可。</td></tr>
+</tbody>
+</table>
+</section>
+<section class="article-section">
+<h2>数値リテラルの基本型</h2>
+<p>ソースコードに直接書いた数値は、見た目で型が決まります。代入先の型だけで決まるわけではありません。</p>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>リテラル</th><th>基本型</th><th>例</th><th>注意点</th></tr></thead>
+<tbody>
+<tr><td data-label="リテラル">整数リテラル</td><td data-label="基本型"><code>int</code></td><td data-label="例"><code>10</code></td><td data-label="注意点">範囲を超えるなら<code>L</code>が必要。</td></tr>
+<tr><td data-label="リテラル"><code>L</code>/<code>l</code>付き整数</td><td data-label="基本型"><code>long</code></td><td data-label="例"><code>10L</code></td><td data-label="注意点">小文字<code>l</code>は<code>1</code>と紛らわしい。</td></tr>
+<tr><td data-label="リテラル">小数リテラル</td><td data-label="基本型"><code>double</code></td><td data-label="例"><code>1.0</code></td><td data-label="注意点"><code>float</code>へ直接代入不可。</td></tr>
+<tr><td data-label="リテラル"><code>F</code>/<code>f</code>付き小数</td><td data-label="基本型"><code>float</code></td><td data-label="例"><code>1.0F</code></td><td data-label="注意点"><code>float</code>に入れるなら基本これ。</td></tr>
+<tr><td data-label="リテラル"><code>D</code>/<code>d</code>付き小数</td><td data-label="基本型"><code>double</code></td><td data-label="例"><code>1.0D</code></td><td data-label="注意点">明示しなくても小数は<code>double</code>。</td></tr>
+</tbody>
+</table>
+<pre class="article-code"><code>long a = 10;       // OK: int 10 を long へ拡大変換
+long b = 10L;      // OK: longリテラル
+
+// float c = 1.0;  // NG: 1.0 は double
+float d = 1.0F;    // OK
+
+double e = 1.0F;   // OK: float から double へ拡大変換</code></pre>
+<pre class="article-code"><code>// long x = 2147483648;  // NG: 右辺はまず int リテラルとして判定され、int範囲外
+long y = 2147483648L;    // OK</code></pre>
+</section>
+<section class="article-section">
+<h2>整数リテラルの進数表記</h2>
+<p>先頭の書き方で基数が変わります。特に<code>0</code>始まりの8進数は、実務では避けたい書き方ですがコードを読むときはよく出ます。</p>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>表記</th><th>例</th><th>10進での値</th><th>注意</th></tr></thead>
+<tbody>
+<tr><td data-label="表記">10進数</td><td data-label="例"><code>17</code></td><td data-label="10進での値">17</td><td data-label="注意">通常の表記。</td></tr>
+<tr><td data-label="表記">2進数</td><td data-label="例"><code>0b10001</code></td><td data-label="10進での値">17</td><td data-label="注意"><code>0b</code>または<code>0B</code>。</td></tr>
+<tr><td data-label="表記">8進数</td><td data-label="例"><code>021</code></td><td data-label="10進での値">17</td><td data-label="注意">先頭が<code>0</code>。<code>8</code>と<code>9</code>は使えない。</td></tr>
+<tr><td data-label="表記">16進数</td><td data-label="例"><code>0x11</code></td><td data-label="10進での値">17</td><td data-label="注意"><code>0x</code>または<code>0X</code>。</td></tr>
+</tbody>
+</table>
+<pre class="article-code"><code>int a = 17;
+int b = 0b10001;
+int c = 021;
+int d = 0x11;
+System.out.println(a + b + c + d); // 68
+
+// int e = 089; // NG: 8進数に 8/9 は使えない</code></pre>
+</section>
+<section class="article-section">
+<h2>アンダースコアを置ける場所・置けない場所</h2>
+<p><code>_</code>は数値リテラルの読みやすさを上げるだけで、値には影響しません。ただし置ける場所に制限があります。</p>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>コード</th><th>可否</th><th>理由</th></tr></thead>
+<tbody>
+<tr><td data-label="コード"><code>int a = 123_456;</code></td><td data-label="可否">OK</td><td data-label="理由">数字の間。</td></tr>
+<tr><td data-label="コード"><code>int b = 1__2__3;</code></td><td data-label="可否">OK</td><td data-label="理由">連続しても数字の間なら可。</td></tr>
+<tr><td data-label="コード"><code>int c = _123;</code></td><td data-label="可否">NG</td><td data-label="理由">リテラルの先頭。</td></tr>
+<tr><td data-label="コード"><code>int d = 123_;</code></td><td data-label="可否">NG</td><td data-label="理由">リテラルの末尾。</td></tr>
+<tr><td data-label="コード"><code>float e = 3_.14F;</code></td><td data-label="可否">NG</td><td data-label="理由">小数点の直前。</td></tr>
+<tr><td data-label="コード"><code>float f = 3._14F;</code></td><td data-label="可否">NG</td><td data-label="理由">小数点の直後。</td></tr>
+<tr><td data-label="コード"><code>long g = 100_L;</code></td><td data-label="可否">NG</td><td data-label="理由">接尾辞<code>L</code>の直前。</td></tr>
+<tr><td data-label="コード"><code>int h = 0x_FF;</code></td><td data-label="可否">NG</td><td data-label="理由">基数接頭辞<code>0x</code>の直後。</td></tr>
+<tr><td data-label="コード"><code>int i = 0xF_F;</code></td><td data-label="可否">OK</td><td data-label="理由">数字の間。</td></tr>
+</tbody>
+</table>
+</section>
+<section class="article-section">
+<h2>識別子のルール</h2>
+<p>変数名・クラス名・メソッド名などの識別子は、使える文字と使えない文字があります。予約語も使えません。</p>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>例</th><th>可否</th><th>理由</th></tr></thead>
+<tbody>
+<tr><td data-label="例"><code>int price = 100;</code></td><td data-label="可否">OK</td><td data-label="理由">通常の識別子。</td></tr>
+<tr><td data-label="例"><code>int _price = 100;</code></td><td data-label="可否">OK</td><td data-label="理由">先頭<code>_</code>は使える。ただし単独<code>_</code>は不可。</td></tr>
+<tr><td data-label="例"><code>int $price = 100;</code></td><td data-label="可否">OK</td><td data-label="理由"><code>$</code>は使えるが通常は避ける。</td></tr>
+<tr><td data-label="例"><code>int 1price = 100;</code></td><td data-label="可否">NG</td><td data-label="理由">数字で始められない。</td></tr>
+<tr><td data-label="例"><code>int class = 100;</code></td><td data-label="可否">NG</td><td data-label="理由"><code>class</code>は予約語。</td></tr>
+<tr><td data-label="例"><code>int var = 100;</code></td><td data-label="可否">OK</td><td data-label="理由"><code>var</code>は予約語ではなく、特定文脈で型推論に使う名前。</td></tr>
+<tr><td data-label="例"><code>int _ = 100;</code></td><td data-label="可否">NG</td><td data-label="理由">Java 9以降、単独<code>_</code>は識別子として使えない。</td></tr>
+</tbody>
+</table>
+<div class="article-callout"><strong>混同しやすい点:</strong> <code>var</code>を変数名にできるかは引っかけです。<code>int var = 1;</code>はできます。ただし<code>var a = 1;</code>では型推論として解釈されます。</div>
+</section>
+<section class="article-section">
+<h2>ローカル変数とフィールドの初期値</h2>
+<p>フィールドにはデフォルト値があります。ローカル変数にはデフォルト値がありません。フィールドとローカル変数では、初期化規則が異なります。</p>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>場所</th><th>デフォルト値</th><th>未初期化で読むと</th></tr></thead>
+<tbody>
+<tr><td data-label="場所">インスタンスフィールド</td><td data-label="デフォルト値">ある</td><td data-label="未初期化で読むと">型ごとのデフォルト値。</td></tr>
+<tr><td data-label="場所">staticフィールド</td><td data-label="デフォルト値">ある</td><td data-label="未初期化で読むと">型ごとのデフォルト値。</td></tr>
+<tr><td data-label="場所">ローカル変数</td><td data-label="デフォルト値">ない</td><td data-label="未初期化で読むと">コンパイルエラー。</td></tr>
+</tbody>
+</table>
+<pre class="article-code"><code>class Sample {
+    int field;
+    String text;
+
+    void test() {
+        int local;
+        System.out.println(field); // 0
+        System.out.println(text);  // null
+        // System.out.println(local); // NG: localは初期化されていない
+    }
+}</code></pre>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>型</th><th>フィールドのデフォルト値</th></tr></thead>
+<tbody>
+<tr><td data-label="型">整数型</td><td data-label="フィールドのデフォルト値"><code>0</code></td></tr>
+<tr><td data-label="型">浮動小数型</td><td data-label="フィールドのデフォルト値"><code>0.0</code></td></tr>
+<tr><td data-label="型"><code>char</code></td><td data-label="フィールドのデフォルト値"><code>''</code></td></tr>
+<tr><td data-label="型"><code>boolean</code></td><td data-label="フィールドのデフォルト値"><code>false</code></td></tr>
+<tr><td data-label="型">参照型</td><td data-label="フィールドのデフォルト値"><code>null</code></td></tr>
+</tbody>
+</table>
+</section>
+<section class="article-section">
+<h2>スコープと同名変数</h2>
+<p>スコープは、その変数名が有効な範囲です。同じ名前を使えるかどうかは、同じスコープ内か、別スコープかで決まります。</p>
+<pre class="article-code"><code>int x = 10;
+// int x = 20; // NG: 同じスコープで同じローカル変数名は不可
+
+{
+    // int x = 30; // NG: 外側のローカル変数と重なる
+    int y = 40;    // OK
+}
+// System.out.println(y); // NG: yはブロック外では見えない</code></pre>
+<p>フィールドとローカル変数は同名にできます。この場合、単に名前を書くとローカル変数が優先されます。フィールドを指すには<code>this</code>を使います。</p>
+<pre class="article-code"><code>class Item {
+    int price = 100;
+
+    void setPrice(int price) {
+        price = price;       // ローカル変数priceに自分自身を代入しているだけ
+        this.price = price;  // フィールドpriceに引数priceを代入
+    }
+}</code></pre>
+</section>
+<section class="article-section">
+<h2>代入変換: 拡大変換と縮小変換</h2>
+<p>代入では、右辺の型を左辺の型として扱えるかを見ます。広い型へは暗黙変換できます。狭い型へは原則キャストが必要です。</p>
+<pre class="article-code"><code>int i = 10;
+long l = i;        // OK: int から long
+float f = l;       // OK: long から float。精度低下の可能性はある
+// int x = l;      // NG: long から int
+int y = (int) l;   // OK: 明示キャスト</code></pre>
+<div class="article-callout warn"><strong>範囲と精度を分ける:</strong> <code>long</code>から<code>float</code>への変換はコンパイルできます。ただし精度は失われる可能性があります。コードを読むときは「コンパイル可否」と「正確な値」を分けて考えます。</div>
+</section>
+<section class="article-section">
+<h2><code>byte</code>・<code>short</code>・<code>char</code>は演算で<code>int</code>になる</h2>
+<p>小さい整数型は、演算に入ると原則<code>int</code>に昇格します。この昇格を見落とすと、演算結果を小さい整数型へ代入できるかどうかを誤ります。</p>
+<pre class="article-code"><code>byte a = 1;
+byte b = 2;
+// byte c = a + b;       // NG: a + b は int
+int d = a + b;           // OK
+byte e = (byte)(a + b);  // OK
+
+short s1 = 1;
+short s2 = 2;
+// short s3 = s1 + s2;   // NG: s1 + s2 は int</code></pre>
+<pre class="article-code"><code>char c = 'A';
+System.out.println(c);       // A
+System.out.println(c + 1);   // 66
+// char next = c + 1;        // NG: c + 1 は int
+char next = (char)(c + 1);   // OK
+System.out.println(next);    // B</code></pre>
+</section>
+<section class="article-section">
+<h2>二項数値昇格</h2>
+<p>左右のオペランドの型が違う場合、より広い型へ寄せられます。ざっくり優先順位は <code>double</code>、<code>float</code>、<code>long</code>、<code>int</code> です。</p>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>含まれる型</th><th>演算結果</th><th>例</th></tr></thead>
+<tbody>
+<tr><td data-label="含まれる型"><code>double</code>が含まれる</td><td data-label="演算結果"><code>double</code></td><td data-label="例"><code>1 + 2.0</code></td></tr>
+<tr><td data-label="含まれる型"><code>float</code>が含まれる</td><td data-label="演算結果"><code>float</code></td><td data-label="例"><code>1L + 2.0F</code></td></tr>
+<tr><td data-label="含まれる型"><code>long</code>が含まれる</td><td data-label="演算結果"><code>long</code></td><td data-label="例"><code>1 + 2L</code></td></tr>
+<tr><td data-label="含まれる型">それ以外の整数型</td><td data-label="演算結果"><code>int</code></td><td data-label="例"><code>byte + short</code></td></tr>
+</tbody>
+</table>
+<pre class="article-code"><code>int a = 10;
+long b = 20L;
+// int c = a + b;  // NG: a + b は long
+long d = a + b;    // OK
+
+float f = 1.0F;
+double g = 2.0;
+// float h = f + g; // NG: f + g は double
+double i = f + g;   // OK</code></pre>
+</section>
+<section class="article-section">
+<h2>定数式なら小さい型へ入る場合がある</h2>
+<p>右辺がコンパイル時に確定できる定数式で、代入先の範囲内なら、<code>byte</code>、<code>short</code>、<code>char</code>へ代入できます。</p>
+<pre class="article-code"><code>byte a = 10;          // OK
+byte b = 10 + 20;     // OK: 定数式で範囲内
+// byte c = 100 + 100; // NG: 200 は byte の範囲外
+
+short s = 1000 + 2000; // OK
+char ch = 65;          // OK: 'A'</code></pre>
+<p>変数を含むと、たとえ実際の値が範囲内でも通常は代入できません。</p>
+<pre class="article-code"><code>byte a = 10;
+// byte b = a + 1; // NG: a + 1 は int
+
+final int x = 10;
+byte c = x + 1;    // OK: x はコンパイル時定数
+
+final int y;
+y = 10;
+// byte d = y;     // NGになり得る: 宣言時初期化された定数式ではない</code></pre>
+</section>
+<section class="article-section">
+<h2>複合代入は暗黙キャストを含む</h2>
+<p><code>+=</code>、<code>-=</code>、<code>*=</code>、<code>/=</code>などの複合代入は、左辺の型へのキャストを含むように動きます。</p>
+<pre class="article-code"><code>byte b = 1;
+// b = b + 1; // NG: b + 1 は int
+b += 1;       // OK: b = (byte)(b + 1) 相当</code></pre>
+<p>ただし、安全という意味ではありません。範囲を超えると、オーバーフローした結果になります。</p>
+<pre class="article-code"><code>byte b = 127;
+b += 1;
+System.out.println(b); // -128</code></pre>
+</section>
+<section class="article-section">
+<h2>オーバーフロー</h2>
+<p>整数型は範囲を超えると循環します。キャストや複合代入では、コンパイルできるが値が予想外になるケースがあります。</p>
+<pre class="article-code"><code>byte b = (byte) 128;
+System.out.println(b); // -128
+
+int max = Integer.MAX_VALUE;
+System.out.println(max + 1); // -2147483648</code></pre>
+<p>「コンパイルエラー」なのか、「実行できるが値が循環する」のかを必ず分けると判定しやすくなります。</p>
+</section>
+<section class="article-section">
+<h2>整数除算と浮動小数点除算</h2>
+<p>割り算は、左辺に<code>double</code>を置けば小数になる、という話ではありません。先に右辺の式が評価されます。</p>
+<pre class="article-code"><code>System.out.println(5 / 2);     // 2
+System.out.println(5 / 2.0);   // 2.5
+System.out.println(5.0 / 2);   // 2.5
+
+int a = 5;
+int b = 2;
+double c = a / b;
+System.out.println(c);         // 2.0</code></pre>
+<p><code>double c = a / b;</code>は、先に<code>int / int</code>が計算されて<code>2</code>になり、その後<code>double</code>に代入されます。</p>
+</section>
+<section class="article-section">
+<h2>0除算: 整数と浮動小数点で違う</h2>
+<p>整数の0除算は実行時例外です。浮動小数点の0除算は例外ではなく、<code>Infinity</code>や<code>NaN</code>になります。</p>
+<pre class="article-code"><code>// System.out.println(10 / 0);   // 実行時例外: ArithmeticException
+System.out.println(10.0 / 0);    // Infinity
+System.out.println(-10.0 / 0);   // -Infinity
+System.out.println(0.0 / 0);     // NaN</code></pre>
+</section>
+<section class="article-section">
+<h2><code>boolean</code>は数値型ではない</h2>
+<p>Javaの<code>boolean</code>は、<code>0</code>や<code>1</code>と互換性がありません。C系言語の感覚で読むと間違えます。</p>
+<pre class="article-code"><code>boolean flag = true;
+// boolean a = 1;  // NG
+// int b = true;   // NG
+
+if (flag) {
+    System.out.println("OK");
+}
+
+// if (1) { }      // NG: 条件式は boolean でなければならない</code></pre>
+<p>また、<code>boolean</code>に大小比較は使えません。</p>
+<pre class="article-code"><code>boolean a = true;
+boolean b = false;
+System.out.println(a == b); // OK: false
+// System.out.println(a &lt; b); // NG</code></pre>
+</section>
+<section class="article-section">
+<h2><code>char</code>は文字だが数値としても扱われる</h2>
+<p><code>char</code>は文字を表しますが、内部的には数値コードを持ちます。演算すると<code>int</code>になります。</p>
+<pre class="article-code"><code>char a = 'A';
+char b = 65;
+System.out.println(a);      // A
+System.out.println(b);      // A
+System.out.println(a == b); // true
+System.out.println(a + b);  // 130</code></pre>
+<p>文字リテラルはシングルクォート、文字列リテラルはダブルクォートです。</p>
+<pre class="article-code"><code>char c1 = 'A';      // OK
+String s1 = "A";    // OK
+// char c2 = "A";   // NG: Stringはcharではない
+// String s2 = 'A';  // NG: charはStringではない</code></pre>
+</section>
+<section class="article-section">
+<h2>ラッパークラス・オートボクシング・アンボクシング</h2>
+<p>プリミティブ型には対応するラッパークラスがあります。<code>int</code>なら<code>Integer</code>、<code>long</code>なら<code>Long</code>です。</p>
+<pre class="article-code"><code>Integer a = 10; // オートボクシング: int -&gt; Integer
+int b = a;      // アンボクシング: Integer -&gt; int
+System.out.println(a + b); // 20</code></pre>
+<p>ただし、ボクシングと拡大変換の組み合わせには制限があります。</p>
+<pre class="article-code"><code>long a = 10;       // OK: int -&gt; long
+Integer b = 10;    // OK: int -&gt; Integer
+// Long c = 10;    // NG: int -&gt; long -&gt; Long とはならない
+Long d = 10L;      // OK: long -&gt; Long</code></pre>
+<p>参照が<code>null</code>のラッパーをアンボクシングすると、実行時に<code>NullPointerException</code>です。</p>
+<pre class="article-code"><code>Integer n = null;
+// int x = n; // 実行時例外: NullPointerException</code></pre>
+</section>
+<section class="article-section">
+<h2><code>var</code>は型を除外する機能ではない</h2>
+<p><code>var</code>はローカル変数の型推論です。型がなくなるわけではありません。コンパイル時に右辺から型が決まります。</p>
+<pre class="article-code"><code>var a = 10;       // int
+var b = 10L;      // long
+var c = 1.0;      // double
+var d = "abc";    // String
+
+// a = 10L;       // NG: aはintとして推論済み</code></pre>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>コード</th><th>可否</th><th>理由</th></tr></thead>
+<tbody>
+<tr><td data-label="コード"><code>var a = 10;</code></td><td data-label="可否">OK</td><td data-label="理由">右辺から<code>int</code>と推論できる。</td></tr>
+<tr><td data-label="コード"><code>var a;</code></td><td data-label="可否">NG</td><td data-label="理由">右辺がなく型を推論できない。</td></tr>
+<tr><td data-label="コード"><code>var a = null;</code></td><td data-label="可否">NG</td><td data-label="理由"><code>null</code>だけでは型を決められない。</td></tr>
+<tr><td data-label="コード"><code>var a = {1, 2, 3};</code></td><td data-label="可否">NG</td><td data-label="理由">配列初期化子だけでは不可。</td></tr>
+<tr><td data-label="コード"><code>var a = new int[] {1, 2, 3};</code></td><td data-label="可否">OK</td><td data-label="理由">右辺の型が<code>int[]</code>と分かる。</td></tr>
+<tr><td data-label="コード"><code>private var value;</code></td><td data-label="可否">NG</td><td data-label="理由"><code>var</code>はフィールドに使えない。</td></tr>
+<tr><td data-label="コード"><code>void test(var x) {}</code></td><td data-label="可否">NG</td><td data-label="理由">メソッド引数には使えない。</td></tr>
+</tbody>
+</table>
+</section>
+<section class="article-section">
+<h2>配列型と初期化の基本</h2>
+<p>配列は参照型です。変数は配列オブジェクトへの参照を持ちます。</p>
+<pre class="article-code"><code>int[] a = new int[3];
+System.out.println(a[0]); // 0
+
+a[0] = 10;
+int[] b = a;
+b[0] = 20;
+System.out.println(a[0]); // 20: 同じ配列を参照している</code></pre>
+<p>配列初期化子<code>{...}</code>は、宣言と同時に使うか、<code>new 型[]</code>と一緒に使います。</p>
+<pre class="article-code"><code>int[] a = {1, 2, 3};       // OK
+int[] b;
+// b = {1, 2, 3};          // NG
+b = new int[] {1, 2, 3};   // OK</code></pre>
+<p>多次元配列は、必ずしも長方形である必要はありません。</p>
+<pre class="article-code"><code>int[][] data = new int[2][];
+data[0] = new int[] {1, 2};
+data[1] = new int[] {3, 4, 5};
+System.out.println(data[1][2]); // 5</code></pre>
+</section>
+<section class="article-section">
+<h2>コンパイルエラー・実行時例外・正常実行を分ける</h2>
+<p>型を扱うコードでは、結果を3分類で判定します。</p>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>コード</th><th>結果</th><th>理由</th></tr></thead>
+<tbody>
+<tr><td data-label="コード"><code>byte b = 128;</code></td><td data-label="結果">コンパイルエラー</td><td data-label="理由"><code>byte</code>の範囲外。</td></tr>
+<tr><td data-label="コード"><code>byte b = (byte)128;</code></td><td data-label="結果">正常実行</td><td data-label="理由">明示キャスト。値は<code>-128</code>。</td></tr>
+<tr><td data-label="コード"><code>int x = 10 / 0;</code></td><td data-label="結果">コンパイルは可能だが実行時例外</td><td data-label="理由">整数0除算。</td></tr>
+<tr><td data-label="コード"><code>double x = 10.0 / 0;</code></td><td data-label="結果">正常実行</td><td data-label="理由"><code>Infinity</code>。</td></tr>
+<tr><td data-label="コード"><code>String s = null; s.length();</code></td><td data-label="結果">実行時例外</td><td data-label="理由"><code>null</code>参照へのメソッド呼び出し。</td></tr>
+<tr><td data-label="コード"><code>int[] a = new int[0]; a[0] = 1;</code></td><td data-label="結果">実行時例外</td><td data-label="理由">配列の範囲外アクセス。</td></tr>
+</tbody>
+</table>
+</section>
+<section class="article-section article-card">
+<h2>不可能・誤りパターン一覧</h2>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>誤り</th><th>理由</th><th>修正例</th></tr></thead>
+<tbody>
+<tr><td data-label="誤り"><code>float f = 1.0;</code></td><td data-label="理由"><code>1.0</code>は<code>double</code>。</td><td data-label="修正例"><code>float f = 1.0F;</code></td></tr>
+<tr><td data-label="誤り"><code>long n = 2147483648;</code></td><td data-label="理由">右辺が<code>int</code>範囲外。</td><td data-label="修正例"><code>long n = 2147483648L;</code></td></tr>
+<tr><td data-label="誤り"><code>byte b = a + 1;</code></td><td data-label="理由"><code>a + 1</code>は<code>int</code>。</td><td data-label="修正例"><code>byte b = (byte)(a + 1);</code></td></tr>
+<tr><td data-label="誤り"><code>boolean b = 1;</code></td><td data-label="理由"><code>boolean</code>と数値は互換性なし。</td><td data-label="修正例"><code>boolean b = true;</code></td></tr>
+<tr><td data-label="誤り"><code>if (1) {}</code></td><td data-label="理由">条件式は<code>boolean</code>必須。</td><td data-label="修正例"><code>if (n == 1) {}</code></td></tr>
+<tr><td data-label="誤り"><code>char c = "A";</code></td><td data-label="理由"><code>"A"</code>は<code>String</code>。</td><td data-label="修正例"><code>char c = 'A';</code></td></tr>
+<tr><td data-label="誤り"><code>var x;</code></td><td data-label="理由">型推論できない。</td><td data-label="修正例"><code>var x = 10;</code></td></tr>
+<tr><td data-label="誤り"><code>var x = null;</code></td><td data-label="理由"><code>null</code>だけでは型が決まらない。</td><td data-label="修正例"><code>String x = null;</code></td></tr>
+<tr><td data-label="誤り"><code>int[] a; a = {1, 2};</code></td><td data-label="理由">配列初期化子だけの代入は不可。</td><td data-label="修正例"><code>a = new int[] {1, 2};</code></td></tr>
+<tr><td data-label="誤り"><code>Long x = 10;</code></td><td data-label="理由"><code>int -&gt; long -&gt; Long</code>とは変換されない。</td><td data-label="修正例"><code>Long x = 10L;</code></td></tr>
+</tbody>
+</table>
+</section>
+<section class="article-section">
+<h2>読解ミニ演習</h2>
+<details class="article-details mini-exercise">
+<summary>確認例1: コンパイル可否</summary>
+<div class="mini-exercise-body">
+<p><code>byte b = 10 + 20;</code> はコンパイルできますか。</p>
+<div class="article-callout strong"><strong>結果:</strong> できます。<code>10 + 20</code>は定数式で、結果の<code>30</code>が<code>byte</code>範囲内だからです。</div>
+</div>
+</details>
+<details class="article-details mini-exercise">
+<summary>確認例2: コンパイル可否</summary>
+<div class="mini-exercise-body">
+<p><code>byte a = 10; byte b = a + 20;</code> はコンパイルできますか。</p>
+<div class="article-callout strong"><strong>結果:</strong> できません。<code>a + 20</code>は変数を含む式で、結果の型は<code>int</code>です。<code>byte</code>へ代入するにはキャストが必要です。</div>
+</div>
+</details>
+<details class="article-details mini-exercise">
+<summary>確認例3: 出力</summary>
+<div class="mini-exercise-body">
+<p><code>byte b = 127; b += 1; System.out.println(b);</code> の出力は何ですか。</p>
+<div class="article-callout strong"><strong>結果:</strong> <code>-128</code>です。複合代入は暗黙キャストを含み、<code>byte</code>の範囲を超えて循環します。</div>
+</div>
+</details>
+<details class="article-details mini-exercise">
+<summary>確認例4: 出力</summary>
+<div class="mini-exercise-body">
+<p><code>double d = 5 / 2; System.out.println(d);</code> の出力は何ですか。</p>
+<div class="article-callout strong"><strong>結果:</strong> <code>2.0</code>です。先に<code>int / int</code>で<code>2</code>になり、その後<code>double</code>へ代入されます。</div>
+</div>
+</details>
+<details class="article-details mini-exercise">
+<summary>確認例5: 実行時例外</summary>
+<div class="mini-exercise-body">
+<p><code>Integer n = null; int x = n;</code> はどうなりますか。</p>
+<div class="article-callout strong"><strong>結果:</strong> コンパイルはできますが、アンボクシング時に<code>NullPointerException</code>が発生します。</div>
+</div>
+</details>
+</section>
+<section class="article-section article-card important">
+<h2>理解の確認</h2>
+<ul class="article-list">
+<li><code>byte</code>/<code>short</code>/<code>char</code>の演算結果は原則<code>int</code>。</li>
+<li>整数リテラルは基本<code>int</code>、小数リテラルは基本<code>double</code>。</li>
+<li>定数式の代入特例と、変数を含む式を混同しない。</li>
+<li><code>+=</code>は暗黙キャストを含むが、値が安全とは限らない。</li>
+<li>ローカル変数にはデフォルト値がない。</li>
+<li><code>boolean</code>は数値型と互換性がない。</li>
+<li><code>var</code>はローカル変数専用。型がなくなるわけではない。</li>
+<li>参照型はオブジェクトそのものではなく参照を持つ。</li>
+</ul>
+</section>
+</section>
+<section class="study-route-panel related-practice-panel">
+<h2>関連演習</h2>
+<p>関連する演習です。</p>
+<div class="study-route-grid"><a class="study-route-card" href="../../courses/java11-silver/practice/basic-syntax.html"><span class="route-badge">演習</span><strong>基本文法</strong><span>変数、型、配列、制御構文</span></a><a class="study-route-card" href="../../courses/java11-silver/practice/compile-check.html"><span class="route-badge">演習</span><strong>コンパイル判定</strong><span>var、初期化、型変換</span></a><a class="study-route-card" href="../memorization-tables/index.html"><span class="route-badge">演習</span><strong>Java要点比較表</strong><span>型・変換を表で判定</span></a></div>
+</section>
+<section class="panel article-quality-note"><h2>理解の確認</h2><ul><li>先にコンパイル可否を判定します。</li><li>次に実行時例外の有無を判定します。</li><li>最後に出力・戻り値・参照先を追います。</li></ul></section><section class="article-section content-audit-note"><h2>この単元の要点</h2><ul class="article-list"><li>リテラルの型を先に決めます。整数は原則<code>int</code>、小数は原則<code>double</code>です。</li><li><code>byte</code>、<code>short</code>、<code>char</code>の演算結果は原則<code>int</code>です。</li><li><code>var</code>は型を省略するだけで、型そのものは消えません。初期化式から型が決まらない場合はコンパイルエラーです。</li><li>オートボクシングと型変換は別物です。<code>int</code>から<code>Long</code>へ直接は代入できません。</li></ul></section></main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="article-types.html";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

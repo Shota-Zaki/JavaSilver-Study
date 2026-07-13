@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="配列生成時の初期値、参照型配列のnull、NullPointerExceptionを整理します。" name="description"/>
+<title>配列デフォルト値とnull｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="配列デフォルト値とnull｜Java Practice Lab" property="og:title"/>
+<meta content="配列生成時の初期値、参照型配列のnull、NullPointerExceptionを整理します。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">配列要素の初期値とnull</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent"><section class="content-page article-body wide-article upgraded-article">
+<h1>配列要素の初期値とnull</h1>
+<p class="lead">Java 11とJava 17の共通範囲です。配列を作った直後の値、ローカル変数との違い、参照型配列で例外が起きる位置をコードで追います。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<section class="article-section textbook-section">
+<h2>配列を作ると、要素は型ごとの値で初期化される</h2>
+<p><code>new int[3]</code> は、<code>int</code>を3個置ける配列オブジェクトを作ります。作成された3要素には、すぐに<code>0</code>が入ります。変数<code>numbers</code>が保持するのは、配列そのものではなく配列への参照です。</p>
+<pre class="article-code"><code>public class ArrayDefaults {
+    public static void main(String[] args) {
+        int[] numbers = new int[2];
+        boolean[] flags = new boolean[2];
+        char[] letters = new char[2];
+        String[] names = new String[2];
+
+        System.out.println(numbers[0]);       // 0
+        System.out.println(flags[0]);         // false
+        System.out.println((int) letters[0]); // 0
+        System.out.println(names[0]);         // null
+    }
+}</code></pre>
+<p><code>char</code>の初期値は空の文字リテラルではありません。値は<code>'\u0000'</code>で、数値として表示すると<code>0</code>です。<code>''</code>という文字リテラルはJavaには存在しません。</p>
+<table class="ref-table study-table responsive-card-table"><thead><tr><th>要素型</th><th>初期値</th><th>表示を読むときの注意</th></tr></thead><tbody>
+<tr><td data-label="要素型">整数型</td><td data-label="初期値"><code>0</code></td><td data-label="表示を読むときの注意"><code>byte</code>、<code>short</code>、<code>int</code>、<code>long</code>で共通。</td></tr>
+<tr><td data-label="要素型">浮動小数点型</td><td data-label="初期値"><code>0.0</code></td><td data-label="表示を読むときの注意"><code>float</code>、<code>double</code>で共通。</td></tr>
+<tr><td data-label="要素型"><code>boolean</code></td><td data-label="初期値"><code>false</code></td><td data-label="表示を読むときの注意">数値の0とは別の値。</td></tr>
+<tr><td data-label="要素型"><code>char</code></td><td data-label="初期値"><code>'\u0000'</code></td><td data-label="表示を読むときの注意">画面上では見えにくいので、必要なら<code>int</code>へ変換して確認する。</td></tr>
+<tr><td data-label="要素型">参照型</td><td data-label="初期値"><code>null</code></td><td data-label="表示を読むときの注意">オブジェクトが自動生成されるわけではない。</td></tr>
+</tbody></table>
+</section>
+<section class="article-section textbook-section">
+<h2>ローカル変数は同じ扱いではない</h2>
+<p>配列の要素には初期値がありますが、メソッド内で宣言したローカル変数は使用前に値を代入する必要があります。次のコードは実行時例外ではなく、コンパイルエラーです。</p>
+<pre class="article-code"><code>public class LocalVariableError {
+    public static void main(String[] args) {
+        int value;
+        // System.out.println(value); // コンパイルエラー: valueが初期化されていない
+    }
+}</code></pre>
+<p>コードを読むときは「型の初期値」を暗記するだけでなく、その値が入る場所を見ます。フィールドと配列要素は初期化され、ローカル変数は自動初期化されません。</p>
+</section>
+<section class="article-section textbook-section">
+<h2>参照型配列では、要素のnullを使った時点で例外になる</h2>
+<pre class="article-code"><code>public class ReferenceArray {
+    public static void main(String[] args) {
+        String[] names = new String[2];
+        System.out.println(names[0]);          // null
+        System.out.println(names[0].length()); // ここでNullPointerException
+    }
+}</code></pre>
+<table class="ref-table study-table responsive-card-table"><thead><tr><th>手順</th><th>式</th><th>結果</th></tr></thead><tbody>
+<tr><td data-label="手順">1</td><td data-label="式"><code>new String[2]</code></td><td data-label="結果">要素が2個ある配列を作る。各要素は<code>null</code>。</td></tr>
+<tr><td data-label="手順">2</td><td data-label="式"><code>names[0]</code></td><td data-label="結果"><code>null</code>を取り出す。この操作だけでは例外は出ない。</td></tr>
+<tr><td data-label="手順">3</td><td data-label="式"><code>names[0].length()</code></td><td data-label="結果"><code>null</code>に対してメソッドを呼ぶため<code>NullPointerException</code>。</td></tr>
+</tbody></table>
+</section>
+<section class="article-section textbook-section">
+<h2>多次元配列では、行そのものがnullの場合がある</h2>
+<pre class="article-code"><code>public class JaggedArray {
+    public static void main(String[] args) {
+        int[][] table = new int[2][];
+        table[0] = new int[3];
+
+        System.out.println(table[0].length); // 3
+        System.out.println(table[1]);        // null
+        // System.out.println(table[1].length); // NullPointerException
+    }
+}</code></pre>
+<p><code>new int[2][]</code>が作るのは、<code>int[]</code>への参照を2個持つ外側の配列です。内側の配列は別途作るまで<code>null</code>です。</p>
+</section>
+<section class="article-section textbook-section">
+<h2>コードを読む順番</h2>
+<ol class="article-list"><li>変数そのものか、配列の要素か、フィールドかを区別する。</li><li>配列が作成済みかを確認する。</li><li>参照型要素なら、要素が<code>null</code>のまま使われていないかを見る。</li><li>添字が<code>0</code>から<code>length - 1</code>の範囲内かを確認する。</li><li>例外が起きる式より前の出力だけを残す。</li></ol>
+<p class="inline-note article-callout">配列の代入と<code>ArrayStoreException</code>は、<a href="../java-silver-array-covariance/index.html">配列の共変性</a>で扱います。ここでは「作成直後の要素」と「nullを使う位置」に絞っています。</p>
+</section>
+<section class="article-section"><h2>記事末尾の確認</h2><ul class="article-list"><li><code>char[]</code>の初期値を<code>'\u0000'</code>と説明できる。</li><li>ローカル変数未初期化を実行時例外と誤認しない。</li><li><code>String[]</code>の各要素が自動で空文字になると思わない。</li><li>多次元配列の外側と内側を別の配列として追える。</li></ul></section>
+</section></main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="index.html";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Stream APIの生成、中間操作、終端操作、遅延評価、短絡操作、reduce、collect、Collectors、parallelの注意点まで具体例で整理します。" name="description"/>
+<title>Streamの評価順と終端操作｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="Streamの評価順と終端操作｜Java Practice Lab" property="og:title"/>
+<meta content="Stream APIの生成、中間操作、終端操作、遅延評価、短絡操作、reduce、collect、Collectors、parallelの注意点まで具体例で整理します。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">Streamの評価順と終端操作</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent">
+<article class="content-page long-article gold-deep-article">
+<h1>Streamの評価順と終端操作</h1>
+<p class="lead">Streamの処理を誤って読む原因は、メソッド名ではなく型の流れと評価タイミングを追えていないことです。<br/>型の流れ、評価タイミング、終端操作の戻り値、Collectorの戻り値を追えていないことです。ここではコードを読む順番で整理します。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<section class="article-section">
+<h2>最初に見るべき4点</h2>
+<p>Streamパイプラインは、次の順番で読むと崩れにくくなります。</p>
+<ol>
+<li>Streamの要素型は何か。例: <code>Stream&lt;String&gt;</code>、<code>IntStream</code>。</li>
+<li>中間操作で要素型が変わるか。特に <code>map</code>、<code>flatMap</code>、<code>mapToInt</code>。</li>
+<li>終端操作の戻り値は何か。例: <code>count</code> は <code>long</code>、<code>findFirst</code> は <code>Optional&lt;T&gt;</code>。</li>
+<li>実際に何個の要素が評価されるか。遅延評価と短絡操作を判定する。</li>
+</ol>
+</section>
+<section class="article-section">
+<h2>Streamはデータそのものではなく、処理の流れ</h2>
+<p><code>Stream</code>はコレクションではありません。要素を保持する箱ではなく、要素を流して処理するためのパイプラインです。そのため、基本的に同じStreamを2回使うことはできません。</p>
+</section>
+<pre class="article-code"><code>var stream = List.of("A", "B", "C").stream();
+System.out.println(stream.count());
+System.out.println(stream.count()); // IllegalStateException</code></pre>
+<div class="article-callout">一度終端操作を実行したStreamは消費済みです。2回目の終端操作は実行時例外です。これはコンパイルエラーではありません。</div>
+<section class="article-section">
+<h2>Streamの作り方</h2>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>作り方</th><th>例</th><th>要素型</th><th>注意点</th></tr></thead><tbody>
+<tr><td data-label="作り方"><code>Collection.stream()</code></td><td data-label="例"><code>list.stream()</code></td><td data-label="要素型">コレクションの要素型</td><td data-label="注意点">最も基本。元のListを直接変更するわけではない。</td></tr>
+<tr><td data-label="作り方"><code>Stream.of</code></td><td data-label="例"><code>Stream.of("A", "B")</code></td><td data-label="要素型"><code>Stream&lt;String&gt;</code></td><td data-label="注意点">引数を要素として流す。</td></tr>
+<tr><td data-label="作り方"><code>Arrays.stream</code></td><td data-label="例"><code>Arrays.stream(array)</code></td><td data-label="要素型">配列の要素型</td><td data-label="注意点"><code>int[]</code>なら<code>IntStream</code>になる。</td></tr>
+<tr><td data-label="作り方"><code>Stream.empty</code></td><td data-label="例"><code>Stream.&lt;String&gt;empty()</code></td><td data-label="要素型">指定した型</td><td data-label="注意点">型推論が弱い場面では型引数を明示する。</td></tr>
+<tr><td data-label="作り方"><code>Stream.generate</code></td><td data-label="例"><code>Stream.generate(() -&gt; "A")</code></td><td data-label="要素型">Supplierの戻り値型</td><td data-label="注意点">無限Stream。通常は<code>limit</code>が必要。</td></tr>
+<tr><td data-label="作り方"><code>Stream.iterate</code></td><td data-label="例"><code>Stream.iterate(1, n -&gt; n + 1)</code></td><td data-label="要素型">初期値の型</td><td data-label="注意点">無限Stream。Java 9以降は条件付きiterateもある。</td></tr>
+</tbody></table>
+</section>
+<section class="article-section">
+<h2>中間操作と終端操作</h2>
+<p>中間操作はStreamを返してパイプラインを続けます。終端操作はStream以外の結果を返すか、副作用を実行してパイプラインを終了します。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>分類</th><th>代表例</th><th>戻り値</th><th>読み方</th></tr></thead><tbody>
+<tr><td data-label="分類">中間操作</td><td data-label="代表例"><code>filter</code></td><td data-label="戻り値"><code>Stream&lt;T&gt;</code></td><td data-label="読み方">条件に合う要素だけ残す。</td></tr>
+<tr><td data-label="分類">中間操作</td><td data-label="代表例"><code>map</code></td><td data-label="戻り値"><code>Stream&lt;R&gt;</code></td><td data-label="読み方">要素型が変わる。</td></tr>
+<tr><td data-label="分類">中間操作</td><td data-label="代表例"><code>flatMap</code></td><td data-label="戻り値"><code>Stream&lt;R&gt;</code></td><td data-label="読み方">Streamの入れ子を平らにする。</td></tr>
+<tr><td data-label="分類">中間操作</td><td data-label="代表例"><code>distinct</code> / <code>sorted</code></td><td data-label="戻り値"><code>Stream&lt;T&gt;</code></td><td data-label="読み方">状態を持つ中間操作。順序や比較に注意。</td></tr>
+<tr><td data-label="分類">中間操作</td><td data-label="代表例"><code>peek</code></td><td data-label="戻り値"><code>Stream&lt;T&gt;</code></td><td data-label="読み方">主にデバッグ用。終端操作がなければ実行されない。</td></tr>
+<tr><td data-label="分類">終端操作</td><td data-label="代表例"><code>count</code></td><td data-label="戻り値"><code>long</code></td><td data-label="読み方"><code>int</code>ではない。</td></tr>
+<tr><td data-label="分類">終端操作</td><td data-label="代表例"><code>forEach</code></td><td data-label="戻り値"><code>void</code></td><td data-label="読み方">戻り値なし。代入できない。</td></tr>
+<tr><td data-label="分類">終端操作</td><td data-label="代表例"><code>findFirst</code> / <code>findAny</code></td><td data-label="戻り値"><code>Optional&lt;T&gt;</code></td><td data-label="読み方">値がない可能性がある。</td></tr>
+<tr><td data-label="分類">終端操作</td><td data-label="代表例"><code>anyMatch</code> / <code>allMatch</code> / <code>noneMatch</code></td><td data-label="戻り値"><code>boolean</code></td><td data-label="読み方">短絡する。</td></tr>
+<tr><td data-label="分類">終端操作</td><td data-label="代表例"><code>collect</code></td><td data-label="戻り値">Collector次第</td><td data-label="読み方">List、Set、Map、Stringなどに集約。</td></tr>
+</tbody></table>
+</section>
+<section class="article-section">
+<h2>遅延評価: 中間操作だけでは実行されない</h2>
+<p>中間操作は「予約」されるだけです。終端操作が呼ばれて初めて、必要な要素が上流から流れます。</p>
+</section>
+<pre class="article-code"><code>Stream&lt;String&gt; s = Stream.of("A", "B")
+    .peek(System.out::print);
+
+// ここでは何も表示されない
+s.count(); // 終端操作</code></pre>
+<p>ただし、<code>count</code>はサイズが既知のソースでは最適化され、<code>peek</code>が実行されないことがあります。<code>peek</code>の副作用を必ず実行される処理として扱うことはできません。<code>peek</code>は「必ず表示判定に使える操作」と大まかに覚えるべきではありません。</p>
+<section class="article-section">
+<h2>filter・map・peekの実行順</h2>
+<p>Streamは「全要素にfilterを全部かけてからmap」ではなく、基本的には要素ごとにパイプラインを流れます。</p>
+</section>
+<pre class="article-code"><code>Stream.of("a", "bb", "ccc")
+    .filter(s -&gt; {
+        System.out.print("F" + s + " ");
+        return s.length() &gt; 1;
+    })
+    .map(s -&gt; {
+        System.out.print("M" + s + " ");
+        return s.toUpperCase();
+    })
+    .forEach(s -&gt; System.out.print("E" + s + " "));
+
+// Fa Fbb Mbb EBB Fccc Mccc ECCC</code></pre>
+<section class="article-section">
+<h2>短絡操作: 全要素を評価しないことがある</h2>
+<p><code>anyMatch</code>、<code>allMatch</code>、<code>noneMatch</code>、<code>findFirst</code>、<code>limit</code>は、結果が確定した時点で処理を止めることがあります。</p>
+</section>
+<pre class="article-code"><code>boolean result = Stream.of(1, 2, 3, 4)
+    .peek(System.out::print)
+    .anyMatch(n -&gt; n &gt; 2);
+
+// 123 と表示され、result は true</code></pre>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>操作</th><th>空Streamでの結果</th><th>短絡の例</th></tr></thead><tbody>
+<tr><td data-label="操作"><code>anyMatch</code></td><td data-label="空Streamでの結果"><code>false</code></td><td data-label="短絡の例">trueが出た時点で終了。</td></tr>
+<tr><td data-label="操作"><code>allMatch</code></td><td data-label="空Streamでの結果"><code>true</code></td><td data-label="短絡の例">falseが出た時点で終了。</td></tr>
+<tr><td data-label="操作"><code>noneMatch</code></td><td data-label="空Streamでの結果"><code>true</code></td><td data-label="短絡の例">trueになる要素が見つかった時点で終了。</td></tr>
+<tr><td data-label="操作"><code>findFirst</code></td><td data-label="空Streamでの結果"><code>Optional.empty()</code></td><td data-label="短絡の例">最初の要素が見つかれば終了。</td></tr>
+</tbody></table>
+<section class="article-section">
+<h2>mapとflatMapの違い</h2>
+<p><code>map</code>は1要素を1つの結果に変換します。<code>flatMap</code>は1要素をStreamに変換し、それらを1本のStreamに平らにします。</p>
+</section>
+<pre class="article-code"><code>var list = List.of("A,B", "C,D");
+
+var a = list.stream()
+    .map(s -&gt; Arrays.stream(s.split(",")));
+// Stream&lt;Stream&lt;String&gt;&gt;
+
+var b = list.stream()
+    .flatMap(s -&gt; Arrays.stream(s.split(",")));
+// Stream&lt;String&gt;</code></pre>
+<div class="article-callout">flatMapのラムダは、値そのものではなくStreamを返します。<code>.flatMap(s -&gt; s.toUpperCase())</code> のようなコードは戻り値型が合わずコンパイルエラーです。</div>
+<section class="article-section">
+<h2>プリミティブStream: Stream&lt;Integer&gt;とは別物</h2>
+<p><code>IntStream</code>、<code>LongStream</code>、<code>DoubleStream</code>は、<code>Stream&lt;Integer&gt;</code>などとは別の型です。使えるメソッドと戻り値が変わります。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>操作</th><th>戻り値</th><th>注意点</th></tr></thead><tbody>
+<tr><td data-label="操作"><code>mapToInt</code></td><td data-label="戻り値"><code>IntStream</code></td><td data-label="注意点">以後は<code>sum</code>、<code>average</code>などが使える。</td></tr>
+<tr><td data-label="操作"><code>boxed</code></td><td data-label="戻り値"><code>Stream&lt;Integer&gt;</code></td><td data-label="注意点">プリミティブStreamをラッパー型Streamへ戻す。</td></tr>
+<tr><td data-label="操作"><code>sum</code></td><td data-label="戻り値"><code>int</code> / <code>long</code> / <code>double</code></td><td data-label="注意点"><code>Stream&lt;Integer&gt;</code>には直接ない。</td></tr>
+<tr><td data-label="操作"><code>average</code></td><td data-label="戻り値"><code>OptionalDouble</code></td><td data-label="注意点">空の可能性がある。</td></tr>
+<tr><td data-label="操作"><code>max</code> / <code>min</code></td><td data-label="戻り値"><code>OptionalInt</code>など</td><td data-label="注意点">空Streamでは値がない。</td></tr>
+</tbody></table>
+</section>
+<pre class="article-code"><code>int total = Stream.of("10", "20")
+    .mapToInt(Integer::parseInt)
+    .sum(); // 30
+
+OptionalDouble avg = IntStream.of(10, 20, 30).average();</code></pre>
+<section class="article-section">
+<h2>reduceの3パターン</h2>
+<p><code>reduce</code>は要素を1つの値へ畳み込みます。オーバーロードごとに戻り値が違います。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>形</th><th>戻り値</th><th>空Stream</th></tr></thead><tbody>
+<tr><td data-label="形"><code>reduce(BinaryOperator&lt;T&gt;)</code></td><td data-label="戻り値"><code>Optional&lt;T&gt;</code></td><td data-label="空Stream"><code>Optional.empty()</code></td></tr>
+<tr><td data-label="形"><code>reduce(identity, BinaryOperator&lt;T&gt;)</code></td><td data-label="戻り値"><code>T</code></td><td data-label="空Stream"><code>identity</code></td></tr>
+<tr><td data-label="形"><code>reduce(identity, accumulator, combiner)</code></td><td data-label="戻り値"><code>U</code></td><td data-label="空Stream"><code>identity</code></td></tr>
+</tbody></table>
+</section>
+<pre class="article-code"><code>Optional&lt;Integer&gt; a = Stream.of(1, 2, 3)
+    .reduce((x, y) -&gt; x + y); // Optional[6]
+
+int b = Stream.of(1, 2, 3)
+    .reduce(10, (x, y) -&gt; x + y); // 16
+
+int c = Stream.of("A", "BB")
+    .reduce(0,
+        (sum, s) -&gt; sum + s.length(),
+        (x, y) -&gt; x + y); // 3</code></pre>
+<div class="article-callout">3引数reduceは、逐次Streamではcombinerが目立たないことがあります。しかしparallelではcombinerが判定の軸です。<br/>コードを読むときは「accumulatorとcombinerの型が合うか」を優先して見ます。</div>
+<section class="article-section">
+<h2>collectとCollectors</h2>
+<p><code>collect</code>は、Streamの要素をList、Set、Map、Stringなどへ集約します。戻り値は指定したCollectorで決まります。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>Collector</th><th>戻り値の典型</th><th>注意点</th></tr></thead><tbody>
+<tr><td data-label="Collector"><code>Collectors.toList()</code></td><td data-label="戻り値の典型"><code>List&lt;T&gt;</code></td><td data-label="注意点">具体クラスや変更可能性に依存しない。</td></tr>
+<tr><td data-label="Collector"><code>Collectors.toSet()</code></td><td data-label="戻り値の典型"><code>Set&lt;T&gt;</code></td><td data-label="注意点">順序は保証されないことがある。</td></tr>
+<tr><td data-label="Collector"><code>Collectors.joining()</code></td><td data-label="戻り値の典型"><code>String</code></td><td data-label="注意点">要素は<code>CharSequence</code>系。</td></tr>
+<tr><td data-label="Collector"><code>Collectors.counting()</code></td><td data-label="戻り値の典型"><code>Long</code></td><td data-label="注意点"><code>long</code>ではなくラッパー型として扱われる場面がある。</td></tr>
+<tr><td data-label="Collector"><code>Collectors.mapping()</code></td><td data-label="戻り値の典型">下流Collector次第</td><td data-label="注意点">集約前に要素を変換する。</td></tr>
+<tr><td data-label="Collector"><code>Collectors.groupingBy()</code></td><td data-label="戻り値の典型"><code>Map&lt;K, List&lt;T&gt;&gt;</code>など</td><td data-label="注意点">下流Collectorで値側が変わる。</td></tr>
+<tr><td data-label="Collector"><code>Collectors.partitioningBy()</code></td><td data-label="戻り値の典型"><code>Map&lt;Boolean, ...&gt;</code></td><td data-label="注意点">キーは<code>true</code>と<code>false</code>。</td></tr>
+</tbody></table>
+</section>
+<section class="article-section">
+<h2>toList()とCollectors.toList()</h2>
+<p>Java 16以降はStreamに<code>toList()</code>があります。<code>Stream.toList()</code>は変更不可Listを返しますが、<code>Collectors.toList()</code>は変更可能性を仕様で保証していません。</p>
+</section>
+<pre class="article-code"><code>List&lt;String&gt; a = Stream.of("A", "B").toList();
+List&lt;String&gt; b = Stream.of("A", "B").collect(Collectors.toList());</code></pre>
+<p>Java Gold SE 11だけを見る場合、<code>Stream.toList()</code>はJava 16以降のAPIなので対象外です。SE 11では基本的に<code>collect(Collectors.toList())</code>で読みます。SE 17範囲まで見るなら、<code>Stream.toList()</code>との違いも押さえます。</p>
+<p><code>Stream.toList()</code>の戻り値は変更不可です。<code>a.add("C")</code>は実行時に<code>UnsupportedOperationException</code>です。<code>Collectors.toList()</code>は変更可能なListを返すことが多いですが、仕様として具体的な型や変更可能性に依存すべきではありません。</p>
+<section class="article-section">
+<h2>toMapでキーが重複すると例外が発生する</h2>
+<p><code>Collectors.toMap</code>はキーが重複すると、マージ関数を指定していない限り実行時例外です。</p>
+</section>
+<pre class="article-code"><code>var map = Stream.of("apple", "ant", "banana")
+    .collect(Collectors.toMap(
+        s -&gt; s.charAt(0),
+        s -&gt; s.length()
+    ));
+// 'a' が重複するため IllegalStateException</code></pre>
+<pre class="article-code"><code>var map = Stream.of("apple", "ant", "banana")
+    .collect(Collectors.toMap(
+        s -&gt; s.charAt(0),
+        s -&gt; s.length(),
+        (oldValue, newValue) -&gt; oldValue + newValue
+    ));
+// {a=8, b=6} のように集約</code></pre>
+<section class="article-section">
+<h2>groupingByは値側を見る</h2>
+<p><code>groupingBy</code>は、分類関数だけなら <code>Map&lt;K, List&lt;T&gt;&gt;</code> です。下流Collectorを指定すると値側の型が変わります。</p>
+</section>
+<pre class="article-code"><code>record Item(String category, int price) {}
+
+var result = Stream.of(
+        new Item("book", 1000),
+        new Item("book", 1500),
+        new Item("food", 500))
+    .collect(Collectors.groupingBy(
+        Item::category,
+        Collectors.summingInt(Item::price)
+    ));
+
+// Map&lt;String, Integer&gt;
+// {book=2500, food=500}</code></pre>
+<section class="article-section">
+<h2>joiningはString専用ではなくCharSequence系</h2>
+<p><code>Collectors.joining</code>は、Streamの要素が<code>CharSequence</code>系のときに使います。数値Streamにそのまま使うのは不できます。</p>
+</section>
+<pre class="article-code"><code>String s = Stream.of("A", "B", "C")
+    .collect(Collectors.joining(",", "[", "]"));
+// [A,B,C]
+
+String nums = IntStream.of(1, 2, 3)
+    .mapToObj(String::valueOf)
+    .collect(Collectors.joining("-"));
+// 1-2-3</code></pre>
+<section class="article-section">
+<h2>sortedとComparator</h2>
+<p><code>sorted()</code>は自然順序で並べます。要素が<code>Comparable</code>でない場合はコンパイルは通っても実行時に<code>ClassCastException</code>になることがあります。比較基準が必要なら<code>Comparator</code>を渡します。</p>
+</section>
+<pre class="article-code"><code>record User(String name, int age) {}
+
+var names = Stream.of(
+        new User("A", 20),
+        new User("B", 18))
+    .sorted(Comparator.comparingInt(User::age).reversed())
+    .map(User::name)
+    .toList();
+// [A, B]</code></pre>
+<section class="article-section">
+<h2>forEachとforEachOrdered</h2>
+<p>逐次Streamでは同じに見えることが多いですが、parallel Streamでは<code>forEach</code>の実行順は保証されません。順序が必要なら<code>forEachOrdered</code>です。</p>
+</section>
+<pre class="article-code"><code>List.of(1, 2, 3, 4).parallelStream()
+    .forEach(System.out::print); // 順序は保証されない
+
+List.of(1, 2, 3, 4).parallelStream()
+    .forEachOrdered(System.out::print); // encounter orderを維持</code></pre>
+<section class="article-section">
+<h2>無限Streamはlimitなしだと終わらない</h2>
+<p><code>generate</code>や<code>iterate</code>は無限Streamを作ります。<code>limit</code>や短絡終端操作がないと、処理が終わりません。</p>
+</section>
+<pre class="article-code"><code>Stream.iterate(1, n -&gt; n + 1)
+    .limit(5)
+    .forEach(System.out::print); // 12345
+
+boolean found = Stream.iterate(1, n -&gt; n + 1)
+    .anyMatch(n -&gt; n == 5); // trueで停止</code></pre>
+<div class="article-callout">無限Streamに<code>sorted()</code>のように全要素を必要とする操作を組み合わせると、結果が出ません。短絡するかどうかを必ず見ます。</div>
+<section class="article-section">
+<h2>Optionalを返す終端操作</h2>
+<p><code>findFirst</code>、<code>findAny</code>、<code>max</code>、<code>min</code>、初期値なし<code>reduce</code>は、値が存在しない可能性があるため<code>Optional</code>を返します。</p>
+</section>
+<pre class="article-code"><code>Optional&lt;String&gt; first = Stream.&lt;String&gt;empty().findFirst();
+System.out.println(first.orElse("none")); // none
+
+String value = Stream.&lt;String&gt;empty()
+    .findFirst()
+    .get(); // NoSuchElementException</code></pre>
+<section class="article-section">
+<h2>nullとStream</h2>
+<p>Streamはnull要素を絶対に持てないわけではありません。ただし、null要素に対してメソッド参照やインスタンスメソッドを呼ぶと実行時例外になります。</p>
+</section>
+<pre class="article-code"><code>Stream.of("A", null, "B")
+    .map(String::length)
+    .forEach(System.out::println);
+// null要素で NullPointerException</code></pre>
+<pre class="article-code"><code>Stream.of("A", null, "B")
+    .filter(Objects::nonNull)
+    .map(String::length)
+    .forEach(System.out::println);
+// 1 1</code></pre>
+<section class="article-section">
+<h2>不可能・誤りパターン</h2>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>コード</th><th>結果</th><th>理由</th></tr></thead><tbody>
+<tr><td data-label="コード"><code>stream.filter(s -&gt; s.length())</code></td><td data-label="結果">コンパイルエラー</td><td data-label="理由"><code>filter</code>は<code>boolean</code>を返すPredicateが必要。</td></tr>
+<tr><td data-label="コード"><code>stream.map(s -&gt; s.length()).sum()</code></td><td data-label="結果">コンパイルエラー</td><td data-label="理由"><code>map</code>後は<code>Stream&lt;Integer&gt;</code>。<code>sum</code>はない。<code>mapToInt</code>を使う。</td></tr>
+<tr><td data-label="コード"><code>stream.flatMap(s -&gt; s.toUpperCase())</code></td><td data-label="結果">コンパイルエラー</td><td data-label="理由"><code>flatMap</code>のラムダはStreamを返す必要がある。</td></tr>
+<tr><td data-label="コード"><code>stream.forEach(...).count()</code></td><td data-label="結果">コンパイルエラー</td><td data-label="理由"><code>forEach</code>は<code>void</code>を返す終端操作。</td></tr>
+<tr><td data-label="コード"><code>stream.count(); stream.findFirst();</code></td><td data-label="結果">実行時例外</td><td data-label="理由">同じStreamを2回消費している。</td></tr>
+<tr><td data-label="コード"><code>Collectors.toMap(k, v)</code>でキー重複</td><td data-label="結果">実行時例外</td><td data-label="理由">マージ関数なしで重複キーを処理できない。</td></tr>
+<tr><td data-label="コード"><code>Stream.generate(...).count()</code></td><td data-label="結果">終わらない</td><td data-label="理由">無限Streamを制限していない。</td></tr>
+<tr><td data-label="コード"><code>Optional.empty().get()</code></td><td data-label="結果">実行時例外</td><td data-label="理由">値がないOptionalから取得している。</td></tr>
+</tbody></table>
+</section>
+<section class="article-section">
+<h2>読解ミニ演習</h2>
+<h3>例1</h3>
+<pre class="article-code"><code>long n = Stream.of("a", "bb", "ccc")
+    .filter(s -&gt; s.length() &gt; 1)
+    .map(String::toUpperCase)
+    .count();
+System.out.println(n);</code></pre>
+<p><strong>結果:</strong> <code>2</code>。<code>bb</code>と<code>ccc</code>だけが残ります。<code>count</code>の戻り値は<code>long</code>です。</p>
+<h3>例2</h3>
+<pre class="article-code"><code>var r = Stream.of(1, 2, 3, 4)
+    .filter(n -&gt; n % 2 == 0)
+    .findFirst();
+System.out.println(r.get());</code></pre>
+<p><strong>結果:</strong> <code>2</code>。<code>findFirst</code>は<code>Optional&lt;Integer&gt;</code>を返します。この例では値が存在するため<code>get</code>できます。</p>
+<h3>例3</h3>
+<pre class="article-code"><code>var result = Stream.of("A", "BB")
+    .map(String::length)
+    .reduce(10, Integer::sum);
+System.out.println(result);</code></pre>
+<p><strong>結果:</strong> <code>13</code>。初期値10に、長さ1と2を加えます。</p>
+<h3>例4</h3>
+<pre class="article-code"><code>var result = Stream.of("A", "B", "AA")
+    .collect(Collectors.groupingBy(String::length));
+System.out.println(result.get(1).size());</code></pre>
+<p><strong>結果:</strong> <code>2</code>。長さ1の要素は<code>A</code>と<code>B</code>です。分類関数だけの<code>groupingBy</code>は、値側がListになります。</p>
+</section>
+<section class="article-section">
+<h2>Stream処理の確認ポイント</h2>
+<ol>
+<li>まずStreamの要素型を書く。</li>
+<li><code>map</code>、<code>flatMap</code>、<code>mapToInt</code>で型が変わる箇所に印を付ける。</li>
+<li>終端操作を探す。終端操作がなければ基本的に処理は流れない。</li>
+<li>終端操作の戻り値型を決める。</li>
+<li><code>anyMatch</code>、<code>findFirst</code>、<code>limit</code>があれば短絡を疑う。</li>
+<li><code>collect</code>ならCollectorの戻り値、特にMapのキー重複と値側の型を見る。</li>
+</ol>
+</section>
+<div class="article-callout">Stream APIは、各操作の入力型・戻り値型・中間操作か終端操作かを順に確認します。長いチェーンでも、型と評価タイミングへ分解すれば判定できます。</div>
+</article>
+<section class="study-route-panel related-practice-panel">
+<h2>関連演習</h2>
+<p>関連する演習です。</p>
+<div class="study-route-grid"><a class="study-route-card" href="../../courses/gold11/practice/lambda-stream.html"><span class="route-badge">演習</span><strong>ラムダ・Stream</strong><span>Streamの基本</span></a><a class="study-route-card" href="../../courses/gold11/practice/stream-advanced.html"><span class="route-badge">演習</span><strong>Stream応用</strong><span>reduce、flatMap、短絡</span></a><a class="study-route-card" href="../../courses/gold11/practice/stream-optional-extra.html"><span class="route-badge">演習</span><strong>Stream・Optional</strong><span>Optionalと終端操作</span></a></div>
+</section>
+<section class="panel article-quality-note"><h2>理解の確認</h2><ul><li>先にコンパイル可否を判定します。</li><li>次に実行時例外の有無を判定します。</li><li>最後に出力・戻り値・参照先を追います。</li></ul><section class="article-section"><h2>確認ポイントの補足</h2>
+<p>Streamパイプラインは、出力だけを先に作ると評価順を誤りやすいです。次の順で読むと、コンパイル可否、実行時例外、出力の順に分けて判定できます。</p>
+<table class="ref-table study-table responsive-card-table"><thead><tr><th>判定</th><th>見る箇所</th><th>典型的な読み違い</th></tr></thead><tbody>
+<tr><td data-label="判定">再利用</td><td data-label="見る箇所">同じStreamに終端操作が2回あるか</td><td data-label="典型的な読み違い">コンパイルエラーではなく実行時例外。</td></tr>
+<tr><td data-label="判定">型の変化</td><td data-label="見る箇所"><code>map</code> / <code>flatMap</code> / <code>mapToInt</code></td><td data-label="典型的な読み違い"><code>Stream&lt;Integer&gt;</code> と <code>IntStream</code> を混同する。</td></tr>
+<tr><td data-label="判定">短絡</td><td data-label="見る箇所"><code>anyMatch</code> / <code>findFirst</code> / <code>limit</code></td><td data-label="典型的な読み違い">全要素を処理すると誤って読む。</td></tr>
+<tr><td data-label="判定">Optional</td><td data-label="見る箇所"><code>findFirst</code> / <code>max</code> / <code>min</code></td><td data-label="典型的な読み違い">戻り値が値そのものではなく <code>Optional</code> であることを見落とす。</td></tr>
+</tbody></table></section></section></main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="articles";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script><script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script><script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

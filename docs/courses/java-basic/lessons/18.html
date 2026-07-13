@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="失敗がコンパイル前に見つかるのか、実行中に起きるのかを先に分けます。" name="description"/>
+<title>Lesson 18 コンパイルエラーと実行時例外｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="Lesson 18 コンパイルエラーと実行時例外｜Java Practice Lab" property="og:title"/>
+<meta content="失敗がコンパイル前に見つかるのか、実行中に起きるのかを先に分けます。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../../manifest.webmanifest" rel="manifest"/>
+<link href="../../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="Java基礎">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="Java基礎"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">Java基礎</span><span class="site-context-title">コンパイルエラーと実行時例外</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../../index.html">トップ</a><a aria-current="page" class="is-active" href="../index.html">基礎</a><a href="../../bronze/index.html">Bronze</a><a href="../../java11-silver/index.html">Silver 11</a><a href="../../java17-silver/index.html">Silver 17</a><a href="../../gold11/index.html">Gold 11</a><a href="../../gold17/index.html">Gold 17</a><a href="../../../articles/index.html">単元別解説</a><a href="../../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main lesson-main" id="mainContent">
+<article class="card lesson-hero">
+<p class="meta">Java基礎 Lesson 18</p>
+<h1>コンパイルエラーと実行時例外</h1>
+<p class="lead">コンパイルエラー、クラス読み込み時の失敗、実行時例外、論理エラーを発生段階で分類します。</p>
+<div class="box goal-box"><strong>このレッスンのゴール</strong><p>コードが実行開始前に止まる場合と、実行中に例外が発生する場合を明確に区別できること。</p></div>
+</article><section class="card lesson-section basic-term-intro">
+<h2>基本用語の定義</h2>
+<div class="term-side-layout">
+<div>
+<p>「エラー」という一語では原因を特定できません。Javaでは、どの段階まで処理が進んだかを先に確認します。</p>
+</div>
+<div class="term-note-grid">
+<div class="term-note basic-term-mini"><strong>コンパイルエラーとは</strong><code>javac</code>の段階で文法や型の問題により止まること。</div><div class="term-note basic-term-mini"><strong>実行時例外とは</strong>コンパイル後、実行中の値や状態が原因で発生する例外。</div><div class="term-note basic-term-mini"><strong>スタックトレースとは</strong>例外がどのメソッド呼び出し経路で発生したかを示す出力。</div><div class="term-note basic-term-mini"><strong>到達不能コードとは</strong>絶対に実行されないためコンパイルエラーになるコード。</div><div class="term-note basic-term-mini"><strong>原因切り分けとは</strong>文法・型・参照・実行順序のどれが原因か分けること。</div>
+</div>
+</div>
+</section><section class="card lesson-section basic-term-check core-rule-section"><h2>失敗を発生段階で分類する</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>項目</th><th>定義・規則</th><th>具体例</th></tr></thead><tbody><tr><td data-label="項目"><span>コンパイルエラー</span></td><td data-label="定義・規則"><span>構文、型、アクセス、確実な代入などの規則に違反している状態。</span></td><td data-label="具体例"><span>対象コードは通常の実行段階へ進みません。</span></td></tr><tr><td data-label="項目"><span>クラス読み込み時の失敗</span></td><td data-label="定義・規則"><span>JVMが必要なクラスを見つけられない、または整合しない状態。</span></td><td data-label="具体例"><span><code>ClassNotFoundException</code>や<code>NoClassDefFoundError</code>など。</span></td></tr><tr><td data-label="項目"><span>実行時例外</span></td><td data-label="定義・規則"><span>コンパイル後、文や式の評価中に例外オブジェクトが送出される状態。</span></td><td data-label="具体例"><span><code>NullPointerException</code>など。</span></td></tr><tr><td data-label="項目"><span>論理エラー</span></td><td data-label="定義・規則"><span>正常終了するが、要求した結果と異なる状態。</span></td><td data-label="具体例"><span>コンパイラやJVMが必ず検出するものではありません。</span></td></tr><tr><td data-label="項目"><span>エラー発生位置</span></td><td data-label="定義・規則"><span>例外は特定の式の評価中に発生します。</span></td><td data-label="具体例"><span>配列アクセス、除算、メソッド呼び出しなど。</span></td></tr><tr><td data-label="項目"><span>後続処理</span></td><td data-label="定義・規則"><span>例外が処理されない限り、その式以降の通常処理は実行されません。</span></td><td data-label="具体例"><span>対応するcatchまたは呼び出し元へ移ります。</span></td></tr></tbody></table></div></section><section class="card lesson-section flow-section">
+<h2>失敗した段階を先に確認する</h2>
+<p>同じ「動かない」でも、javacが止めたのか、javaで実行中に例外が起きたのかで調べる場所が変わります。出力を考える前に、まずコンパイルできるコードかを確認します。</p>
+<div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>分類</th><th>発生タイミング</th><th>代表例</th><th>結果</th></tr></thead><tbody>
+<tr><td data-label="分類">コンパイルエラー</td><td data-label="発生タイミング"><code>javac</code>時</td><td data-label="代表例">型不一致、未定義変数、checked例外処理漏れ</td><td data-label="結果"><code>.class</code>が作られず、実行できない</td></tr>
+<tr><td data-label="分類">実行時例外</td><td data-label="発生タイミング"><code>java</code>実行中</td><td data-label="代表例">null参照、配列範囲外、整数0除算、キャスト失敗</td><td data-label="結果">途中まで実行され、例外発生地点で通常処理が止まる</td></tr>
+<tr><td data-label="分類">論理ミス</td><td data-label="発生タイミング">実行後</td><td data-label="代表例">出力が期待と違う、条件式が逆</td><td data-label="結果">エラーは出ないが意図通りではない</td></tr>
+</tbody></table></div>
+</section><section class="card lesson-section"><h2>コンパイルエラーの典型</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>原因</th><th>例</th><th>なぜ実行前に分かるか</th></tr></thead><tbody><tr><td data-label="原因">文法ミス</td><td data-label="例"><code>int a = ;</code></td><td data-label="なぜ実行前に分かるか">文の形が成立していない</td></tr><tr><td data-label="原因">型不一致</td><td data-label="例"><code>int a = "x";</code></td><td data-label="なぜ実行前に分かるか">代入できない型だと分かる</td></tr><tr><td data-label="原因">未初期化ローカル変数</td><td data-label="例"><code>int x; println(x);</code></td><td data-label="なぜ実行前に分かるか">値が入っていない経路が分かる</td></tr><tr><td data-label="原因">到達不能コード</td><td data-label="例"><code>return; println();</code></td><td data-label="なぜ実行前に分かるか">絶対に実行されないと分かる</td></tr><tr><td data-label="原因">checked例外未処理</td><td data-label="例"><code>throws</code>も<code>catch</code>もない</td><td data-label="なぜ実行前に分かるか">処理強制のルールに反する</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>実行時例外の典型</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>例外</th><th>起きる状況</th></tr></thead><tbody><tr><td data-label="例外"><code>NullPointerException</code></td><td data-label="起きる状況"><code>null</code>参照からメソッドやフィールドを使う</td></tr><tr><td data-label="例外"><code>ArrayIndexOutOfBoundsException</code></td><td data-label="起きる状況">配列の範囲外の添字を使う</td></tr><tr><td data-label="例外"><code>NumberFormatException</code></td><td data-label="起きる状況">数値に変換できない文字列を変換する</td></tr><tr><td data-label="例外"><code>ClassCastException</code></td><td data-label="起きる状況">実体に合わない型へキャストする</td></tr><tr><td data-label="例外"><code>ArithmeticException</code></td><td data-label="起きる状況">整数の0除算など</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>同じように見えても違う</h2><p class="code-caption">値がないことをコンパイラが判断できる</p><pre><code>int x;
+System.out.println(x); // コンパイルエラー</code></pre><p class="code-caption">型としてはStringなのでコンパイルはできる</p><pre><code>String s = null;
+System.out.println(s.length()); // 実行時例外</code></pre></section><section class="card lesson-section"><h2>確認ポイント</h2><ol><li>宣言されていない名前を使っていないか。</li><li>型が合っているか。</li><li>アクセスできるか。</li><li>ローカル変数は初期化済みか。</li><li>checked例外を処理しているか。</li><li>ここまで通るなら、実行時の値を追う。</li></ol></section><section class="card lesson-section"><h2>コンパイル成功後に実行時例外が起きる例</h2><p class="code-caption">`Main.java`として保存する完全なコード</p><pre><code>public class Main {
+    public static void main(String[] args) {
+        String text = null;
+        System.out.println("before");
+        System.out.println(text.length());
+        System.out.println("after");
+    }
+}</code></pre><p><span>このコードはコンパイルできます。実行すると<code>text.length()</code>の呼び出し時に<code>NullPointerException</code>が発生し、<code>"after"</code>は出力されません。</span></p></section><section class="card lesson-section"><h2>関連する用語との違い</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>混同しやすいもの</th><th>違い</th><th>見分け方</th></tr></thead><tbody><tr><td data-label="混同しやすいもの">型が合わない / 値が不正</td><td data-label="違い">型が合わないならコンパイルエラー。値が実行時に不正なら例外になりやすい。</td><td data-label="見分け方"><code>int x = "1"</code>と<code>args[0]</code>を区別。</td></tr><tr><td data-label="混同しやすいもの">未初期化 / null</td><td data-label="違い">未初期化ローカル変数はコンパイルエラー。<code>null</code>参照は実行時例外。</td><td data-label="見分け方">代入されていないのか、<code>null</code>が代入されているのかを見る。</td></tr><tr><td data-label="混同しやすいもの">エラーあり / 出力あり</td><td data-label="違い">コンパイルエラーなら出力はない。</td><td data-label="見分け方">「何が表示されるか」より先にコンパイル可否。</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>失敗の種類を判断する規則</h2><ol><li><span>最初にソースコードがコンパイル可能か確認する。</span></li><li><span>コンパイルできる場合、クラスが読み込まれてmainが開始できるか確認する。</span></li><li><span>実行中に例外が発生する具体的な式を特定する。</span></li><li><span>例外処理がある場合は対応するcatchを確認する。</span></li><li><span>例外もなく終了する場合は、出力や状態が要求どおりか確認する。</span></li></ol><p class="code-caption">確認用コード</p><pre><code>String s = null;
+System.out.println(s.length());</code></pre><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>見る点</th><th>このコードでの判断</th><th>結論</th></tr></thead><tbody><tr><td data-label="見る点">型</td><td data-label="このコードでの判断"><code>s</code>はString型</td><td data-label="結論">コンパイルは可能</td></tr><tr><td data-label="見る点">値</td><td data-label="このコードでの判断"><code>s</code>はnull</td><td data-label="結論">参照先がない</td></tr><tr><td data-label="見る点">実行</td><td data-label="このコードでの判断"><code>length()</code>呼び出し</td><td data-label="結論"><code>NullPointerException</code></td></tr></tbody></table></div></section>
+<section class="card lesson-section flow-section"><h2>コンパイル前と実行中を分ける</h2>
+<p>Javaの失敗は、まず<strong>コンパイル前に見つかる失敗</strong>と<strong>実行中に起きる失敗</strong>に分けます。この区別をせずに「エラー」とまとめると、原因を探す場所を間違えます。</p>
+<div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>分類</th><th>いつ起きるか</th><th>例</th><th>主な原因</th></tr></thead><tbody><tr><td data-label="分類">コンパイルエラー</td><td data-label="いつ起きるか"><code>javac</code>時</td><td data-label="例"><code>cannot find symbol</code></td><td data-label="主な原因">文法、型、名前、アクセス制御の問題</td></tr><tr><td data-label="分類">実行時例外</td><td data-label="いつ起きるか"><code>java</code>実行中</td><td data-label="例"><code>NullPointerException</code></td><td data-label="主な原因">実行して初めて決まる値や状態の問題</td></tr><tr><td data-label="分類">正常終了</td><td data-label="いつ起きるか">最後まで実行</td><td data-label="例">出力が出る</td><td data-label="主な原因">文法も実行時状態も問題なし</td></tr></tbody></table></div>
+<pre><code>// コンパイルエラーの例
+String s = 10; // 型が合わない
+
+// 実行時例外の例
+String t = null;
+System.out.println(t.length()); // NullPointerException</code></pre>
+<p>上の2つはどちらも「失敗」ですが、調べる段階が違います。<code>String s = 10;</code>は実行前にコンパイラが止めます。<code>t.length()</code>は文法としては正しいためコンパイルできますが、実行中に<code>t</code>がnullなので失敗します。</p>
+<ol><li>まず文法・型・名前・アクセス修飾子でコンパイルできるか見る。</li><li>コンパイルできるなら、実行時の値と参照を追う。</li><li>例外が起きるなら、どの行で、どの例外型かを見る。</li><li>catchがあるなら、どのcatchに入るかを見る。</li></ol>
+<div class="mistake-callout"><strong>ここで整理する誤解</strong><p>「nullだからコンパイルエラー」は間違いです。null参照からメソッドを呼ぶコードは文法上は成立します。問題は実行時に参照先がないことです。</p></div>
+</section>
+<section class="card lesson-section basic-stumble-check"><h2>定義と規則の整理</h2><h3>エラー段階の切り分け不足</h3><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>つまずき</th><th>正しい考え方</th></tr></thead><tbody><tr><td data-label="つまずき">すべてを「エラー」とだけ呼ぶ</td><td data-label="正しい考え方">コンパイルエラー、実行時例外、出力違いを分けないと原因に辿り着けない。</td></tr><tr><td data-label="つまずき">コンパイルできたら正解だと思う</td><td data-label="正しい考え方">実行時例外や期待出力との違いはコンパイル後に発覚する。</td></tr><tr><td data-label="つまずき">エラーメッセージの最初だけ見る</td><td data-label="正しい考え方">行番号、記号の位置、symbol、locationを合わせて読む。</td></tr></tbody></table></div><h3>確認できれば次へ</h3><ul class="check-list compact-check-list"><li>コンパイルエラーと実行時例外の違いを説明できる</li><li>javacのエラー行と^の意味を説明できる</li><li>出力を追う前の確認順を説明できる</li></ul><div class="lesson-note"><strong>理解の基準</strong></div></section>
+<section class="card lesson-section code-trio-section">
+<h2>成立するコードと成立しないコード</h2>
+<div class="code-trio-grid">
+<article class="code-trio-card good"><h3>成立する例：実行時例外をtry-catchで扱う</h3><pre><code>String s = null;
+try {
+    System.out.println(s.length());
+} catch (NullPointerException e) {
+    System.out.println("null");
+}</code></pre></article>
+<article class="code-trio-card bad"><h3>成立しない例：コンパイル時点で型が合わない</h3><pre><code>String s = 10;</code></pre></article>
+<article class="code-trio-card fix"><h3>成立する形：参照型には文字列リテラルを代入する</h3><pre><code>String s = "10";
+System.out.println(s.length());</code></pre></article>
+</div>
+<div class="lesson-note"><strong>確認ポイント</strong><p>コンパイルエラーは実行前に止まります。実行時例外はコンパイル後、実行中に起きます。</p></div>
+</section>
+<section class="card lesson-section basic-understanding-quiz quiz-level-section"><h2>定義と規則を確認する</h2><div class="quiz-level-list"><article class="quiz-level-card"><h3>用語の確認</h3><p>コンパイルエラーと実行時例外の違いを説明できますか。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>コンパイルエラーはclassを作る前に止まる問題、実行時例外はコンパイル後に動かしたとき発生する問題です。</p></details></article><article class="quiz-level-card"><h3>コードの確認</h3><p>次のコードはどちらですか。</p><pre><code>String s = null;
+System.out.println(s.length());</code></pre><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>コンパイルはできますが、実行時にNullPointerExceptionです。型としては呼べますが、参照先がnullです。</p></details></article><article class="quiz-level-card"><h3>仕組みを説明する</h3><p>実行結果を考える前に、コンパイル可否を確認する理由を説明してください。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>コンパイルできなければ実行されないため、出力や実行時例外を考える必要がありません。判定順を固定するとミスが減ります。</p></details></article></div></section><section class="card lesson-section check-section"><h2>基本ルールのまとめ</h2><ul><li>コンパイルエラーと実行時例外を発生時点で区別できる。</li><li>未初期化ローカル変数とnull参照の違いを説明できる。</li><li>コンパイルできないコードには実行結果がないと判断できる。</li></ul></section><section class="card lesson-section"><h2>コードに規則を当てはめる</h2><p>次のコードはコンパイルエラーか、実行時例外か、正常終了か。</p><p class="code-caption">確認用コード</p><pre><code>public class Main {
+    public static void main(String[] args) {
+        int[] a = new int[1];
+        System.out.println(a[1]);
+    }
+}</code></pre><details class="answer-panel"><summary>説明を見る</summary><p>コンパイルは通るが、実行時例外になる。</p><p><code>a</code>は長さ1なので有効な添字は<code>0</code>だけ。<code>a[1]</code>は範囲外アクセスなので<code>ArrayIndexOutOfBoundsException</code>が起きる。</p></details></section><section class="card lesson-nav-bottom"><div><a class="btn ghost" href="17.html">← 前のLesson</a><a class="btn" href="../index.html">Lesson一覧</a><a class="btn primary" href="19.html">次のLesson →</a></div></section>
+</main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../../site/about.html">このサイトについて</a><a href="../../../site/editorial-policy.html">編集方針</a><a href="../../../site/site-map.html">サイトマップ</a><a href="../../../site/privacy.html">プライバシーポリシー</a><a href="../../../site/terms.html">利用規約</a><a href="../../../site/disclaimer.html">免責事項</a><a href="../../../site/advertising.html">広告・アフィリエイト</a><a href="../../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../../";window.CURRENT_PAGE="java-basic-18.html";</script>
+<script src="../../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

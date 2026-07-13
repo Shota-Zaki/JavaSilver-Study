@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="javac -d、java -cp、package、main、複数class、起動引数、注意点を具体例で整理" name="description"/>
+<title>javac・javaコマンドで詰まる原因｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="javac・javaコマンドで詰まる原因｜Java Practice Lab" property="og:title"/>
+<meta content="javac -d、java -cp、package、main、複数class、起動引数、注意点を具体例で整理" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">javac・javaコマンドで詰まる原因</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent">
+<article class="article-page">
+<p class="breadcrumb"><a href="../index.html">単元別解説</a></p>
+<h1>javac・javaコマンドで詰まる原因</h1>
+<p class="lead">コンパイルと実行は別工程です。<code>javac</code> は <code>.java</code> を検査して <code>.class</code> を作るコマンド、<code>java</code> はクラス名を指定してJVMを起動するコマンドです。ここを曖昧にすると、コマンドコードはほぼ読み違えます。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<section class="article-section foundation-bridge-section" id="foundation-java-execution-declaration">
+<h2>最初に固定する判定順</h2>
+<p>コマンドコードは、出力結果を追う前に次の順番で切ります。</p>
+<ol class="article-list priority-list">
+<li><strong>ソースファイル名</strong>と <strong>publicトップレベルクラス名</strong> が一致しているか。</li>
+<li><code>javac</code> に渡しているものが <strong>ソースファイル</strong> か。クラス名や <code>.class</code> を渡していないか。</li>
+<li><code>package</code> がある場合、<code>-d</code> で正しい出力先に <code>.class</code> を作っているか。</li>
+<li><code>java</code> に渡しているものが <strong>完全修飾クラス名</strong> か。<code>.class</code> やパスを渡していないか。</li>
+<li>起動対象クラスに、起動できる形の <code>main</code> メソッドがあるか。</li>
+</ol>
+<div class="article-callout strong"><strong>重要:</strong> <code>javac</code> はファイルを指定します。<code>java</code> はクラス名を指定します。この1文を基準にすると、かなりの誤りを切れます。</div>
+</section>
+<section class="article-section">
+<h2>javac と java の役割</h2>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>コマンド</th><th>入力</th><th>出力・動作</th><th>よくある誤り</th></tr></thead>
+<tbody>
+<tr><td data-label="コマンド"><code>javac</code></td><td data-label="入力"><code>Sample.java</code> のようなソースファイル</td><td data-label="出力・動作"><code>Sample.class</code> を作る</td><td data-label="よくある誤り"><code>javac Sample</code>、<code>javac Sample.class</code></td></tr>
+<tr><td data-label="コマンド"><code>java</code></td><td data-label="入力"><code>Sample</code> や <code>ex.Sample</code> のようなクラス名</td><td data-label="出力・動作">JVMを起動して <code>main</code> を呼ぶ</td><td data-label="よくある誤り"><code>java Sample.class</code>、<code>java ex/Sample</code></td></tr>
+</tbody>
+</table>
+<pre><code>// Sample.java
+public class Sample {
+    public static void main(String[] args) {
+        System.out.println("OK");
+    }
+}</code></pre>
+<pre><code># コンパイル
+javac Sample.java
+
+# 実行
+java Sample</code></pre>
+<p><code>java Sample.class</code> は、クラス名に <code>.class</code> を付けているので誤りです。<code>java</code> コマンドはファイル名ではなく、JVMに読み込ませるクラス名を指定します。</p>
+</section>
+<section class="article-section">
+<h2>publicクラス名とファイル名</h2>
+<p>トップレベルの <code>public</code> クラスがある場合、ファイル名はそのクラス名と一致しなければなりません。大文字小文字も区別します。</p>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>ファイル名</th><th>コード</th><th>結果</th><th>理由</th></tr></thead>
+<tbody>
+<tr><td data-label="ファイル名"><code>Sample.java</code></td><td data-label="コード"><code>public class Sample {}</code></td><td data-label="結果">OK</td><td data-label="理由">publicクラス名とファイル名が一致</td></tr>
+<tr><td data-label="ファイル名"><code>Main.java</code></td><td data-label="コード"><code>public class Sample {}</code></td><td data-label="結果">NG</td><td data-label="理由"><code>Sample</code> は <code>Sample.java</code> に置く必要がある</td></tr>
+<tr><td data-label="ファイル名"><code>Memo.java</code></td><td data-label="コード"><code>class Sample {}</code></td><td data-label="結果">OK</td><td data-label="理由">publicでなければファイル名一致は必須ではない</td></tr>
+<tr><td data-label="ファイル名"><code>Sample.java</code></td><td data-label="コード"><code>public class A {} public class B {}</code></td><td data-label="結果">NG</td><td data-label="理由">1ファイルにpublicトップレベルクラスは複数書けない</td></tr>
+</tbody>
+</table>
+<div class="article-callout strong"><strong>切り分け:</strong> ファイル名の制約を受けるのは <code>public</code> なトップレベルクラスです。<code>public</code> ではないトップレベルクラスは、ファイル名と一致しなくてもコンパイルできます。</div>
+</section>
+<section class="article-section" id="multiple-top-level-classes">
+<h2>1つのファイルに複数のclassを書いた場合</h2>
+<p>Javaでは、1つの <code>.java</code> ファイルに複数のトップレベルクラスを書けます。ただし、<strong>publicトップレベルクラスは最大1つ</strong>です。<code>javac</code> はファイル内の各トップレベルクラスごとに <code>.class</code> ファイルを作ります。</p>
+<pre><code>// A.java
+public class A {
+    public static void main(String[] args) {
+        System.out.println("A");
+    }
+}
+
+class B {
+    public static void main(String[] args) {
+        System.out.println("B");
+    }
+}
+
+class C {
+}</code></pre>
+<pre><code>javac A.java</code></pre>
+<p>コンパイル後は、次のようにクラスごとの <code>.class</code> が生成されます。</p>
+<pre><code>A.java
+A.class
+B.class
+C.class</code></pre>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>コマンド</th><th>判定</th><th>理由</th></tr></thead>
+<tbody>
+<tr><td data-label="コマンド"><code>java A</code></td><td data-label="判定">OK</td><td data-label="理由"><code>A</code> に正しい <code>main</code> がある</td></tr>
+<tr><td data-label="コマンド"><code>java B</code></td><td data-label="判定">OK</td><td data-label="理由"><code>B</code> はpublicでないが、トップレベルクラスであり、正しい <code>main</code> がある</td></tr>
+<tr><td data-label="コマンド"><code>java C</code></td><td data-label="判定">起動失敗</td><td data-label="理由"><code>C.class</code> は存在するが、<code>main</code> がない</td></tr>
+<tr><td data-label="コマンド"><code>java A.class</code></td><td data-label="判定">NG</td><td data-label="理由"><code>java</code> に渡すのはファイル名ではなくクラス名</td></tr>
+</tbody>
+</table>
+<div class="article-callout strong"><strong>重要:</strong> 実行時に指定するのは「ファイル名」ではなく「クラス名」です。<code>A.java</code> から生成された <code>B.class</code> でも、<code>B</code> に正しい <code>main</code> があれば <code>java B</code> で起動できます。</div>
+<h3>publicクラスがない場合</h3>
+<p>トップレベルクラスがすべて <code>public</code> ではないなら、ファイル名は任意です。</p>
+<pre><code>// Memo.java
+class A {
+    public static void main(String[] args) {
+        System.out.println("A");
+    }
+}
+
+class B {
+    public static void main(String[] args) {
+        System.out.println("B");
+    }
+}</code></pre>
+<pre><code>javac Memo.java
+java A
+java B</code></pre>
+<p><code>Memo.java</code> というファイル名でも、生成されるのは <code>Memo.class</code> ではなく、<code>A.class</code> と <code>B.class</code> です。<code>class Memo</code> が存在しないなら、<code>java Memo</code> は起動できません。</p>
+<h3>packageがある場合</h3>
+<p><code>package</code> 宣言は、そのファイル内のすべてのトップレベルクラスに適用されます。</p>
+<pre><code>// src/ex/A.java
+package ex;
+
+public class A {
+    public static void main(String[] args) {
+        System.out.println("A");
+    }
+}
+
+class B {
+    public static void main(String[] args) {
+        System.out.println("B");
+    }
+}</code></pre>
+<pre><code>javac -d out src/ex/A.java
+java -cp out ex.A
+java -cp out ex.B</code></pre>
+<p><code>B</code> も <code>ex</code> パッケージ所属なので、<code>java -cp out B</code> ではなく <code>java -cp out ex.B</code> です。<code>-d out</code> を使った場合、生成物は <code>out/ex/A.class</code> と <code>out/ex/B.class</code> になります。</p>
+<h3>不可能パターン</h3>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>コード・コマンド</th><th>判定</th><th>理由</th></tr></thead>
+<tbody>
+<tr><td data-label="コード・コマンド"><code>public class A {} public class B {}</code></td><td data-label="判定">NG</td><td data-label="理由">1つのソースファイルにpublicトップレベルクラスは複数書けない</td></tr>
+<tr><td data-label="コード・コマンド"><code>B.java</code> に <code>public class A {}</code></td><td data-label="判定">NG</td><td data-label="理由">publicクラス <code>A</code> は <code>A.java</code> に置く必要がある</td></tr>
+<tr><td data-label="コード・コマンド"><code>javac A.java</code> 後に <code>java A.java</code></td><td data-label="判定">通常はNG</td><td data-label="理由">コンパイル済みclassの起動ではクラス名を指定する。source-file modeとは別</td></tr>
+<tr><td data-label="コード・コマンド"><code>java Memo</code></td><td data-label="判定">NGになり得る</td><td data-label="理由"><code>Memo.java</code> というファイル名でも、<code>class Memo</code> がなければ <code>Memo.class</code> は生成されない</td></tr>
+<tr><td data-label="コード・コマンド"><code>java B</code> を <code>package ex;</code> 付きの <code>B</code> に対して実行</td><td data-label="判定">NG</td><td data-label="理由">完全修飾クラス名 <code>ex.B</code> を指定する必要がある</td></tr>
+</tbody>
+</table>
+</section>
+<section class="article-section">
+<h2>mainメソッドのOK・NG</h2>
+<p><code>java</code> コマンドで通常起動するには、起動対象クラスに正しい <code>main</code> が必要です。</p>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>宣言</th><th>判定</th><th>理由</th></tr></thead>
+<tbody>
+<tr><td data-label="宣言"><code>public static void main(String[] args)</code></td><td data-label="判定">OK</td><td data-label="理由">標準形</td></tr>
+<tr><td data-label="宣言"><code>public static void main(String... args)</code></td><td data-label="判定">OK</td><td data-label="理由">可変長引数は配列として扱える</td></tr>
+<tr><td data-label="宣言"><code>static public void main(String[] args)</code></td><td data-label="判定">OK</td><td data-label="理由"><code>public</code>と<code>static</code>は、どちらを先に書いてもよい</td></tr>
+<tr><td data-label="宣言"><code>public static void main(String args[])</code></td><td data-label="判定">OK</td><td data-label="理由">配列記法の位置が違うだけ</td></tr>
+<tr><td data-label="宣言"><code>public void main(String[] args)</code></td><td data-label="判定">NG</td><td data-label="理由"><code>static</code> ではない</td></tr>
+<tr><td data-label="宣言"><code>static void main(String[] args)</code></td><td data-label="判定">NG</td><td data-label="理由"><code>public</code> ではない</td></tr>
+<tr><td data-label="宣言"><code>public static int main(String[] args)</code></td><td data-label="判定">NG</td><td data-label="理由">戻り値が <code>void</code> ではない</td></tr>
+<tr><td data-label="宣言"><code>public static void main(String args)</code></td><td data-label="判定">NG</td><td data-label="理由">引数が <code>String</code> 配列または可変長引数ではない</td></tr>
+</tbody>
+</table>
+<div class="article-callout">注意: <code>main</code> が間違っていても、クラス自体はコンパイルできる場合があります。その場合はコンパイルエラーではなく、起動時にmainメソッドが見つからない状態です。</div>
+</section>
+<section class="article-section">
+<h2>packageなしの最小パターン</h2>
+<p>まずは <code>package</code> がない単純なケースを固定します。</p>
+<pre><code>work/
+  Sample.java</code></pre>
+<pre><code># work ディレクトリで実行
+javac Sample.java
+java Sample</code></pre>
+<p>コンパイル後は次のようになります。</p>
+<pre><code>work/
+  Sample.java
+  Sample.class</code></pre>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>コマンド</th><th>判定</th><th>理由</th></tr></thead>
+<tbody>
+<tr><td data-label="コマンド"><code>javac Sample.java</code></td><td data-label="判定">OK</td><td data-label="理由">ソースファイルをコンパイルしている</td></tr>
+<tr><td data-label="コマンド"><code>java Sample</code></td><td data-label="判定">OK</td><td data-label="理由">クラス名を指定している</td></tr>
+<tr><td data-label="コマンド"><code>javac Sample</code></td><td data-label="判定">NG</td><td data-label="理由"><code>javac</code> にソースファイル名を渡していない</td></tr>
+<tr><td data-label="コマンド"><code>java Sample.java</code></td><td data-label="判定">原則NGとして扱う</td><td data-label="理由">通常のコンパイル済みクラス実行ではクラス名を指定する。Java 11以降の単一ソースファイル実行モードは別扱い</td></tr>
+<tr><td data-label="コマンド"><code>java Sample.class</code></td><td data-label="判定">NG</td><td data-label="理由"><code>java</code> は <code>.class</code> ファイル名ではなくクラス名を受け取る</td></tr>
+</tbody>
+</table>
+</section>
+<section class="article-section">
+<h2>-d でclassファイルの出力先を分ける</h2>
+<p><code>-d</code> は、コンパイル後の <code>.class</code> ファイルをどこに出力するかを指定するオプションです。ソースとclassを混ぜないために使います。</p>
+<pre><code>work/
+  src/
+    Sample.java
+  out/</code></pre>
+<pre><code># work ディレクトリで実行
+javac -d out src/Sample.java
+java -cp out Sample</code></pre>
+<p>コンパイル後は次の形になります。</p>
+<pre><code>work/
+  src/
+    Sample.java
+  out/
+    Sample.class</code></pre>
+<p><code>-d out</code> を使うと、<code>Sample.class</code> は <code>src</code> ではなく <code>out</code> に作られます。そのため、実行時には <code>-cp out</code> でクラス検索場所を指定します。</p>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>コマンド</th><th>判定</th><th>理由</th></tr></thead>
+<tbody>
+<tr><td data-label="コマンド"><code>javac -d out src/Sample.java</code></td><td data-label="判定">OK</td><td data-label="理由"><code>src/Sample.java</code> をコンパイルし、<code>out</code> にclassを出力</td></tr>
+<tr><td data-label="コマンド"><code>java -cp out Sample</code></td><td data-label="判定">OK</td><td data-label="理由"><code>out</code> から <code>Sample.class</code> を探せる</td></tr>
+<tr><td data-label="コマンド"><code>java Sample</code></td><td data-label="判定">NGになりやすい</td><td data-label="理由">カレントディレクトリに <code>Sample.class</code> がないなら見つからない</td></tr>
+<tr><td data-label="コマンド"><code>javac -d src/Sample.java out</code></td><td data-label="判定">NG</td><td data-label="理由"><code>-d</code> の直後に出力先ディレクトリを置く</td></tr>
+</tbody>
+</table>
+</section>
+<section class="article-section">
+<h2>packageありのコンパイルと実行</h2>
+<p><code>package</code> がある場合、実行時はパッケージ名を含めた完全修飾クラス名を指定します。</p>
+<pre><code>// src/ex/Sample.java
+package ex;
+
+public class Sample {
+    public static void main(String[] args) {
+        System.out.println("ex.Sample");
+    }
+}</code></pre>
+<pre><code>javac -d out src/ex/Sample.java
+java -cp out ex.Sample</code></pre>
+<p><code>-d out</code> によって、<code>package ex;</code> に対応する <code>ex</code> ディレクトリが <code>out</code> の下に作られます。</p>
+<pre><code>work/
+  src/
+    ex/
+      Sample.java
+  out/
+    ex/
+      Sample.class</code></pre>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>コマンド</th><th>判定</th><th>理由</th></tr></thead>
+<tbody>
+<tr><td data-label="コマンド"><code>java -cp out ex.Sample</code></td><td data-label="判定">OK</td><td data-label="理由">クラスパスのルートが <code>out</code>、クラス名が <code>ex.Sample</code></td></tr>
+<tr><td data-label="コマンド"><code>java -cp out Sample</code></td><td data-label="判定">NG</td><td data-label="理由"><code>Sample</code> ではなく <code>ex.Sample</code> というクラス</td></tr>
+<tr><td data-label="コマンド"><code>java -cp out ex/Sample</code></td><td data-label="判定">NG</td><td data-label="理由">パスではなくドット区切りのクラス名を指定する</td></tr>
+<tr><td data-label="コマンド"><code>java -cp out ex.Sample.class</code></td><td data-label="判定">NG</td><td data-label="理由"><code>.class</code> は付けない</td></tr>
+<tr><td data-label="コマンド"><code>java -cp out/ex Sample</code></td><td data-label="判定">NG</td><td data-label="理由">クラスパスはパッケージの親ディレクトリにする。<code>out/ex</code> ではなく <code>out</code></td></tr>
+</tbody>
+</table>
+</section>
+<section class="article-section">
+<h2>複数ファイルのコンパイル</h2>
+<p>別クラスを参照している場合、依存するソースも一緒にコンパイルします。</p>
+<pre><code>src/
+  app/
+    Main.java
+    Message.java</code></pre>
+<pre><code>// src/app/Main.java
+package app;
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.println(Message.text());
+    }
+}</code></pre>
+<pre><code>// src/app/Message.java
+package app;
+
+class Message {
+    static String text() {
+        return "hello";
+    }
+}</code></pre>
+<pre><code>javac -d out src/app/Main.java src/app/Message.java
+java -cp out app.Main</code></pre>
+<p>同じディレクトリ内のソースをまとめてコンパイルするなら、次のようにも書けます。</p>
+<pre><code>javac -d out src/app/*.java</code></pre>
+<div class="article-callout">Windows PowerShellでも <code>*.java</code> は使えます。ただし、サブディレクトリまで自動で再帰的に拾うわけではありません。</div>
+</section>
+<section class="article-section">
+<h2>-cp / -classpath の意味</h2>
+<p><code>-cp</code> は <code>-classpath</code> の短縮形です。実行時にJVMがクラスを探す場所を指定します。</p>
+<pre><code>java -cp out app.Main</code></pre>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>指定</th><th>意味</th></tr></thead>
+<tbody>
+<tr><td data-label="指定"><code>-cp out</code></td><td data-label="意味"><code>out</code> をクラス検索の起点にする</td></tr>
+<tr><td data-label="指定"><code>-cp out app.Main</code></td><td data-label="意味"><code>out/app/Main.class</code> を探して起動する</td></tr>
+<tr><td data-label="指定"><code>-cp src app.Main</code></td><td data-label="意味"><code>src</code> に <code>.class</code> がなければ失敗する。<code>.java</code> だけでは通常実行できない</td></tr>
+</tbody>
+</table>
+<p>複数の場所を指定する場合、区切り文字はOSで異なります。</p>
+<pre><code># Windows
+java -cp out;lib/sample.jar app.Main
+
+# macOS / Linux
+java -cp out:lib/sample.jar app.Main</code></pre>
+</section>
+<section class="article-section">
+<h2>不可能・誤りパターン一覧</h2>
+<p>正しいコマンドよりも「なぜそれが無理か」を説明できる方が判定の軸です。</p>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>パターン</th><th>判定</th><th>理由</th></tr></thead>
+<tbody>
+<tr><td data-label="パターン"><code>javac Sample</code></td><td data-label="判定">NG</td><td data-label="理由"><code>javac</code> は基本的に <code>.java</code> ソースファイルを指定する</td></tr>
+<tr><td data-label="パターン"><code>javac Sample.class</code></td><td data-label="判定">NG</td><td data-label="理由"><code>.class</code> はコンパイル結果であり、コンパイル対象ではない</td></tr>
+<tr><td data-label="パターン"><code>java Sample.class</code></td><td data-label="判定">NG</td><td data-label="理由"><code>java</code> にはファイル名ではなくクラス名を渡す</td></tr>
+<tr><td data-label="パターン"><code>java out/Sample</code></td><td data-label="判定">NG</td><td data-label="理由">パスではなく、<code>-cp out Sample</code> のように分ける</td></tr>
+<tr><td data-label="パターン"><code>java ex.Sample</code> だけ</td><td data-label="判定">NGになりやすい</td><td data-label="理由"><code>ex/Sample.class</code> がカレントディレクトリ配下にないなら見つからない。必要なら <code>-cp</code> を使う</td></tr>
+<tr><td data-label="パターン"><code>java -cp out/ex Sample</code></td><td data-label="判定">NG</td><td data-label="理由">パッケージ付きクラスは、パッケージの親をクラスパスに指定する</td></tr>
+<tr><td data-label="パターン"><code>javac -d out ex.Sample</code></td><td data-label="判定">NG</td><td data-label="理由"><code>javac</code> に渡すのはクラス名ではなくソースファイル</td></tr>
+<tr><td data-label="パターン"><code>java -d out Sample</code></td><td data-label="判定">NG</td><td data-label="理由"><code>-d</code> は <code>javac</code> の出力先指定。<code>java</code> の実行時指定ではない</td></tr>
+</tbody>
+</table>
+</section>
+<section class="article-section">
+<h2>Java 11以降の source-file mode との区別</h2>
+<p>Java 11以降では、単一ソースファイルを直接実行する <strong>source-file mode</strong> があります。</p>
+<pre><code>java Sample.java</code></pre>
+<p>ただし、これは「<code>javac</code> でコンパイルしてから <code>java</code> でclassを起動する」通常パターンとは別です。コード例で <code>javac Sample.java</code> の後に実行する実行方法を比較する場合は、基本は <code>java Sample</code> を選びます。</p>
+<p>source-file modeで1つのファイルに複数のトップレベルクラスがある場合、起動対象はファイル内で最初に宣言されたトップレベルクラスです。ファイル名と同じクラスではありません。最初のクラスに <code>main</code> がなければ、後続のクラスに <code>main</code> があっても起動できません。</p>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>観点</th><th>通常の実行</th><th>source-file mode</th></tr></thead>
+<tbody>
+<tr><td data-label="観点">コマンド</td><td data-label="通常の実行"><code>javac Sample.java</code> → <code>java Sample</code></td><td data-label="source-file mode"><code>java Sample.java</code></td></tr>
+<tr><td data-label="観点">指定するもの</td><td data-label="通常の実行">クラス名</td><td data-label="source-file mode">ソースファイル名</td></tr>
+<tr><td data-label="観点">扱い</td><td data-label="通常の実行">基本パターン</td><td data-label="source-file mode">明示されている場合だけ考える</td></tr>
+<tr><td data-label="観点">複数classがある場合</td><td data-label="通常の実行">生成された各classをクラス名で起動</td><td data-label="source-file mode">最初のトップレベルクラスが起動対象</td></tr>
+</tbody>
+</table>
+<div class="article-callout strong"><strong>注意:</strong> <code>java Sample.java</code>はJava 11以降の単一ソースファイル実行で利用できます。「常に使えない」という判断は誤りです。ただし、コンパイル済みclassの起動コードでは <code>java Sample</code> が基本です。</div>
+</section>
+<section class="article-section">
+<h2>パッケージ宣言とディレクトリの注意</h2>
+<p><code>package</code> 宣言はソースファイルの先頭に書きます。コメント以外を <code>package</code> より前に置くとコンパイルエラーです。</p>
+<pre><code>// OK
+package ex;
+import java.util.List;
+public class Sample { }</code></pre>
+<pre><code>// NG
+import java.util.List;
+package ex;
+public class Sample { }</code></pre>
+<p>また、<code>package ex;</code> のクラスを実行するときは、JVMには <code>ex.Sample</code> として見えます。ソースがどこに置かれていたかではなく、コンパイル後の <code>.class</code> がクラスパス上でどう配置されているかが判定の軸です。</p>
+</section>
+<section class="article-section">
+<h2>起動引数 args の基本</h2>
+<p><code>java Sample A B C</code> のように実行すると、<code>args</code> は長さ3の配列になります。</p>
+<pre><code>public class Sample {
+    public static void main(String[] args) {
+        System.out.println(args.length);
+        System.out.println(args[0]);
+    }
+}</code></pre>
+<pre><code>javac Sample.java
+java Sample A B C</code></pre>
+<p>出力は次のとおりです。</p>
+<pre><code>3
+A</code></pre>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>実行</th><th><code>args.length</code></th><th>注意</th></tr></thead>
+<tbody>
+<tr><td data-label="実行"><code>java Sample</code></td><td data-label="args.length"><code>0</code></td><td data-label="注意"><code>args</code> は <code>null</code> ではない。長さ0の配列</td></tr>
+<tr><td data-label="実行"><code>java Sample A</code></td><td data-label="args.length"><code>1</code></td><td data-label="注意"><code>args[0]</code> は <code>"A"</code></td></tr>
+<tr><td data-label="実行"><code>java Sample A B</code></td><td data-label="args.length"><code>2</code></td><td data-label="注意"><code>args[1]</code> は <code>"B"</code></td></tr>
+</tbody>
+</table>
+<div class="article-callout">引数なしで <code>args[0]</code> を読むと、コンパイルエラーではなく <code>ArrayIndexOutOfBoundsException</code> です。コンパイル時には実行時引数の数は決まりません。</div>
+</section>
+<section class="article-section">
+<h2>コンパイルと実行の切り分け</h2>
+<p>出力を追う前に、次のテンプレートで判定します。</p>
+<pre><code>1. publicクラス名とファイル名は一致しているか
+2. package宣言は先頭にあるか
+3. javac に .java を渡しているか
+4. -d の出力先と class の配置は合っているか
+5. java に完全修飾クラス名を渡しているか
+6. -cp はパッケージの親ディレクトリを指しているか
+7. 1ファイルに複数classがある場合、どのclassが生成・起動対象か
+8. main は public static void main(String[] or String...) か
+9. 起動引数を読む箇所で実行時例外が起きないか</code></pre>
+<p>この順番で見ると、コンパイルエラー、起動失敗、実行時例外、正常出力を混ぜずに判断できます。</p>
+</section>
+<section class="article-section mini-drill-section">
+<h2>ミニドリル</h2>
+<p>次のコマンドが成功するか、理由付きで判定します。</p>
+<pre><code>// src/ex/Main.java
+package ex;
+public class Main {
+    public static void main(String[] args) {
+        System.out.println(args.length);
+    }
+}</code></pre>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>コマンド</th><th>判定の観点</th></tr></thead>
+<tbody>
+<tr><td data-label="コマンド"><code>javac -d out src/ex/Main.java</code></td><td data-label="判定の観点"><code>.java</code> を渡しているか。<code>-d</code> の出力先は正しいか。</td></tr>
+<tr><td data-label="コマンド"><code>java -cp out ex.Main A B</code></td><td data-label="判定の観点">完全修飾クラス名か。<code>args.length</code> は何か。</td></tr>
+<tr><td data-label="コマンド"><code>java -cp out Main</code></td><td data-label="判定の観点">パッケージ名を省略していないか。</td></tr>
+<tr><td data-label="コマンド"><code>java -cp out/ex Main</code></td><td data-label="判定の観点">クラスパスをパッケージの親にしているか。</td></tr>
+<tr><td data-label="コマンド"><code>java -cp out ex/Main</code></td><td data-label="判定の観点">クラス名をパスで書いていないか。</td></tr>
+</tbody>
+</table>
+<div class="article-callout">この単元で必要なのは暗記ではありません。<code>javac</code> はソース、<code>java</code> はクラス名、<code>-d</code> は出力先、<code>-cp</code> は検索場所。この4つに分解します。</div>
+</section>
+<p><a class="button" href="../index.html">単元別解説一覧へ戻る</a></p>
+</article>
+<section class="study-route-panel related-practice-panel">
+<h2>関連演習</h2>
+<p>関連する演習です。</p>
+<div class="study-route-grid"><a class="study-route-card" href="../../courses/java11-silver/practice/package-command.html"><span class="route-badge">演習</span><strong>パッケージとコマンド</strong><span>package、import、javac/java、-d、-cp</span></a><a class="study-route-card" href="../../courses/java11-silver/practice/compile-command-extra.html"><span class="route-badge">演習</span><strong>コンパイル・コマンド</strong><span>main、起動引数、ファイル名、static文脈</span></a><a class="study-route-card" href="../compile-errors/index.html"><span class="route-badge">演習</span><strong>コンパイルエラーの読み方</strong><span>エラー表示を読む</span></a></div>
+</section>
+</main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="index.html";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

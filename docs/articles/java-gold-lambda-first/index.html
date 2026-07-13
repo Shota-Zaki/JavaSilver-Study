@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="ラムダ式、関数型インタフェース、メソッド参照、変数キャプチャ、標準関数型インタフェースを整理するJava Gold向け単元別解説" name="description"/>
+<title>ラムダ式と関数型インタフェース｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="ラムダ式と関数型インタフェース｜Java Practice Lab" property="og:title"/>
+<meta content="ラムダ式、関数型インタフェース、メソッド参照、変数キャプチャ、標準関数型インタフェースを整理するJava Gold向け単元別解説" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">ラムダ式と関数型インタフェース</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent">
+<article class="content-page long-article gold-deep-article">
+<h1>ラムダ式と関数型インタフェース</h1>
+<p class="lead">ラムダ式は「短い書き方」ではなく、関数型インタフェースの抽象メソッドを実装する式です。<br/>Goldでは、見た目ではなく、代入先の型、抽象メソッドの引数、戻り値、例外、キャプチャされる変数を順番に読む必要があります。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<section class="article-section">
+<h2>最初に見るべき判断軸</h2>
+<p>ラムダ式は単独では型を持ちません。必ず代入先、メソッド引数、戻り値、キャストなどの「ターゲット型」から型が決まります。<br/>ラムダ式本体より先にターゲット型を判定します。</p>
+</section>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>判定順</th><th>見る場所</th><th>判定すること</th></tr></thead>
+<tbody>
+<tr><td data-label="判定順">1</td><td data-label="見る場所">代入先・引数・戻り値</td><td data-label="判定すること">ターゲット型が関数型インタフェースか。</td></tr>
+<tr><td data-label="判定順">2</td><td data-label="見る場所">抽象メソッド</td><td data-label="判定すること">引数の数・型・戻り値・throws。</td></tr>
+<tr><td data-label="判定順">3</td><td data-label="見る場所">ラムダの仮引数</td><td data-label="判定すること">型省略、明示型、<code>var</code>、括弧のルール。</td></tr>
+<tr><td data-label="判定順">4</td><td data-label="見る場所">ラムダ本体</td><td data-label="判定すること">式形式かブロック形式か。値を返す必要があるか。</td></tr>
+<tr><td data-label="判定順">5</td><td data-label="見る場所">外側の変数</td><td data-label="判定すること">ローカル変数がfinalまたはeffectively finalか。</td></tr>
+<tr><td data-label="判定順">6</td><td data-label="見る場所">例外</td><td data-label="判定すること">ラムダ内のchecked例外が抽象メソッドのthrowsに合うか。</td></tr>
+</tbody>
+</table>
+<section class="article-section">
+<h2>ラムダ式はターゲット型で決まる</h2>
+<p><code>x -&gt; x + 1</code>だけでは、<code>x</code>が何型で、戻り値が何型かは決まりません。<code>Function&lt;Integer, Integer&gt;</code>に代入されるなら、抽象メソッドは<code>Integer apply(Integer)</code>です。<code>IntUnaryOperator</code>に代入されるなら、抽象メソッドは<code>int applyAsInt(int)</code>です。</p>
+</section>
+<pre class="article-code"><code>import java.util.function.*;
+
+Function&lt;Integer, Integer&gt; f = x -&gt; x + 1;
+IntUnaryOperator op = x -&gt; x + 1;
+Predicate&lt;String&gt; p = s -&gt; s.length() &gt; 0;
+Consumer&lt;String&gt; c = s -&gt; System.out.println(s);</code></pre>
+<div class="article-callout">ラムダ式本体より先に、ターゲット型となる関数型インタフェースの抽象メソッドを確認します。</div>
+<section class="article-section">
+<h2>関数型インタフェースとは</h2>
+<p>関数型インタフェースは、抽象メソッドを1つだけ持つインタフェースです。<code>@FunctionalInterface</code>は必須ではありませんが、付けると抽象メソッドが2つ以上になったときにコンパイルエラーで検出できます。</p>
+</section>
+<pre class="article-code"><code>@FunctionalInterface
+interface Converter {
+    int convert(String s);
+}
+
+Converter c = s -&gt; Integer.parseInt(s);
+System.out.println(c.convert("10")); // 10</code></pre>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>メンバ</th><th>抽象メソッド数に数えるか</th><th>理由</th></tr></thead>
+<tbody>
+<tr><td data-label="メンバ">通常の抽象メソッド</td><td data-label="抽象メソッド数に数えるか">数える</td><td data-label="理由">実装対象になる。</td></tr>
+<tr><td data-label="メンバ"><code>default</code>メソッド</td><td data-label="抽象メソッド数に数えるか">数えない</td><td data-label="理由">実装を持つため。</td></tr>
+<tr><td data-label="メンバ"><code>static</code>メソッド</td><td data-label="抽象メソッド数に数えるか">数えない</td><td data-label="理由">インスタンスの抽象動作ではないため。</td></tr>
+<tr><td data-label="メンバ"><code>private</code>メソッド</td><td data-label="抽象メソッド数に数えるか">数えない</td><td data-label="理由">Java 9以降、interface内の補助実装として使える。</td></tr>
+<tr><td data-label="メンバ"><code>Object</code>由来の<code>toString</code>、<code>equals</code>など</td><td data-label="抽象メソッド数に数えるか">原則数えない</td><td data-label="理由">Objectのpublicメソッドと対応するため。</td></tr>
+</tbody>
+</table>
+<pre class="article-code"><code>@FunctionalInterface
+interface Checker {
+    boolean test(String s);
+    default Checker negate() { return s -&gt; !test(s); }
+    static Checker nonEmpty() { return s -&gt; !s.isEmpty(); }
+    String toString(); // Object由来のpublicメソッドなので抽象メソッド数には数えない
+}</code></pre>
+<section class="article-section">
+<h2><code>@FunctionalInterface</code>で検出できる不正</h2>
+<p>抽象メソッドが2つあると、関数型インタフェースではありません。<code>@FunctionalInterface</code>を付けるとその時点でコンパイルエラーになります。付けなくても、ラムダ式のターゲット型として使うとコンパイルエラーです。</p>
+</section>
+<pre class="article-code"><code>// @FunctionalInterface
+interface Bad {
+    void a();
+    void b();
+}
+
+// Bad x = () -&gt; System.out.println("x"); // コンパイルエラー</code></pre>
+<section class="article-section">
+<h2>標準関数型インタフェース</h2>
+<p>Goldでは、<code>java.util.function</code>の代表的な型を、名前ではなく抽象メソッドの形で覚えます。特に<code>Predicate</code>、<code>Function</code>、<code>Consumer</code>、<code>Supplier</code>、<code>UnaryOperator</code>、<code>BinaryOperator</code>はよく使うです。</p>
+</section>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>型</th><th>抽象メソッド</th><th>意味</th><th>典型用途</th></tr></thead>
+<tbody>
+<tr><td data-label="型"><code>Predicate&lt;T&gt;</code></td><td data-label="抽象メソッド"><code>boolean test(T t)</code></td><td data-label="意味">Tを受け取り真偽値</td><td data-label="典型用途"><code>filter</code></td></tr>
+<tr><td data-label="型"><code>Function&lt;T,R&gt;</code></td><td data-label="抽象メソッド"><code>R apply(T t)</code></td><td data-label="意味">TをRへ変換</td><td data-label="典型用途"><code>map</code></td></tr>
+<tr><td data-label="型"><code>Consumer&lt;T&gt;</code></td><td data-label="抽象メソッド"><code>void accept(T t)</code></td><td data-label="意味">Tを受け取って処理</td><td data-label="典型用途"><code>forEach</code></td></tr>
+<tr><td data-label="型"><code>Supplier&lt;T&gt;</code></td><td data-label="抽象メソッド"><code>T get()</code></td><td data-label="意味">引数なしでTを返す</td><td data-label="典型用途"><code>orElseGet</code></td></tr>
+<tr><td data-label="型"><code>UnaryOperator&lt;T&gt;</code></td><td data-label="抽象メソッド"><code>T apply(T t)</code></td><td data-label="意味">Tを受け取りTを返す</td><td data-label="典型用途">同じ型の変換</td></tr>
+<tr><td data-label="型"><code>BinaryOperator&lt;T&gt;</code></td><td data-label="抽象メソッド"><code>T apply(T a, T b)</code></td><td data-label="意味">Tを2つ受け取りTを返す</td><td data-label="典型用途"><code>reduce</code></td></tr>
+</tbody>
+</table>
+<pre class="article-code"><code>import java.util.function.*;
+
+Predicate&lt;String&gt; nonEmpty = s -&gt; !s.isEmpty();
+Function&lt;String, Integer&gt; length = s -&gt; s.length();
+Consumer&lt;String&gt; print = s -&gt; System.out.println(s);
+Supplier&lt;String&gt; supply = () -&gt; "java";
+UnaryOperator&lt;String&gt; upper = s -&gt; s.toUpperCase();
+BinaryOperator&lt;Integer&gt; add = (a, b) -&gt; a + b;</code></pre>
+<section class="article-section">
+<h2>Bi系・プリミティブ特化型</h2>
+<p><code>BiPredicate</code>、<code>BiFunction</code>、<code>BiConsumer</code>は引数を2つ取ります。また、<code>IntPredicate</code>や<code>IntFunction</code>などのプリミティブ特化型は、ボクシングを避けるために用意されています。抽象メソッド名が通常版と違うものがあるので注意します。</p>
+</section>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>型</th><th>抽象メソッド</th><th>注意点</th></tr></thead>
+<tbody>
+<tr><td data-label="型"><code>BiPredicate&lt;T,U&gt;</code></td><td data-label="抽象メソッド"><code>boolean test(T t, U u)</code></td><td data-label="注意点">2引数の条件。</td></tr>
+<tr><td data-label="型"><code>BiFunction&lt;T,U,R&gt;</code></td><td data-label="抽象メソッド"><code>R apply(T t, U u)</code></td><td data-label="注意点">2引数からRを返す。</td></tr>
+<tr><td data-label="型"><code>BiConsumer&lt;T,U&gt;</code></td><td data-label="抽象メソッド"><code>void accept(T t, U u)</code></td><td data-label="注意点">2引数を受け取り戻り値なし。</td></tr>
+<tr><td data-label="型"><code>IntPredicate</code></td><td data-label="抽象メソッド"><code>boolean test(int value)</code></td><td data-label="注意点">int専用。</td></tr>
+<tr><td data-label="型"><code>IntFunction&lt;R&gt;</code></td><td data-label="抽象メソッド"><code>R apply(int value)</code></td><td data-label="注意点">intをRへ変換。</td></tr>
+<tr><td data-label="型"><code>IntUnaryOperator</code></td><td data-label="抽象メソッド"><code>int applyAsInt(int operand)</code></td><td data-label="注意点">intを受け取りintを返す。</td></tr>
+<tr><td data-label="型"><code>ToIntFunction&lt;T&gt;</code></td><td data-label="抽象メソッド"><code>int applyAsInt(T value)</code></td><td data-label="注意点">Tからintへ変換。</td></tr>
+</tbody>
+</table>
+<pre class="article-code"><code>BiFunction&lt;String, String, Integer&gt; sumLength =
+    (a, b) -&gt; a.length() + b.length();
+
+IntPredicate even = n -&gt; n % 2 == 0;
+ToIntFunction&lt;String&gt; length = s -&gt; s.length();
+IntUnaryOperator twice = n -&gt; n * 2;</code></pre>
+<section class="article-section">
+<h2>ラムダ仮引数の書き方</h2>
+<p>仮引数の型は、すべて省略するか、すべて明示するか、すべて<code>var</code>にします。混在はできません。引数が1つで型を省略する場合だけ、丸括弧を省略できます。</p>
+</section>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>書き方</th><th>可否</th><th>理由</th></tr></thead>
+<tbody>
+<tr><td data-label="書き方"><code>s -&gt; s.length()</code></td><td data-label="可否">可</td><td data-label="理由">1引数、型省略なので括弧省略可能。</td></tr>
+<tr><td data-label="書き方"><code>(s) -&gt; s.length()</code></td><td data-label="可否">可</td><td data-label="理由">括弧ありも可能。</td></tr>
+<tr><td data-label="書き方"><code>(String s) -&gt; s.length()</code></td><td data-label="可否">可</td><td data-label="理由">型を明示。</td></tr>
+<tr><td data-label="書き方"><code>(var s) -&gt; s.length()</code></td><td data-label="可否">可</td><td data-label="理由">Java 11以降、ラムダ仮引数に<code>var</code>を使用可能。</td></tr>
+<tr><td data-label="書き方"><code>String s -&gt; s.length()</code></td><td data-label="可否">不可</td><td data-label="理由">型を明示するなら括弧が必要。</td></tr>
+<tr><td data-label="書き方"><code>(String a, b) -&gt; a + b</code></td><td data-label="可否">不可</td><td data-label="理由">明示型と省略型の混在。</td></tr>
+<tr><td data-label="書き方"><code>(var a, String b) -&gt; a + b</code></td><td data-label="可否">不可</td><td data-label="理由"><code>var</code>と明示型の混在。</td></tr>
+<tr><td data-label="書き方"><code>(var a, b) -&gt; a + b</code></td><td data-label="可否">不可</td><td data-label="理由"><code>var</code>と省略型の混在。</td></tr>
+</tbody>
+</table>
+<pre class="article-code"><code>Function&lt;String, Integer&gt; a = s -&gt; s.length();
+Function&lt;String, Integer&gt; b = (String s) -&gt; s.length();
+Function&lt;String, Integer&gt; c = (var s) -&gt; s.length();
+
+BiFunction&lt;Integer, Integer, Integer&gt; d = (x, y) -&gt; x + y;
+BiFunction&lt;Integer, Integer, Integer&gt; e = (Integer x, Integer y) -&gt; x + y;
+BiFunction&lt;Integer, Integer, Integer&gt; f = (var x, var y) -&gt; x + y;</code></pre>
+<section class="article-section">
+<h2>式形式とブロック形式</h2>
+<p>ラムダ本体が式形式なら、その式の結果が戻り値になります。ブロック形式で値を返すなら<code>return</code>が必要です。戻り値が<code>void</code>の抽象メソッドでは、式文として成立する呼び出しを式形式で書けます。</p>
+</section>
+<pre class="article-code"><code>Function&lt;String, Integer&gt; a = s -&gt; s.length();
+Function&lt;String, Integer&gt; b = s -&gt; { return s.length(); };
+// Function&lt;String, Integer&gt; c = s -&gt; { s.length(); }; // 戻り値がないため不可
+
+Consumer&lt;String&gt; d = s -&gt; System.out.println(s);
+Consumer&lt;String&gt; e = s -&gt; { System.out.println(s); };
+// Consumer&lt;String&gt; f = s -&gt; { return System.out.println(s); }; // printlnはvoid</code></pre>
+<p>ブロック形式では、すべての実行経路で戻り値が必要です。これは通常のメソッドと同じです。</p>
+<pre class="article-code"><code>// Function&lt;Integer, String&gt; f = n -&gt; {
+//     if (n &gt; 0) {
+//         return "plus";
+//     }
+// }; // n &lt;= 0 のとき戻り値がないのでコンパイルエラー</code></pre>
+<section class="article-section">
+<h2>void互換と値互換</h2>
+<p>ラムダ本体の式は、戻り値を使う文脈にも、戻り値を捨てる文脈にも合う場合があります。たとえば<code>list.add(x)</code>はbooleanを返しますが、メソッド呼び出し式として文にもできるため、<code>Predicate</code>にも<code>Consumer</code>にも見えることがあります。オーバーロードでは曖昧になる可能性があります。</p>
+</section>
+<pre class="article-code"><code>import java.util.*;
+import java.util.function.*;
+
+List&lt;String&gt; list = new ArrayList&lt;&gt;();
+Predicate&lt;String&gt; p = s -&gt; list.add(s); // booleanを返す
+Consumer&lt;String&gt; c = s -&gt; list.add(s);  // 戻り値を捨てる文として扱う</code></pre>
+<section class="article-section">
+<h2>オーバーロードとラムダの曖昧さ</h2>
+<p>ラムダ式はターゲット型が必要です。<br/>そのため、オーバーロードされたメソッドにラムダ式を渡すと、どの関数型インタフェースを使うか決められずコンパイルエラーになる場合があります。<br/>キャストでターゲット型を明示すると解消できます。</p>
+</section>
+<pre class="article-code"><code>import java.util.function.*;
+
+static void call(Consumer&lt;String&gt; c) {}
+static void call(Function&lt;String, String&gt; f) {}
+
+// call(s -&gt; s.trim()); // 曖昧でコンパイルエラー
+call((Function&lt;String, String&gt;) (s -&gt; s.trim()));</code></pre>
+<p>一方、戻り値の有無や引数の数で明確に区別できる場合は、オーバーロード解決できます。</p>
+<pre class="article-code"><code>static void run(Runnable r) {}
+static void run(Supplier&lt;String&gt; s) {}
+
+run(() -&gt; System.out.println("A")); // Runnable
+run(() -&gt; "A");                    // Supplier&lt;String&gt;</code></pre>
+<section class="article-section">
+<h2>外側のローカル変数はeffectively finalのみ使える</h2>
+<p>ラムダ式の外側にあるローカル変数は、finalまたはeffectively finalでなければラムダ内から参照できません。effectively finalとは、<code>final</code>を書いていなくても、初期化後に値を変更していない状態です。</p>
+</section>
+<pre class="article-code"><code>int base = 10;
+Function&lt;Integer, Integer&gt; f = x -&gt; x + base;
+System.out.println(f.apply(5)); // 15
+
+// base++; // これを書くと、上のラムダでbaseを使えなくなる</code></pre>
+<p>参照型変数の場合、変数が参照しているオブジェクトの中身を変更することと、変数自体へ別の参照を代入することは別です。<br/>変数自体を再代入しなければ、effectively finalは維持されます。</p>
+<pre class="article-code"><code>List&lt;String&gt; list = new ArrayList&lt;&gt;();
+Consumer&lt;String&gt; c = s -&gt; list.add(s);
+c.accept("A");
+System.out.println(list); // [A]
+
+// list = new ArrayList&lt;&gt;(); // これを書くとラムダからlistを参照できない</code></pre>
+<div class="bad-good"><div><strong>悪い判断</strong><p>「listの中身を変更したからeffectively finalではない」と判断する。</p></div><div><strong>良い判断</strong><p>effectively finalはローカル変数への再代入の話。オブジェクトの内部状態の変更とは別。</p></div></div>
+<section class="article-section">
+<h2>ラムダ仮引数は外側のローカル変数名と衝突できない</h2>
+<p>ラムダ仮引数は、同じスコープにあるローカル変数名と同じ名前にできません。フィールド名とは衝突しても、ローカル変数とは扱いが違います。</p>
+</section>
+<pre class="article-code"><code>String s = "outer";
+// Function&lt;String, String&gt; f = s -&gt; s.toUpperCase(); // ローカル変数sと衝突して不可
+Function&lt;String, String&gt; g = x -&gt; x.toUpperCase();</code></pre>
+<section class="article-section">
+<h2>ラムダ内の<code>this</code>は外側のインスタンス</h2>
+<p>ラムダ式は匿名クラスとは違い、新しい<code>this</code>を作りません。ラムダ内の<code>this</code>は、ラムダ式を書いた外側のインスタンスを指します。匿名クラス内の<code>this</code>は匿名クラス自身です。</p>
+</section>
+<pre class="article-code"><code>class Sample {
+    private String name = "outer";
+
+    Runnable lambda() {
+        return () -&gt; System.out.println(this.name);
+    }
+
+    Runnable anonymous() {
+        return new Runnable() {
+            private String name = "inner";
+            public void run() {
+                System.out.println(this.name);
+            }
+        };
+    }
+}</code></pre>
+<section class="article-section">
+<h2>checked例外とラムダ式</h2>
+<p>ラムダ内でchecked例外を投げる場合、ターゲット型の抽象メソッドがその例外を投げられる宣言を持っている必要があります。<code>Runnable.run()</code>はchecked例外を投げられないため、ラムダ内で<code>IOException</code>をそのまま投げることはできません。</p>
+</section>
+<pre class="article-code"><code>import java.io.*;
+
+@FunctionalInterface
+interface IOAction {
+    void run() throws IOException;
+}
+
+IOAction a = () -&gt; { throw new IOException(); };
+// Runnable r = () -&gt; { throw new IOException(); }; // コンパイルエラー</code></pre>
+<section class="article-section">
+<h2>メソッド参照の基本</h2>
+<p>メソッド参照はラムダ式を短く書ける構文ですが、名前が一致するだけでは成立しません。ターゲット型の抽象メソッドについて、引数の受け渡しと戻り値の互換性を確認します。</p>
+</section>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>形式</th><th>例</th><th>対応する考え方</th></tr></thead>
+<tbody>
+<tr><td data-label="形式">staticメソッド参照</td><td data-label="例"><code>Integer::parseInt</code></td><td data-label="対応する考え方"><code>s -&gt; Integer.parseInt(s)</code></td></tr>
+<tr><td data-label="形式">特定インスタンスのメソッド参照</td><td data-label="例"><code>System.out::println</code></td><td data-label="対応する考え方"><code>x -&gt; System.out.println(x)</code></td></tr>
+<tr><td data-label="形式">任意インスタンスのメソッド参照</td><td data-label="例"><code>String::length</code></td><td data-label="対応する考え方"><code>s -&gt; s.length()</code></td></tr>
+<tr><td data-label="形式">コンストラクタ参照</td><td data-label="例"><code>ArrayList::new</code></td><td data-label="対応する考え方"><code>() -&gt; new ArrayList&lt;&gt;()</code></td></tr>
+</tbody>
+</table>
+<pre class="article-code"><code>Function&lt;String, Integer&gt; parse = Integer::parseInt;
+Consumer&lt;String&gt; print = System.out::println;
+Function&lt;String, Integer&gt; length = String::length;
+Supplier&lt;ArrayList&lt;String&gt;&gt; supplier = ArrayList::new;</code></pre>
+<section class="article-section">
+<h2>任意インスタンスのメソッド参照は第1引数がレシーバになる</h2>
+<p><code>String::compareToIgnoreCase</code>のような参照では、抽象メソッドの第1引数がメソッド呼び出し対象になります。つまり<code>(a, b) -&gt; a.compareToIgnoreCase(b)</code>です。</p>
+</section>
+<pre class="article-code"><code>BiFunction&lt;String, String, Integer&gt; cmp = String::compareToIgnoreCase;
+System.out.println(cmp.apply("a", "A")); // 0</code></pre>
+<p>同じ<code>String::valueOf</code>でも、ターゲット型によって選ばれるオーバーロードが変わります。</p>
+<pre class="article-code"><code>Function&lt;Integer, String&gt; a = String::valueOf;
+Function&lt;char[], String&gt; b = String::valueOf;</code></pre>
+<section class="article-section">
+<h2>コンストラクタ参照</h2>
+<p>コンストラクタ参照もターゲット型から引数の数と型が決まります。<code>Supplier</code>なら引数なしコンストラクタ、<code>Function</code>なら1引数コンストラクタ、<code>BiFunction</code>なら2引数コンストラクタに対応します。</p>
+</section>
+<pre class="article-code"><code>class Item {
+    private final String name;
+    private final int price;
+    Item() { this("none", 0); }
+    Item(String name) { this(name, 0); }
+    Item(String name, int price) { this.name = name; this.price = price; }
+    public String toString() { return name + ":" + price; }
+}
+
+Supplier&lt;Item&gt; s = Item::new;
+Function&lt;String, Item&gt; f = Item::new;
+BiFunction&lt;String, Integer, Item&gt; b = Item::new;</code></pre>
+<section class="article-section">
+<h2>配列コンストラクタ参照</h2>
+<p>配列の生成もコンストラクタ参照で表せます。<code>String[]::new</code>は、長さを受け取って配列を返す<code>IntFunction&lt;String[]&gt;</code>として使えます。</p>
+</section>
+<pre class="article-code"><code>IntFunction&lt;String[]&gt; maker = String[]::new;
+String[] array = maker.apply(3);
+System.out.println(array.length); // 3</code></pre>
+<section class="article-section">
+<h2>Predicateの合成</h2>
+<p><code>Predicate</code>には<code>and</code>、<code>or</code>、<code>negate</code>があります。これらは新しいPredicateを返します。元のPredicateを書き換えるわけではありません。</p>
+</section>
+<pre class="article-code"><code>Predicate&lt;String&gt; nonEmpty = s -&gt; !s.isEmpty();
+Predicate&lt;String&gt; startsWithA = s -&gt; s.startsWith("A");
+
+Predicate&lt;String&gt; rule = nonEmpty.and(startsWithA);
+System.out.println(rule.test("Apple")); // true
+System.out.println(rule.test("Java"));  // false</code></pre>
+<section class="article-section">
+<h2>Functionの合成</h2>
+<p><code>Function</code>には<code>compose</code>と<code>andThen</code>があります。順番が逆なので、出力を追うコードでは大まかに読まないこと。<code>f.andThen(g)</code>はfの後にg、<code>f.compose(g)</code>はgの後にfです。</p>
+</section>
+<pre class="article-code"><code>Function&lt;String, String&gt; trim = s -&gt; s.trim();
+Function&lt;String, Integer&gt; length = s -&gt; s.length();
+
+System.out.println(trim.andThen(length).apply(" java ")); // 4
+System.out.println(length.compose(trim).apply(" java ")); // 4</code></pre>
+<section class="article-section">
+<h2>Consumerの合成</h2>
+<p><code>Consumer.andThen</code>は処理を順番に実行するConsumerを返します。戻り値はありません。途中で例外が発生すると、それ以降のConsumerは実行されません。</p>
+</section>
+<pre class="article-code"><code>Consumer&lt;String&gt; a = s -&gt; System.out.print("A" + s);
+Consumer&lt;String&gt; b = s -&gt; System.out.print("B" + s);
+
+a.andThen(b).accept("X"); // AXBX</code></pre>
+<section class="article-section">
+<h2>Comparatorとラムダ式</h2>
+<p><code>Comparator&lt;T&gt;</code>も関数型インタフェースです。抽象メソッドは<code>int compare(T a, T b)</code>です。<code>comparing</code>、<code>thenComparing</code>、<code>reversed</code>などは、StreamやCollectionsの並び替えコードでよく使うです。</p>
+</section>
+<pre class="article-code"><code>record User(String name, int age) {}
+
+List&lt;User&gt; users = new ArrayList&lt;&gt;(List.of(
+    new User("B", 20),
+    new User("A", 30),
+    new User("A", 10)
+));
+
+users.sort(Comparator
+    .comparing(User::name)
+    .thenComparingInt(User::age));
+
+System.out.println(users); // [User[name=A, age=10], User[name=A, age=30], User[name=B, age=20]]</code></pre>
+<section class="article-section">
+<h2>匿名クラスとの違い</h2>
+<p>ラムダ式は関数型インタフェースにしか使えません。匿名クラスは、抽象メソッドが複数ある抽象クラスやインタフェースにも使えます。また、匿名クラスは新しいクラスを作るため、<code>this</code>の意味やスコープがラムダ式と違います。</p>
+</section>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>比較</th><th>ラムダ式</th><th>匿名クラス</th></tr></thead>
+<tbody>
+<tr><td data-label="比較">対象</td><td data-label="ラムダ式">関数型インタフェースのみ</td><td data-label="匿名クラス">インタフェース・抽象クラス・具象クラスの拡張など</td></tr>
+<tr><td data-label="比較"><code>this</code></td><td data-label="ラムダ式">外側のインスタンス</td><td data-label="匿名クラス">匿名クラス自身</td></tr>
+<tr><td data-label="比較">抽象メソッドが複数</td><td data-label="ラムダ式">不可</td><td data-label="匿名クラス">実装すれば可能</td></tr>
+<tr><td data-label="比較">可読性</td><td data-label="ラムダ式">短い処理に向く</td><td data-label="匿名クラス">状態や複数メソッドの実装に向く</td></tr>
+</tbody>
+</table>
+<section class="article-section">
+<h2>Stream APIでの読み方</h2>
+<p>Streamの<code>filter</code>、<code>map</code>、<code>forEach</code>は、それぞれ要求する関数型インタフェースが違います。どのメソッドが何を要求しているかを見れば、ラムダ式の戻り値も決まります。</p>
+</section>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>Stream操作</th><th>受け取る型</th><th>ラムダの形</th></tr></thead>
+<tbody>
+<tr><td data-label="Stream操作"><code>filter</code></td><td data-label="受け取る型"><code>Predicate&lt;? super T&gt;</code></td><td data-label="ラムダの形">Tを受け取りbooleanを返す。</td></tr>
+<tr><td data-label="Stream操作"><code>map</code></td><td data-label="受け取る型"><code>Function&lt;? super T, ? extends R&gt;</code></td><td data-label="ラムダの形">Tを受け取りRを返す。</td></tr>
+<tr><td data-label="Stream操作"><code>flatMap</code></td><td data-label="受け取る型"><code>Function&lt;? super T, ? extends Stream&lt;? extends R&gt;&gt;</code></td><td data-label="ラムダの形">Tを受け取りStreamを返す。</td></tr>
+<tr><td data-label="Stream操作"><code>forEach</code></td><td data-label="受け取る型"><code>Consumer&lt;? super T&gt;</code></td><td data-label="ラムダの形">Tを受け取り戻り値なし。</td></tr>
+<tr><td data-label="Stream操作"><code>reduce</code></td><td data-label="受け取る型"><code>BinaryOperator&lt;T&gt;</code>など</td><td data-label="ラムダの形">2つの値をまとめる。</td></tr>
+</tbody>
+</table>
+<pre class="article-code"><code>List&lt;String&gt; list = List.of("a", "bb", "ccc");
+
+list.stream()
+    .filter(s -&gt; s.length() &gt; 1)
+    .map(s -&gt; s.toUpperCase())
+    .forEach(s -&gt; System.out.println(s));</code></pre>
+<section class="article-section">
+<h2>不可能・誤りパターン</h2>
+<p>次のパターンは、ラムダ式・関数型インタフェースのコードでよく判断を誤りやすくなります。</p>
+</section>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>コード</th><th>結果</th><th>理由</th></tr></thead>
+<tbody>
+<tr><td data-label="コード"><code>Object o = x -&gt; x;</code></td><td data-label="結果">不可</td><td data-label="理由"><code>Object</code>は関数型インタフェースではない。</td></tr>
+<tr><td data-label="コード"><code>var f = x -&gt; x + 1;</code></td><td data-label="結果">不可</td><td data-label="理由">ラムダ式だけでは型推論できない。</td></tr>
+<tr><td data-label="コード"><code>Function&lt;String,Integer&gt; f = s -&gt; { s.length(); };</code></td><td data-label="結果">不可</td><td data-label="理由">ブロック形式で戻り値がない。</td></tr>
+<tr><td data-label="コード"><code>Consumer&lt;String&gt; c = s -&gt; { return s; };</code></td><td data-label="結果">不可</td><td data-label="理由"><code>Consumer.accept</code>はvoid。</td></tr>
+<tr><td data-label="コード"><code>(String a, b) -&gt; a + b</code></td><td data-label="結果">不可</td><td data-label="理由">明示型と型省略の混在。</td></tr>
+<tr><td data-label="コード"><code>(var a, String b) -&gt; a + b</code></td><td data-label="結果">不可</td><td data-label="理由"><code>var</code>と明示型の混在。</td></tr>
+<tr><td data-label="コード">ラムダ内で再代入された外側ローカル変数を参照</td><td data-label="結果">不可</td><td data-label="理由">effectively finalではない。</td></tr>
+<tr><td data-label="コード"><code>Runnable r = () -&gt; { throw new IOException(); };</code></td><td data-label="結果">不可</td><td data-label="理由"><code>Runnable.run</code>はchecked例外を宣言していない。</td></tr>
+</tbody>
+</table>
+<section class="article-section">
+<h2>読解ミニ演習1：ターゲット型</h2>
+<p>次のコードはどれがコンパイルできますか。</p>
+</section>
+<pre class="article-code"><code>import java.util.function.*;
+
+Predicate&lt;String&gt; a = s -&gt; s.isEmpty();
+Function&lt;String, Boolean&gt; b = s -&gt; s.isEmpty();
+Consumer&lt;String&gt; c = s -&gt; s.isEmpty();
+// Supplier&lt;String&gt; d = s -&gt; s.toUpperCase();</code></pre>
+<p><code>a</code>は<code>boolean test(String)</code>に合います。<code>b</code>は<code>Boolean apply(String)</code>に合います。<code>c</code>は戻り値を捨てる式文として扱えるためコンパイルできます。<code>d</code>は<code>Supplier.get()</code>が引数なしなので、引数<code>s</code>を取るラムダ式とは合いません。</p>
+<section class="article-section">
+<h2>読解ミニ演習2：effectively final</h2>
+<p>次のコードはコンパイルできません。理由を判定します。</p>
+</section>
+<pre class="article-code"><code>int count = 0;
+Runnable r = () -&gt; System.out.println(count);
+// count++; // この再代入により、countはeffectively finalではなくなる</code></pre>
+<p>ラムダ式が外側のローカル変数を使う場合、その変数はfinalまたはeffectively finalである必要があります。<br/>参照後に変更しても、変更後に参照しても、同じく不可です。</p>
+<section class="article-section">
+<h2>読解ミニ演習3：メソッド参照</h2>
+<p>次のメソッド参照の意味をラムダ式に置き換えます。</p>
+</section>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>メソッド参照</th><th>ターゲット型</th><th>ラムダ式で考える</th></tr></thead>
+<tbody>
+<tr><td data-label="メソッド参照"><code>Integer::parseInt</code></td><td data-label="ターゲット型"><code>Function&lt;String,Integer&gt;</code></td><td data-label="ラムダ式で考える"><code>s -&gt; Integer.parseInt(s)</code></td></tr>
+<tr><td data-label="メソッド参照"><code>String::length</code></td><td data-label="ターゲット型"><code>ToIntFunction&lt;String&gt;</code></td><td data-label="ラムダ式で考える"><code>s -&gt; s.length()</code></td></tr>
+<tr><td data-label="メソッド参照"><code>String::compareTo</code></td><td data-label="ターゲット型"><code>BiFunction&lt;String,String,Integer&gt;</code></td><td data-label="ラムダ式で考える"><code>(a, b) -&gt; a.compareTo(b)</code></td></tr>
+<tr><td data-label="メソッド参照"><code>ArrayList::new</code></td><td data-label="ターゲット型"><code>Supplier&lt;ArrayList&lt;String&gt;&gt;</code></td><td data-label="ラムダ式で考える"><code>() -&gt; new ArrayList&lt;String&gt;()</code></td></tr>
+<tr><td data-label="メソッド参照"><code>String[]::new</code></td><td data-label="ターゲット型"><code>IntFunction&lt;String[]&gt;</code></td><td data-label="ラムダ式で考える"><code>n -&gt; new String[n]</code></td></tr>
+</tbody>
+</table>
+<section class="article-section">
+<h2>コードを読む順番</h2>
+<p>ラムダ式は、文法だけでなく型推論、オーバーロード、例外、スコープが関係します。次の順で確認します。</p>
+</section>
+<ol class="article-list">
+<li>代入先またはメソッド引数の型を見る。</li>
+<li>その型が関数型インタフェースか判定する。</li>
+<li>抽象メソッドの引数リスト、戻り値、throwsを判定する。</li>
+<li>ラムダ仮引数の数・型・括弧・<code>var</code>の使い方を判定する。</li>
+<li>本体が式形式かブロック形式かを判定する。</li>
+<li>戻り値が必要な経路で必ず返しているか判定する。</li>
+<li>外側のローカル変数を使っているならeffectively finalか判定する。</li>
+<li>メソッド参照なら、第1引数がレシーバになる形式かどうか判定する。</li>
+<li>checked例外が抽象メソッドのthrowsで許可されているか判定する。</li>
+</ol>
+<div class="article-callout">ラムダ式は、ターゲット型の抽象メソッドへ戻して読むと判定できます。仮引数型、戻り値、checked例外の互換性を一つずつ確認してください。</div>
+</article>
+<section class="study-route-panel related-practice-panel">
+<h2>関連演習</h2>
+<p>関連する演習です。</p>
+<div class="study-route-grid"><a class="study-route-card" href="../../courses/gold11/practice/lambda-stream.html"><span class="route-badge">演習</span><strong>ラムダ・Stream</strong><span>関数型インタフェース</span></a><a class="study-route-card" href="../../courses/gold11/practice/lambda-optional.html"><span class="route-badge">演習</span><strong>ラムダ・Optional</strong><span>Predicate/Function/Consumer</span></a><a class="study-route-card" href="../../courses/gold11/practice/generics-functional-extra.html"><span class="route-badge">演習</span><strong>ジェネリクス・関数型</strong><span>型推論と関数型</span></a></div>
+</section>
+<section class="content-section"><h2>ラムダ式の確認</h2><div class="note-card"><p>ラムダ式は、単体では型が決まりません。先に代入先や引数の型から、対象の関数型インタフェースを決めます。</p><ul><li>抽象メソッドが1つだけかを見ます。</li><li>引数の数・型・戻り値型が合うかを見ます。</li><li>外側のローカル変数を使う場合は、実質的finalかを見ます。</li><li>メソッド参照は、見た目ではなく対象の関数型インタフェースに合わせて判定します。</li></ul></div></section>
+</main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="index.html";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

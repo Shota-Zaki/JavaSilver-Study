@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="interfaceを、実装クラスの中身ではなく、外から使える操作を定める型として学びます。" name="description"/>
+<title>Lesson 16 interfaceの入口｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="Lesson 16 interfaceの入口｜Java Practice Lab" property="og:title"/>
+<meta content="interfaceを、実装クラスの中身ではなく、外から使える操作を定める型として学びます。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../../manifest.webmanifest" rel="manifest"/>
+<link href="../../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="Java基礎">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="Java基礎"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">Java基礎</span><span class="site-context-title">interfaceの入口</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../../index.html">トップ</a><a aria-current="page" class="is-active" href="../index.html">基礎</a><a href="../../bronze/index.html">Bronze</a><a href="../../java11-silver/index.html">Silver 11</a><a href="../../java17-silver/index.html">Silver 17</a><a href="../../gold11/index.html">Gold 11</a><a href="../../gold17/index.html">Gold 17</a><a href="../../../articles/index.html">単元別解説</a><a href="../../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main lesson-main" id="mainContent">
+<article class="card lesson-hero">
+<p class="meta">Java基礎 Lesson 16</p>
+<h1>interfaceの入口</h1>
+<p class="lead">interfaceを操作の契約として定義し、implements、抽象メソッド、定数、defaultメソッドの規則を説明します。</p>
+<div class="box goal-box"><strong>このレッスンのゴール</strong><p>interfaceに宣言できる主要なメンバと、実装クラスが満たすべきアクセス規則を説明できること。</p></div>
+</article><section class="card lesson-section basic-term-intro">
+<h2>基本用語の定義</h2>
+<div class="term-side-layout">
+<div>
+<p>interfaceはインスタンスの具体的な作り方ではなく、その型として提供する操作や定数を宣言します。</p>
+</div>
+<div class="term-note-grid">
+<div class="term-note basic-term-mini"><strong>interfaceとは</strong>クラスが実装すべき扱い方を定める型。</div><div class="term-note basic-term-mini"><strong><code>implements</code>とは</strong>クラスがinterfaceを実装することを示すキーワード。</div><div class="term-note basic-term-mini"><strong>抽象メソッドとは</strong>本体を持たず、実装クラス側で処理を書くメソッド。</div><div class="term-note basic-term-mini"><strong>defaultメソッドとは</strong>interface内に書ける実装付きメソッド。</div><div class="term-note basic-term-mini"><strong>実装とは</strong>決められたメソッドの具体的な処理を書くこと。</div>
+</div>
+</div>
+</section><section class="card lesson-section basic-term-check core-rule-section"><h2>interfaceのメンバと実装規則</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>項目</th><th>定義・規則</th><th>具体例</th></tr></thead><tbody><tr><td data-label="項目"><span>interface宣言</span></td><td data-label="定義・規則"><span>クラスとは別の参照型を定義します。</span></td><td data-label="具体例"><span><code>interface Printable { ... }</code></span></td></tr><tr><td data-label="項目"><span>implements</span></td><td data-label="定義・規則"><span>クラスがinterfaceの契約を実装することを表します。</span></td><td data-label="具体例"><span>クラスは複数のinterfaceを実装できます。</span></td></tr><tr><td data-label="項目"><span>抽象メソッド</span></td><td data-label="定義・規則"><span>本体を持たないインスタンスメソッド。通常は暗黙に<code>public abstract</code>です。</span></td><td data-label="具体例"><span>実装メソッドは<code>public</code>にします。</span></td></tr><tr><td data-label="項目"><span>フィールド</span></td><td data-label="定義・規則"><span>interfaceのフィールドは暗黙に<code>public static final</code>です。</span></td><td data-label="具体例"><span>宣言時に初期化が必要です。</span></td></tr><tr><td data-label="項目"><span>defaultメソッド</span></td><td data-label="定義・規則"><span>interfaceが本体を持つインスタンスメソッド。</span></td><td data-label="具体例"><span>実装クラスで継承またはオーバーライドできます。</span></td></tr><tr><td data-label="項目"><span>staticメソッド</span></td><td data-label="定義・規則"><span>interface自体に属するメソッド。</span></td><td data-label="具体例"><span><code>InterfaceName.method()</code>で呼びます。</span></td></tr></tbody></table></div></section>
+<section class="card lesson-section"><h2>基本形</h2><pre><code>interface Worker {
+    void work();
+}
+
+class Engineer implements Worker {
+    @Override
+    public void work() {
+        System.out.println("coding");
+    }
+}</code></pre><p><code>Worker</code>型として扱うなら<code>work()</code>を呼べる、というルールを作っている。</p></section><section class="card lesson-section"><h2>interfaceのメソッドはpublic扱い</h2><p>interfaceの抽象メソッドは暗黙に<code>public abstract</code>。そのため、実装クラス側では<code>public</code>で実装する必要がある。アクセスを弱くするとコンパイルエラー。</p><p class="code-caption">成立しない例</p><pre><code>interface Worker {
+    void work();
+}
+
+class Engineer implements Worker {
+    void work() { } // コンパイルエラー：publicでない
+}</code></pre><p class="code-caption">修正例</p><pre><code>class Engineer implements Worker {
+    public void work() { } // OK
+}</code></pre></section><section class="card lesson-section"><h2>interface型で受けるメリット</h2><pre><code>Worker w = new Engineer();
+w.work();</code></pre><p>変数の型を<code>Worker</code>にすると、実体が<code>Engineer</code>でも、呼べるのは<code>Worker</code>として見えるメソッドになる。これは継承の親型変数と同じ読み方。</p></section><section class="card lesson-section"><h2>defaultメソッド</h2><p><code>default</code>メソッドは、interface内に実装を持てるメソッド。実装クラスが必ずしも書かなくてよい共通処理を置ける。</p><pre><code>interface Greet {
+    default void hello() {
+        System.out.println("hello");
+    }
+}
+
+class User implements Greet { }
+new User().hello();</code></pre></section><section class="card lesson-section"><h2>フィールドは定数扱い</h2><p>interfaceに書いたフィールドは暗黙に<code>public static final</code>。つまり共有される定数であり、あとから代入し直せません。</p></section><section class="card lesson-section"><h2>interfaceを実装する最小例</h2><p class="code-caption">`Main.java`として保存する完全なコード</p><pre><code>interface Printable {
+    void print();
+
+    default void printHeader() {
+        System.out.println("header");
+    }
+}
+
+class Report implements Printable {
+    @Override
+    public void print() {
+        System.out.println("report");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Printable value = new Report();
+        value.printHeader();
+        value.print();
+    }
+}</code></pre><p><span>interface内の<code>void print();</code>はpublicな抽象メソッドです。そのため、実装側の<code>print()</code>も<code>public</code>で宣言します。</span></p></section><section class="card lesson-section"><h2>関連する用語との違い</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>混同しやすいもの</th><th>違い</th><th>見分け方</th></tr></thead><tbody><tr><td data-label="混同しやすいもの"><code>extends</code> / <code>implements</code></td><td data-label="違い">クラス継承は<code>extends</code>、インタフェース実装は<code>implements</code>。</td><td data-label="見分け方">右側がクラスかインタフェースかを見る。</td></tr><tr><td data-label="混同しやすいもの">抽象メソッド / defaultメソッド</td><td data-label="違い">抽象メソッドは実装がない。defaultメソッドは実装を持てる。</td><td data-label="見分け方">本体<code>{}</code>があるか、<code>default</code>かを見る。</td></tr><tr><td data-label="混同しやすいもの">interfaceのメソッド / 実装クラスのメソッド</td><td data-label="違い">interface側はpublic扱い。実装時もpublicにする必要がある。</td><td data-label="見分け方">アクセス修飾子を弱くしていないか見る。</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>interface実装を判断する規則</h2><ol><li><span>interfaceが要求する抽象メソッドを確認する。</span></li><li><span>実装クラスがabstractでなければ、必要なメソッドをすべて実装する。</span></li><li><span>実装メソッドのアクセス修飾子を<code>public</code>にする。</span></li><li><span>defaultメソッドの競合がある場合は、実装クラス側でオーバーライドして解決する。</span></li><li><span>interface型の変数から呼べるのは、そのinterfaceに宣言されたメンバを基本とする。</span></li></ol><p class="code-caption">確認用コード</p><pre><code>interface Worker {
+    void work();
+}
+class Engineer implements Worker {
+    void work() {
+        System.out.println("build");
+    }
+}</code></pre><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>見る点</th><th>このコードでの判断</th><th>結論</th></tr></thead><tbody><tr><td data-label="見る点">interface側</td><td data-label="このコードでの判断"><code>work</code>は暗黙にpublic</td><td data-label="結論">外から呼べる約束</td></tr><tr><td data-label="見る点">実装側</td><td data-label="このコードでの判断"><code>void work()</code>はデフォルトアクセス</td><td data-label="結論">publicより弱い</td></tr><tr><td data-label="見る点">結論</td><td data-label="このコードでの判断">アクセス権を弱くしている</td><td data-label="結論">コンパイルエラー</td></tr></tbody></table></div></section>
+<section class="card lesson-section flow-section"><h2>interfaceは外から見える操作をそろえる</h2>
+<p>interfaceは、異なるクラスを同じ型として扱うための約束を定義します。実装クラスは、interfaceが要求する抽象メソッドをpublicで実装します。</p>
+<pre><code>interface Printer {
+    void print(String text);
+}
+
+class ConsolePrinter implements Printer {
+    public void print(String text) {
+        System.out.println(text);
+    }
+}
+
+Printer p = new ConsolePrinter();
+p.print("hello");</code></pre>
+<p><code>Printer p</code>として受けているので、呼べるのは<code>Printer</code>に定義された操作です。実体は<code>ConsolePrinter</code>ですが、変数の型は<code>Printer</code>です。この考え方がポリモーフィズムの入口です。</p>
+<div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>interface内の要素</th><th>扱い</th><th>注意</th></tr></thead><tbody><tr><td data-label="interface内の要素">抽象メソッド</td><td data-label="扱い">基本的に<code>public abstract</code></td><td data-label="注意">実装時も<code>public</code>が必要</td></tr><tr><td data-label="interface内の要素">フィールド</td><td data-label="扱い"><code>public static final</code>扱い</td><td data-label="注意">インスタンスごとの状態ではない</td></tr><tr><td data-label="interface内の要素"><code>default</code>メソッド</td><td data-label="扱い">実装を持てる</td><td data-label="注意">実装クラスで上書き可能</td></tr><tr><td data-label="interface内の要素"><code>static</code>メソッド</td><td data-label="扱い">interface自身に属する</td><td data-label="注意">実装クラスのインスタンスから呼ぶものではない</td></tr></tbody></table></div>
+<pre><code>interface Sample {
+    int VALUE = 10; // public static final 扱い
+    void test();    // public abstract 扱い
+}</code></pre>
+<div class="mistake-callout"><strong>interfaceで最初に見ること</strong><p>「何を実装しているか」より先に、「そのinterface型として何を呼べるか」を見ると分かりやすいです。型としての役割を見ないと、実装クラスの詳細に引っ張られます。</p></div>
+</section>
+<section class="card lesson-section basic-stumble-check"><h2>定義と規則の整理</h2><h3>interfaceで混同する点</h3><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>つまずき</th><th>正しい考え方</th></tr></thead><tbody><tr><td data-label="つまずき">interfaceをインスタンス化できると思う</td><td data-label="正しい考え方">interface型の変数は作れるが、interface自体は<code>new</code>できない。実装クラスのインスタンスを扱う。</td></tr><tr><td data-label="つまずき">interfaceのメソッドはprivateだと思う</td><td data-label="正しい考え方">抽象メソッドは暗黙に<code>public abstract</code>。実装側もpublicが必要。</td></tr><tr><td data-label="つまずき">extendsとimplementsを混同する</td><td data-label="正しい考え方">クラスを継承するのが<code>extends</code>、interfaceを実装するのが<code>implements</code>。</td></tr></tbody></table></div><h3>確認できれば次へ</h3><ul class="check-list compact-check-list"><li>interfaceを「扱い方の約束」として説明できる</li><li>implementsの意味を説明できる</li><li>defaultメソッドと抽象メソッドを区別できる</li></ul><div class="lesson-note"><strong>理解の基準</strong></div></section>
+<section class="card lesson-section code-trio-section">
+<h2>成立するコードと成立しないコード</h2>
+<div class="code-trio-grid">
+<article class="code-trio-card good"><h3>成立する例：interfaceとimplements</h3><pre><code>interface Printable {
+    void print();
+}
+class Report implements Printable {
+    public void print() { System.out.println("R"); }
+}</code></pre></article>
+<article class="code-trio-card bad"><h3>成立しない例</h3><pre><code>interface Printable {
+    void print();
+}
+class Report implements Printable {
+    void print() { System.out.println("R"); }
+}</code></pre></article>
+<article class="code-trio-card fix"><h3>成立する形</h3><pre><code>class Report implements Printable {
+    public void print() { System.out.println("R"); }
+}</code></pre></article>
+</div>
+<div class="lesson-note"><strong>確認ポイント</strong><p>interfaceの抽象メソッドはpublic扱いです。実装時にアクセス範囲を狭くできません。</p></div>
+</section>
+<section class="card lesson-section basic-understanding-quiz quiz-level-section"><h2>定義と規則を確認する</h2><div class="quiz-level-list"><article class="quiz-level-card"><h3>用語の確認</h3><p>interface、implements、抽象メソッド、defaultメソッドを説明できますか。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>interfaceは扱い方を定める型です。<br/>implementsはクラスがinterfaceを実装する指定、抽象メソッドは実装を持たないメソッド、defaultメソッドはinterface内に持てる実装付きメソッドです。</p></details></article><article class="quiz-level-card"><h3>コードの確認</h3><p>次のinterface定義はコンパイルできますか。</p><pre><code>interface A {
+    void test() {
+        System.out.println("A");
+    }
+}</code></pre><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>コンパイルできません。interfaceの通常メソッドに本体を持たせるならdefault、static、privateなどの条件が必要です。</p></details></article><article class="quiz-level-card"><h3>仕組みを説明する</h3><p>interfaceのフィールドが実質的に定数になる理由を説明してください。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>interfaceのフィールドは暗黙にpublic static finalです。インスタンスごとの状態ではなく、公開された定数として扱われます。</p></details></article></div></section><section class="card lesson-section check-section"><h2>基本ルールのまとめ</h2><ul><li>interfaceとclassの役割の違いを説明できる。</li><li>実装メソッドをpublicにする理由を説明できる。</li><li>defaultメソッドと抽象メソッドを区別できる。</li></ul></section><section class="card lesson-section"><h2>コードに規則を当てはめる</h2><p>次のコードをコンパイルできるようにするには何を直すか。</p><p class="code-caption">確認用コード</p><pre><code>interface A {
+    void test();
+}
+class B implements A {
+    void test() { }
+}</code></pre><details class="answer-panel"><summary>説明を見る</summary><p><code>B</code>の<code>test</code>を<code>public</code>にする。</p><p>インタフェースの<code>test</code>は暗黙に<code>public</code>。実装時にアクセス修飾子を弱くできないため、<code>public void test() { }</code>と書く。</p></details></section><section class="card lesson-nav-bottom"><div><a class="btn ghost" href="15.html">← 前のLesson</a><a class="btn" href="../index.html">Lesson一覧</a><a class="btn primary" href="17.html">次のLesson →</a></div></section>
+</main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../../site/about.html">このサイトについて</a><a href="../../../site/editorial-policy.html">編集方針</a><a href="../../../site/site-map.html">サイトマップ</a><a href="../../../site/privacy.html">プライバシーポリシー</a><a href="../../../site/terms.html">利用規約</a><a href="../../../site/disclaimer.html">免責事項</a><a href="../../../site/advertising.html">広告・アフィリエイト</a><a href="../../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../../";window.CURRENT_PAGE="java-basic-16.html";</script>
+<script src="../../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

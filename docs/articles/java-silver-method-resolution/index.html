@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Java学習サイト" name="description"/>
+<title>メソッド呼び出し解決まとめ</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="メソッド呼び出し解決まとめ" property="og:title"/>
+<meta content="Java学習サイト" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">オーバーロードの呼び出し解決</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent"><section class="content-page article-body wide-article upgraded-article">
+<h1>オーバーロードの呼び出し解決</h1>
+<p class="lead">Silver向けの記事です。同名メソッドのどれを呼ぶかは、実行時の実体ではなく、コンパイル時に見える引数の型と変換規則で決まります。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<section class="article-section"><h2>最初に候補を集め、適用できる中で最も具体的なものを選ぶ</h2>
+<pre class="article-code"><code>class OverloadSample {
+    static void test(int value)     { System.out.print("int"); }
+    static void test(long value)    { System.out.print("long"); }
+    static void test(Integer value) { System.out.print("Integer"); }
+    static void test(int... value)  { System.out.print("varargs"); }
+
+    public static void main(String[] args) {
+        test(1); // int
+    }
+}</code></pre>
+<p>整数リテラル<code>1</code>の型は<code>int</code>です。完全一致する<code>test(int)</code>があるため、拡大変換、ボクシング、可変長引数の候補へ進みません。</p></section>
+<section class="article-section"><h2>代表的な優先関係</h2>
+<table class="ref-table study-table responsive-card-table"><thead><tr><th>優先</th><th>変換</th><th>例</th></tr></thead><tbody>
+<tr><td data-label="優先">1</td><td data-label="変換">完全一致</td><td data-label="例"><code>int</code> → <code>int</code></td></tr>
+<tr><td data-label="優先">2</td><td data-label="変換">プリミティブの拡大変換</td><td data-label="例"><code>int</code> → <code>long</code></td></tr>
+<tr><td data-label="優先">3</td><td data-label="変換">ボクシングまたはアンボクシングを含む候補</td><td data-label="例"><code>int</code> → <code>Integer</code></td></tr>
+<tr><td data-label="優先">4</td><td data-label="変換">可変長引数</td><td data-label="例"><code>int</code> → <code>int...</code></td></tr>
+</tbody></table>
+<p>これは典型を扱うコード用の判断順です。複数引数やジェネリックメソッドでは追加の規則が関わるため、各候補が適用可能かを引数ごとに確認します。</p></section>
+<section class="article-section"><h2>戻り値型だけではオーバーロードできない</h2>
+<pre class="article-code"><code>class ReturnTypeOnly {
+    int read() { return 1; }
+    // String read() { return "A"; } // コンパイルエラー
+}</code></pre>
+<p>メソッドシグネチャの中心はメソッド名と引数型です。呼び出し式<code>read()</code>だけでは戻り値によって候補を区別できません。</p></section>
+<section class="article-section"><h2>nullは参照型候補のうち、より具体的な型を選ぶ</h2>
+<pre class="article-code"><code>class NullResolution {
+    static void test(Object value) { System.out.print("Object"); }
+    static void test(String value) { System.out.print("String"); }
+
+    public static void main(String[] args) {
+        test(null); // String
+    }
+}</code></pre>
+<p><code>String</code>は<code>Object</code>より具体的なので<code>test(String)</code>が選ばれます。互いに親子関係がない型が残ると曖昧です。</p>
+<pre class="article-code"><code>static void test(String value) {}
+static void test(StringBuilder value) {}
+// test(null); // コンパイルエラー: どちらがより具体的か決められない</code></pre></section>
+<section class="article-section"><h2>オーバーロードは宣言型、オーバーライドは実体型</h2>
+<pre class="article-code"><code>class Parent {
+    void show(Object value) { System.out.print("P-Object"); }
+}
+class Child extends Parent {
+    @Override void show(Object value) { System.out.print("C-Object"); }
+    void show(String value) { System.out.print("C-String"); }
+}
+public class DispatchOrder {
+    public static void main(String[] args) {
+        Parent ref = new Child();
+        ref.show("A"); // C-Object
+    }
+}</code></pre>
+<ol class="article-list"><li>コンパイル時、変数<code>ref</code>の宣言型は<code>Parent</code>なので、候補は<code>show(Object)</code>だけです。</li><li>実行時、そのシグネチャを<code>Child</code>がオーバーライドしているため、<code>Child.show(Object)</code>が実行されます。</li><li><code>Child.show(String)</code>は、コンパイル時の候補に入りません。</li></ol></section>
+<section class="article-section"><h2>可変長引数は配列としても呼べる</h2>
+<pre class="article-code"><code>static void sum(int... values) {
+    System.out.println(values.length);
+}
+
+sum();               // 0
+sum(1, 2);           // 2
+sum(new int[]{1, 2}); // 2</code></pre>
+<p>可変長引数はメソッド内では配列です。同じ位置に通常の配列引数と可変長引数を別々に定義すると、シグネチャが同じになり共存できません。</p></section>
+<section class="article-section"><h2>コードを読む順番</h2><ol class="article-list"><li>呼び出し元から見えるメソッドだけを候補にする。</li><li>実引数のコンパイル時の型を確定する。</li><li>引数ごとに適用可能な変換を確認する。</li><li>最も具体的な候補を一つに決める。決まらなければコンパイルエラー。</li><li>選ばれたシグネチャがオーバーライドされている場合だけ、実体型の実装へ進む。</li></ol></section>
+<section class="article-section"><h2>記事末尾の確認</h2><ul class="article-list"><li>戻り値型だけの違いをオーバーロードと判断しない。</li><li><code>null</code>で残る候補の型関係を比較できる。</li><li>可変長引数を最初の候補として選ばない。</li><li>オーバーロード選択とオーバーライド実行を二段階で追える。</li></ul></section>
+</section></main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="index.html";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

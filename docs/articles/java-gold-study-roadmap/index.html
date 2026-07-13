@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Java Gold対策を、Silver復習、Generics、Lambda、Stream、NIO、並行処理、Module、模試復習の順で整理します。" name="description"/>
+<meta content="Java Gold,ロードマップ,勉強法" name="keywords"/>
+<title>Java Gold学習ロードマップ｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="article" property="og:type"/>
+<meta content="Java Gold学習ロードマップ｜Java Practice Lab" property="og:title"/>
+<meta content="Java Gold対策を、Silver復習、Generics、Lambda、Stream、NIO、並行処理、Module、模試復習の順で整理します。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Java Gold学習ロードマップ", "description": "Java Gold対策を、Silver復習、Generics、Lambda、Stream、NIO、並行処理、Module、模試復習の順で整理します。", "inLanguage": "ja", "publisher": {"@type": "Organization", "name": "Java Practice Lab"}}</script>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">Java Gold学習ロードマップ</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent">
+<article class="content-page article-body">
+<p class="eyebrow">学習順</p>
+<h1>Java Gold学習ロードマップ</h1>
+<p class="lead">Java Goldは、API名を覚える試験ではありません。<br/>型、戻り値、例外、評価タイミング、リソース管理、モジュール境界をコードから判定する試験です。<br/>Silverの読解力を土台にして、Generics、Lambda、Stream、NIO、並行処理、Moduleへ順番に進めます。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<div class="notice">
+<strong>結論</strong>
+<p>最初にGenericsとLambdaを固めています。<br/>ここが弱いままStreamやCollectorsへ進むと、APIの暗記量だけが増えて、出力問題・コンパイル可否問題で点が伸びません。</p>
+</div>
+<h2>Gold学習で最初に整理する前提</h2>
+<p>Gold対策は、Silverの延長ではあります。ただし、問われ方はかなり変わります。<br/>Silverは文法の可否を見抜く問題が中心でしたが、Goldは複数APIを組み合わせたときの型の流れ、実行タイミング、副作用、例外処理を読ませます。</p>
+<table class="table responsive-card-table">
+<thead><tr><th>最初に見る前提</th><th>弱い状態</th><th>先に直すこと</th></tr></thead>
+<tbody>
+<tr><td data-label="最初に見る前提">継承・ポリモーフィズム</td><td data-label="弱い状態">変数の型と実体の型を混同する</td><td data-label="先に直すこと">メソッド呼び出しは実体、フィールド参照は変数の型で読む</td></tr>
+<tr><td data-label="最初に見る前提">例外</td><td data-label="弱い状態">チェック例外、非チェック例外、catch順序が曖昧</td><td data-label="先に直すこと">throws、try-with-resources、catchの到達可能性を先に整理する</td></tr>
+<tr><td data-label="最初に見る前提">型変換</td><td data-label="弱い状態">暗黙変換、キャスト、ラッパー型の扱いが不安定</td><td data-label="先に直すこと">Genericsへ入る前に参照型・プリミティブ型・ラッパー型を分ける</td></tr>
+<tr><td data-label="最初に見る前提">メソッド解決</td><td data-label="弱い状態">オーバーロードとオーバーライドを混ぜる</td><td data-label="先に直すこと">コンパイル時の選択と実行時の動的ディスパッチを分ける</td></tr>
+<tr><td data-label="最初に見る前提">スコープ</td><td data-label="弱い状態">ラムダ内のローカル変数、effectively finalを失点する</td><td data-label="先に直すこと">変数がどこで宣言され、どこで変更されるかを追う</td></tr>
+</tbody>
+</table>
+<h2>全体ロードマップ</h2>
+<p>この順番で進めると、後半のAPI問題を「覚える量」ではなく「確認ポイント」で処理できます。</p>
+<table class="table responsive-card-table">
+<thead><tr><th>段階</th><th>学習対象</th><th>到達基準</th><th>使うページ</th></tr></thead>
+<tbody>
+<tr><td data-label="段階">0</td><td data-label="学習対象">Silver橋渡し</td><td data-label="到達基準">継承、例外、型変換、staticをコード上で判定できる</td><td data-label="使うページ"><a href="../java-silver-code-reading/index.html">コード読解</a> / <a href="../java-silver-compile-vs-runtime/index.html">コンパイルエラーと実行時エラー</a></td></tr>
+<tr><td data-label="段階">1</td><td data-label="学習対象">Generics</td><td data-label="到達基準"><code>List&lt;String&gt;</code>、ワイルドカード、型消去、境界型を説明できる</td><td data-label="使うページ"><a href="../java-gold-generics-deep/index.html">ジェネリクス完全整理</a></td></tr>
+<tr><td data-label="段階">2</td><td data-label="学習対象">Lambda / 関数型インタフェース</td><td data-label="到達基準">ターゲット型、メソッド参照、effectively finalを判定できる</td><td data-label="使うページ"><a href="../java-gold-lambda-first/index.html">ラムダ式と関数型インタフェース</a></td></tr>
+<tr><td data-label="段階">3</td><td data-label="学習対象">Optional / Stream / Collectors</td><td data-label="到達基準">中間操作、終端操作、遅延評価、Collectorの戻り値を追える</td><td data-label="使うページ"><a href="../java-gold-optional-first/index.html">Optional</a> / <a href="../java-gold-stream-deep/index.html">Stream API</a> / <a href="../java-gold-collector-first/index.html">Collectors</a></td></tr>
+<tr><td data-label="段階">4</td><td data-label="学習対象">NIO / Date and Time / Localization / JDBC</td><td data-label="到達基準">戻り値型、例外、リソース管理、SQL実行結果の扱いを読めます</td><td data-label="使うページ"><a href="../java-gold-nio-path-files/index.html">NIO</a> / <a href="../java-gold-datetime-localization/index.html">日時・ローカライズ</a> / <a href="../java-gold-jdbc/index.html">JDBC</a></td></tr>
+<tr><td data-label="段階">5</td><td data-label="学習対象">Concurrency / Module / Annotation / assert</td><td data-label="到達基準">実行順、排他、Future、モジュール可視性、assertの有効化を判定できる</td><td data-label="使うページ"><a href="../java-gold-concurrency-basic/index.html">並行処理</a> / <a href="../java-gold-module-info-check/index.html">module-info.java</a> / <a href="../java-gold-annotation-assert/index.html">アノテーション・assert</a></td></tr>
+<tr><td data-label="段階">6</td><td data-label="学習対象">模試・復習</td><td data-label="到達基準">カテゴリ別に弱点を出し、同じ誤読を整理する</td><td data-label="使うページ"><a href="../../courses/gold/index.html">Java Gold対策</a></td></tr>
+</tbody>
+</table>
+<h2>標準ルート：8週間</h2>
+<p>学習時間が十分に取れる場合は、8週間で分野別理解と模試復習を分けます。平日は短時間で記事と小問、休日にまとまった演習を入れる構成です。</p>
+<table class="table responsive-card-table">
+<thead><tr><th>週</th><th>主テーマ</th><th>やること</th><th>完了条件</th></tr></thead>
+<tbody>
+<tr><td data-label="週">1週目</td><td data-label="主テーマ">Silver橋渡し</td><td data-label="やること">継承、例外、型変換、static、オーバーロードを復習</td><td data-label="完了条件">コンパイル可否と実行時例外を分けて説明できる</td></tr>
+<tr><td data-label="週">2週目</td><td data-label="主テーマ">Generics</td><td data-label="やること">型パラメータ、境界型、ワイルドカード、PECS、型消去</td><td data-label="完了条件"><code>? extends</code> と <code>? super</code> の使い分けを説明できる</td></tr>
+<tr><td data-label="週">3週目</td><td data-label="主テーマ">Lambda</td><td data-label="やること">関数型インタフェース、メソッド参照、ローカル変数制約</td><td data-label="完了条件">ラムダの戻り値型と例外をターゲット型から判断できる</td></tr>
+<tr><td data-label="週">4週目</td><td data-label="主テーマ">Stream / Optional</td><td data-label="やること">遅延評価、短絡評価、終端操作、Optionalの戻り値</td><td data-label="完了条件">Stream再利用不可、Null回避、例外発生位置を追える</td></tr>
+<tr><td data-label="週">5週目</td><td data-label="主テーマ">Collectors</td><td data-label="やること"><code>toMap</code>、<code>groupingBy</code>、<code>partitioningBy</code>、下流Collector</td><td data-label="完了条件">戻り値のネスト構造を型で書ける</td></tr>
+<tr><td data-label="週">6週目</td><td data-label="主テーマ">NIO / DateTime / JDBC</td><td data-label="やること">Path、Files、try-with-resources、日時API、ResultSet</td><td data-label="完了条件">戻り値型と例外を表で整理できる</td></tr>
+<tr><td data-label="週">7週目</td><td data-label="主テーマ">Concurrency / Module</td><td data-label="やること">Executor、Callable、Future、synchronized、requires、exports、opens</td><td data-label="完了条件">実行順の保証有無とモジュール境界を説明できる</td></tr>
+<tr><td data-label="週">8週目</td><td data-label="主テーマ">模試・弱点補強</td><td data-label="やること">模試を解き、カテゴリ別に復習、再演習</td><td data-label="完了条件">不正解理由をタグ単位で説明できる</td></tr>
+</tbody>
+</table>
+<h2>短期ルート：4週間</h2>
+<p>短期で詰める場合は、全範囲を浅く回すより、点に直結する分野を優先しています。<br/>Generics、Lambda、Stream、Collectorsを失点すると、後半の複合問題で失点が連鎖します。</p>
+<ol>
+<li><strong>1週目：</strong>Silver橋渡し、Generics、Lambdaを集中して固める。</li>
+<li><strong>2週目：</strong>Stream、Optional、Collectorsを毎日解く。戻り値型を必ず書き出す。</li>
+<li><strong>3週目：</strong>NIO、DateTime、JDBC、Concurrency、Moduleを表で整理する。</li>
+<li><strong>4週目：</strong>模試を解いて、弱点タグ単位で戻る。新しい教材を増やさず、同じ他の選択肢の理由を除外する。</li>
+</ol>
+<h2>SE 11とSE 17の分岐</h2>
+<p>このサイトでは、Goldを共通部分と17追加分に分けています。先に共通部分を固め、受ける試験に応じて17側の言語機能・API差分を追加します。</p>
+<table class="table responsive-card-table">
+<thead><tr><th>受験区分</th><th>優先順位</th><th>注意点</th></tr></thead>
+<tbody>
+<tr><td data-label="受験区分">Gold SE 11</td><td data-label="優先順位">Generics、Lambda、Stream、Collectors、NIO、Concurrency、Moduleを中心に進める</td><td data-label="注意点">Moduleは暗記で処理しにくい。<code>requires</code>、<code>exports</code>、<code>opens</code> の効果をコードで見る</td></tr>
+<tr><td data-label="受験区分">Gold SE 17</td><td data-label="優先順位">SE 11の土台に加えて、17側の言語機能とAPI差分を見る</td><td data-label="注意点">record、sealed、switch式、パターンマッチングはSilver 17側の理解も再利用する</td></tr>
+</tbody>
+</table>
+<p><a href="../java-gold-11-17-difference/index.html">Java Gold SE 11とSE 17の違い</a>で受験区分を決め、教材を買う前に<a href="../java-gold-materials-guide/index.html">Java Gold教材の選び方</a>で役割を分けると判定しやすくなります。</p>
+<h2>分野別の読み方</h2>
+<table class="table responsive-card-table">
+<thead><tr><th>分野</th><th>読み方</th><th>落としやすい点</th></tr></thead>
+<tbody>
+<tr><td data-label="分野">Generics</td><td data-label="読み方">代入可能性、読み取り、書き込み、境界を分ける</td><td data-label="落としやすい点"><code>List&lt;Object&gt;</code> と <code>List&lt;String&gt;</code> の互換性、<code>? extends</code> への追加</td></tr>
+<tr><td data-label="分野">Lambda</td><td data-label="読み方">先にターゲット型を見る</td><td data-label="落としやすい点">引数型省略、戻り値、例外、effectively final</td></tr>
+<tr><td data-label="分野">Stream</td><td data-label="読み方">生成、中間操作、終端操作、再利用可否の順に読む</td><td data-label="落としやすい点">遅延評価、短絡評価、peekの実行タイミング</td></tr>
+<tr><td data-label="分野">Collectors</td><td data-label="読み方">Collectorの戻り値型を手で書く</td><td data-label="落としやすい点"><code>toMap</code> のキー重複、<code>groupingBy</code> の下流Collector</td></tr>
+<tr><td data-label="分野">NIO</td><td data-label="読み方">Path操作とFiles操作を分ける</td><td data-label="落としやすい点">パス文字列の結合、存在判定、例外、try-with-resources</td></tr>
+<tr><td data-label="分野">DateTime</td><td data-label="読み方">不変オブジェクトとして読む</td><td data-label="落としやすい点"><code>plus</code> 系の戻り値を捨てる、PeriodとDurationの混同</td></tr>
+<tr><td data-label="分野">Concurrency</td><td data-label="読み方">実行順が保証される箇所だけを採用する</td><td data-label="落としやすい点">スレッド開始順、Futureの取得タイミング、排他制御</td></tr>
+<tr><td data-label="分野">Module</td><td data-label="読み方">依存、公開、リフレクション公開を分ける</td><td data-label="落としやすい点"><code>exports</code> と <code>opens</code> の役割、classpathとmodule-path</td></tr>
+</tbody>
+</table>
+<h2>演習の回し方</h2>
+<p>Goldの演習は、問題数をこなすだけでは伸びません。<br/>間違えた単元を「APIを知らなかった」「型を追えなかった」「実行順を誤読した」「例外を見落とした」に分類します。</p>
+<ol>
+<li><strong>1周目：</strong>正答率よりも分類を優先する。知らないAPIは単元別解説へ戻る。</li>
+<li><strong>2周目：</strong>不正解タグだけを解く。解説を読んだ直後に、なぜ他の選択肢が誤りかを説明する。</li>
+<li><strong>3周目：</strong>時間制限を付ける。読解に時間がかかる分野を洗い出す。</li>
+<li><strong>模試後：</strong>カテゴリ別分析を見て、下位3カテゴリを先に復習します。</li>
+</ol>
+<h2>通常演習との対応</h2>
+<p>ロードマップの各段階は、Gold対策ページの通常演習にそのまま対応します。<br/>記事だけで理解したつもりになると、戻り値型、実行順、例外発生位置の判定で崩れます。各段階の最後に演習で見ると分かりやすいです。</p>
+<table class="table responsive-card-table">
+<thead><tr><th>段階</th><th>対応演習</th><th>完了条件</th></tr></thead>
+<tbody>
+<tr><td data-label="段階">1</td><td data-label="対応演習"><a href="../../courses/gold11/practice/generics-collections.html">ジェネリクス・コレクション</a> / <a href="../../courses/gold11/practice/generics-functional-extra.html">ワイルドカード・関数型</a></td><td data-label="完了条件">型境界とワイルドカードの読み書きを説明できる</td></tr>
+<tr><td data-label="段階">2</td><td data-label="対応演習"><a href="../../courses/gold11/practice/lambda-stream.html">ラムダ式・Stream入門</a> / <a href="../../courses/gold11/practice/lambda-optional.html">Optional・メソッド参照</a></td><td data-label="完了条件">ターゲット型からラムダとメソッド参照を判定できる</td></tr>
+<tr><td data-label="段階">3</td><td data-label="対応演習"><a href="../../courses/gold11/practice/stream-advanced.html">Stream応用</a> / <a href="../../courses/gold11/practice/stream-collectors.html">Stream・Collectors</a> / <a href="../../courses/gold11/practice/collectors-map-extra.html">Collectors・Map更新</a></td><td data-label="完了条件">Collectorの戻り値型とStreamの実行タイミングを追える</td></tr>
+<tr><td data-label="段階">4</td><td data-label="対応演習"><a href="../../courses/gold11/practice/io-concurrency.html">I/O・NIO・並行処理入門</a> / <a href="../../courses/gold11/practice/nio-datetime.html">NIO・Date and Time</a></td><td data-label="完了条件">Path、Files、日時API、リソース解放を分けて読めます</td></tr>
+<tr><td data-label="段階">5</td><td data-label="対応演習"><a href="../../courses/gold11/practice/nio-concurrency-module-extra.html">NIO・並行処理・Module</a> / <a href="../../courses/gold11/practice/nio-concurrency-module-extra.html">NIO・並行処理・Module</a></td><td data-label="完了条件">実行順、Future、module-info.java、移行時の境界を説明できる</td></tr>
+<tr><td data-label="段階">6</td><td data-label="対応演習"><a href="../../courses/gold11/practice/module-final.html">Module・JDBC・並行処理</a> / <a href="../../courses/gold11/practice/stream-collectors.html">Stream・Collectors</a></td><td data-label="完了条件">弱点タグを3つ以内に絞れる</td></tr>
+<tr><td data-label="段階">7</td><td data-label="対応演習"><a href="../../courses/gold17/practice/record-sealed-final.html">17追加 record・sealed</a> / <a href="../../courses/gold17/practice/switch-pattern-final.html">17追加 switch・instanceof</a> / <a href="../../courses/gold17/practice/stream-api-final.html">17追加 Stream・API更新</a></td><td data-label="完了条件">17追加分と共通範囲を分けて失点原因を説明できる</td></tr>
+</tbody>
+</table>
+<h2>模試後の戻し方</h2><p>模試後は、点数だけでなく失点した範囲を見て戻る場所を決めます。</p><table class="table responsive-card-table"><thead><tr><th>失点範囲</th><th>戻る段階</th><th>再開条件</th></tr></thead><tbody><tr><td data-label="失点範囲">Generics / Collections</td><td data-label="戻る段階">段階1</td><td data-label="再開条件">ワイルドカードの読み書きを説明できる</td></tr><tr><td data-label="失点範囲">Lambda / Optional</td><td data-label="戻る段階">段階2</td><td data-label="再開条件">ターゲット型と戻り値を先に判定できる</td></tr><tr><td data-label="失点範囲">Stream / Collectors</td><td data-label="戻る段階">段階3</td><td data-label="再開条件">中間操作、終端操作、戻り値型を追える</td></tr><tr><td data-label="失点範囲">NIO / DateTime / I/O</td><td data-label="戻る段階">段階4</td><td data-label="再開条件">Path、Files、日時API、リソース管理を分けて読めます</td></tr><tr><td data-label="失点範囲">Concurrency / Module / JDBC</td><td data-label="戻る段階">段階5</td><td data-label="再開条件">実行順の保証、Future、module-info.javaを説明できる</td></tr><tr><td data-label="失点範囲">17追加分</td><td data-label="戻る段階">17追加</td><td data-label="再開条件">record、sealed、switch式、instanceofを共通範囲と分けられる</td></tr></tbody></table><p>模試後は、点数ではなく失点した段階へ戻します。Gold対策ページの模試結果では、弱点タグとあわせてロードマップの戻り先を表示します。</p><p>模試結果で弱点段階を判定し、単元別解説一覧のGold読む順番から該当単元別解説へ戻ります。記事を読んだら対応する通常演習で同じ確認ポイントを使えるか見ると分かりやすいです。</p><h2>ロードマップ用リンク</h2>
+<div class="related-grid">
+<a class="course-card" href="../index.html"><h3>Gold単元別解説</h3><p>Gold APIの単元解説へ戻る。</p></a>
+<a class="course-card" href="../../courses/gold/index.html"><h3>Java Gold対策</h3><p>段階別通常演習、SE 11模試、SE 17模試。</p></a>
+<a class="course-card" href="../java-gold-materials-guide/index.html"><h3>Java Gold教材の選び方</h3><p>参考書、問題集、模試、リファレンスの使い分け。</p></a>
+<a class="course-card" href="../java-gold-11-17-difference/index.html"><h3>Gold SE 11とSE 17の違い</h3><p>受験区分、17追加分、模試の使い分け。</p></a>
+<a class="course-card" href="../java-gold-generics-deep/index.html"><h3>ジェネリクス完全整理</h3><p>型不変、ワイルドカード、型消去。</p></a>
+<a class="course-card" href="../java-gold-lambda-first/index.html"><h3>ラムダ式と関数型インタフェース</h3><p>ターゲット型、メソッド参照、effectively final。</p></a>
+<a class="course-card" href="../java-gold-stream-deep/index.html"><h3>Stream API完全整理</h3><p>遅延評価、中間操作、終端操作。</p></a>
+<a class="course-card" href="../java-gold-collector-first/index.html"><h3>Collectors完全整理</h3><p>toMap、groupingBy、下流Collector。</p></a>
+<a class="course-card" href="../java-gold-module-info-check/index.html"><h3>module-info.java</h3><p>requires、exports、opens、module-path。</p></a>
+</div>
+</article>
+</main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="article";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

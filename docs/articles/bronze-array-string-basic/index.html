@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="配列とStringの基本的な考え方。" name="description"/>
+<title>配列とString基礎｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="配列とString基礎｜Java Practice Lab" property="og:title"/>
+<meta content="配列とStringの基本的な考え方。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">配列とStringの基礎</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent"><section class="content-page article-body wide-article upgraded-article">
+<h1>配列とStringの基礎</h1>
+<p class="lead">配列は同じ型の値を決まった個数だけ並べる仕組みです。Stringは文字列を表す参照型で、作成後に内容を書き換えられません。まず、配列の添字とStringの戻り値を別々に追います。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<section class="article-section"><h2>配列は作成時に要素数が決まる</h2>
+<pre class="article-code"><code>public class ArrayBasic {
+    public static void main(String[] args) {
+        int[] scores = new int[3];
+        scores[0] = 70;
+        scores[1] = 80;
+        scores[2] = 90;
+
+        System.out.println(scores.length); // 3
+        System.out.println(scores[1]);     // 80
+    }
+}</code></pre>
+<p><code>new int[3]</code>は、<code>int</code>型の要素を3個持つ配列を作ります。有効な添字は<code>0</code>、<code>1</code>、<code>2</code>です。<code>scores[3]</code>はコンパイルできますが、実行すると<code>ArrayIndexOutOfBoundsException</code>が発生します。</p>
+<table class="ref-table study-table responsive-card-table"><thead><tr><th>式</th><th>意味</th><th>結果</th></tr></thead><tbody><tr><td data-label="式"><code>scores.length</code></td><td data-label="意味">要素数</td><td data-label="結果"><code>3</code></td></tr><tr><td data-label="式"><code>scores[0]</code></td><td data-label="意味">先頭要素</td><td data-label="結果"><code>70</code></td></tr><tr><td data-label="式"><code>scores[3]</code></td><td data-label="意味">4番目の要素を要求</td><td data-label="結果">実行時例外</td></tr></tbody></table></section>
+<section class="article-section"><h2>配列変数を代入すると参照がコピーされる</h2>
+<pre class="article-code"><code>int[] first = {10, 20};
+int[] second = first;
+second[0] = 99;
+System.out.println(first[0]); // 99</code></pre>
+<p><code>second = first</code>で配列の中身を複製したわけではありません。2つの変数が同じ配列を参照します。そのため、<code>second[0]</code>の変更は<code>first[0]</code>からも見えます。</p></section>
+<section class="article-section"><h2>Stringの加工メソッドは新しい文字列を返す</h2>
+<pre class="article-code"><code>public class StringBasic {
+    public static void main(String[] args) {
+        String text = "Java";
+        text.toLowerCase();
+        System.out.println(text); // Java
+
+        text = text.toLowerCase();
+        System.out.println(text); // java
+    }
+}</code></pre>
+<p>Stringオブジェクトは不変です。<code>toLowerCase()</code>は元の文字列を変更せず、変換後のStringを戻り値として返します。1回目は戻り値を受け取っていないため、<code>text</code>は<code>"Java"</code>のままです。</p></section>
+<section class="article-section"><h2>lengthの書き方を区別する</h2>
+<table class="ref-table study-table responsive-card-table"><thead><tr><th>対象</th><th>書き方</th><th>理由</th></tr></thead><tbody><tr><td data-label="対象">配列</td><td data-label="書き方"><code>array.length</code></td><td data-label="理由"><code>length</code>はフィールド。</td></tr><tr><td data-label="対象">String</td><td data-label="書き方"><code>text.length()</code></td><td data-label="理由"><code>length()</code>はメソッド。</td></tr></tbody></table>
+<pre class="article-code"><code>String[] words = {"A", "Java"};
+System.out.println(words.length);    // 2
+System.out.println(words[1].length()); // 4</code></pre></section>
+<section class="article-section"><h2>コードを読む順番</h2><ol class="article-list"><li>配列の要素数と有効な添字を書く。</li><li>配列変数同士の代入では、同じ配列を参照していないかを見る。</li><li>Stringメソッドの戻り値を変数へ代入しているかを見る。</li><li>配列の<code>length</code>とStringの<code>length()</code>を区別する。</li><li>範囲外アクセスがあれば、その式で実行が止まる。</li></ol>
+<p class="inline-note article-callout">配列要素の型ごとの初期値は、<a href="../java-silver-array-default/index.html">配列要素の初期値とnull</a>で扱います。</p></section>
+<section class="article-section"><h2>記事末尾の確認</h2><ul class="article-list"><li>要素数3の配列で有効な添字を答えられる。</li><li>配列の参照コピーを中身の複製と混同しない。</li><li>Stringの加工結果を使うには戻り値が必要だと説明できる。</li></ul></section>
+</section></main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="articles.html";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

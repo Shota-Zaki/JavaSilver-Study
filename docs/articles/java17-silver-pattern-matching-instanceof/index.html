@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="instanceofパターン変数のスコープと判定順を整理します。" name="description"/>
+<title>instanceofパターン変数｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="instanceofパターン変数｜Java Practice Lab" property="og:title"/>
+<meta content="instanceofパターン変数のスコープと判定順を整理します。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">instanceofパターン変数</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent"><section class="content-page article-body wide-article upgraded-article">
+<h1>instanceofパターン変数</h1>
+<p class="lead">Java 16で正式導入され、Java 17で利用できます。Java 11では利用できません。instanceofパターンでは、型判定とキャスト後の変数宣言を同時に書けます。パターン変数のスコープが主な判定点です。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<section class="article-section"><h2>基本形</h2>
+<pre class="article-code"><code>Object obj = "Java";
+
+if (obj instanceof String s) {
+    System.out.println(s.length());
+}</code></pre>
+<p><code>obj instanceof String s</code> が <code>true</code> の場合、<code>s</code> は <code>String</code> として使えます。明示的なキャストは不要です。</p></section>
+<section class="article-section"><h2>使える範囲</h2>
+<table class="ref-table study-table responsive-card-table"><thead><tr><th>コード</th><th>可否</th><th>理由</th></tr></thead><tbody>
+<tr><td data-label="コード"><code>if (obj instanceof String s) { s.length(); }</code></td><td data-label="可否">可</td><td data-label="理由">条件がtrueのブロック内では <code>s</code> を使える。</td></tr>
+<tr><td data-label="コード"><code>if (!(obj instanceof String s)) { } else { s.length(); }</code></td><td data-label="可否">可</td><td data-label="理由">else側ではStringであることが確定する。</td></tr>
+<tr><td data-label="コード"><code>if (obj instanceof String s || s.length() &gt; 0)</code></td><td data-label="可否">不可</td><td data-label="理由"><code>||</code> の右側では <code>s</code> が存在するとは限らない。</td></tr>
+<tr><td data-label="コード"><code>if (obj instanceof String s &amp;&amp; s.length() &gt; 0)</code></td><td data-label="可否">可</td><td data-label="理由"><code>&amp;&amp;</code> の右側は左側がtrueのときだけ評価される。</td></tr>
+</tbody></table></section>
+<section class="article-section"><h2>再代入と名前の衝突</h2>
+<p>パターン変数はローカル変数のように扱われます。同じスコープ内に同じ名前の変数がある場合は宣言できません。</p>
+<pre class="article-code"><code>Object obj = "Java";
+String s = "test";
+
+if (obj instanceof String s) { // コンパイルエラー
+    System.out.println(s);
+}</code></pre>
+<p>既に同じ名前のローカル変数が見える範囲にあるため、パターン変数 <code>s</code> を宣言できません。</p></section>
+<section class="article-section"><h2>理解の確認</h2>
+<ul class="article-list"><li><code>&amp;&amp;</code> の右側では、左側がtrueならパターン変数を使える。</li><li><code>||</code> の右側では、左側がfalseの場合もあるためパターン変数を使えない。</li><li>否定条件では、<code>else</code> 側や早期return後の範囲を見ます。</li><li>同じスコープに同名変数があると宣言できない。</li></ul>
+</section>
+</section></main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script defer="" src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+</body>
+</html>

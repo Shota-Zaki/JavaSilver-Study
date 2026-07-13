@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="ターミナルの現在地を確認し、javacとjavaを使って自分で動作を確かめます。" name="description"/>
+<title>Lesson 24 ターミナル・javac・java｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="Lesson 24 ターミナル・javac・java｜Java Practice Lab" property="og:title"/>
+<meta content="ターミナルの現在地を確認し、javacとjavaを使って自分で動作を確かめます。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../../manifest.webmanifest" rel="manifest"/>
+<link href="../../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="Java基礎">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="Java基礎"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">Java基礎</span><span class="site-context-title">ターミナル・javac・java</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../../index.html">トップ</a><a aria-current="page" class="is-active" href="../index.html">基礎</a><a href="../../bronze/index.html">Bronze</a><a href="../../java11-silver/index.html">Silver 11</a><a href="../../java17-silver/index.html">Silver 17</a><a href="../../gold11/index.html">Gold 11</a><a href="../../gold17/index.html">Gold 17</a><a href="../../../articles/index.html">単元別解説</a><a href="../../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main lesson-main" id="mainContent">
+<article class="card lesson-hero">
+<p class="meta">Java基礎 Lesson 24</p>
+<h1>ターミナル・javac・java</h1>
+<p class="lead">ターミナル、シェル、カレントディレクトリ、javac、java、クラスパス、出力先の規則を説明します。</p>
+<div class="box goal-box"><strong>このレッスンのゴール</strong><p>コンパイル時のファイル指定と、実行時のクラス名・クラスパス指定を区別できること。</p></div>
+</article><section class="card lesson-section basic-term-intro">
+<h2>基本用語の定義</h2>
+<div class="term-side-layout">
+<div>
+<p>`javac`はソースファイルを処理し、`java`はJVMを起動してクラスを実行します。両者の引数と検索対象は異なります。</p>
+</div>
+<div class="term-note-grid">
+<div class="term-note basic-term-mini"><strong><code>javac</code>とは</strong>Javaソースファイルをコンパイルするコマンド。対象は基本的に<code>.java</code>ファイル。</div><div class="term-note basic-term-mini"><strong><code>java</code>とは</strong>コンパイル済みクラスやソースファイルモードを実行するコマンド。通常はクラス名を指定する。</div><div class="term-note basic-term-mini"><strong><code>-d</code>とは</strong>コンパイル後の<code>.class</code>の出力先を指定するオプション。</div><div class="term-note basic-term-mini"><strong><code>-cp</code>とは</strong>実行時やコンパイル時にクラスを探す場所を指定するオプション。</div><div class="term-note basic-term-mini"><strong>クラスパスとは</strong>JVMやjavacがクラスを探す検索場所。</div>
+</div>
+</div>
+</section><section class="card lesson-section basic-term-check core-rule-section"><h2>コマンドと検索範囲の定義</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>項目</th><th>定義・規則</th><th>具体例</th></tr></thead><tbody><tr><td data-label="項目"><span>ターミナル</span></td><td data-label="定義・規則"><span>文字でコマンドを入力・表示するための画面やアプリケーション。</span></td><td data-label="具体例"><span>Windows Terminalなど。</span></td></tr><tr><td data-label="項目"><span>シェル</span></td><td data-label="定義・規則"><span>入力されたコマンドを解釈してプログラムを起動するソフトウェア。</span></td><td data-label="具体例"><span>PowerShell、bashなど。</span></td></tr><tr><td data-label="項目"><span>カレントディレクトリ</span></td><td data-label="定義・規則"><span>相対パスの基準になる現在のフォルダ。</span></td><td data-label="具体例"><span><code>pwd</code>や<code>cd</code>で確認・変更します。</span></td></tr><tr><td data-label="項目"><span>javac</span></td><td data-label="定義・規則"><span><code>.java</code>ソースをコンパイルするコマンド。</span></td><td data-label="具体例"><span><code>-d</code>はclassファイルの出力ルートを指定します。</span></td></tr><tr><td data-label="項目"><span>java</span></td><td data-label="定義・規則"><span>JVMを起動してクラスまたはソースファイルを実行するコマンド。</span></td><td data-label="具体例"><span>通常のクラス実行では拡張子を付けません。</span></td></tr><tr><td data-label="項目"><span>クラスパス</span></td><td data-label="定義・規則"><span>JVMやコンパイラがクラスを探すルートの集合。</span></td><td data-label="具体例"><span><code>-cp</code>または<code>--class-path</code>で指定します。</span></td></tr></tbody></table></div></section><section class="card lesson-section"><h2>コンパイルと実行のコマンド対応</h2><p class="code-caption">カレントディレクトリに`Main.java`がある場合</p><pre><code>javac -d out Main.java
+java -cp out Main
+
+# Java 11以降のソースファイルモード
+java Main.java</code></pre><p><span>通常のクラス実行では<code>java</code>へ<code>Main.class</code>を渡さず、クラスパス上のバイナリ名<code>Main</code>を渡します。packageがある場合は完全修飾名を使います。</span></p></section><section class="card lesson-section"><h2>基本の作業手順</h2><ol><li>作業用フォルダを作る。</li><li><code>Main.java</code>を保存する。</li><li>ターミナルでそのフォルダへ移動する。</li><li><code>javac Main.java</code>を実行する。</li><li><code>Main.class</code>ができたか判定する。</li><li><code>java Main</code>を実行する。</li></ol><p class="code-caption">Windows PowerShellの例</p><pre><code>cd C:\java-work
+dir
+javac Main.java
+java Main</code></pre></section><section class="card lesson-section"><h2>よくあるエラーの読み方</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>エラーの雰囲気</th><th>主な原因</th></tr></thead><tbody><tr><td data-label="エラーの雰囲気"><code>javac</code>が認識されない</td><td data-label="主な原因">JDK未インストール、またはPATH設定の問題</td></tr><tr><td data-label="エラーの雰囲気"><code>file not found</code></td><td data-label="主な原因">今いるフォルダとファイルの場所が違う</td></tr><tr><td data-label="エラーの雰囲気"><code>class Main is public, should be declared...</code></td><td data-label="主な原因">publicクラス名とファイル名が不一致</td></tr><tr><td data-label="エラーの雰囲気"><code>Could not find or load main class</code></td><td data-label="主な原因">実行する場所、クラス名、パッケージ指定のどれかが違う</td></tr><tr><td data-label="エラーの雰囲気"><code>main method not found</code></td><td data-label="主な原因">mainメソッドの形が入口として認識されない</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>ファイル名と実行名を分ける</h2><pre><code>javac Main.java  // ファイル名を指定
+java Main        // クラス名を指定。拡張子は付けない</code></pre><div class="lesson-note"><strong>大まかに覚えない</strong><p><code>javac</code>はファイルを対象にする。<code>java</code>はクラスを対象にする。この違いが分かれば、かなりのエラーを自分で切り分けられる。</p></div></section><section class="card lesson-section"><h2>コードで確認する最小例</h2><p>わざと<code>java Main.class</code>を実行し、どんなエラーになるか判定する。その後<code>java Main</code>で直す。エラー文を読む練習が目的。</p></section><section class="card lesson-section"><h2>関連する用語との違い</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>混同しやすいもの</th><th>違い</th><th>見分け方</th></tr></thead><tbody><tr><td data-label="混同しやすいもの"><code>cd</code> / <code>dir</code></td><td data-label="違い"><code>cd</code>は移動、<code>dir</code>は一覧表示。</td><td data-label="見分け方">現在地を変えるのか、見るのか。</td></tr><tr><td data-label="混同しやすいもの"><code>javac</code> / <code>java</code></td><td data-label="違い">前者はコンパイル、後者は実行。</td><td data-label="見分け方">ファイル名かクラス名か。</td></tr><tr><td data-label="混同しやすいもの">エラーメッセージ / 出力</td><td data-label="違い">エラーは失敗の説明。出力はプログラムが表示した結果。</td><td data-label="見分け方">誰が出した文字かを区別する。</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>コマンドエラーを調べる規則</h2><ol><li><span>現在のフォルダと入力ファイルの場所を確認する。</span></li><li><span><code>javac</code>にはソースファイルのパスを指定する。</span></li><li><span><code>-d</code>で生成されたclassファイルのルートを確認する。</span></li><li><span><code>java -cp</code>にはパッケージ階層より上のルートを指定する。</span></li><li><span><code>java</code>には拡張子なしの完全修飾クラス名を指定する。</span></li></ol><p class="code-caption">確認用コード</p><pre><code>cd C:\java-work
+dir
+javac Main.java
+java Main</code></pre><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>見る点</th><th>このコードでの判断</th><th>結論</th></tr></thead><tbody><tr><td data-label="見る点"><code>cd</code></td><td data-label="このコードでの判断">作業フォルダへ移動</td><td data-label="結論">保存場所と一致させる</td></tr><tr><td data-label="見る点"><code>javac</code></td><td data-label="このコードでの判断"><code>Main.java</code>をコンパイル</td><td data-label="結論"><code>Main.class</code>生成</td></tr><tr><td data-label="見る点"><code>java</code></td><td data-label="このコードでの判断"><code>Main</code>クラスを実行</td><td data-label="結論">出力または実行時例外が出る</td></tr></tbody></table></div></section><section class="card lesson-section flow-section"><h2>現在地から順に確認する</h2>
+<p>ターミナル操作を大量に覚える必要はありません。まず現在地を確認し、ソースファイルをコンパイルし、生成されたクラスを実行する手順を固定します。</p>
+<div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>やること</th><th>コマンド例</th><th>見ること</th></tr></thead><tbody><tr><td data-label="やること">現在地を見る</td><td data-label="コマンド例"><code>pwd</code> / <code>cd</code></td><td data-label="見ること">Javaファイルがある場所にいるか</td></tr><tr><td data-label="やること">コンパイル</td><td data-label="コマンド例"><code>javac Main.java</code></td><td data-label="見ること"><code>.class</code>が作られるか</td></tr><tr><td data-label="やること">実行</td><td data-label="コマンド例"><code>java Main</code></td><td data-label="見ること">クラス名を指定しているか</td></tr></tbody></table></div>
+<pre><code>mkdir java-basic-test
+cd java-basic-test
+notepad Main.java
+javac Main.java
+java Main</code></pre>
+<p>うまくいかないときは、まず「今いるフォルダ」「ファイル名」「publicクラス名」「実行時に指定したクラス名」を順番に判定します。<br/>エラーメッセージを読まずにファイルを何度も書き換えるのは非効率です。</p>
+<div class="mistake-callout"><strong>ここで整理する誤解</strong><p>ターミナルで詰まる原因の多くはJava文法ではなく、場所・名前・コマンドの指定ミスです。コードを疑う前に、実行環境の前提を見ると分かりやすいです。</p></div>
+</section><section class="card lesson-section basic-stumble-check"><h2>定義と規則の整理</h2><h3>コマンド実行で最後に詰まる点</h3><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>つまずき</th><th>正しい考え方</th></tr></thead><tbody><tr><td data-label="つまずき"><code>-d</code>をjavaコマンドに付ける</td><td data-label="正しい考え方"><code>-d</code>はjavac側でclassファイルの出力先を指定するオプション。</td></tr><tr><td data-label="つまずき">package付きクラスを単純名で実行する</td><td data-label="正しい考え方">packageがあるなら完全修飾クラス名で実行する。例：<code>java -cp out ex.Main</code>。</td></tr><tr><td data-label="つまずき">クラスパスをソースの場所だと思う</td><td data-label="正しい考え方">実行時のクラスパスはclassファイルを探す場所。ソースファイルの場所ではない。</td></tr></tbody></table></div><h3>確認できれば次へ</h3><ul class="check-list compact-check-list"><li><code>-d</code>と<code>-cp</code>の役割を説明できる</li><li>package付きクラスの実行コマンドを書ける</li><li><code>javac</code>と<code>java</code>の注意点を3つ挙げられる</li></ul><div class="lesson-note"><strong>理解の基準</strong></div></section>
+<section class="card lesson-section code-trio-section">
+<h2>成立するコードと成立しないコード</h2>
+<div class="code-trio-grid">
+<article class="code-trio-card good"><h3>成立する例：カレントディレクトリでコンパイル・実行する</h3><pre><code>cd src
+javac ex/Main.java
+java ex.Main</code></pre></article>
+<article class="code-trio-card bad"><h3>成立しない例：javaコマンドにjavac用オプションを渡している</h3><pre><code>java -d out ex.Main
+java out/ex/Main</code></pre></article>
+<article class="code-trio-card fix"><h3>成立する形：javacは-d、javaは-cpを使う</h3><pre><code>javac -d out src/ex/Main.java
+java -cp out ex.Main</code></pre></article>
+</div>
+<div class="lesson-note"><strong>確認ポイント</strong><p>-dはjavac側、-cpはjava側で使う代表的な指定です。package付きクラスは完全修飾名で起動します。</p></div>
+</section>
+<section class="card lesson-section basic-understanding-quiz quiz-level-section"><h2>定義と規則を確認する</h2><div class="quiz-level-list"><article class="quiz-level-card"><h3>用語の確認</h3><p>-d、-cp、packageの関係を説明できますか。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>-dはclassファイルの出力先、-cpは実行時にclassを探す場所、packageは完全修飾クラス名とディレクトリ構造に関わります。</p></details></article><article class="quiz-level-card"><h3>コードの確認</h3><p>package ex; のMainをoutへコンパイルした後、正しい実行はどれですか。</p><pre><code>java -cp out ex.Main</code></pre><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>正しいです。package付きクラスは完全修飾クラス名で実行します。java -cp out Mainではありません。</p></details></article><article class="quiz-level-card"><h3>仕組みを説明する</h3><p>クラスパスがソースファイルの場所を指定しない理由を説明してください。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>java実行時に必要なのはコンパイル済みのclassを探す場所です。ソースファイルの場所ではなく、class出力先を指定します。</p></details></article></div></section><section class="card lesson-section check-section"><h2>基本ルールのまとめ</h2><ul><li>cdとdirで現在地とファイルを確認できる。</li><li>javacにはソースファイル、javaにはクラス名を指定できる。</li><li>package付きクラスを-dと-cpを使って実行できる。</li></ul></section><section class="card lesson-section"><h2>コードに規則を当てはめる</h2><p>次の状況で最初に見ることは何か。「<code>javac Main.java</code>を実行したら、ファイルが見つからないと言われた」。</p><details class="answer-panel"><summary>説明を見る</summary><p>最初に見るのは、ターミナルの現在地とファイルの保存場所が一致しているか。</p><p><code>dir</code>で<code>Main.java</code>が表示されるか判定する。表示されないなら、<code>cd</code>で正しいフォルダへ移動するか、ファイルの保存場所を直す。</p></details></section><section class="card lesson-nav-bottom"><div><a class="btn ghost" href="23.html">← 前のLesson</a><a class="btn" href="../index.html">Lesson一覧</a></div></section>
+</main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../../site/about.html">このサイトについて</a><a href="../../../site/editorial-policy.html">編集方針</a><a href="../../../site/site-map.html">サイトマップ</a><a href="../../../site/privacy.html">プライバシーポリシー</a><a href="../../../site/terms.html">利用規約</a><a href="../../../site/disclaimer.html">免責事項</a><a href="../../../site/advertising.html">広告・アフィリエイト</a><a href="../../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../../";window.CURRENT_PAGE="java-basic-24.html";</script>
+<script src="../../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

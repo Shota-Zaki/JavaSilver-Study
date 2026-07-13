@@ -1,0 +1,3 @@
+# Authorized digital sellers
+# Add only seller lines issued to this site after approval.
+# Do not publish sample or unapproved publisher IDs.

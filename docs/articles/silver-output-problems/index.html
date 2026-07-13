@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="出力結果を追う方法" name="description"/>
+<title>出力結果を追う方法｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="出力結果を追う方法｜Java Practice Lab" property="og:title"/>
+<meta content="出力結果を追う方法" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">出力結果を表で追う方法</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent"><section class="content-page article-body wide-article upgraded-article">
+<h1>出力結果を表で追う方法</h1>
+<p class="lead">このページは、コンパイルできることを確認した後の追跡に限定します。変数、参照、呼び出し順、例外を別々の欄へ書き、表示された文字だけを最後に結合します。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<section class="article-section"><h2>前提: 出力追跡は最後の段階</h2><p>コンパイル可否が未確定なら、先に<a href="../java-silver-code-reading/index.html">Javaコードを読む順番</a>へ戻ります。出力候補があっても、コンパイルエラーなら何も実行されません。</p></section>
+<section class="article-section"><h2>値の変化は「式が返す値」と「実行後の値」を分ける</h2>
+<pre class="article-code"><code>public class IncrementTrace {
+    public static void main(String[] args) {
+        int i = 1;
+        System.out.print(i++);
+        System.out.print(++i);
+        System.out.print(i);
+    }
+}</code></pre>
+<table class="ref-table study-table responsive-card-table"><thead><tr><th>式</th><th>式が返す値</th><th>実行後のi</th><th>出力</th></tr></thead><tbody>
+<tr><td data-label="式"><code>i++</code></td><td data-label="式が返す値">1</td><td data-label="実行後のi">2</td><td data-label="出力">1</td></tr>
+<tr><td data-label="式"><code>++i</code></td><td data-label="式が返す値">3</td><td data-label="実行後のi">3</td><td data-label="出力">3</td></tr>
+<tr><td data-label="式"><code>i</code></td><td data-label="式が返す値">3</td><td data-label="実行後のi">3</td><td data-label="出力">3</td></tr>
+</tbody></table><p>最終出力は<code>133</code>です。</p></section>
+<section class="article-section"><h2>参照型は、変数とオブジェクトを別に描く</h2>
+<pre class="article-code"><code>class Box { int value; }
+public class ReferenceTrace {
+    public static void main(String[] args) {
+        Box a = new Box();
+        Box b = a;
+        b.value = 5;
+        System.out.println(a.value);
+    }
+}</code></pre>
+<table class="ref-table study-table responsive-card-table"><thead><tr><th>行</th><th>a</th><th>b</th><th>Boxのvalue</th></tr></thead><tbody>
+<tr><td data-label="行"><code>new Box()</code></td><td data-label="a">Box#1を参照</td><td data-label="b">未宣言</td><td data-label="Boxのvalue">0</td></tr>
+<tr><td data-label="行"><code>b = a</code></td><td data-label="a">Box#1を参照</td><td data-label="b">同じBox#1を参照</td><td data-label="Boxのvalue">0</td></tr>
+<tr><td data-label="行"><code>b.value = 5</code></td><td data-label="a">Box#1を参照</td><td data-label="b">Box#1を参照</td><td data-label="Boxのvalue">5</td></tr>
+</tbody></table><p><code>a</code>と<code>b</code>は同じ実体を参照するため、出力は<code>5</code>です。</p></section>
+<section class="article-section"><h2>コンストラクタは呼び出しを深く進めてから本体へ戻る</h2>
+<pre class="article-code"><code>class Parent {
+    Parent() { System.out.print("P"); }
+}
+class Child extends Parent {
+    Child() { this(2); System.out.print("A"); }
+    Child(int n) { System.out.print(n); }
+}
+public class ConstructorTrace {
+    public static void main(String[] args) { new Child(); }
+}</code></pre>
+<ol class="article-list"><li><code>Child()</code>から<code>this(2)</code>で<code>Child(int)</code>へ進む。</li><li><code>Child(int)</code>の先頭には暗黙の<code>super()</code>があり、<code>Parent()</code>が<code>P</code>を出力する。</li><li><code>Child(int)</code>へ戻って<code>2</code>を出力する。</li><li><code>Child()</code>へ戻って<code>A</code>を出力する。</li></ol><p>出力は<code>P2A</code>です。</p></section>
+<section class="article-section"><h2>例外処理は移動先を矢印で記録する</h2>
+<pre class="article-code"><code>public class ExceptionTrace {
+    public static void main(String[] args) {
+        try {
+            System.out.print("A");
+            int n = 10 / 0;
+            System.out.print("B");
+        } catch (ArithmeticException e) {
+            System.out.print("C");
+        } finally {
+            System.out.print("D");
+        }
+    }
+}</code></pre>
+<p><code>10 / 0</code>で<code>ArithmeticException</code>が発生し、try内の<code>B</code>は実行されません。catchの<code>C</code>、finallyの<code>D</code>へ進むため、出力は<code>ACD</code>です。</p></section>
+<section class="article-section"><h2>ループは反復ごとに条件と更新を記録する</h2>
+<table class="ref-table study-table responsive-card-table"><thead><tr><th>反復</th><th>開始時i</th><th>条件</th><th>本体</th><th>更新後i</th></tr></thead><tbody>
+<tr><td data-label="反復">1</td><td data-label="開始時i">0</td><td data-label="条件"><code>0 &lt; 3</code> → true</td><td data-label="本体"><code>0</code>を出力</td><td data-label="更新後i">1</td></tr>
+<tr><td data-label="反復">2</td><td data-label="開始時i">1</td><td data-label="条件"><code>1 &lt; 3</code> → true</td><td data-label="本体"><code>1</code>を出力</td><td data-label="更新後i">2</td></tr>
+<tr><td data-label="反復">3</td><td data-label="開始時i">2</td><td data-label="条件"><code>2 &lt; 3</code> → true</td><td data-label="本体"><code>2</code>を出力</td><td data-label="更新後i">3</td></tr>
+<tr><td data-label="反復">終了</td><td data-label="開始時i">3</td><td data-label="条件"><code>3 &lt; 3</code> → false</td><td data-label="本体">実行しない</td><td data-label="更新後i">-</td></tr>
+</tbody></table></section>
+<section class="article-section"><h2>記事末尾の確認</h2><ul class="article-list"><li>後置演算子の「渡す値」と「残る値」を分けている。</li><li>参照変数の代入をオブジェクトの複製と思っていない。</li><li>コンストラクタ本体へ入る前の<code>this()</code>/<code>super()</code>を追っている。</li><li>例外発生後の同じtryブロックを続行していない。</li></ul></section>
+</section></main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="index.html";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

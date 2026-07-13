@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="変数とオブジェクトの関係を、学習用のスタック・ヒープ図で整理します。" name="description"/>
+<title>Lesson 23 メモリ・スタック・ヒープ｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="Lesson 23 メモリ・スタック・ヒープ｜Java Practice Lab" property="og:title"/>
+<meta content="変数とオブジェクトの関係を、学習用のスタック・ヒープ図で整理します。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../../manifest.webmanifest" rel="manifest"/>
+<link href="../../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="Java基礎">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="Java基礎"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">Java基礎</span><span class="site-context-title">メモリ・スタック・ヒープ</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../../index.html">トップ</a><a aria-current="page" class="is-active" href="../index.html">基礎</a><a href="../../bronze/index.html">Bronze</a><a href="../../java11-silver/index.html">Silver 11</a><a href="../../java17-silver/index.html">Silver 17</a><a href="../../gold11/index.html">Gold 11</a><a href="../../gold17/index.html">Gold 17</a><a href="../../../articles/index.html">単元別解説</a><a href="../../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main lesson-main" id="mainContent">
+<article class="card lesson-hero">
+<p class="meta">Java基礎 Lesson 23</p>
+<h1>メモリ・スタック・ヒープ</h1>
+<p class="lead">JVMのヒープ、Java仮想マシンスタック、スタックフレーム、参照、到達可能性、ガベージコレクションを説明します。</p>
+<div class="box goal-box"><strong>このレッスンのゴール</strong><p>メソッド呼び出しごとのローカル変数と、共有されるオブジェクトの関係を学習用モデルとして説明できること。</p></div>
+</article><section class="card lesson-section basic-term-intro">
+<h2>基本用語の定義</h2>
+<div class="term-side-layout">
+<div>
+<p>スタックとヒープはJVMの実行時データ領域を理解するためのモデルです。特定JVMの物理配置や最適化を断定せず、仕様上の役割を中心に扱います。</p>
+</div>
+<div class="term-note-grid">
+<div class="term-note basic-term-mini"><strong>メモリとは</strong>実行中の値やオブジェクトを保持する領域。</div><div class="term-note basic-term-mini"><strong>スタックとは</strong>学習上は、主にメソッド呼び出しやローカル変数を追うための領域として扱う。</div><div class="term-note basic-term-mini"><strong>ヒープとは</strong>学習上は、主にnewされたオブジェクトを追うための領域として扱う。</div><div class="term-note basic-term-mini"><strong><code>null</code>とは</strong>参照型変数がどのオブジェクトも指していない状態。</div><div class="term-note basic-term-mini"><strong>ガベージコレクションとは</strong>参照されなくなったオブジェクトをJVMが回収する仕組み。</div>
+</div>
+</div>
+</section><section class="card lesson-section basic-term-check core-rule-section"><h2>JVMの実行時データ領域と参照の規則</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>項目</th><th>定義・規則</th><th>具体例</th></tr></thead><tbody><tr><td data-label="項目"><span>ヒープ</span></td><td data-label="定義・規則"><span>すべてのスレッドで共有され、オブジェクトや配列が割り当てられる実行時領域。</span></td><td data-label="具体例"><span>ガベージコレクションの対象です。</span></td></tr><tr><td data-label="項目"><span>Java仮想マシンスタック</span></td><td data-label="定義・規則"><span>スレッドごとに作られ、メソッド呼び出しごとのフレームを保持します。</span></td><td data-label="具体例"><span>別スレッドとは共有しません。</span></td></tr><tr><td data-label="項目"><span>スタックフレーム</span></td><td data-label="定義・規則"><span>1回のメソッド呼び出しに対応するデータ領域。</span></td><td data-label="具体例"><span>ローカル変数や演算途中の値を扱います。</span></td></tr><tr><td data-label="項目"><span>参照</span></td><td data-label="定義・規則"><span>オブジェクトへ到達するための値。</span></td><td data-label="具体例"><span>複数の変数が同じオブジェクトを参照できます。</span></td></tr><tr><td data-label="項目"><span>到達可能性</span></td><td data-label="定義・規則"><span>実行中のルートから参照をたどってオブジェクトへ到達できる状態。</span></td><td data-label="具体例"><span>到達不能になったオブジェクトは回収候補です。</span></td></tr><tr><td data-label="項目"><span>ガベージコレクション</span></td><td data-label="定義・規則"><span>到達不能なオブジェクトが使う領域を自動的に回収する仕組み。</span></td><td data-label="具体例"><span>実行時期は保証されず、<code>System.gc()</code>も要求にすぎません。</span></td></tr></tbody></table></div></section><section class="card lesson-section"><h2>スタックとヒープの役割</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>領域</th><th>何を置くと読むか</th><th>学習上の使い道</th></tr></thead><tbody><tr><td data-label="領域">スタック</td><td data-label="何を置くと読むか">学習上は、メソッド呼び出しやローカル変数など</td><td data-label="学習上の使い道">今どのメソッドを実行中か、ローカル変数が何を持つかを見る</td></tr><tr><td data-label="領域">ヒープ</td><td data-label="何を置くと読むか">学習上は、<code>new</code>されたオブジェクトや配列</td><td data-label="学習上の使い道">参照型変数が何を指しているかを見る</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>参照型の図解を言葉で書く</h2><pre><code>Item a = new Item();
+Item b = a;</code></pre><p>このとき、ヒープ上に<code>Item</code>オブジェクトが1つ作られる。スタック上の<code>a</code>と<code>b</code>は、その同じオブジェクトを指す参照を持つ。</p><pre><code>b = new Item();</code></pre><p>ここで<code>b</code>だけが新しい<code>Item</code>を指すようになる。<code>a</code>が指す先は変わらない。</p></section><section class="card lesson-section"><h2>プリミティブ型は値のコピー</h2><pre><code>int a = 10;
+int b = a;
+b = 20;
+System.out.println(a); // 10</code></pre><p><code>int</code>では値がコピーされる。<code>b</code>を変えても<code>a</code>は変わらない。参照型の「同じオブジェクトを見ている」動きとは別です。</p></section><section class="card lesson-section"><h2>ガベージコレクションの入口</h2><p>どこからも参照されなくなったオブジェクトは、将来的にガベージコレクションの対象になる。いつ回収されるかをプログラマが正確に決めるわけではない。</p><pre><code>Object a = new Object();
+a = null; // さきほどのObjectは参照されなくなる</code></pre></section><section class="card lesson-section"><h2>参照の共有と到達可能性</h2><p class="code-caption">`Main.java`として保存する完全なコード</p><pre><code>class Box {
+    int value;
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Box first = new Box();
+        first.value = 10;
+
+        Box second = first;
+        first = null;
+
+        System.out.println(second.value);
+    }
+}</code></pre><p><span><code>first = null</code>後も<code>second</code>からBoxへ到達できるため、そのオブジェクトは回収候補になりません。出力は10です。</span></p></section><section class="card lesson-section"><h2>関連する用語との違い</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>混同しやすいもの</th><th>違い</th><th>見分け方</th></tr></thead><tbody><tr><td data-label="混同しやすいもの">変数 / オブジェクト</td><td data-label="違い">参照型変数は参照を持つ。オブジェクト本体は別にある。</td><td data-label="見分け方"><code>new</code>されたものと変数を分ける。</td></tr><tr><td data-label="混同しやすいもの">参照あり / 参照なし</td><td data-label="違い">どこかの変数などから到達できるかどうか。</td><td data-label="見分け方">代入や<code>null</code>で参照が外れたか見る。</td></tr><tr><td data-label="混同しやすいもの">GC対象 / 即回収</td><td data-label="違い">対象になっても即座に回収されるとは限らない。</td><td data-label="見分け方">「対象」と「実行タイミング」を分ける。</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>参照とオブジェクトを追う規則</h2><ol><li><span>メソッド呼び出しごとにローカル変数の範囲を分ける。</span></li><li><span><code>new</code>で生成されるオブジェクトを別に記録する。</span></li><li><span>各変数がどのオブジェクトを参照しているか線で結ぶ。</span></li><li><span>代入や<code>null</code>代入で参照の線がどう変わるか追う。</span></li><li><span>どのルートからも到達できないオブジェクトだけを回収候補として考える。</span></li></ol><p class="code-caption">確認用コード</p><pre><code>Object a = new Object();
+Object b = new Object();
+Object c = a;
+a = null;
+b = null;</code></pre><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>見る点</th><th>このコードでの判断</th><th>結論</th></tr></thead><tbody><tr><td data-label="見る点">1つ目のObject</td><td data-label="このコードでの判断"><code>c</code>がまだ参照している</td><td data-label="結論">GC対象ではない</td></tr><tr><td data-label="見る点">2つ目のObject</td><td data-label="このコードでの判断"><code>b</code>がnullになり参照なし</td><td data-label="結論">GC対象</td></tr><tr><td data-label="見る点">結論</td><td data-label="このコードでの判断">対象は2つ目だけ</td><td data-label="結論">ただし回収タイミングは未定</td></tr></tbody></table></div></section><section class="card lesson-section flow-section"><h2>学習用のメモリ図として使う</h2>
+<p>スタックとヒープの説明は、値と参照を追うための学習用モデルです。実際のJVMは最適化を行いますが、基礎ではローカル変数や呼び出し情報と、newされたオブジェクトを分けて考えるとコードを追いやすくなります。</p>
+<div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>領域</th><th>置かれるもののイメージ</th><th>読解での使い方</th></tr></thead><tbody><tr><td data-label="領域">スタック</td><td data-label="置かれるもののイメージ">メソッド呼び出しごとのローカル変数</td><td data-label="読解での使い方">今どのメソッドの変数を見ているかを追う</td></tr><tr><td data-label="領域">ヒープ</td><td data-label="置かれるもののイメージ"><code>new</code>されたオブジェクト</td><td data-label="読解での使い方">複数の変数が同じオブジェクトを参照する可能性を見る</td></tr><tr><td data-label="領域">参照</td><td data-label="置かれるもののイメージ">オブジェクトへのリンク情報</td><td data-label="読解での使い方">代入で参照がコピーされることを見る</td></tr></tbody></table></div>
+<pre><code>int[] a = {1, 2, 3};
+int[] b = a;
+b[0] = 9;
+System.out.println(a[0]); // 9</code></pre>
+<p><code>b = a</code>で配列が複製されたわけではありません。<code>a</code>と<code>b</code>が同じ配列オブジェクトを参照するようになっただけです。だから<code>b[0]</code>を書き換えると、<code>a[0]</code>を見ても同じ変更が見えます。</p>
+<div class="mistake-callout"><strong>ここで整理する誤解</strong><p>参照型の代入を「オブジェクトのコピー」だけでは判断できません。コピーされるのは参照であり、参照先が同じなら変更の影響も共有されます。</p></div>
+</section><section class="card lesson-section basic-stumble-check"><h2>定義と規則の整理</h2><h3>メモリ理解で混ざる点</h3><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>つまずき</th><th>正しい考え方</th></tr></thead><tbody><tr><td data-label="つまずき">変数にオブジェクト本体が入ると思う</td><td data-label="正しい考え方">参照型変数には参照値が入る。学習上は、参照先のオブジェクトをヒープ側として追う。</td></tr><tr><td data-label="つまずき">null代入で即メモリ解放されると思う</td><td data-label="正しい考え方">参照が切れるとGC対象になり得るが、回収タイミングはJVMが決める。</td></tr><tr><td data-label="つまずき">スタックとヒープを暗記語にする</td><td data-label="正しい考え方">ローカル変数や呼び出し情報は主にスタック、オブジェクトは主にヒープで考える。</td></tr></tbody></table></div><h3>確認できれば次へ</h3><ul class="check-list compact-check-list"><li>スタックとヒープの役割をざっくり説明できる</li><li>参照が切れるとは何か説明できる</li><li>ガベージコレクション対象の条件を説明できる</li></ul><div class="lesson-note"><strong>理解の基準</strong></div></section>
+<section class="card lesson-section code-trio-section">
+<h2>成立するコードと成立しないコード</h2>
+<div class="code-trio-grid">
+<article class="code-trio-card good"><h3>成立する例：参照先のある変数を使う</h3><pre><code>Box first = new Box();
+Box second = first;
+second.value = 10;</code></pre></article>
+<article class="code-trio-card bad"><h3>成立しない例：null参照のままフィールドへアクセスしている</h3><pre><code>Box b = null;
+b.value = 10;</code></pre></article>
+<article class="code-trio-card fix"><h3>成立する形：インスタンスを生成してからアクセスする</h3><pre><code>Box b = new Box();
+b.value = 10;</code></pre></article>
+</div>
+<div class="lesson-note"><strong>確認ポイント</strong><p>参照がnullのままフィールドやメソッドへアクセスするとNullPointerExceptionです。</p></div>
+</section>
+<section class="card lesson-section basic-understanding-quiz quiz-level-section"><h2>定義と規則を確認する</h2><div class="quiz-level-list"><article class="quiz-level-card"><h3>用語の確認</h3><p>スタック、ヒープ、ガベージコレクションを説明できますか。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>スタックはメソッド呼び出しやローカル変数の管理、ヒープはnewされたオブジェクトの置き場所、ガベージコレクションは参照されなくなったオブジェクトの回収です。</p></details></article><article class="quiz-level-card"><h3>コードの確認</h3><p>次のあと、最初に作ったObjectは参照されていますか。</p><pre><code>Object a = new Object();
+a = new Object();</code></pre><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>参照されていません。変数aは新しいObjectを参照するため、最初のObjectへの参照は外れます。</p></details></article><article class="quiz-level-card"><h3>仕組みを説明する</h3><p>System.gc() を呼んでも即時回収が保証されない理由を説明してください。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>System.gc() はJVMへガベージコレクションを促すだけです。実際にいつ回収するかはJVMが決めます。</p></details></article></div></section><section class="card lesson-section check-section"><h2>基本ルールのまとめ</h2><ul><li>変数とオブジェクト本体を分けて考えられる。</li><li>参照型変数の代入で参照がコピーされると説明できる。</li><li>GC対象になることと、直ちに回収されることを区別できる。</li></ul></section><section class="card lesson-section"><h2>コードに規則を当てはめる</h2><p>次のコードで、最後にGC対象になる可能性があるのはどちらのオブジェクトか。</p><p class="code-caption">確認用コード</p><pre><code>Object x = new Object(); // 1つ目
+Object y = new Object(); // 2つ目
+x = y;
+y = null;</code></pre><details class="answer-panel"><summary>説明を見る</summary><p>1つ目のオブジェクトがGC対象になる。</p><p><code>x = y</code>で<code>x</code>は2つ目のオブジェクトを参照するようになる。この時点で1つ目への参照がなくなる。<code>y = null</code>後も<code>x</code>が2つ目を参照しているため、2つ目は対象ではない。</p></details></section><section class="card lesson-nav-bottom"><div><a class="btn ghost" href="22.html">← 前のLesson</a><a class="btn" href="../index.html">Lesson一覧</a><a class="btn primary" href="24.html">次のLesson →</a></div></section>
+</main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../../site/about.html">このサイトについて</a><a href="../../../site/editorial-policy.html">編集方針</a><a href="../../../site/site-map.html">サイトマップ</a><a href="../../../site/privacy.html">プライバシーポリシー</a><a href="../../../site/terms.html">利用規約</a><a href="../../../site/disclaimer.html">免責事項</a><a href="../../../site/advertising.html">広告・アフィリエイト</a><a href="../../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../../";window.CURRENT_PAGE="java-basic-23.html";</script>
+<script src="../../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

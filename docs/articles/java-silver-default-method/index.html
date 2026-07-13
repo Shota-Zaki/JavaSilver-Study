@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="interfaceのdefaultメソッド競合、クラス優先、recordとの衝突を整理します。" name="description"/>
+<title>defaultメソッド競合の整理｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="defaultメソッド競合の整理｜Java Practice Lab" property="og:title"/>
+<meta content="interfaceのdefaultメソッド競合、クラス優先、recordとの衝突を整理します。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">defaultメソッド競合の整理</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent"><section class="content-page article-body wide-article upgraded-article">
+<h1>defaultメソッド競合の整理</h1>
+<p class="lead">defaultメソッドは、interfaceに実装を持たせる仕組みです。複数のinterfaceから同じシグネチャのdefaultメソッドを継承した場合は、競合の解決が必要です。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<section class="article-section foundation-bridge-section" id="foundation-inheritance-interface-override">
+<h2>継承・interface・overrideを読むための基礎概念</h2>
+<p>継承のコードは、まず「どちらが土台で、どちらが拡張先か」を固定します。<code>class Child extends Parent</code> なら、<code>Parent</code> がスーパークラス、<code>Child</code> がサブクラスです。<code>extends</code> の左側が新しく作る側、右側が土台になる側です。</p>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>用語</th><th>別名</th><th>意味</th><th>コード上の位置</th></tr></thead>
+<tbody>
+<tr><td data-label="用語">スーパークラス</td><td data-label="別名">親クラス / 基底クラス</td><td data-label="意味">継承元。共通のフィールドやメソッドを持つ側。</td><td data-label="コード上の位置"><code>extends</code> の右側</td></tr>
+<tr><td data-label="用語">サブクラス</td><td data-label="別名">子クラス / 派生クラス</td><td data-label="意味">継承先。スーパークラスを土台に差分を追加する側。</td><td data-label="コード上の位置"><code>extends</code> の左側</td></tr>
+</tbody>
+</table>
+<pre><code>class Parent {
+    String name = "parent";
+    void hello() {
+        System.out.println("hello " + name);
+    }
+}
+
+class Child extends Parent {
+    void childOnly() {
+        System.out.println("child");
+    }
+}</code></pre>
+<p><code>Child</code> のインスタンスは、<code>Parent</code> として扱える部分と、<code>Child</code> で追加した部分をあわせて持ちます。そのため、次のようにサブクラスのインスタンスをスーパークラス型の変数に代入できます。</p>
+<pre><code>Parent p = new Child();
+p.hello();
+// p.childOnly(); // コンパイルエラー: 宣言型ParentにはchildOnlyが見えない</code></pre>
+<div class="article-callout strong"><strong>重要:</strong> 実体が <code>Child</code> でも、変数の宣言型が <code>Parent</code> なら、<code>Parent</code> に見えているメンバしか呼べません。呼べるかどうかは宣言型で判定し、overrideされたインスタンスメソッドの実行内容は実体で判定します。</div>
+<h3>is-a関係で読む</h3>
+<p>継承は「サブクラスはスーパークラスの一種」として読める関係です。<code>Dog extends Animal</code> なら「Dog is an Animal」と読めます。だから <code>Animal a = new Dog();</code> は自然に成立します。</p>
+<pre><code>class Animal { void eat() {} }
+class Dog extends Animal { void bark() {} }
+
+Animal a = new Dog(); // OK: DogはAnimalの一種
+// Dog d = new Animal(); // NG: Animalが必ずDogとは限らない</code></pre>
+<h3>継承されるもの・されないもの・直接アクセスできないもの</h3>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>対象</th><th>サブクラスでの扱い</th><th>注意点</th></tr></thead>
+<tbody>
+<tr><td data-label="対象">public / protected / 条件を満たすdefaultメンバ</td><td data-label="サブクラスでの扱い">利用できる</td><td data-label="注意点">アクセス修飾子とパッケージ条件を判定する。</td></tr>
+<tr><td data-label="対象">privateフィールド・privateメソッド</td><td data-label="サブクラスでの扱い">直接アクセス不可</td><td data-label="注意点">親の内部には存在するが、子から直接触れない。</td></tr>
+<tr><td data-label="対象">コンストラクタ</td><td data-label="サブクラスでの扱い">継承されない</td><td data-label="注意点"><code>super(...)</code> で呼び出すだけ。子のコンストラクタとしては使えない。</td></tr>
+<tr><td data-label="対象">同名フィールド</td><td data-label="サブクラスでの扱い">overrideにならない</td><td data-label="注意点">フィールドは宣言型で解決される。</td></tr>
+<tr><td data-label="対象">インスタンスメソッド</td><td data-label="サブクラスでの扱い">override可能</td><td data-label="注意点">呼び出し可否は宣言型、実行本体は実体で決まる。</td></tr>
+<tr><td data-label="対象">staticメソッド</td><td data-label="サブクラスでの扱い">overrideではなく隠蔽</td><td data-label="注意点">インスタンスメソッドとは解決規則が違う。</td></tr>
+</tbody>
+</table>
+<h3><code>this</code> と <code>super</code> の違い</h3>
+<p><code>this</code> は現在のインスタンス側を指します。<code>super</code> はスーパークラス側のコンストラクタやメンバを明示するために使います。ただし、<code>super(...)</code> と <code>super.member</code> は役割が違います。</p>
+<table class="study-table ref-table responsive-card-table">
+<thead><tr><th>書き方</th><th>意味</th><th>使える場所</th></tr></thead>
+<tbody>
+<tr><td data-label="書き方"><code>this.field</code></td><td data-label="意味">現在のクラス側のフィールドを指す。</td><td data-label="使える場所">インスタンスメソッド・コンストラクタ内</td></tr>
+<tr><td data-label="書き方"><code>this(...)</code></td><td data-label="意味">同じクラスの別コンストラクタを呼ぶ。</td><td data-label="使える場所">コンストラクタ先頭のみ</td></tr>
+<tr><td data-label="書き方"><code>super(...)</code></td><td data-label="意味">スーパークラスのコンストラクタを呼ぶ。</td><td data-label="使える場所">コンストラクタ先頭のみ</td></tr>
+<tr><td data-label="書き方"><code>super.field</code> / <code>super.method()</code></td><td data-label="意味">スーパークラス側のメンバを参照する。</td><td data-label="使える場所">インスタンスメソッド・コンストラクタ内</td></tr>
+</tbody>
+</table>
+<pre><code>class Parent {
+    String name = "parent";
+    Parent(String name) {
+        this.name = name;
+    }
+    void print() {
+        System.out.println(name);
+    }
+}
+
+class Child extends Parent {
+    String name = "child";
+
+    Child() {
+        super("super-name"); // 親コンストラクタ呼び出し。必ず先頭
+    }
+
+    void printBoth() {
+        System.out.println(this.name);  // Child側のname
+        System.out.println(super.name); // Parent側のname
+        super.print();                  // Parent側のメソッド呼び出し
+    }
+}</code></pre>
+<div class="article-callout warn"><strong>混同しやすい点:</strong> <code>super(...)</code> はコンストラクタ呼び出しです。<code>super.name</code> や <code>super.print()</code> はメンバ参照です。同じ <code>super</code> でも、書ける場所と意味を混ぜると誤りになります。</div>
+</section>
+<section class="article-section">
+<h2>この詳細記事で扱う範囲</h2>
+<p>ここでは、defaultメソッドの衝突、クラスメソッド優先、明示呼び出しの構文を分けて扱います。</p>
+<ul>
+<li>interfaceの暗黙修飾子</li>
+<li>defaultメソッドの衝突と優先順位</li>
+<li>interfaceのstatic/privateメソッド</li>
+<li>abstractクラスとinterfaceの実装義務</li>
+<li>sealed / non-sealed / permits</li>
+<li>protectedと別パッケージのアクセス</li>
+<li>フィールド解決とメソッド解決の違い</li>
+</ul>
+</section><section class="article-section">
+<h2>interfaceの暗黙修飾子</h2>
+<p>interfaceに書いたメンバは、クラスと同じ感覚で読むと間違えます。抽象メソッドとフィールドには暗黙の修飾子があります。</p>
+<table class="ref-table study-table responsive-card-table">
+<thead><tr><th>書いた形</th><th>実質的な意味</th><th>注意点</th></tr></thead>
+<tbody>
+<tr><td data-label="書いた形"><code>void test();</code></td><td data-label="実質的な意味"><code>public abstract void test();</code></td><td data-label="注意点">実装側は <code>public</code> 必須</td></tr>
+<tr><td data-label="書いた形"><code>int MAX = 10;</code></td><td data-label="実質的な意味"><code>public static final int MAX = 10;</code></td><td data-label="注意点">代入し直せません</td></tr>
+<tr><td data-label="書いた形"><code>default void test(){}</code></td><td data-label="実質的な意味">実装付きインスタンスメソッド</td><td data-label="注意点"><code>public</code> 扱い。private/protected不可</td></tr>
+<tr><td data-label="書いた形"><code>static void test(){}</code></td><td data-label="実質的な意味">interfaceに属するstaticメソッド</td><td data-label="注意点">実装クラスへ継承されない</td></tr>
+<tr><td data-label="書いた形"><code>private void helper(){}</code></td><td data-label="実質的な意味">interface内部の補助メソッド</td><td data-label="注意点">外部から呼べない。実装クラスからも呼べない</td></tr>
+</tbody>
+</table>
+<pre class="article-code"><code>interface A {
+    int VALUE = 10;
+    void run();
+}
+
+class B implements A {
+    public void run() {          // publicが必要
+        // VALUE = 20;           // NG: static final
+        System.out.println(VALUE);
+    }
+}</code></pre>
+</section><section class="article-section">
+<h2>defaultメソッドの基本</h2>
+<p>defaultメソッドは、interfaceに実装を持たせる仕組みです。実装クラスがoverrideしなければ、そのまま使えます。</p>
+<pre class="article-code"><code>interface A {
+    default void test() {
+        System.out.println("A");
+    }
+}
+
+class B implements A { }
+
+new B().test(); // A</code></pre>
+<p>ただし、defaultメソッドは「interfaceの通常メソッド」ではありません。<code>default</code> を付けずに本体を書くとコンパイルエラーです。</p>
+<pre class="article-code"><code>interface A {
+    // void test() { } // NG: default, static, privateのいずれでもない実装付きメソッド
+}</code></pre>
+</section><section class="article-section">
+<h2>defaultメソッドの衝突</h2>
+<p>複数のinterfaceから同じシグネチャのdefaultメソッドを受け継ぐと、クラス側でどちらを使うか決めなければいけません。</p>
+<pre class="article-code"><code>interface A {
+    default void test() { System.out.println("A"); }
+}
+interface B {
+    default void test() { System.out.println("B"); }
+}
+
+class C implements A, B {
+    public void test() {
+        A.super.test();
+    }
+}</code></pre>
+<p><code>A.super.test()</code> は、interfaceのdefault実装を明示的に呼ぶ構文です。<code>super.test()</code> ではありません。</p>
+</section><section class="article-section">
+<h2>クラスの具象メソッドがdefaultより優先される</h2>
+<p>スーパークラスに具象メソッドがあり、interfaceにも同じシグネチャのdefaultメソッドがある場合、クラス側が優先されます。</p>
+<pre class="article-code"><code>class A {
+    public void test() {
+        System.out.println("class");
+    }
+}
+
+interface B {
+    default void test() {
+        System.out.println("interface");
+    }
+}
+
+class C extends A implements B { }
+
+new C().test(); // class</code></pre>
+<p>優先順位は、ざっくり「クラスが勝つ」です。defaultメソッドは、クラス階層に実装がないときの補助と読むと判断しやすくなります。</p>
+</section><section class="article-section">
+<h2>interfaceのstaticメソッドは継承されない</h2>
+<p>interfaceのstaticメソッドは、そのinterface名で呼び出します。実装クラス名やインスタンスから呼ぶものではありません。</p>
+<pre class="article-code"><code>interface A {
+    static void test() {
+        System.out.println("A");
+    }
+}
+
+class B implements A { }
+
+A.test();
+// B.test();       // NG
+// new B().test(); // NG</code></pre>
+<p>クラスのstaticメソッドとは感覚が違います。interface staticは「継承されない」と覚える必要があります。</p>
+</section><section class="article-section">
+<h2>interfaceのprivateメソッド</h2>
+<p>privateメソッドは、defaultメソッドやstaticメソッド内の共通処理を切り出すためのものです。実装クラスから呼ぶためのものではありません。</p>
+<pre class="article-code"><code>interface A {
+    default void test() {
+        log();
+    }
+
+    private void log() {
+        System.out.println("log");
+    }
+}
+
+class B implements A {
+    void sample() {
+        // log(); // NG: interfaceのprivateメソッドは呼べない
+    }
+}</code></pre>
+</section><section class="article-section">
+<h2>interface同士の継承</h2>
+<p>interfaceはinterfaceを <code>extends</code> で継承します。クラスのように <code>implements</code> は使いません。また、interfaceは複数のinterfaceを継承できます。</p>
+<pre class="article-code"><code>interface A {
+    void a();
+}
+
+interface B {
+    void b();
+}
+
+interface C extends A, B {
+    void c();
+}
+
+class D implements C {
+    public void a() {}
+    public void b() {}
+    public void c() {}
+}</code></pre>
+<p><code>D</code> は <code>C</code> だけでなく、<code>A</code> と <code>B</code> の抽象メソッドも実装する必要があります。</p>
+</section><section class="article-section">
+<h2>抽象クラスはinterfaceメソッドを未実装のままにできる</h2>
+<p>interfaceを実装したクラスが抽象クラスなら、すべての抽象メソッドを実装しなくても構いません。ただし、最終的な具象クラスでは実装が必要です。</p>
+<pre class="article-code"><code>interface A {
+    void test();
+}
+
+abstract class B implements A {
+    // testを実装しなくてもOK。B自身がabstractだから
+}
+
+class C extends B {
+    public void test() {
+        System.out.println("C");
+    }
+}</code></pre>
+</section><section class="article-section">
+<h2>protectedの別パッケージアクセス</h2>
+<p><code>protected</code> は「同じパッケージならアクセス可」「別パッケージでも継承関係があれば条件付きでアクセス可」です。別パッケージのサブクラスから、親型の別インスタンス経由で自由に触れるわけではありません。</p>
+<pre class="article-code"><code>// package p1;
+public class A {
+    protected void test() {}
+}
+
+// package p2;
+class B extends A {
+    void ok() {
+        test();       // OK: 自分自身の継承メンバとして呼ぶ
+        this.test();  // OK
+    }
+
+    void ng(A a) {
+        // a.test();  // NGになり得る: 別パッケージで親型参照経由
+    }
+}</code></pre>
+<p><code>protected</code>は、別パッケージのサブクラスから参照するときに、参照式の型にも制約があります。「サブクラスなら任意のインスタンス経由で参照できる」という理解は誤りです。</p>
+</section><section class="article-section">
+<h2>sealedクラス・sealed interface</h2>
+<p><code>sealed</code> は、継承・実装できるクラスを制限する仕組みです。許可する相手は <code>permits</code> で指定します。</p>
+<pre class="article-code"><code>sealed interface Shape permits Circle, Rectangle { }
+
+final class Circle implements Shape { }
+non-sealed class Rectangle implements Shape { }</code></pre>
+<p>sealedを継承・実装した側は、次のいずれかを明示する必要があります。</p>
+<table class="ref-table study-table responsive-card-table">
+<thead><tr><th>修飾子</th><th>意味</th><th>使う場面</th></tr></thead>
+<tbody>
+<tr><td data-label="修飾子"><code>final</code></td><td data-label="意味">ここで継承を止める</td><td data-label="使う場面">これ以上派生させない</td></tr>
+<tr><td data-label="修飾子"><code>sealed</code></td><td data-label="意味">さらに許可先を制限する</td><td data-label="使う場面">階層を引き続き管理する</td></tr>
+<tr><td data-label="修飾子"><code>non-sealed</code></td><td data-label="意味">制限を解除する</td><td data-label="使う場面">ここから先は通常の継承に戻す</td></tr>
+</tbody>
+</table>
+<details class="article-card"><summary><strong>混同しやすい点：permitsに書かれていないクラス</strong></summary><p>許可されていないクラスがsealedクラスを継承・実装するとコンパイルエラー</p></details>
+</section><section class="article-section">
+<h2>sealedの典型コンパイルエラー</h2>
+<pre class="article-code"><code>sealed class A permits B { }
+
+// class C extends A { } // NG: permitsにCがない
+
+// class B extends A { } // NG: final/sealed/non-sealedのいずれかが必要
+
+final class B extends A { } // OK</code></pre>
+<p>コードでは、許可リストだけでなく、許可されたサブクラス側の修飾子も見ます。片方だけ見ても足りません。</p>
+</section><section class="article-section">
+<h2>メソッドとフィールドの解決を分ける</h2>
+<p>継承/interfaceの詳細コードでは、出力追跡と組み合わされます。特に、同名フィールドとoverrideメソッドの混在に注意します。</p>
+<pre class="article-code"><code>class A {
+    String value = "A";
+    String getValue() { return value; }
+}
+
+class B extends A {
+    String value = "B";
+    String getValue() { return value; }
+}
+
+A a = new B();
+System.out.println(a.value);      // A
+System.out.println(a.getValue()); // B</code></pre>
+<p>フィールドは宣言型、インスタンスメソッドは実体。ここは機械的に分けると判定しやすくなります。</p>
+</section><section class="article-section">
+<h2>defaultメソッドとObjectメソッド</h2>
+<p>interfaceのdefaultメソッドでは、<code>Object</code> の <code>equals</code>、<code>hashCode</code>、<code>toString</code> などをdefault実装として提供することはできません。すべてのクラスがObjectを継承するため、クラス側のルールと衝突するからです。</p>
+<pre class="article-code"><code>interface A {
+    // default String toString() { return "A"; } // NG
+}</code></pre>
+<p>interfaceのstaticメソッドは実装クラスへ継承されないため、interface名を使って呼び出します。</p>
+</section><section class="article-section">
+<h2>総合判断フロー</h2>
+<ol>
+<li><strong>宣言を読む</strong>：class / abstract class / interface / sealed interface を分類する。</li>
+<li><strong>継承関係を読む</strong>：extends / implements / permits を線でつなぐ。</li>
+<li><strong>未実装メソッドを見る</strong>：具象クラスが抽象メソッドを残していないか判定する。</li>
+<li><strong>メソッド修飾子を見る</strong>：public不足、static/instance不一致、戻り値型、例外を判定する。</li>
+<li><strong>衝突を見る</strong>：複数default、クラス具象メソッド、同名フィールドを判定する。</li>
+<li><strong>実行を追う</strong>：コンパイルできる場合だけ、宣言型と実体を分けて出力を追う。</li>
+</ol>
+</section><section class="article-section">
+<h2>ミニ演習</h2>
+<details class="article-card"><summary><strong>確認例1. interfaceの <code>void test();</code> を実装するとき、<code>void test(){}</code> でよい？</strong></summary><p>ダメです。interfaceの抽象メソッドは暗黙にpublicなので、実装側は public void test(){} にします</p></details>
+<details class="article-card"><summary><strong>確認例2. 2つのinterfaceに同じdefaultメソッドがある場合、実装クラスは空でよい？</strong></summary><p>ダメです。どちらを使うか曖昧なので、実装クラス側でoverrideして解決します</p></details>
+<details class="article-card"><summary><strong>確認例3. interfaceのstaticメソッドは実装クラス名で呼べる？</strong></summary><p>呼べません。 InterfaceName.method() の形で呼びます</p></details>
+<details class="article-card"><summary><strong>確認例4. sealedクラスを継承したクラスは、何も修飾子を付けなくてよい？</strong></summary><p>ダメです。 final 、 sealed 、 non-sealed のいずれかが必要</p></details>
+<p class="inline-note article-callout">関連: <a href="../inheritance/index.html">継承・interface・override</a> / <a href="../java-silver-access-modifier/index.html">修飾子・アクセス制御</a> / <a href="../java-silver-cast-instanceof/index.html">ポリモーフィズム・キャスト</a></p>
+</section>
+</section></main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="articles";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script><script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script><script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

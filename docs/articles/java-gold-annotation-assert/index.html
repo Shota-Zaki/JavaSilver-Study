@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Java Gold向けにアノテーション、メタアノテーション、@Override、@Deprecated、@FunctionalInterface、@SuppressWarnings、@SafeVarargs、assertを整理します。" name="description"/>
+<title>アノテーションとassert｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="アノテーションとassert｜Java Practice Lab" property="og:title"/>
+<meta content="Java Gold向けにアノテーション、メタアノテーション、@Override、@Deprecated、@FunctionalInterface、@SuppressWarnings、@SafeVarargs、assertを整理します。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout article-page gold-deep-article java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">アノテーションとassert</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout"><main class="main" id="mainContent">
+<article class="content-page long-article">
+<h1>アノテーションとassert</h1>
+<p class="lead">アノテーションとassertは、コードの通常処理そのものよりも、コンパイラ・実行時・ツールに伝える情報として扱われます。<br/>Java Goldでは、どこに付けられるか、いつ有効か、実行結果に影響するかを分けて読みます。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<section class="article-section"><h2>アノテーションとは</h2>
+<p>アノテーションは、クラス、メソッド、フィールド、引数などに付ける補足情報です。処理を直接書く構文ではなく、コンパイラ、実行環境、ライブラリ、ツールが読むための情報です。</p>
+<pre class="article-code"><code>@Override
+public String toString() {
+    return "sample";
+}</code></pre>
+<div class="article-callout">アノテーションを付けただけで処理が自動実行されるとは限りません。誰がそのアノテーションを読むかで意味が決まります。</div></section>
+<section class="article-section"><h2>標準アノテーション</h2>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>アノテーション</th><th>主な役割</th><th>確認する点</th></tr></thead><tbody>
+<tr><td data-label="アノテーション"><code>@Override</code></td><td data-label="主な役割">オーバーライドしていることをコンパイラに判定させる</td><td data-label="確認する点">成立しなければコンパイルエラー</td></tr>
+<tr><td data-label="アノテーション"><code>@Deprecated</code></td><td data-label="主な役割">非推奨APIであることを示す</td><td data-label="確認する点">使用すると警告。通常はコンパイルエラーではない</td></tr>
+<tr><td data-label="アノテーション"><code>@SuppressWarnings</code></td><td data-label="主な役割">特定の警告を抑制する</td><td data-label="確認する点">エラーは抑制できない</td></tr>
+<tr><td data-label="アノテーション"><code>@FunctionalInterface</code></td><td data-label="主な役割">関数型インタフェースであることを判定させる</td><td data-label="確認する点">抽象メソッドが1つでなければコンパイルエラー</td></tr>
+<tr><td data-label="アノテーション"><code>@SafeVarargs</code></td><td data-label="主な役割">generic varargsの安全性を表明する</td><td data-label="確認する点">付けられる場所に制限がある</td></tr>
+</tbody></table></section>
+<section class="article-section"><h2>@Override</h2>
+<p><code>@Override</code>は、メソッドがスーパークラスまたはインタフェースのメソッドを上書きしていることをコンパイラに判定させます。オーバーライドにならない場合はコンパイルエラーです。</p>
+<pre class="article-code"><code>class A {
+    void test(int n) {}
+}
+class B extends A {
+    @Override
+    void test(String s) {} // コンパイルエラー: 引数が違う
+}</code></pre>
+<p>このコードでは、<code>test(String)</code>は<code>test(int)</code>のオーバーライドではなくオーバーロードです。そのため<code>@Override</code>を付けるとエラーになります。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>原因</th><th>結果</th></tr></thead><tbody>
+<tr><td data-label="原因">引数型が違う</td><td data-label="結果">オーバーライドにならない</td></tr>
+<tr><td data-label="原因">戻り値型が不正</td><td data-label="結果">コンパイルエラー</td></tr>
+<tr><td data-label="原因">アクセス修飾子を狭くする</td><td data-label="結果">コンパイルエラー</td></tr>
+<tr><td data-label="原因">staticメソッドをインスタンスメソッドで上書きする</td><td data-label="結果">コンパイルエラー</td></tr>
+<tr><td data-label="原因">privateメソッドを上書きしようとする</td><td data-label="結果">オーバーライドにならない</td></tr>
+</tbody></table></section>
+<section class="article-section"><h2>@Deprecated</h2>
+<p><code>@Deprecated</code>は、今後の利用を推奨しないAPIであることを示します。使っただけで即コンパイルエラーになるわけではありません。</p>
+<pre class="article-code"><code>class OldApi {
+    @Deprecated
+    void oldMethod() {}
+}
+class Main {
+    public static void main(String[] args) {
+        new OldApi().oldMethod(); // 警告対象
+    }
+}</code></pre>
+<div class="article-callout">警告とエラーを混同すると誤りになります。<code>@Deprecated</code>は通常、コンパイルを止めません。</div></section>
+<section class="article-section"><h2>@SuppressWarnings</h2>
+<p><code>@SuppressWarnings</code>は警告を抑制します。警告を除外するためのものであり、コンパイルエラーを除外するものではありません。</p>
+<pre class="article-code"><code>@SuppressWarnings("unchecked")
+void test(java.util.List list) {
+    java.util.List&lt;String&gt; names = list; // unchecked warning対象
+}</code></pre>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>指定値</th><th>対象の例</th></tr></thead><tbody>
+<tr><td data-label="指定値"><code>unchecked</code></td><td data-label="対象の例">raw typeとジェネリクス混在など</td></tr>
+<tr><td data-label="指定値"><code>deprecation</code></td><td data-label="対象の例">非推奨APIの利用</td></tr>
+<tr><td data-label="指定値"><code>varargs</code></td><td data-label="対象の例">varargs関連警告</td></tr>
+</tbody></table></section>
+<section class="article-section"><h2>@FunctionalInterface</h2>
+<p><code>@FunctionalInterface</code>は、そのインタフェースが関数型インタフェースであることをコンパイラに判定させます。抽象メソッドが1つなら成立します。</p>
+<pre class="article-code"><code>@FunctionalInterface
+interface Runner {
+    void run();
+    default void stop() {}
+    static Runner of(Runner r) { return r; }
+}</code></pre>
+<p>defaultメソッドやstaticメソッドは、抽象メソッド数に数えません。<code>Object</code>由来の<code>toString</code>などを宣言しても、通常は関数型インタフェースの抽象メソッド数には数えません。</p>
+<pre class="article-code"><code>@FunctionalInterface
+interface Bad {
+    void a();
+    void b(); // コンパイルエラー: 抽象メソッドが2つ
+}</code></pre></section>
+<section class="article-section"><h2>@SafeVarargs</h2>
+<p><code>@SafeVarargs</code>は、ジェネリックな可変長引数に対してヒープ汚染につながる操作を行わないことを表明するアノテーションです。どこにでも付けられるわけではありません。</p>
+<pre class="article-code"><code>class Util {
+    @SafeVarargs
+    static &lt;T&gt; void printAll(T... values) {
+        for (T v : values) {
+            System.out.println(v);
+        }
+    }
+}</code></pre>
+<p>代表的に使える場所は、<code>static</code>メソッド、<code>final</code>メソッド、<code>private</code>メソッド、コンストラクタです。オーバーライドされ得る通常のインスタンスメソッドには付けられません。</p>
+<pre class="article-code"><code>class Bad {
+    @SafeVarargs
+    &lt;T&gt; void test(T... values) {} // コンパイルエラー
+}</code></pre></section>
+<section class="article-section"><h2>カスタムアノテーション</h2>
+<p>アノテーション型は<code>@interface</code>で定義します。通常のinterfaceとは書き方と目的が異なります。</p>
+<pre class="article-code"><code>public @interface Info {
+    String value();
+    int version() default 1;
+}</code></pre>
+<p>要素にはメソッドのような形を書きます。<code>default</code>で既定値を指定できます。</p>
+<pre class="article-code"><code>@Info(value = "sample", version = 2)
+class Sample {}</code></pre>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>ルール</th><th>注意</th></tr></thead><tbody>
+<tr><td data-label="ルール">要素に引数を書かない</td><td data-label="注意"><code>String name(String s);</code>のようにはしない</td></tr>
+<tr><td data-label="ルール">戻り値型は制限される</td><td data-label="注意">プリミティブ、String、Class、enum、annotation、それらの配列など</td></tr>
+<tr><td data-label="ルール"><code>default</code>値を指定できる</td><td data-label="注意">指定しない場合、利用側で値が必要</td></tr>
+<tr><td data-label="ルール">要素名が<code>value</code>だけなら省略記法が使える</td><td data-label="注意"><code>@Info("sample")</code>のように書ける</td></tr>
+</tbody></table></section>
+<section class="article-section"><h2>メタアノテーション</h2>
+<p>アノテーションに付けるアノテーションをメタアノテーションと呼びます。どこに付けられるか、いつまで残るかを決めます。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>メタアノテーション</th><th>意味</th><th>確認する点</th></tr></thead><tbody>
+<tr><td data-label="メタアノテーション"><code>@Target</code></td><td data-label="意味">付けられる場所を指定</td><td data-label="確認する点">TYPE、METHOD、FIELD、PARAMETERなど</td></tr>
+<tr><td data-label="メタアノテーション"><code>@Retention</code></td><td data-label="意味">どの段階まで残すか</td><td data-label="確認する点">SOURCE、CLASS、RUNTIME</td></tr>
+<tr><td data-label="メタアノテーション"><code>@Documented</code></td><td data-label="意味">Javadocに含める</td><td data-label="確認する点">実行結果には直接関係しない</td></tr>
+<tr><td data-label="メタアノテーション"><code>@Inherited</code></td><td data-label="意味">クラスへのアノテーションをサブクラスへ継承</td><td data-label="確認する点">メソッドやフィールドには効かない</td></tr>
+<tr><td data-label="メタアノテーション"><code>@Repeatable</code></td><td data-label="意味">同じアノテーションを複数付けられる</td><td data-label="確認する点">コンテナアノテーションが必要</td></tr>
+</tbody></table>
+<pre class="article-code"><code>import java.lang.annotation.*;
+
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@interface TestInfo {
+    String value();
+}</code></pre></section>
+<section class="article-section"><h2>@Target</h2>
+<p><code>@Target</code>は、アノテーションを付けられる場所を制限します。指定と異なる場所に付けるとコンパイルエラーです。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>ElementType</th><th>対象</th></tr></thead><tbody>
+<tr><td data-label="ElementType"><code>TYPE</code></td><td data-label="対象">class、interface、enum、annotation</td></tr>
+<tr><td data-label="ElementType"><code>METHOD</code></td><td data-label="対象">メソッド</td></tr>
+<tr><td data-label="ElementType"><code>FIELD</code></td><td data-label="対象">フィールド</td></tr>
+<tr><td data-label="ElementType"><code>PARAMETER</code></td><td data-label="対象">仮引数</td></tr>
+<tr><td data-label="ElementType"><code>CONSTRUCTOR</code></td><td data-label="対象">コンストラクタ</td></tr>
+<tr><td data-label="ElementType"><code>LOCAL_VARIABLE</code></td><td data-label="対象">ローカル変数</td></tr>
+<tr><td data-label="ElementType"><code>TYPE_USE</code></td><td data-label="対象">型が現れる場所</td></tr>
+<tr><td data-label="ElementType"><code>TYPE_PARAMETER</code></td><td data-label="対象">型パラメータ</td></tr>
+</tbody></table></section>
+<section class="article-section"><h2>@Retention</h2>
+<p><code>@Retention</code>は、アノテーション情報をどの段階まで残すかを決めます。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>RetentionPolicy</th><th>意味</th><th>注意</th></tr></thead><tbody>
+<tr><td data-label="RetentionPolicy"><code>SOURCE</code></td><td data-label="意味">ソースコード上だけ</td><td data-label="注意">コンパイル後には残らない</td></tr>
+<tr><td data-label="RetentionPolicy"><code>CLASS</code></td><td data-label="意味">classファイルまで残る</td><td data-label="注意">実行時リフレクションで読めるとは限らない</td></tr>
+<tr><td data-label="RetentionPolicy"><code>RUNTIME</code></td><td data-label="意味">実行時まで残る</td><td data-label="注意">リフレクションで読めます</td></tr>
+</tbody></table>
+<div class="article-callout">実行時にリフレクションで読みたいなら<code>RUNTIME</code>が必要です。</div></section>
+<section class="article-section"><h2>assertとは</h2>
+<p><code>assert</code>は、開発中の前提条件を見るための構文です。通常の入力チェックや業務例外処理の代わりに使うものではありません。</p>
+<pre class="article-code"><code>int n = -1;
+assert n &gt;= 0;
+System.out.println("end");</code></pre>
+<p>assertはデフォルトでは無効です。無効なら条件式は評価されず、そのまま次へ進みます。有効にすると、条件が<code>false</code>のとき<code>AssertionError</code>が発生します。</p></section>
+<section class="article-section"><h2>assertの有効化</h2>
+<p>assertを有効にするには、実行時に<code>-ea</code>または<code>-enableassertions</code>を指定します。</p>
+<pre class="article-code"><code>java Main
+java -ea Main
+java -enableassertions Main</code></pre>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>実行方法</th><th>assert</th><th>条件がfalseの場合</th></tr></thead><tbody>
+<tr><td data-label="実行方法"><code>java Main</code></td><td data-label="assert">無効</td><td data-label="条件がfalseの場合">何も起きない</td></tr>
+<tr><td data-label="実行方法"><code>java -ea Main</code></td><td data-label="assert">有効</td><td data-label="条件がfalseの場合"><code>AssertionError</code></td></tr>
+</tbody></table>
+<div class="article-callout"><code>javac</code>ではなく<code>java</code>実行時に有効化します。</div></section>
+<section class="article-section"><h2>assertの2つの形</h2>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>形</th><th>意味</th></tr></thead><tbody>
+<tr><td data-label="形"><code>assert 条件式;</code></td><td data-label="意味">条件がfalseなら<code>AssertionError</code></td></tr>
+<tr><td data-label="形"><code>assert 条件式 : 式;</code></td><td data-label="意味">条件がfalseなら式の値をメッセージとして持つ<code>AssertionError</code></td></tr>
+</tbody></table>
+<pre class="article-code"><code>int value = -1;
+assert value &gt;= 0 : "value must be positive";</code></pre>
+<p>コロンの右側の式は、assertが有効で、条件がfalseの場合に評価されます。</p></section>
+<section class="article-section"><h2>assertで避けるべき使い方</h2>
+<p>assertは実行時オプションで無効になり得ます。引数検証や状態更新など、通常動作に必須の処理をassertだけに置いてはいけません。</p>
+<pre class="article-code"><code>int i = 0;
+assert ++i &gt; 0;
+System.out.println(i);</code></pre>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>実行</th><th>出力</th><th>理由</th></tr></thead><tbody>
+<tr><td data-label="実行"><code>java Main</code></td><td data-label="出力"><code>0</code></td><td data-label="理由">assert無効。<code>++i</code>が評価されない</td></tr>
+<tr><td data-label="実行"><code>java -ea Main</code></td><td data-label="出力"><code>1</code></td><td data-label="理由">assert有効。条件式が評価される</td></tr>
+</tbody></table>
+<div class="article-callout">assertの条件式に副作用を入れると、有効・無効で実行結果が変わります。</div></section>
+<section class="article-section"><h2>不可能・誤りパターン</h2>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>コード・考え方</th><th>結果</th><th>理由</th></tr></thead><tbody>
+<tr><td data-label="コード・考え方"><code>@Override</code>を付ければオーバーライドになる</td><td data-label="結果">ならない</td><td data-label="理由">条件を満たさないとコンパイルエラー</td></tr>
+<tr><td data-label="コード・考え方"><code>@SuppressWarnings</code>でコンパイルエラーを除外する</td><td data-label="結果">除外できない</td><td data-label="理由">抑制できるのは警告</td></tr>
+<tr><td data-label="コード・考え方"><code>@FunctionalInterface</code>を付ければラムダ対象になる</td><td data-label="結果">ならない</td><td data-label="理由">抽象メソッドが1つである必要がある</td></tr>
+<tr><td data-label="コード・考え方"><code>@SafeVarargs</code>を通常のインスタンスメソッドへ付ける</td><td data-label="結果">コンパイルエラー</td><td data-label="理由">付けられる場所に制限がある</td></tr>
+<tr><td data-label="コード・考え方"><code>@Retention(CLASS)</code>なら実行時に必ず読めます</td><td data-label="結果">読めません</td><td data-label="理由">実行時に読むなら<code>RUNTIME</code></td></tr>
+<tr><td data-label="コード・考え方"><code>java Main</code>でassertが必ず動く</td><td data-label="結果">動かない</td><td data-label="理由">通常は無効。<code>-ea</code>が必要</td></tr>
+<tr><td data-label="コード・考え方">assertを入力チェックの代わりにする</td><td data-label="結果">代わりにならない</td><td data-label="理由">無効化できるため通常の検証処理に使わない</td></tr>
+</tbody></table></section>
+<section class="article-section"><h2>よくある誤解を整理する</h2>
+<div class="misconception-grid">
+<div class="misconception-card"><strong>アノテーションを付ければ処理が自動実行されるわけではない</strong><p>アノテーションは情報です。コンパイラ、実行環境、ライブラリなどが読んで初めて意味を持ちます。</p></div>
+<div class="misconception-card"><strong>@Overrideはオーバーライドを成立させない</strong><p>成立しているかを検査します。成立しない場合はコンパイルエラーです。</p></div>
+<div class="misconception-card"><strong>@Deprecatedはコンパイルを止めない</strong><p>通常は警告です。エラーとは分けて判定します。</p></div>
+<div class="misconception-card"><strong>@SuppressWarningsはエラーを除外しない</strong><p>警告を抑制するためのものです。型不一致や構文エラーは消せません。</p></div>
+<div class="misconception-card"><strong>assertは通常実行では動かない</strong><p><code>-ea</code>を付けて実行した場合に有効になります。</p></div>
+<div class="misconception-card"><strong>assertに副作用を書くと結果が変わる</strong><p>assertが無効な場合、条件式自体が評価されません。</p></div>
+</div></section>
+<section class="article-section"><h2>コードの読み方</h2>
+<ol>
+<li>まずアノテーションが付けられる場所として正しいかを見る。</li>
+<li><code>@Override</code>、<code>@FunctionalInterface</code>、<code>@SafeVarargs</code>はコンパイル可否に直結しやすい。</li>
+<li><code>@Deprecated</code>と<code>@SuppressWarnings</code>は、警告とエラーを分ける。</li>
+<li><code>@Retention</code>は、実行時に読めるかを判定する。</li>
+<li>assertコードでは、<code>-ea</code>が指定されているかを最初に見る。</li>
+<li>assert条件式に副作用がある場合、有効・無効で出力が変わる。</li>
+</ol></section>
+<section class="article-section related-practice"><h2>関連演習</h2><div class="related-grid">
+<a class="related-card" href="../../courses/gold11/practice/module-final.html"><strong>Module・JDBC関連演習</strong><span>アノテーション、assertを含むAPI判定。</span></a>
+<a class="related-card" href="../../courses/gold11/practice/stream-collectors.html"><strong>関連単元演習</strong><span>StreamとCollectorsの読解。</span></a>
+</div></section>
+</article></main></div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="java-gold-annotation-assert.html";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

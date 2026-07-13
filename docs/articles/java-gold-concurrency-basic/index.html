@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="ExecutorService、Callable、Future、shutdown、並行処理の出力順を具体例で整理する。" name="description"/>
+<title>並行処理・Executor・Future｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="並行処理・Executor・Future｜Java Practice Lab" property="og:title"/>
+<meta content="ExecutorService、Callable、Future、shutdown、並行処理の出力順を具体例で整理する。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">並行処理・Executor・Future</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent">
+<article class="content-page long-article gold-deep-article">
+<h1>並行処理・Executor・Future</h1>
+<p class="lead">並行処理では、タスクをどこへ投入し、いつ結果を取得し、Executorをどう終了させるかを順に確認します。<code>ExecutorService</code>、<code>Callable</code>、<code>Future</code>、<code>shutdown</code>を分けて判定します。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<section class="article-section">
+<h2>最初に押さえる判定順</h2>
+<p>並行処理のコードは、出力結果だけを追うと崩れます。先に以下の順で事実を確定します。</p>
+<ol class="article-list ordered">
+<li>タスクは<code>Runnable</code>か<code>Callable</code>か。</li>
+<li>投入方法は<code>execute</code>か<code>submit</code>か。</li>
+<li>戻り値として<code>Future</code>を受け取っているか。</li>
+<li><code>get()</code>で待機しているか。</li>
+<li><code>shutdown()</code>後に新しいタスクを投入していないか。</li>
+<li>出力順を保証する同期・待機・単一スレッド実行があるか。</li>
+</ol>
+</section>
+<section class="article-section">
+<h2>Threadを直接扱うのではなく、タスクをExecutorに渡す</h2>
+<p><code>Thread</code>は実行単位そのものです。一方、<code>ExecutorService</code>はタスクを受け取り、内部のスレッドで実行する仕組みです。Executorへタスクを投入した後は、戻り値、例外、終了処理を分けて確認します。</p>
+</section>
+<pre class="article-code"><code>import java.util.concurrent.*;
+
+public class Main {
+  public static void main(String[] args) throws Exception {
+    ExecutorService ex = Executors.newSingleThreadExecutor();
+    Future&lt;Integer&gt; f = ex.submit(() -&gt; 10 + 20);
+    System.out.println(f.get()); // 30。get()は結果が出るまで待つ
+    ex.shutdown();
+  }
+}</code></pre>
+<div class="article-callout">コードを読むときは「submitした」だけでは結果を取得していません。結果を使うには<code>Future.get()</code>が必要です。</div>
+<section class="article-section">
+<h2>RunnableとCallableの違い</h2>
+<p><code>Runnable</code>は戻り値なし、<code>Callable&lt;V&gt;</code>は戻り値ありです。さらに、<code>Callable</code>の<code>call()</code>はchecked例外を投げられます。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>項目</th><th>Runnable</th><th>Callable&lt;V&gt;</th></tr></thead><tbody>
+<tr><td data-label="項目">抽象メソッド</td><td data-label="Runnable"><code>void run()</code></td><td data-label="Callable&lt;V&gt;"><code>V call() throws Exception</code></td></tr>
+<tr><td data-label="項目">戻り値</td><td data-label="Runnable">なし</td><td data-label="Callable&lt;V&gt;">あり</td></tr>
+<tr><td data-label="項目">checked例外</td><td data-label="Runnable">そのまま投げられない</td><td data-label="Callable&lt;V&gt;">投げられる</td></tr>
+<tr><td data-label="項目">主な投入先</td><td data-label="Runnable"><code>execute</code> / <code>submit</code></td><td data-label="Callable&lt;V&gt;"><code>submit</code> / <code>invokeAll</code> / <code>invokeAny</code></td></tr>
+</tbody></table>
+</section>
+<pre class="article-code"><code>Runnable r = () -&gt; System.out.println("run");
+Callable&lt;String&gt; c = () -&gt; "call";
+
+// NG: Runnableは値を返せない
+// Runnable bad = () -&gt; "x";
+
+// OK: Callableは値を返せる
+Callable&lt;String&gt; ok = () -&gt; "x";</code></pre>
+<section class="article-section">
+<h2>executeとsubmitの違い</h2>
+<p><code>execute</code>は<code>Runnable</code>だけを受け取り、戻り値はありません。<code>submit</code>は<code>Runnable</code>も<code>Callable</code>も受け取れ、<code>Future</code>を返します。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>操作</th><th>受け取れるタスク</th><th>戻り値</th><th>注意点</th></tr></thead><tbody>
+<tr><td data-label="操作"><code>execute(runnable)</code></td><td data-label="受け取れるタスク"><code>Runnable</code></td><td data-label="戻り値">なし</td><td data-label="注意点">結果取得できない。</td></tr>
+<tr><td data-label="操作"><code>submit(callable)</code></td><td data-label="受け取れるタスク"><code>Callable&lt;V&gt;</code></td><td data-label="戻り値"><code>Future&lt;V&gt;</code></td><td data-label="注意点"><code>get()</code>で戻り値を取得。</td></tr>
+<tr><td data-label="操作"><code>submit(runnable)</code></td><td data-label="受け取れるタスク"><code>Runnable</code></td><td data-label="戻り値"><code>Future&lt;?&gt;</code></td><td data-label="注意点"><code>get()</code>の結果は通常<code>null</code>。</td></tr>
+<tr><td data-label="操作"><code>submit(runnable, result)</code></td><td data-label="受け取れるタスク"><code>Runnable</code></td><td data-label="戻り値"><code>Future&lt;T&gt;</code></td><td data-label="注意点">完了時に指定した<code>result</code>を返す。</td></tr>
+</tbody></table>
+</section>
+<pre class="article-code"><code>ExecutorService ex = Executors.newSingleThreadExecutor();
+
+Future&lt;String&gt; a = ex.submit(() -&gt; "A");
+System.out.println(a.get()); // A
+
+Future&lt;?&gt; b = ex.submit(() -&gt; System.out.print("B"));
+System.out.println(b.get()); // null
+
+Future&lt;String&gt; c = ex.submit(() -&gt; System.out.print("C"), "done");
+System.out.println(c.get()); // done
+
+ex.shutdown();</code></pre>
+<section class="article-section">
+<h2>Futureは「完了するかもしれない結果」</h2>
+<p><code>Future</code>は、タスクの実行結果を後から受け取るための入れ物です。タスクがまだ終わっていなければ、<code>get()</code>は待機します。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>メソッド</th><th>意味</th><th>注意点</th></tr></thead><tbody>
+<tr><td data-label="メソッド"><code>get()</code></td><td data-label="意味">完了まで待って結果を取得</td><td data-label="注意点"><code>InterruptedException</code>、<code>ExecutionException</code>を処理する必要がある。</td></tr>
+<tr><td data-label="メソッド"><code>get(timeout, unit)</code></td><td data-label="意味">時間制限つきで待つ</td><td data-label="注意点">時間切れは<code>TimeoutException</code>。</td></tr>
+<tr><td data-label="メソッド"><code>isDone()</code></td><td data-label="意味">完了済みか判定</td><td data-label="注意点">結果を取り出すわけではない。</td></tr>
+<tr><td data-label="メソッド"><code>cancel(boolean)</code></td><td data-label="意味">キャンセルを試みる</td><td data-label="注意点">必ず停止できる保証はない。</td></tr>
+<tr><td data-label="メソッド"><code>isCancelled()</code></td><td data-label="意味">キャンセル済みか判定</td><td data-label="注意点">正常完了とは別。</td></tr>
+</tbody></table>
+</section>
+<pre class="article-code"><code>ExecutorService ex = Executors.newSingleThreadExecutor();
+Future&lt;String&gt; f = ex.submit(() -&gt; {
+  Thread.sleep(100);
+  return "done";
+});
+
+System.out.println(f.isDone()); // falseの可能性がある
+System.out.println(f.get());    // done。ここで完了まで待つ
+System.out.println(f.isDone()); // true
+ex.shutdown();</code></pre>
+<section class="article-section">
+<h2>getはchecked例外を要求する</h2>
+<p><code>Future.get()</code>はchecked例外を投げる可能性があります。したがって、<code>throws Exception</code>などで逃がすか、<code>try-catch</code>で処理します。</p>
+</section>
+<pre class="article-code"><code>// NG: get() の checked例外を処理していない
+// public static void main(String[] args) {
+//   Future&lt;Integer&gt; f = ex.submit(() -&gt; 1);
+//   System.out.println(f.get());
+// }
+
+// OK
+public static void main(String[] args) throws Exception {
+  ExecutorService ex = Executors.newSingleThreadExecutor();
+  Future&lt;Integer&gt; f = ex.submit(() -&gt; 1);
+  System.out.println(f.get());
+  ex.shutdown();
+}</code></pre>
+<section class="article-section">
+<h2>タスク内の例外はExecutionExceptionに包まれる</h2>
+<p><code>Callable</code>や<code>submit</code>された<code>Runnable</code>の中で例外が発生した場合、<code>Future.get()</code>時に<code>ExecutionException</code>として受け取ります。元の例外は<code>getCause()</code>で判定します。</p>
+</section>
+<pre class="article-code"><code>ExecutorService ex = Executors.newSingleThreadExecutor();
+Future&lt;Integer&gt; f = ex.submit(() -&gt; 10 / 0);
+
+try {
+  System.out.println(f.get());
+} catch (ExecutionException e) {
+  System.out.println(e.getCause().getClass().getSimpleName());
+  // ArithmeticException
+}
+ex.shutdown();</code></pre>
+<div class="article-callout">ここを「ArithmeticExceptionが直接catchされる」と読むと誤りです。<code>get()</code>が投げるのは<code>ExecutionException</code>です。</div>
+<section class="article-section">
+<h2>ExecutorServiceの作り方</h2>
+<p><code>Executors</code>には複数のファクトリメソッドがあります。スレッド数が出力順に影響するかを見るのが判定の軸です。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>生成メソッド</th><th>特徴</th><th>出力順の注意</th></tr></thead><tbody>
+<tr><td data-label="生成メソッド"><code>newSingleThreadExecutor()</code></td><td data-label="特徴">1本のワーカースレッドで順に実行</td><td data-label="出力順の注意">投入順に処理されやすい。ただしmainスレッドの出力とは別。</td></tr>
+<tr><td data-label="生成メソッド"><code>newFixedThreadPool(n)</code></td><td data-label="特徴">固定数のスレッドで実行</td><td data-label="出力順の注意">複数タスクは並行実行され、順序は固定しない。</td></tr>
+<tr><td data-label="生成メソッド"><code>newCachedThreadPool()</code></td><td data-label="特徴">必要に応じてスレッドを再利用・作成</td><td data-label="出力順の注意">順序を決めつけない。</td></tr>
+<tr><td data-label="生成メソッド"><code>newScheduledThreadPool(n)</code></td><td data-label="特徴">遅延実行・周期実行</td><td data-label="出力順の注意">時間指定と終了処理を見る。</td></tr>
+</tbody></table>
+</section>
+<pre class="article-code"><code>ExecutorService ex = Executors.newFixedThreadPool(2);
+ex.submit(() -&gt; System.out.print("A"));
+ex.submit(() -&gt; System.out.print("B"));
+ex.shutdown();
+// ABとは限らない。BAもあり得る。</code></pre>
+<section class="article-section">
+<h2>出力順が保証されるケース・されないケース</h2>
+<p>並行処理の出力を追うコードでは、「たまたまそうなりそう」ではなく、保証があるかを見ます。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>コード上の条件</th><th>出力順</th><th>理由</th></tr></thead><tbody>
+<tr><td data-label="コード上の条件">同一スレッド内の連続文</td><td data-label="出力順">保証される</td><td data-label="理由">同じスレッド内では順に実行される。</td></tr>
+<tr><td data-label="コード上の条件"><code>Future.get()</code>で待ってから次に進む</td><td data-label="出力順">待機前後の順序は保証される</td><td data-label="理由"><code>get()</code>が完了までブロックする。</td></tr>
+<tr><td data-label="コード上の条件"><code>newSingleThreadExecutor()</code>に同順で投入</td><td data-label="出力順">タスク同士は順に実行される</td><td data-label="理由">単一ワーカーがキューを処理する。</td></tr>
+<tr><td data-label="コード上の条件"><code>newFixedThreadPool(2)</code>以上</td><td data-label="出力順">原則保証されない</td><td data-label="理由">複数スレッドで実行される。</td></tr>
+<tr><td data-label="コード上の条件"><code>shutdown()</code>だけ呼ぶ</td><td data-label="出力順">mainが待つ保証はない</td><td data-label="理由">新規受付停止であり、待機処理にならない。</td></tr>
+</tbody></table>
+</section>
+<pre class="article-code"><code>ExecutorService ex = Executors.newFixedThreadPool(2);
+Future&lt;String&gt; f = ex.submit(() -&gt; "A");
+System.out.print(f.get()); // ここでAの完了を待つ
+System.out.print("B");    // 必ずAの後
+ex.shutdown();</code></pre>
+<section class="article-section">
+<h2>shutdownは「新規受付停止」</h2>
+<p><code>shutdown()</code>はExecutorServiceに「もう新しいタスクを受け付けない」と伝える操作です。投入済みタスクを即座に止める処理ではありません。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>メソッド</th><th>意味</th><th>注意</th></tr></thead><tbody>
+<tr><td data-label="メソッド"><code>shutdown()</code></td><td data-label="意味">新規タスク受付を停止</td><td data-label="注意">投入済みタスクは基本的に実行される。</td></tr>
+<tr><td data-label="メソッド"><code>shutdownNow()</code></td><td data-label="意味">実行中タスクの停止を試み、未開始タスクを返す</td><td data-label="注意">即停止は保証されない。</td></tr>
+<tr><td data-label="メソッド"><code>isShutdown()</code></td><td data-label="意味">shutdown開始済みか</td><td data-label="注意">全タスク完了を意味しない。</td></tr>
+<tr><td data-label="メソッド"><code>isTerminated()</code></td><td data-label="意味">全タスク完了済みか</td><td data-label="注意">shutdown後、全タスク終了でtrue。</td></tr>
+<tr><td data-label="メソッド"><code>awaitTermination</code></td><td data-label="意味">終了まで一定時間待つ</td><td data-label="注意">戻り値は完了したかどうかのboolean。</td></tr>
+</tbody></table>
+</section>
+<pre class="article-code"><code>ExecutorService ex = Executors.newSingleThreadExecutor();
+ex.submit(() -&gt; System.out.println("A"));
+ex.shutdown();
+
+// NG: shutdown後に新規タスクを投入
+// ex.submit(() -&gt; System.out.println("B")); // RejectedExecutionException</code></pre>
+<div class="article-callout"><code>shutdown()</code>を忘れると、非デーモンスレッドが残り、プログラムが終了しないことがあります。コードを読むときは終了処理の有無も見る必要があります。</div>
+<section class="article-section">
+<h2>awaitTerminationで終了を待つ</h2>
+<p>Executorの終了を待ちたい場合は、<code>shutdown()</code>の後に<code>awaitTermination</code>を使います。戻り値は、指定時間内に終了したかどうかです。</p>
+</section>
+<pre class="article-code"><code>ExecutorService ex = Executors.newFixedThreadPool(2);
+ex.submit(() -&gt; System.out.println("task"));
+ex.shutdown();
+
+if (!ex.awaitTermination(1, TimeUnit.SECONDS)) {
+  ex.shutdownNow();
+}</code></pre>
+<section class="article-section">
+<h2>cancelは必ず止める命令ではない</h2>
+<p><code>Future.cancel(true)</code>は、タスクをキャンセルしようとする操作です。<code>true</code>は、実行中なら割り込みを試みるという意味です。タスクが割り込みに反応しなければ、即停止しない可能性があります。</p>
+</section>
+<pre class="article-code"><code>Future&lt;?&gt; f = ex.submit(() -&gt; {
+  while (!Thread.currentThread().isInterrupted()) {
+    // 作業
+  }
+});
+
+boolean requested = f.cancel(true);
+System.out.println(requested);</code></pre>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>状態</th><th><code>cancel</code>の結果</th><th>注意</th></tr></thead><tbody>
+<tr><td data-label="状態">まだ開始前</td><td data-label="cancel の結果">キャンセルされやすい</td><td data-label="注意">実行されない。</td></tr>
+<tr><td data-label="状態">実行中</td><td data-label="cancel の結果">割り込みを試みる</td><td data-label="注意">タスクが割り込みを無視すれば止まらない可能性。</td></tr>
+<tr><td data-label="状態">完了済み</td><td data-label="cancel の結果">通常キャンセルできない</td><td data-label="注意"><code>false</code>になる。</td></tr>
+</tbody></table>
+<section class="article-section">
+<h2>invokeAllとinvokeAny</h2>
+<p><code>invokeAll</code>は複数の<code>Callable</code>をまとめて実行し、すべて完了するまで待ちます。<code>invokeAny</code>は、正常に完了したどれか1つの結果を返します。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>メソッド</th><th>意味</th><th>戻り値</th></tr></thead><tbody>
+<tr><td data-label="メソッド"><code>invokeAll(tasks)</code></td><td data-label="意味">全部の完了を待つ</td><td data-label="戻り値"><code>List&lt;Future&lt;T&gt;&gt;</code></td></tr>
+<tr><td data-label="メソッド"><code>invokeAny(tasks)</code></td><td data-label="意味">どれか1つの正常完了を待つ</td><td data-label="戻り値"><code>T</code></td></tr>
+</tbody></table>
+</section>
+<pre class="article-code"><code>ExecutorService ex = Executors.newFixedThreadPool(2);
+List&lt;Callable&lt;String&gt;&gt; tasks = List.of(
+  () -&gt; "A",
+  () -&gt; "B"
+);
+
+List&lt;Future&lt;String&gt;&gt; results = ex.invokeAll(tasks);
+for (Future&lt;String&gt; f : results) {
+  System.out.println(f.get());
+}
+
+String one = ex.invokeAny(tasks);
+System.out.println(one); // AかBのどちらか
+ex.shutdown();</code></pre>
+<section class="article-section">
+<h2>ScheduledExecutorService</h2>
+<p><code>ScheduledExecutorService</code>は、遅延実行や周期実行を扱います。戻り値は<code>ScheduledFuture</code>です。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>メソッド</th><th>意味</th><th>注意</th></tr></thead><tbody>
+<tr><td data-label="メソッド"><code>schedule</code></td><td data-label="意味">指定時間後に1回実行</td><td data-label="注意">戻り値を<code>get()</code>すると完了まで待つ。</td></tr>
+<tr><td data-label="メソッド"><code>scheduleAtFixedRate</code></td><td data-label="意味">一定周期で実行開始</td><td data-label="注意">前回の開始時刻基準。</td></tr>
+<tr><td data-label="メソッド"><code>scheduleWithFixedDelay</code></td><td data-label="意味">前回終了後、一定遅延して次回実行</td><td data-label="注意">終了時刻基準。</td></tr>
+</tbody></table>
+</section>
+<pre class="article-code"><code>ScheduledExecutorService ex = Executors.newSingleThreadScheduledExecutor();
+ScheduledFuture&lt;String&gt; f = ex.schedule(() -&gt; "done", 1, TimeUnit.SECONDS);
+System.out.println(f.get());
+ex.shutdown();</code></pre>
+<section class="article-section">
+<h2>共有データの更新は競合する</h2>
+<p>複数スレッドで同じ変数を更新すると、競合が起こります。<code>count++</code>は1命令ではなく、読み取り、加算、書き戻しに分かれます。</p>
+</section>
+<pre class="article-code"><code>class Counter {
+  private int count;
+  void increment() { count++; } // 複数スレッドでは安全ではない
+  int get() { return count; }
+}</code></pre>
+<p>対策として、<code>synchronized</code>、<code>Lock</code>、<code>AtomicInteger</code>、並行コレクションなどを使います。</p>
+<pre class="article-code"><code>AtomicInteger count = new AtomicInteger();
+count.incrementAndGet();</code></pre>
+<section class="article-section">
+<h2>synchronizedの基本</h2>
+<p><code>synchronized</code>は、同じモニタを使うスレッドを同時に入れないようにします。インスタンスメソッドの<code>synchronized</code>は、そのインスタンスをロックします。staticメソッドの場合はClassオブジェクトをロックします。</p>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>書き方</th><th>ロック対象</th><th>注意</th></tr></thead><tbody>
+<tr><td data-label="書き方"><code>synchronized void m()</code></td><td data-label="ロック対象">そのインスタンス</td><td data-label="注意">別インスタンスなら別ロック。</td></tr>
+<tr><td data-label="書き方"><code>static synchronized void m()</code></td><td data-label="ロック対象">Classオブジェクト</td><td data-label="注意">全インスタンスで共有される。</td></tr>
+<tr><td data-label="書き方"><code>synchronized(obj) { ... }</code></td><td data-label="ロック対象"><code>obj</code></td><td data-label="注意"><code>obj</code>が<code>null</code>なら<code>NullPointerException</code>。</td></tr>
+</tbody></table>
+</section>
+<pre class="article-code"><code>class SafeCounter {
+  private int count;
+  synchronized void increment() { count++; }
+  synchronized int get() { return count; }
+}</code></pre>
+<section class="article-section">
+<h2>ConcurrentHashMapと同期化コレクション</h2>
+<p>通常の<code>HashMap</code>や<code>ArrayList</code>は、複数スレッドからの同時更新に安全ではありません。並行処理用には<code>ConcurrentHashMap</code>などを使います。</p>
+</section>
+<pre class="article-code"><code>ConcurrentMap&lt;String, Integer&gt; map = new ConcurrentHashMap&lt;&gt;();
+map.put("A", 1);
+map.compute("A", (k, v) -&gt; v == null ? 1 : v + 1);</code></pre>
+<p><code>Collections.synchronizedList(new ArrayList&lt;&gt;())</code>のような同期化ラッパーもあります。ただし、個々の操作は同期化されますが、反復中は返されたListを明示的に同期して保護する必要があります。</p>
+<section class="article-section">
+<h2>parallelStreamは順序と副作用に注意</h2>
+<p><code>parallelStream()</code>は、内部で並列実行される可能性があります。出力順は原則として固定されず、同期なしの共有変数更新には競合が発生します。</p>
+</section>
+<pre class="article-code"><code>List.of("A", "B", "C").parallelStream()
+    .forEach(System.out::print); // ABCとは限らない
+
+List.of("A", "B", "C").parallelStream()
+    .forEachOrdered(System.out::print); // encounter orderを維持</code></pre>
+<section class="article-section">
+<h2>不可能・誤りパターン</h2>
+<table class="study-table ref-table responsive-card-table"><thead><tr><th>コード・判断</th><th>結果</th><th>理由</th></tr></thead><tbody>
+<tr><td data-label="コード・判断"><code>Callable&lt;String&gt; c = () -&gt; { System.out.println("x"); };</code></td><td data-label="結果">コンパイルエラー</td><td data-label="理由"><code>Callable&lt;String&gt;</code>は<code>String</code>を返す必要がある。</td></tr>
+<tr><td data-label="コード・判断"><code>Runnable r = () -&gt; "x";</code></td><td data-label="結果">コンパイルエラー</td><td data-label="理由"><code>Runnable.run()</code>は<code>void</code>。</td></tr>
+<tr><td data-label="コード・判断"><code>Future&lt;String&gt; f = ex.submit(() -&gt; System.out.println("x"));</code></td><td data-label="結果">コンパイルエラー</td><td data-label="理由"><code>submit(Runnable)</code>の戻り値は<code>Future&lt;?&gt;</code>。</td></tr>
+<tr><td data-label="コード・判断"><code>f.get()</code>の例外処理なし</td><td data-label="結果">コンパイルエラー</td><td data-label="理由">checked例外の処理が必要。</td></tr>
+<tr><td data-label="コード・判断"><code>shutdown()</code>後に<code>submit</code></td><td data-label="結果">実行時例外</td><td data-label="理由"><code>RejectedExecutionException</code>。</td></tr>
+<tr><td data-label="コード・判断"><code>shutdown()</code>を「全タスク完了まで待つ」と読む</td><td data-label="結果">誤り</td><td data-label="理由">新規受付停止であり、待機ではない。</td></tr>
+<tr><td data-label="コード・判断">複数スレッドの<code>println</code>順を固定する</td><td data-label="結果">誤り</td><td data-label="理由">同期・待機・単一スレッドなどの保証がない。</td></tr>
+<tr><td data-label="コード・判断"><code>synchronized(null) {}</code></td><td data-label="結果">実行時例外</td><td data-label="理由"><code>NullPointerException</code>。</td></tr>
+</tbody></table>
+</section>
+<section class="article-section">
+<h2>読解ミニ演習</h2>
+<h3>演習1: RunnableをsubmitしたFuture</h3>
+<pre class="article-code"><code>ExecutorService ex = Executors.newSingleThreadExecutor();
+Future&lt;?&gt; f = ex.submit(() -&gt; System.out.print("A"));
+System.out.print(f.get());
+ex.shutdown();</code></pre>
+<p><strong>判定:</strong> <code>Anull</code>と表示されます。<code>Runnable</code>は値を返さないため、<code>Future.get()</code>の結果は<code>null</code>です。</p>
+<h3>演習2: getがある場合の順序</h3>
+<pre class="article-code"><code>ExecutorService ex = Executors.newFixedThreadPool(2);
+Future&lt;String&gt; f = ex.submit(() -&gt; "A");
+System.out.print(f.get());
+System.out.print("B");
+ex.shutdown();</code></pre>
+<p><strong>判定:</strong> <code>AB</code>です。<code>get()</code>が<code>A</code>の完了を待つため、<code>B</code>はその後です。</p>
+<h3>演習3: getがない場合の順序</h3>
+<pre class="article-code"><code>ExecutorService ex = Executors.newFixedThreadPool(2);
+ex.submit(() -&gt; System.out.print("A"));
+System.out.print("B");
+ex.shutdown();</code></pre>
+<p><strong>判定:</strong> <code>AB</code>または<code>BA</code>など、順序を固定できません。mainスレッドとワーカースレッドの実行順が保証されていないためです。</p>
+<h3>演習4: submit後の例外</h3>
+<pre class="article-code"><code>ExecutorService ex = Executors.newSingleThreadExecutor();
+Future&lt;Integer&gt; f = ex.submit(() -&gt; 10 / 0);
+try {
+  System.out.println(f.get());
+} catch (ExecutionException e) {
+  System.out.println("E");
+}
+ex.shutdown();</code></pre>
+<p><strong>判定:</strong> <code>E</code>です。タスク内の<code>ArithmeticException</code>は、<code>get()</code>時に<code>ExecutionException</code>として受け取ります。</p>
+</section>
+<section class="article-section">
+<h2>判断基準</h2>
+<ul class="article-list">
+<li><code>submit</code>しただけで結果が表示されるとは限らない。</li>
+<li><code>Future.get()</code>は待機し、checked例外の処理が必要。</li>
+<li><code>Runnable</code>の<code>Future.get()</code>は通常<code>null</code>。</li>
+<li>タスク内の例外は<code>ExecutionException</code>に包まれる。</li>
+<li><code>shutdown()</code>は待機ではなく新規受付停止。</li>
+<li>複数スレッドの出力順は、保証がない限り固定しない。</li>
+<li>共有データを複数スレッドから更新する場合は、<code>synchronized</code>や<code>Atomic</code>などで競合を制御する。</li>
+</ul>
+</section>
+<div class="article-callout">並行処理の出力順は、コードの記述順だけでは決まりません。APIが保証する順序と、実行タイミングに依存する順序を分けて確認します。</div>
+</article>
+<section class="article-section quality-audit-section" id="semantic-audit-concurrency"><h2>確認ポイントの補足</h2>
+<p>並行処理では、コードの記述順とタスクの実行完了順を同じものとして扱えません。<code>Future#get</code>がある場合は待機しますが、複数タスクの出力順そのものを保証するとは限りません。</p>
+<table class="study-table responsive-card-table"><thead><tr><th>見る対象</th><th>判定</th><th>誤読例</th></tr></thead><tbody>
+<tr><td data-label="見る対象"><code>execute</code></td><td data-label="判定">戻り値なし。例外はタスク側で発生する</td><td data-label="誤読例"><code>Future</code>が返ると読む</td></tr>
+<tr><td data-label="見る対象"><code>submit(Callable)</code></td><td data-label="判定"><code>Future</code>が返り、結果は<code>get</code>で取得する</td><td data-label="誤読例"><code>get</code>前に結果があると読む</td></tr>
+<tr><td data-label="見る対象"><code>Future#get</code></td><td data-label="判定">完了まで待機し、タスク例外は<code>ExecutionException</code>に包まれる</td><td data-label="誤読例">元の例外型で直接catchできると読む</td></tr>
+<tr><td data-label="見る対象"><code>shutdown</code></td><td data-label="判定">新規受付を止める。投入済みタスクを即停止する処理ではない</td><td data-label="誤読例">呼び出した瞬間に全タスクが止まると読む</td></tr>
+</tbody></table>
+<p>複数スレッドで実行する場合は、<code>newSingleThreadExecutor</code>ならタスク同士の順序が読みやすくなります。一方、<code>newFixedThreadPool(2)</code>や<code>parallelStream</code>では、順序保証の根拠がなければ特定の出力順を正解にしません。</p>
+</section><section class="study-route-panel related-practice-panel">
+<h2>関連演習</h2>
+<p>関連する演習です。</p>
+<div class="study-route-grid"><a class="study-route-card" href="../../courses/gold11/practice/io-concurrency.html"><span class="route-badge">演習</span><strong>IO・並行処理</strong><span>Executor、Future、同期</span></a><a class="study-route-card" href="../../courses/gold11/practice/concurrency-nio.html"><span class="route-badge">演習</span><strong>並行処理・NIO</strong><span>NIOと並行処理</span></a><a class="study-route-card" href="../../courses/gold11/practice/nio-concurrency-module-extra.html"><span class="route-badge">演習</span><strong>NIO・並行処理・モジュール関連演習</strong><span>複合読解</span></a></div>
+</section>
+<section class="panel article-quality-note"><h2>理解の確認</h2><ul><li>先にコンパイル可否を判定します。</li><li>次に実行時例外の有無を判定します。</li><li>最後に出力・戻り値・参照先を追います。</li></ul></section></main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="articles.html";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

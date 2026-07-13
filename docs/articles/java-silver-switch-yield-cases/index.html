@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Java学習サイト" name="description"/>
+<title>switch文・switch式・yieldの見分け方</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="switch文・switch式・yieldの見分け方" property="og:title"/>
+<meta content="Java学習サイト" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">switch式・yieldの境界ケース</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent"><section class="content-page article-body wide-article upgraded-article">
+<h1>switch式・yieldの境界ケース</h1>
+<p class="lead">switch式はJava 14で正式導入され、Java 17では利用できます。Java 11では利用できません。ここでは文と式、アロー形式とコロン形式、網羅性を分けて判断します。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<section class="article-section"><h2>代入の右辺にあるswitchは値を返す必要がある</h2>
+<pre class="article-code"><code>int level = 2;
+String label = switch (level) {
+    case 1 -&gt; "LOW";
+    case 2 -&gt; "MID";
+    default -&gt; "HIGH";
+};</code></pre>
+<p><code>switch</code>全体が<code>String</code>値を返し、代入文の末尾にセミコロンがあります。アロー形式ではフォールスルーしません。</p></section>
+<section class="article-section"><h2>ブロックから値を返すときにyieldを使う</h2>
+<pre class="article-code"><code>String label = switch (level) {
+    case 1 -&gt; "LOW";
+    case 2 -&gt; {
+        String text = "MID";
+        yield text;
+    }
+    default -&gt; "HIGH";
+};</code></pre>
+<p><code>yield</code>はswitch式の値を確定し、そのswitch式から抜けます。<code>return</code>はメソッド全体から戻るため、用途が異なります。</p></section>
+<section class="article-section"><h2>コロン形式のswitch式でもbreakではなくyield</h2>
+<pre class="article-code"><code>String label = switch (level) {
+    case 1:
+        yield "LOW";
+    case 2:
+        yield "MID";
+    default:
+        yield "HIGH";
+};</code></pre>
+<p>従来のswitch文で使う<code>break</code>は値を返しません。switch式のコロン形式で結果を返す経路には<code>yield</code>が必要です。</p></section>
+<section class="article-section"><h2>switch式は網羅的でなければならない</h2>
+<pre class="article-code"><code>// コンパイルエラー: levelが1以外のときの値がない
+// String label = switch (level) {
+//     case 1 -&gt; "LOW";
+// };</code></pre>
+<p>通常は<code>default</code>を用意します。enum型など、コンパイラが全候補を網羅していると判断できる場合は、全定数を列挙して<code>default</code>を省略できることがあります。</p></section>
+<section class="article-section"><h2>nullはJava 17の通常のswitchで特別に一致しない</h2>
+<pre class="article-code"><code>String value = null;
+// 次の式を実行するとNullPointerException
+// int length = switch (value) {
+//     case "A" -&gt; 1;
+//     default -&gt; 0;
+// };</code></pre>
+<p>Java 17の通常のswitch式では、セレクタが<code>null</code>ならcase照合の前に<code>NullPointerException</code>です。後のJavaで追加されたswitchパターンの規則をJava 17のコードへ持ち込まないでください。</p></section>
+<section class="article-section"><h2>判定表</h2>
+<table class="ref-table study-table responsive-card-table"><thead><tr><th>形</th><th>Java 11</th><th>Java 17</th><th>値を返す方法</th></tr></thead><tbody>
+<tr><td data-label="形">従来のswitch文</td><td data-label="Java 11">利用可</td><td data-label="Java 17">利用可</td><td data-label="値は返さない。必要に応じて&lt;code&gt;break&lt;/code&gt;。&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td data-label=" 形"="">アロー形式のswitch式</td><td data-label="Java 11">利用不可</td><td data-label="Java 17">利用可</td><td data-label="右辺の式、ブロック、または&lt;code&gt;throw&lt;/code&gt;。&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td data-label=" 形"="">ブロック形式</td><td data-label="Java 11">利用不可</td><td data-label="Java 17">利用可</td><td article-section"="" data-label="&lt;code&gt;yield&lt;/code&gt;で値を返す。&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;&lt;/section&gt;
+&lt;section class="><h2>記事末尾の確認</h2><ul class="article-list"><li>switch文とswitch式を代入の有無だけでなく、値と網羅性で区別できる。</li><li><code>break</code>、<code>yield</code>、<code>return</code>の作用範囲を説明できる。</li><li>Java 11のコードへswitch式を持ち込まない。</li><li>Java 17の通常switchで<code>null</code>をcaseとして扱わない。</li></ul></td></tr></tbody></table></section>
+</section></main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="index.html";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

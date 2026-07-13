@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="recordのアクセサ、コンストラクタ、制約、equalsを整理します。" name="description"/>
+<title>recordを丁寧に整理｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="recordを丁寧に整理｜Java Practice Lab" property="og:title"/>
+<meta content="recordのアクセサ、コンストラクタ、制約、equalsを整理します。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">recordを丁寧に整理</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent"><section class="content-page article-body wide-article upgraded-article">
+<h1>recordを丁寧に整理</h1>
+<p class="lead">recordはJava 16で正式導入され、Java 17で利用できるクラス宣言です。値のまとまりを短く表します。アクセサ名、コンストラクタ、継承制限、同値比較を分けて判定します。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<section class="article-section"><h2>recordの基本</h2>
+<p><code>record</code> を使うと、コンポーネントに対応するフィールド、アクセサ、正規コンストラクタ、<code>equals</code>、<code>hashCode</code>、<code>toString</code> が自動的に用意されます。</p>
+<pre class="article-code"><code>record Item(String name, int price) {}
+
+public class Main {
+    public static void main(String[] args) {
+        Item item = new Item("apple", 100);
+        System.out.println(item.name());
+        System.out.println(item.price());
+        System.out.println(item);
+    }
+}</code></pre>
+<table class="ref-table study-table responsive-card-table"><thead><tr><th>項目</th><th>判定</th><th>読み方</th></tr></thead><tbody>
+<tr><td data-label="項目">アクセサ</td><td data-label="判定"><code>name()</code> / <code>price()</code></td><td data-label="読み方"><code>getName()</code> や <code>item.name</code> ではない。</td></tr>
+<tr><td data-label="項目">フィールド</td><td data-label="判定">暗黙的に <code>private final</code></td><td data-label="読み方">外部から直接読めない。再代入もできない。</td></tr>
+<tr><td data-label="項目">toString</td><td data-label="判定"><code>Item[name=apple, price=100]</code> 形式</td><td data-label="読み方">クラス名、コンポーネント名、値が出る。</td></tr>
+<tr><td data-label="項目">equals</td><td data-label="判定">コンポーネント値で比較</td><td data-label="読み方"><code>==</code> は参照比較のまま。</td></tr>
+</tbody></table></section>
+<section class="article-section"><h2>コンストラクタの判定</h2>
+<p>recordには、全コンポーネントと同じ並びの引数を受け取る正規コンストラクタがあります。値の検証や加工が必要な場合は、正規コンストラクタまたはコンパクトコンストラクタを書けます。</p>
+<pre class="article-code"><code>record User(String name) {
+    public User {
+        if (name == null) {
+            throw new IllegalArgumentException();
+        }
+        name = name.trim();
+    }
+}</code></pre>
+<table class="ref-table study-table responsive-card-table"><thead><tr><th>書き方</th><th>可否</th><th>理由</th></tr></thead><tbody>
+<tr><td data-label="書き方"><code>public User { ... }</code></td><td data-label="可否">可</td><td data-label="理由">コンパクトコンストラクタ。引数リストを書かない。</td></tr>
+<tr><td data-label="書き方"><code>public User(String name) { ... }</code></td><td data-label="可否">可</td><td data-label="理由">正規コンストラクタ。全コンポーネントに対応する。</td></tr>
+<tr><td data-label="書き方"><code>public void User { ... }</code></td><td data-label="可否">不可</td><td data-label="理由">戻り値型を書くとコンストラクタではなくメソッド扱いになる。</td></tr>
+</tbody></table></section>
+<section class="article-section"><h2>recordの制約</h2>
+<p>recordは通常クラスに近い形でメソッドを追加できます。ただし、状態の持ち方と継承には制限があります。</p>
+<pre class="article-code"><code>interface Printable {
+    void print();
+}
+
+record User(String name) implements Printable {
+    static int count = 0;
+
+    public void print() {
+        System.out.println(name);
+    }
+
+    // int age; // コンパイルエラー: 追加のインスタンスフィールド
+}
+
+// class Child extends User {} // コンパイルエラー: recordは継承不可</code></pre>
+<p>追加のインスタンスフィールドを持てない点がよく使うです。recordの状態はコンポーネントで表します。</p></section>
+<section class="article-section"><h2>理解の確認</h2>
+<ul class="article-list"><li>アクセサは <code>getXxx()</code> ではなくコンポーネント名と同じメソッド。</li><li><code>==</code> は参照比較、<code>equals</code> はコンポーネント値の比較。</li><li>追加のインスタンスフィールド、別クラスの <code>extends</code>、recordの継承は不可。</li><li>コンパクトコンストラクタは引数リストを書かない。</li></ul>
+</section>
+</section></main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script defer="" src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+</body>
+</html>

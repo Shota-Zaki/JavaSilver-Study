@@ -1,0 +1,1776 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Java 17の継承について、メソッド、フィールド、アクセス修飾子、abstract、interfaceのdefault、コンストラクタ、例外、初期化順序、コンパイルエラーまで体系的に解説します。" name="description"/>
+<title>Java 17における継承の完全整理｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="Java 17における継承の完全整理" property="og:title"/>
+<meta content="Java 17の継承について、メソッド、フィールド、アクセス修飾子、abstract、interfaceのdefault、コンストラクタ、例外、初期化順序、コンパイルエラーまで体系的に解説します。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Java 17における継承の完全整理", "description": "Java 17の継承について、メソッド、フィールド、アクセス修飾子、abstract、interfaceのdefault、コンストラクタ、例外、初期化順序、コンパイルエラーまで体系的に解説します。", "inLanguage": "ja"}</script>
+</head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">Java 17における継承の完全整理</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout"><main class="main" id="mainContent">
+<section class="content-page article-body wide-article upgraded-article">
+<h1>Java 17における継承の完全整理</h1>
+<p class="lead">ここでは、通常クラス、抽象クラス、インターフェースを中心に、Java 17の継承規則を整理します。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<p>まず、最重要の区別は次の3つです。</p>
+<table class="study-table ref-table responsive-card-table">
+<thead>
+<tr>
+<th>対象</th>
+<th>子クラス側の動作</th>
+<th>呼び出しの決まり</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="対象">インスタンスメソッド</td>
+<td data-label="子クラス側の動作">オーバーライド</td>
+<td data-label="呼び出しの決まり">実行時のオブジェクト型</td>
+</tr>
+<tr>
+<td data-label="対象"><code>static</code>メソッド</td>
+<td data-label="子クラス側の動作">隠蔽（ハイディング）</td>
+<td data-label="呼び出しの決まり">参照変数・型名のコンパイル時型</td>
+</tr>
+<tr>
+<td data-label="対象">フィールド</td>
+<td data-label="子クラス側の動作">隠蔽</td>
+<td data-label="呼び出しの決まり">参照変数のコンパイル時型</td>
+</tr>
+<tr>
+<td data-label="対象">コンストラクタ</td>
+<td data-label="子クラス側の動作">継承されない</td>
+<td data-label="呼び出しの決まり"><code>this(...)</code>または<code>super(...)</code>で呼ぶ</td>
+</tr>
+</tbody>
+</table>
+<section class="article-section" id="section-01-1"><h2>1. 継承とは</h2>
+<p>クラスの継承は<code>extends</code>で表します。</p>
+<pre class="article-code"><code class="language-java">class Parent {
+}
+
+class Child extends Parent {
+}
+</code></pre>
+<p><code>Child</code>は<code>Parent</code>のサブクラス、<code>Parent</code>は<code>Child</code>のスーパークラスです。</p>
+<pre class="article-code"><code class="language-java">Child child = new Child();
+Parent parent = child;
+</code></pre>
+<p>子クラスのオブジェクトは、親クラス型の変数に代入できます。これをアップキャストと呼びます。</p>
+<p>Javaのクラスは、直接継承できるクラスが1つだけです。</p>
+<pre class="article-code"><code class="language-java">class Child extends Parent1, Parent2 { // コンパイルエラー
+}
+</code></pre>
+<p>一方、インターフェースは複数実装できます。</p>
+<pre class="article-code"><code class="language-java">class Child extends Parent implements Runnable, AutoCloseable {
+    @Override
+    public void run() {
+    }
+
+    @Override
+    public void close() {
+    }
+}
+</code></pre>
+<p>明示的に<code>extends</code>を書かなかった通常クラスは、直接または間接的に<code>java.lang.Object</code>を継承します。<code>final</code>クラスは継承できません。Java 17では、<code>sealed</code>クラスによって直接継承できるクラスを限定することもできます。</p>
+</section><section class="article-section" id="section-02-2"><h2>2. 継承されるもの・されないもの</h2>
+<h3>基本表</h3>
+<table class="study-table ref-table responsive-card-table">
+<thead>
+<tr>
+<th>要素</th>
+<th style="text-align:right">継承されるか</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="要素"><code>public</code>フィールド</td>
+<td data-label="継承されるか" style="text-align:right">継承される</td>
+</tr>
+<tr>
+<td data-label="要素"><code>protected</code>フィールド</td>
+<td data-label="継承されるか" style="text-align:right">継承される</td>
+</tr>
+<tr>
+<td data-label="要素">同一パッケージのパッケージアクセスフィールド</td>
+<td data-label="継承されるか" style="text-align:right">継承される</td>
+</tr>
+<tr>
+<td data-label="要素"><code>private</code>フィールド</td>
+<td data-label="継承されるか" style="text-align:right">継承されない</td>
+</tr>
+<tr>
+<td data-label="要素"><code>public</code>インスタンスメソッド</td>
+<td data-label="継承されるか" style="text-align:right">継承される</td>
+</tr>
+<tr>
+<td data-label="要素"><code>protected</code>インスタンスメソッド</td>
+<td data-label="継承されるか" style="text-align:right">継承される</td>
+</tr>
+<tr>
+<td data-label="要素">同一パッケージのパッケージアクセスメソッド</td>
+<td data-label="継承されるか" style="text-align:right">継承される</td>
+</tr>
+<tr>
+<td data-label="要素"><code>private</code>メソッド</td>
+<td data-label="継承されるか" style="text-align:right">継承されない</td>
+</tr>
+<tr>
+<td data-label="要素">利用可能な<code>static</code>メソッド</td>
+<td data-label="継承されるか" style="text-align:right">クラスからは継承され得るが、オーバーライドではない</td>
+</tr>
+<tr>
+<td data-label="要素">コンストラクタ</td>
+<td data-label="継承されるか" style="text-align:right">継承されない</td>
+</tr>
+<tr>
+<td data-label="要素">インスタンス初期化子</td>
+<td data-label="継承されるか" style="text-align:right">継承されない</td>
+</tr>
+<tr>
+<td data-label="要素"><code>static</code>初期化子</td>
+<td data-label="継承されるか" style="text-align:right">継承されない</td>
+</tr>
+</tbody>
+</table>
+<p>コンストラクタ、インスタンス初期化子、<code>static</code>初期化子はクラスの「メンバー」ではないため、継承されません。<code>private</code>メンバーも子クラスには継承されません。</p>
+</section><section class="article-section" id="section-03-3"><h2>3. アクセス修飾子と継承</h2>
+<h3>アクセス範囲</h3>
+<table class="study-table ref-table responsive-card-table">
+<thead>
+<tr>
+<th>修飾子</th>
+<th style="text-align:right">同じクラス</th>
+<th style="text-align:right">同じパッケージ</th>
+<th style="text-align:right">別パッケージの子クラス</th>
+<th style="text-align:right">その他</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="修飾子"><code>public</code></td>
+<td data-label="同じクラス" style="text-align:right">○</td>
+<td data-label="同じパッケージ" style="text-align:right">○</td>
+<td data-label="別パッケージの子クラス" style="text-align:right">○</td>
+<td data-label="その他" style="text-align:right">○</td>
+</tr>
+<tr>
+<td data-label="修飾子"><code>protected</code></td>
+<td data-label="同じクラス" style="text-align:right">○</td>
+<td data-label="同じパッケージ" style="text-align:right">○</td>
+<td data-label="別パッケージの子クラス" style="text-align:right">条件付き○</td>
+<td data-label="その他" style="text-align:right">×</td>
+</tr>
+<tr>
+<td data-label="修飾子">修飾子なし</td>
+<td data-label="同じクラス" style="text-align:right">○</td>
+<td data-label="同じパッケージ" style="text-align:right">○</td>
+<td data-label="別パッケージの子クラス" style="text-align:right">×</td>
+<td data-label="その他" style="text-align:right">×</td>
+</tr>
+<tr>
+<td data-label="修飾子"><code>private</code></td>
+<td data-label="同じクラス" style="text-align:right">○</td>
+<td data-label="同じパッケージ" style="text-align:right">×</td>
+<td data-label="別パッケージの子クラス" style="text-align:right">×</td>
+<td data-label="その他" style="text-align:right">×</td>
+</tr>
+</tbody>
+</table>
+<h3>3.1 <code>private</code></h3>
+<pre class="article-code"><code class="language-java">class Parent {
+    private int value = 10;
+
+    private void print() {
+        System.out.println(value);
+    }
+}
+
+class Child extends Parent {
+    void test() {
+        // System.out.println(value); // コンパイルエラー
+        // print();                   // コンパイルエラー
+    }
+}
+</code></pre>
+<p><code>private</code>メンバーは親クラスのオブジェクト内部には存在しますが、子クラスへ継承されず、子クラスから直接アクセスできません。</p>
+<p>必要なら親クラスがアクセサメソッドを提供します。</p>
+<pre class="article-code"><code class="language-java">class Parent {
+    private int value = 10;
+
+    protected int getValue() {
+        return value;
+    }
+}
+</code></pre>
+<h3>3.2 修飾子なしのパッケージアクセス</h3>
+<pre class="article-code"><code class="language-java">package p1;
+
+public class Parent {
+    int value = 10;
+}
+</code></pre>
+<pre class="article-code"><code class="language-java">package p2;
+
+import p1.Parent;
+
+public class Child extends Parent {
+    void test() {
+        // System.out.println(value); // コンパイルエラー
+    }
+}
+</code></pre>
+<p>別パッケージの子クラスには、パッケージアクセスのメンバーは継承されません。</p>
+<h3>3.3 <code>protected</code>の注意点</h3>
+<p><code>protected</code>は単純な「子クラスならどのオブジェクト経由でもアクセスできる」という意味ではありません。</p>
+<p>別パッケージの子クラスでは、基本的に次の対象を通してアクセスします。</p>
+<ul class="article-list">
+<li><code>this</code></li>
+<li><code>super</code></li>
+<li>自分のクラス型</li>
+<li>自分のサブクラス型</li>
+</ul>
+<p>次はコンパイルエラーです。</p>
+<pre class="article-code"><code class="language-java">package p1;
+
+public class Parent {
+    protected int value = 10;
+}
+</code></pre>
+<pre class="article-code"><code class="language-java">package p2;
+
+import p1.Parent;
+
+public class Child extends Parent {
+    void test(Parent parent, Child child) {
+        System.out.println(this.value);  // OK
+        System.out.println(super.value); // OK
+        System.out.println(child.value); // OK
+
+        // System.out.println(parent.value);
+        // コンパイルエラー
+    }
+}
+</code></pre>
+<p><code>parent</code>の実体が<code>Child</code>だったとしても、式のコンパイル時型が<code>Parent</code>なのでアクセスできません。</p>
+<p>別パッケージでの<code>protected</code>アクセスは、アクセスを行う子クラス型またはそのサブクラス型を通す必要があります。<code>protected</code>コンストラクタも、別パッケージから通常の<code>new Parent()</code>で自由に呼べるわけではありません。</p>
+</section><section class="article-section" id="section-04-4"><h2>4. インスタンスメソッドのオーバーライド</h2>
+<h3>4.1 基本形</h3>
+<pre class="article-code"><code class="language-java">class Parent {
+    void execute() {
+        System.out.println("Parent");
+    }
+}
+
+class Child extends Parent {
+    @Override
+    void execute() {
+        System.out.println("Child");
+    }
+}
+</code></pre>
+<pre class="article-code"><code class="language-java">Parent obj = new Child();
+obj.execute();
+</code></pre>
+<p>出力は次のとおりです。</p>
+<pre class="article-code"><code class="language-text">Child
+</code></pre>
+<p>参照変数の型は<code>Parent</code>ですが、実体は<code>Child</code>です。インスタンスメソッドは実行時のオブジェクト型によって選ばれます。</p>
+<p>これを動的ディスパッチ、動的メソッド探索、ポリモーフィズムなどと呼びます。</p>
+<h3>4.2 オーバーライドの成立条件</h3>
+<p>一般的には次を満たす必要があります。</p>
+<ol>
+<li>親子関係がある</li>
+<li>インスタンスメソッドである</li>
+<li>メソッド名が同じ</li>
+<li>引数の型と並びが同じ</li>
+<li>戻り値型が同じか、共変戻り値型である</li>
+<li>アクセス範囲を狭くしていない</li>
+<li>チェック例外を広げていない</li>
+<li>親メソッドが<code>final</code>ではない</li>
+<li>親メソッドが<code>private</code>ではない</li>
+</ol>
+<p>実際の仕様では、ジェネリクスとの互換性のため「同じシグネチャ」だけでなく「サブシグネチャ」という規則が使われます。</p>
+<h3>4.3 <code>@Override</code>を付ける</h3>
+<pre class="article-code"><code class="language-java">class Parent {
+    void execute(int value) {
+    }
+}
+
+class Child extends Parent {
+    @Override
+    void execute(Integer value) { // コンパイルエラー
+    }
+}
+</code></pre>
+<p><code>int</code>と<code>Integer</code>は別の引数型です。自動ボクシングがあっても、オーバーライド判定では同じシグネチャになりません。</p>
+<p><code>@Override</code>を付けなければ、単なるオーバーロードとしてコンパイルできる場合があります。</p>
+<pre class="article-code"><code class="language-java">class Child extends Parent {
+    void execute(Integer value) {
+    }
+}
+</code></pre>
+<p>そのため、オーバーライドするつもりのメソッドには原則として<code>@Override</code>を付けます。条件を満たさなければコンパイラが検出します。</p>
+</section><section class="article-section" id="section-05-5"><h2>5. 戻り値型のルール</h2>
+<h3>5.1 プリミティブ型</h3>
+<p>プリミティブ型の戻り値は同一でなければなりません。</p>
+<pre class="article-code"><code class="language-java">class Parent {
+    int getValue() {
+        return 10;
+    }
+}
+
+class Child extends Parent {
+    @Override
+    long getValue() { // コンパイルエラー
+        return 10L;
+    }
+}
+</code></pre>
+<p><code>int</code>から<code>long</code>へ暗黙変換できても、オーバーライドの戻り値型としては認められません。</p>
+<h3>5.2 参照型と共変戻り値</h3>
+<p>参照型では、親メソッドの戻り値型のサブタイプを返せます。</p>
+<pre class="article-code"><code class="language-java">class Animal {
+}
+
+class Dog extends Animal {
+}
+
+class Parent {
+    Animal create() {
+        return new Animal();
+    }
+}
+
+class Child extends Parent {
+    @Override
+    Dog create() {
+        return new Dog();
+    }
+}
+</code></pre>
+<p><code>Dog</code>は<code>Animal</code>のサブタイプなので有効です。</p>
+<p>逆はできません。</p>
+<pre class="article-code"><code class="language-java">class Parent {
+    Dog create() {
+        return new Dog();
+    }
+}
+
+class Child extends Parent {
+    @Override
+    Animal create() { // コンパイルエラー
+        return new Animal();
+    }
+}
+</code></pre>
+</section><section class="article-section" id="section-06-6"><h2>6. アクセス修飾子を狭くできない</h2>
+<p>オーバーライド後のメソッドは、親メソッドと同じか、より広いアクセス範囲にします。</p>
+<pre class="article-code"><code class="language-java">class Parent {
+    protected void execute() {
+    }
+}
+
+class Child extends Parent {
+    @Override
+    public void execute() { // OK
+    }
+}
+</code></pre>
+<p>逆はコンパイルエラーです。</p>
+<pre class="article-code"><code class="language-java">class Parent {
+    public void execute() {
+    }
+}
+
+class Child extends Parent {
+    @Override
+    protected void execute() { // コンパイルエラー
+    }
+}
+</code></pre>
+<p>概ね次の方向だけが許可されます。</p>
+<pre class="article-code"><code class="language-text">パッケージアクセス → protected → public
+</code></pre>
+<p>ただし、パッケージアクセスメソッドはパッケージ境界によってそもそも継承・オーバーライド関係が成立しないことがあります。</p>
+</section><section class="article-section" id="section-07-7"><h2>7. 例外とオーバーライド</h2>
+<h3>7.1 チェック例外</h3>
+<p>子クラスのメソッドは、親メソッドより広いチェック例外を宣言できません。</p>
+<pre class="article-code"><code class="language-java">import java.io.IOException;
+
+class Parent {
+    void execute() throws IOException {
+    }
+}
+
+class Child extends Parent {
+    @Override
+    void execute() throws Exception { // コンパイルエラー
+    }
+}
+</code></pre>
+<p><code>Exception</code>は<code>IOException</code>より広いためです。</p>
+<p>次は有効です。</p>
+<pre class="article-code"><code class="language-java">import java.io.FileNotFoundException;
+import java.io.IOException;
+
+class Parent {
+    void execute() throws IOException {
+    }
+}
+
+class Child extends Parent {
+    @Override
+    void execute() throws FileNotFoundException {
+    }
+}
+</code></pre>
+<p>次も有効です。</p>
+<pre class="article-code"><code class="language-java">class Child extends Parent {
+    @Override
+    void execute() {
+    }
+}
+</code></pre>
+<p>整理すると、子メソッドは次を選べます。</p>
+<table class="study-table ref-table responsive-card-table">
+<thead>
+<tr>
+<th>子メソッドの<code>throws</code></th>
+<th style="text-align:right">可否</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="子メソッドの throws">親と同じチェック例外</td>
+<td data-label="可否" style="text-align:right">○</td>
+</tr>
+<tr>
+<td data-label="子メソッドの throws">親例外のサブクラス</td>
+<td data-label="可否" style="text-align:right">○</td>
+</tr>
+<tr>
+<td data-label="子メソッドの throws">チェック例外なし</td>
+<td data-label="可否" style="text-align:right">○</td>
+</tr>
+<tr>
+<td data-label="子メソッドの throws">親例外のスーパークラス</td>
+<td data-label="可否" style="text-align:right">×</td>
+</tr>
+<tr>
+<td data-label="子メソッドの throws">親にない別系統のチェック例外</td>
+<td data-label="可否" style="text-align:right">×</td>
+</tr>
+</tbody>
+</table>
+<h3>7.2 非チェック例外</h3>
+<p><code>RuntimeException</code>系は、親メソッドに宣言がなくても子メソッドで宣言できます。</p>
+<pre class="article-code"><code class="language-java">class Parent {
+    void execute() {
+    }
+}
+
+class Child extends Parent {
+    @Override
+    void execute() throws IllegalStateException {
+    }
+}
+</code></pre>
+<p>非チェック例外はコンパイル時の例外検査の対象外です。オーバーライド側は、親メソッドが許可していないチェック例外を追加できません。</p>
+</section><section class="article-section" id="section-08-8-private"><h2>8. <code>private</code>メソッドはオーバーライドされない</h2>
+<pre class="article-code"><code class="language-java">class Parent {
+    private void execute() {
+        System.out.println("Parent");
+    }
+}
+
+class Child extends Parent {
+    void execute() {
+        System.out.println("Child");
+    }
+}
+</code></pre>
+<p>この2つはオーバーライド関係ではありません。</p>
+<p><code>Parent.execute()</code>は<code>Child</code>に継承されていないため、<code>Child.execute()</code>は新しい別メソッドです。</p>
+<pre class="article-code"><code class="language-java">class Child extends Parent {
+    @Override
+    void execute() { // コンパイルエラー
+    }
+}
+</code></pre>
+<p><code>@Override</code>を付けると、オーバーライド対象が存在しないためコンパイルエラーになります。</p>
+</section><section class="article-section" id="section-09-9-final"><h2>9. <code>final</code>メソッド</h2>
+<pre class="article-code"><code class="language-java">class Parent {
+    final void execute() {
+    }
+}
+
+class Child extends Parent {
+    @Override
+    void execute() { // コンパイルエラー
+    }
+}
+</code></pre>
+<p><code>final</code>メソッドはオーバーライドできません。</p>
+<p><code>private</code>メソッドも実質的にはオーバーライドされませんが、理由が異なります。</p>
+<ul class="article-list">
+<li><code>final</code>：継承されるが、変更禁止</li>
+<li><code>private</code>：そもそも継承されない</li>
+</ul>
+<p><code>final</code>メソッドをオーバーライドまたは隠蔽しようとすると、コンパイルエラーになります。</p>
+</section><section class="article-section" id="section-10-10-static"><h2>10. <code>static</code>メソッドはオーバーライドされない</h2>
+<p><code>static</code>メソッドはオブジェクトではなくクラスに所属します。</p>
+<pre class="article-code"><code class="language-java">class Parent {
+    static void print() {
+        System.out.println("Parent");
+    }
+}
+
+class Child extends Parent {
+    static void print() {
+        System.out.println("Child");
+    }
+}
+</code></pre>
+<p>これはオーバーライドではなく、隠蔽です。</p>
+<pre class="article-code"><code class="language-java">Parent obj = new Child();
+obj.print();
+</code></pre>
+<p>出力は次です。</p>
+<pre class="article-code"><code class="language-text">Parent
+</code></pre>
+<p>参照変数<code>obj</code>のコンパイル時型が<code>Parent</code>だからです。</p>
+<pre class="article-code"><code class="language-java">Child child = new Child();
+child.print();
+</code></pre>
+<p>こちらは次を出力します。</p>
+<pre class="article-code"><code class="language-text">Child
+</code></pre>
+<p>推奨される書き方は型名を使う方法です。</p>
+<pre class="article-code"><code class="language-java">Parent.print();
+Child.print();
+</code></pre>
+<p>インスタンス経由でも呼べますが、動的ディスパッチされるように見えて誤解を招きます。</p>
+<h3><code>static</code>と非<code>static</code>は相互に置き換えられない</h3>
+<pre class="article-code"><code class="language-java">class Parent {
+    static void execute() {
+    }
+}
+
+class Child extends Parent {
+    void execute() { // コンパイルエラー
+    }
+}
+</code></pre>
+<p>逆もコンパイルエラーです。</p>
+<pre class="article-code"><code class="language-java">class Parent {
+    void execute() {
+    }
+}
+
+class Child extends Parent {
+    static void execute() { // コンパイルエラー
+    }
+}
+</code></pre>
+<p>同じシグネチャの継承関係にあるメソッドを、片方だけ<code>static</code>にすることはできません。</p>
+<p><code>static</code>メソッドは参照変数の型によって選ばれ、インスタンスメソッドは実行時のオブジェクト型によって選ばれます。</p>
+</section><section class="article-section" id="section-11-11"><h2>11. フィールドはオーバーライドされない</h2>
+<pre class="article-code"><code class="language-java">class Parent {
+    int value = 10;
+}
+
+class Child extends Parent {
+    int value = 20;
+}
+</code></pre>
+<p>これはフィールドのオーバーライドではなく隠蔽です。</p>
+<pre class="article-code"><code class="language-java">Parent p = new Child();
+Child c = new Child();
+
+System.out.println(p.value);
+System.out.println(c.value);
+</code></pre>
+<p>出力は次です。</p>
+<pre class="article-code"><code class="language-text">10
+20
+</code></pre>
+<p>フィールドは参照変数のコンパイル時型で決まります。</p>
+<pre class="article-code"><code class="language-java">class Child extends Parent {
+    int value = 20;
+
+    void print() {
+        System.out.println(value);       // 20
+        System.out.println(this.value);  // 20
+        System.out.println(super.value); // 10
+    }
+}
+</code></pre>
+<p>親子の同名フィールドは別々に存在します。</p>
+<h3>フィールドの型が違っていてもよい</h3>
+<pre class="article-code"><code class="language-java">class Parent {
+    int value = 10;
+}
+
+class Child extends Parent {
+    String value = "Java";
+}
+</code></pre>
+<p>これは合法です。</p>
+<pre class="article-code"><code class="language-java">Child child = new Child();
+
+System.out.println(child.value);            // Java
+System.out.println(((Parent) child).value); // 10
+</code></pre>
+<p>同名フィールドを別の型で宣言できるため、設計上は極力避けるべきです。</p>
+</section><section class="article-section" id="section-12-12"><h2>12. オーバーロードとオーバーライド</h2>
+<h3>オーバーロード</h3>
+<p>同じ名前で引数リストが異なるメソッドです。</p>
+<pre class="article-code"><code class="language-java">class Example {
+    void execute(int value) {
+    }
+
+    void execute(String value) {
+    }
+}
+</code></pre>
+<p>どのメソッドを呼ぶかは、原則としてコンパイル時の引数型で決まります。</p>
+<h3>オーバーライド</h3>
+<p>親クラスのインスタンスメソッドを子クラスで再定義します。</p>
+<pre class="article-code"><code class="language-java">class Parent {
+    void execute(int value) {
+    }
+}
+
+class Child extends Parent {
+    @Override
+    void execute(int value) {
+    }
+}
+</code></pre>
+<p>最終的にどの実装を実行するかは、実行時のオブジェクト型で決まります。</p>
+<h3>両方が混在する例</h3>
+<pre class="article-code"><code class="language-java">class Parent {
+    void execute(Object value) {
+        System.out.println("Parent Object");
+    }
+}
+
+class Child extends Parent {
+    @Override
+    void execute(Object value) {
+        System.out.println("Child Object");
+    }
+
+    void execute(String value) {
+        System.out.println("Child String");
+    }
+}
+</code></pre>
+<pre class="article-code"><code class="language-java">Parent p = new Child();
+p.execute("Java");
+</code></pre>
+<p>出力は次です。</p>
+<pre class="article-code"><code class="language-text">Child Object
+</code></pre>
+<p>処理は2段階です。</p>
+<ol>
+<li>コンパイル時、<code>p</code>の型は<code>Parent</code>なので<code>execute(Object)</code>が選ばれる</li>
+<li>実行時、<code>Child</code>の<code>execute(Object)</code>へ動的ディスパッチされる</li>
+</ol>
+<p><code>Child.execute(String)</code>は、変数<code>p</code>の型からは見えないため候補になりません。オーバーロード選択はコンパイル時、オーバーライド実装の選択は実行時です。</p>
+</section><section class="article-section" id="section-13-13-super"><h2>13. <code>super</code></h2>
+<h3>親メソッドを呼ぶ</h3>
+<pre class="article-code"><code class="language-java">class Parent {
+    void execute() {
+        System.out.println("Parent");
+    }
+}
+
+class Child extends Parent {
+    @Override
+    void execute() {
+        super.execute();
+        System.out.println("Child");
+    }
+}
+</code></pre>
+<p>出力は次です。</p>
+<pre class="article-code"><code class="language-text">Parent
+Child
+</code></pre>
+<p><code>super.execute()</code>は、直接の親クラス側にある実装を基準に探索します。</p>
+<h3>親フィールドを参照する</h3>
+<pre class="article-code"><code class="language-java">class Parent {
+    int value = 10;
+}
+
+class Child extends Parent {
+    int value = 20;
+
+    void print() {
+        System.out.println(super.value);
+    }
+}
+</code></pre>
+<h3><code>super</code>は<code>static</code>コンテキストで使えない</h3>
+<pre class="article-code"><code class="language-java">class Child extends Parent {
+    static void test() {
+        // super.execute(); // コンパイルエラー
+    }
+}
+</code></pre>
+<p><code>super</code>は現在のオブジェクトを前提とするため、<code>static</code>メソッドや<code>static</code>初期化子では使えません。</p>
+<h3>抽象メソッドを<code>super</code>で呼べない</h3>
+<pre class="article-code"><code class="language-java">abstract class Parent {
+    abstract void execute();
+}
+
+class Child extends Parent {
+    @Override
+    void execute() {
+        // super.execute(); // コンパイルエラー
+    }
+}
+</code></pre>
+<p>親側に呼び出せる実装本体が存在しないためです。</p>
+</section><section class="article-section" id="section-14-14"><h2>14. 抽象クラス</h2>
+<h3>14.1 基本</h3>
+<pre class="article-code"><code class="language-java">abstract class Animal {
+    abstract void sound();
+
+    void sleep() {
+        System.out.println("sleep");
+    }
+}
+</code></pre>
+<p>抽象クラスは直接インスタンス化できません。</p>
+<pre class="article-code"><code class="language-java">Animal animal = new Animal(); // コンパイルエラー
+</code></pre>
+<p>ただし、抽象クラス型の変数は使用できます。</p>
+<pre class="article-code"><code class="language-java">class Dog extends Animal {
+    @Override
+    void sound() {
+        System.out.println("bow");
+    }
+}
+
+Animal animal = new Dog();
+</code></pre>
+<h3>14.2 抽象クラスには通常メソッドも書ける</h3>
+<pre class="article-code"><code class="language-java">abstract class Animal {
+    private String name;
+
+    Animal(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    abstract void sound();
+}
+</code></pre>
+<p>抽象クラスには次を宣言できます。</p>
+<ul class="article-list">
+<li>フィールド</li>
+<li>コンストラクタ</li>
+<li>通常のインスタンスメソッド</li>
+<li>抽象メソッド</li>
+<li><code>static</code>メソッド</li>
+<li><code>final</code>メソッド</li>
+<li>初期化子</li>
+</ul>
+<p>「抽象クラスは抽象メソッドしか持てない」は誤りです。</p>
+<h3>14.3 抽象クラスにもコンストラクタがある</h3>
+<pre class="article-code"><code class="language-java">abstract class Parent {
+    Parent() {
+        System.out.println("Parent constructor");
+    }
+}
+
+class Child extends Parent {
+    Child() {
+        System.out.println("Child constructor");
+    }
+}
+</code></pre>
+<pre class="article-code"><code class="language-java">new Child();
+</code></pre>
+<p>出力は次です。</p>
+<pre class="article-code"><code class="language-text">Parent constructor
+Child constructor
+</code></pre>
+<p>抽象クラス自体は直接生成できませんが、子クラスの生成過程で抽象クラスのコンストラクタが実行されます。</p>
+<h3>14.4 具象クラスは抽象メソッドを実装する</h3>
+<pre class="article-code"><code class="language-java">abstract class Parent {
+    abstract void execute();
+}
+
+class Child extends Parent {
+}
+</code></pre>
+<p><code>Child</code>が抽象クラスでないならコンパイルエラーです。</p>
+<p>次のどちらかが必要です。</p>
+<pre class="article-code"><code class="language-java">class Child extends Parent {
+    @Override
+    void execute() {
+    }
+}
+</code></pre>
+<p>または、</p>
+<pre class="article-code"><code class="language-java">abstract class Child extends Parent {
+}
+</code></pre>
+<p>抽象クラスは未実装の抽象メソッドを次の子クラスへ持ち越せます。</p>
+<h3>14.5 通常メソッドを抽象化し直せる</h3>
+<pre class="article-code"><code class="language-java">class Parent {
+    public void execute() {
+        System.out.println("Parent");
+    }
+}
+
+abstract class Middle extends Parent {
+    @Override
+    public abstract void execute();
+}
+</code></pre>
+<p>これは合法です。</p>
+<p><code>Middle</code>は親の具体的実装を抽象メソッドで上書きし、<code>Middle</code>の具象サブクラスに再実装を要求しています。</p>
+<p>ただし、親メソッドが<code>final</code>ならできません。</p>
+<h3>14.6 抽象メソッドに付けられない修飾子</h3>
+<p>次の組合せは基本的に矛盾します。</p>
+<pre class="article-code"><code class="language-java">abstract final void execute();        // エラー
+abstract private void execute();      // エラー
+abstract static void execute();       // エラー
+abstract synchronized void execute(); // エラー
+abstract native void execute();       // エラー
+</code></pre>
+<p>理由は次のとおりです。</p>
+<ul class="article-list">
+<li><code>abstract</code>：子クラスで実装する</li>
+<li><code>final</code>：子クラスで変更禁止</li>
+<li><code>private</code>：子クラスに継承されない</li>
+<li><code>static</code>：インスタンスメソッドとしてオーバーライドされない</li>
+<li><code>synchronized</code>、<code>native</code>：実装本体を前提とする</li>
+</ul>
+<h3>14.7 <code>abstract final class</code>は不可</h3>
+<pre class="article-code"><code class="language-java">abstract final class Example { // コンパイルエラー
+}
+</code></pre>
+<p><code>abstract</code>はサブクラスによる完成を前提とし、<code>final</code>はサブクラスを禁止するため矛盾します。</p>
+</section><section class="article-section" id="section-15-15"><h2>15. インターフェースの継承</h2>
+<pre class="article-code"><code class="language-java">interface Movable {
+    void move();
+}
+</code></pre>
+<p>上のメソッドは暗黙的に次と同じです。</p>
+<pre class="article-code"><code class="language-java">interface Movable {
+    public abstract void move();
+}
+</code></pre>
+<p>実装クラスでは<code>public</code>が必要です。</p>
+<pre class="article-code"><code class="language-java">class Car implements Movable {
+    @Override
+    public void move() {
+    }
+}
+</code></pre>
+<p>次はコンパイルエラーです。</p>
+<pre class="article-code"><code class="language-java">class Car implements Movable {
+    @Override
+    void move() { // publicより狭い
+    }
+}
+</code></pre>
+<p>インターフェースの抽象メソッドは<code>public</code>なので、実装メソッドも<code>public</code>でなければなりません。</p>
+<h3>インターフェースのフィールド</h3>
+<pre class="article-code"><code class="language-java">interface Config {
+    int MAX = 100;
+}
+</code></pre>
+<p>これは暗黙的に次と同じです。</p>
+<pre class="article-code"><code class="language-java">interface Config {
+    public static final int MAX = 100;
+}
+</code></pre>
+<p>そのため再代入できません。</p>
+<pre class="article-code"><code class="language-java">Config.MAX = 200; // コンパイルエラー
+</code></pre>
+</section><section class="article-section" id="section-16-16-default"><h2>16. <code>default</code>メソッド</h2>
+<h3>16.1 基本</h3>
+<pre class="article-code"><code class="language-java">interface Printable {
+    default void print() {
+        System.out.println("default");
+    }
+}
+</code></pre>
+<p>実装クラスは、オーバーライドしなくても利用できます。</p>
+<pre class="article-code"><code class="language-java">class Document implements Printable {
+}
+</code></pre>
+<pre class="article-code"><code class="language-java">new Document().print();
+</code></pre>
+<p>出力：</p>
+<pre class="article-code"><code class="language-text">default
+</code></pre>
+<p><code>default</code>は、インターフェースにインスタンスメソッドの標準実装を持たせる仕組みです。</p>
+<h3>16.2 実装クラスでオーバーライド</h3>
+<pre class="article-code"><code class="language-java">class Document implements Printable {
+    @Override
+    public void print() {
+        System.out.println("Document");
+    }
+}
+</code></pre>
+<p>インターフェースメソッドなので、オーバーライド側は<code>public</code>です。</p>
+</section><section class="article-section" id="section-17-17-default"><h2>17. <code>default</code>メソッドの優先順位</h2>
+<p>基本的な判断順は次です。</p>
+<ol>
+<li>クラス側の具体的インスタンスメソッド</li>
+<li>より具体的なサブインターフェースの<code>default</code></li>
+<li>優先順位を決められなければ明示的にオーバーライド</li>
+</ol>
+<h3>17.1 クラス側の具体的メソッドが優先される</h3>
+<pre class="article-code"><code class="language-java">class Parent {
+    public void execute() {
+        System.out.println("Parent");
+    }
+}
+
+interface Worker {
+    default void execute() {
+        System.out.println("Worker");
+    }
+}
+
+class Child extends Parent implements Worker {
+}
+</code></pre>
+<pre class="article-code"><code class="language-java">new Child().execute();
+</code></pre>
+<p>出力：</p>
+<pre class="article-code"><code class="language-text">Parent
+</code></pre>
+<p>クラス階層から継承した具体的メソッドが、インターフェースの<code>default</code>より優先されます。</p>
+<h3>17.2 より具体的なインターフェースが優先される</h3>
+<pre class="article-code"><code class="language-java">interface A {
+    default void execute() {
+        System.out.println("A");
+    }
+}
+
+interface B extends A {
+    @Override
+    default void execute() {
+        System.out.println("B");
+    }
+}
+
+class C implements A, B {
+}
+</code></pre>
+<pre class="article-code"><code class="language-java">new C().execute();
+</code></pre>
+<p>出力：</p>
+<pre class="article-code"><code class="language-text">B
+</code></pre>
+<p><code>B</code>は<code>A</code>のサブインターフェースなので、より具体的な<code>B</code>が優先されます。</p>
+<h3>17.3 無関係な2つの<code>default</code>は衝突する</h3>
+<pre class="article-code"><code class="language-java">interface A {
+    default void execute() {
+        System.out.println("A");
+    }
+}
+
+interface B {
+    default void execute() {
+        System.out.println("B");
+    }
+}
+
+class C implements A, B {
+}
+</code></pre>
+<p>これはコンパイルエラーです。</p>
+<p><code>C</code>で明示的に解決します。</p>
+<pre class="article-code"><code class="language-java">class C implements A, B {
+    @Override
+    public void execute() {
+        A.super.execute();
+    }
+}
+</code></pre>
+<p>両方を呼ぶこともできます。</p>
+<pre class="article-code"><code class="language-java">class C implements A, B {
+    @Override
+    public void execute() {
+        A.super.execute();
+        B.super.execute();
+    }
+}
+</code></pre>
+<p>同じシグネチャの無関係な<code>default</code>メソッドを複数継承すると、コンパイラが自動選択できないため明示的な実装が必要です。</p>
+<h3>17.4 <code>InterfaceName.super</code>の制限</h3>
+<p>原則として、直接のスーパーインターフェースを指定します。</p>
+<pre class="article-code"><code class="language-java">interface A {
+    default void execute() {
+    }
+}
+
+interface B extends A {
+}
+
+class C implements B {
+    @Override
+    public void execute() {
+        // A.super.execute(); // コンパイルエラー
+        B.super.execute();    // Bがdefaultを継承していれば利用可能
+    }
+}
+</code></pre>
+<p>継承階層を飛び越えて任意の祖先インターフェースを指定する機能ではありません。</p>
+<h3>17.5 <code>Object</code>メソッドを<code>default</code>にできない</h3>
+<p>次はコンパイルエラーです。</p>
+<pre class="article-code"><code class="language-java">interface Example {
+    default String toString() {
+        return "Example";
+    }
+}
+</code></pre>
+<p><code>toString()</code>、<code>equals(Object)</code>、<code>hashCode()</code>など、<code>Object</code>の非<code>private</code>インスタンスメソッドと同等のシグネチャを持つ<code>default</code>メソッドは宣言できません。実装クラスが持つ<code>Object</code>由来のメソッドとの競合を避けるためです。</p>
+<p>抽象メソッドとして宣言することはできます。</p>
+<pre class="article-code"><code class="language-java">interface Example {
+    @Override
+    String toString();
+}
+</code></pre>
+</section><section class="article-section" id="section-18-18-static-private"><h2>18. インターフェースの<code>static</code>と<code>private</code></h2>
+<h3><code>static</code>メソッド</h3>
+<pre class="article-code"><code class="language-java">interface Utility {
+    static void execute() {
+        System.out.println("Utility");
+    }
+}
+</code></pre>
+<p>型名で呼びます。</p>
+<pre class="article-code"><code class="language-java">Utility.execute();
+</code></pre>
+<p>実装クラスには継承されません。</p>
+<pre class="article-code"><code class="language-java">class Impl implements Utility {
+}
+
+Impl.execute(); // コンパイルエラー
+</code></pre>
+<h3><code>private</code>メソッド</h3>
+<pre class="article-code"><code class="language-java">interface Service {
+    default void start() {
+        log();
+    }
+
+    private void log() {
+        System.out.println("log");
+    }
+}
+</code></pre>
+<p><code>private</code>インターフェースメソッドは、同じインターフェース内の<code>default</code>メソッドや他の<code>private</code>メソッドから共通処理として利用します。実装クラスには継承されません。</p>
+<p>クラスは、スーパーインターフェースの<code>private</code>または<code>static</code>メソッドを継承しません。</p>
+</section><section class="article-section" id="section-19-19"><h2>19. コンストラクタ</h2>
+<h3>19.1 コンストラクタは継承されない</h3>
+<pre class="article-code"><code class="language-java">class Parent {
+    Parent(int value) {
+    }
+}
+
+class Child extends Parent {
+}
+</code></pre>
+<p><code>Child(int)</code>が自動的に作られることはありません。</p>
+<pre class="article-code"><code class="language-java">new Child(10); // コンパイルエラー
+</code></pre>
+<p>コンストラクタはメンバーではなく、継承、オーバーライド、隠蔽の対象になりません。</p>
+<h3>19.2 コンストラクタ名</h3>
+<p>コンストラクタ名はクラス名と同じで、戻り値型を書きません。</p>
+<pre class="article-code"><code class="language-java">class Sample {
+    Sample() {
+    }
+}
+</code></pre>
+<p>次はコンストラクタではなくメソッドです。</p>
+<pre class="article-code"><code class="language-java">class Sample {
+    void Sample() {
+    }
+}
+</code></pre>
+<p>この場合、戻り値型<code>void</code>があるため通常メソッドです。</p>
+<h3>19.3 デフォルトコンストラクタ</h3>
+<p>クラスにコンストラクタを1つも宣言しなかった場合だけ、コンパイラがデフォルトコンストラクタを補います。</p>
+<pre class="article-code"><code class="language-java">class Sample {
+}
+</code></pre>
+<p>概念的には次に相当します。</p>
+<pre class="article-code"><code class="language-java">class Sample {
+    Sample() {
+        super();
+    }
+}
+</code></pre>
+<p>ただし、アクセス修飾子はクラスのアクセス性に対応します。</p>
+<h3>19.4 1つでも宣言すると自動生成されない</h3>
+<pre class="article-code"><code class="language-java">class Sample {
+    Sample(int value) {
+    }
+}
+</code></pre>
+<p>この場合、次はコンパイルエラーです。</p>
+<pre class="article-code"><code class="language-java">new Sample();
+</code></pre>
+<p>必要なら自分で宣言します。</p>
+<pre class="article-code"><code class="language-java">class Sample {
+    Sample() {
+    }
+
+    Sample(int value) {
+    }
+}
+</code></pre>
+</section><section class="article-section" id="section-20-20-super-this"><h2>20. <code>super(...)</code>と<code>this(...)</code></h2>
+<p>Java 17では、コンストラクタから別のコンストラクタを呼ぶ明示的コンストラクタ呼出しは、コンストラクタ本体の先頭に置きます。</p>
+<h3>親コンストラクタ</h3>
+<pre class="article-code"><code class="language-java">class Parent {
+    Parent(int value) {
+    }
+}
+
+class Child extends Parent {
+    Child() {
+        super(10);
+    }
+}
+</code></pre>
+<h3>同じクラスの別コンストラクタ</h3>
+<pre class="article-code"><code class="language-java">class Sample {
+    Sample() {
+        this(10);
+    }
+
+    Sample(int value) {
+        System.out.println(value);
+    }
+}
+</code></pre>
+<h3><code>this(...)</code>と<code>super(...)</code>を両方書けない</h3>
+<pre class="article-code"><code class="language-java">class Child extends Parent {
+    Child() {
+        this(10);
+        super(20); // コンパイルエラー
+    }
+
+    Child(int value) {
+        super(value);
+    }
+}
+</code></pre>
+<p>1つのコンストラクタが直接呼べるのは、同じクラスの別コンストラクタか、直接の親コンストラクタのどちらかです。</p>
+<p>ただし、<code>this(...)</code>で呼ばれた先のコンストラクタは、最終的に<code>super(...)</code>を呼びます。</p>
+<h3>再帰的なコンストラクタ呼出しは不可</h3>
+<pre class="article-code"><code class="language-java">class Sample {
+    Sample() {
+        this(10);
+    }
+
+    Sample(int value) {
+        this();
+    }
+}
+</code></pre>
+<p>これはコンストラクタ呼出しが循環するためコンパイルエラーです。</p>
+</section><section class="article-section" id="section-21-21-super"><h2>21. 暗黙の<code>super()</code></h2>
+<p>コンストラクタの先頭に<code>this(...)</code>も<code>super(...)</code>も書かなかった場合、コンパイラは暗黙的に<code>super()</code>を挿入します。</p>
+<pre class="article-code"><code class="language-java">class Parent {
+    Parent() {
+    }
+}
+
+class Child extends Parent {
+    Child() {
+        // 暗黙的にsuper();
+    }
+}
+</code></pre>
+<p>しかし、親に引数なしコンストラクタがなければエラーです。</p>
+<pre class="article-code"><code class="language-java">class Parent {
+    Parent(int value) {
+    }
+}
+
+class Child extends Parent {
+    Child() {
+        // 暗黙のsuper()がParent()を探す
+        // Parent()は存在しないのでコンパイルエラー
+    }
+}
+</code></pre>
+<p>修正：</p>
+<pre class="article-code"><code class="language-java">class Child extends Parent {
+    Child() {
+        super(10);
+    }
+}
+</code></pre>
+<p>親クラスにアクセス可能な引数なしコンストラクタがない場合、子コンストラクタから適切な<code>super(...)</code>を明示する必要があります。</p>
+</section><section class="article-section" id="section-22-22-private"><h2>22. 親コンストラクタが<code>private</code></h2>
+<pre class="article-code"><code class="language-java">class Parent {
+    private Parent() {
+    }
+}
+
+class Child extends Parent { // コンパイルエラー
+}
+</code></pre>
+<p><code>Child</code>には暗黙のデフォルトコンストラクタが作られ、その中で<code>super()</code>を呼ぼうとします。しかし<code>Parent()</code>が<code>private</code>なのでアクセスできません。</p>
+<p>すべての親コンストラクタが<code>private</code>であれば、通常は外部クラスから継承できません。</p>
+<p>ただし、同じトップレベルクラス内部のネストしたクラスなど、<code>private</code>へアクセス可能な特殊な配置では成立することがあります。</p>
+</section><section class="article-section" id="section-23-23"><h2>23. コンストラクタとチェック例外</h2>
+<pre class="article-code"><code class="language-java">import java.io.IOException;
+
+class Parent {
+    Parent() throws IOException {
+    }
+}
+</code></pre>
+<p>子クラスのコンストラクタは、親コンストラクタが投げるチェック例外を処理する必要があります。</p>
+<pre class="article-code"><code class="language-java">class Child extends Parent {
+    Child() throws IOException {
+        super();
+    }
+}
+</code></pre>
+<p>Java 17では<code>super()</code>より前に通常の<code>try</code>文を置けないため、親コンストラクタのチェック例外を同じ子コンストラクタ内で囲んで処理することはできません。</p>
+<pre class="article-code"><code class="language-java">class Child extends Parent {
+    Child() {
+        try {
+            // super(); // ここには書けない
+        } catch (IOException e) {
+        }
+    }
+}
+</code></pre>
+<p>通常は次のいずれかになります。</p>
+<ul class="article-list">
+<li>子コンストラクタでも<code>throws</code>する</li>
+<li>例外を投げない別の親コンストラクタを選ぶ</li>
+<li>親クラス側の設計を変更する</li>
+</ul>
+</section><section class="article-section" id="section-24-24"><h2>24. 初期化順序</h2>
+<p>次のコードを考えます。</p>
+<pre class="article-code"><code class="language-java">class Parent {
+    static int parentStatic = print("1. Parent static field");
+
+    static {
+        print("2. Parent static block");
+    }
+
+    int parentField = print("5. Parent instance field");
+
+    {
+        print("6. Parent instance block");
+    }
+
+    Parent() {
+        print("7. Parent constructor");
+    }
+
+    static int print(String message) {
+        System.out.println(message);
+        return 0;
+    }
+}
+
+class Child extends Parent {
+    static int childStatic = print("3. Child static field");
+
+    static {
+        print("4. Child static block");
+    }
+
+    int childField = print("8. Child instance field");
+
+    {
+        print("9. Child instance block");
+    }
+
+    Child() {
+        print("10. Child constructor");
+    }
+}
+</code></pre>
+<p>初めて次を実行したとします。</p>
+<pre class="article-code"><code class="language-java">new Child();
+</code></pre>
+<p>おおまかな順序は次です。</p>
+<ol>
+<li>親クラスの<code>static</code>フィールド初期化</li>
+<li>親クラスの<code>static</code>初期化子</li>
+<li>子クラスの<code>static</code>フィールド初期化</li>
+<li>子クラスの<code>static</code>初期化子</li>
+<li>オブジェクト領域をデフォルト値で初期化</li>
+<li>親クラスのインスタンスフィールド初期化</li>
+<li>親クラスのインスタンス初期化子</li>
+<li>親クラスのコンストラクタ本体</li>
+<li>子クラスのインスタンスフィールド初期化</li>
+<li>子クラスのインスタンス初期化子</li>
+<li>子クラスのコンストラクタ本体</li>
+</ol>
+<p>同じクラス内のフィールド初期化式と初期化子は、基本的にソースコード上の記述順です。</p>
+<p>クラス初期化では、子クラスより先に親クラスが初期化され、<code>static</code>フィールド初期化式と<code>static</code>初期化子が記述順に実行されます。</p>
+</section><section class="article-section" id="section-25-25"><h2>25. コンストラクタからオーバーライド可能メソッドを呼ぶ危険</h2>
+<pre class="article-code"><code class="language-java">class Parent {
+    Parent() {
+        print();
+    }
+
+    void print() {
+        System.out.println("Parent");
+    }
+}
+
+class Child extends Parent {
+    private String message = "Child";
+
+    @Override
+    void print() {
+        System.out.println(message);
+    }
+}
+</code></pre>
+<pre class="article-code"><code class="language-java">new Child();
+</code></pre>
+<p>出力は次です。</p>
+<pre class="article-code"><code class="language-text">null
+</code></pre>
+<p>理由は次のとおりです。</p>
+<ol>
+<li><code>Child</code>オブジェクトの領域が確保され、<code>message</code>はデフォルト値<code>null</code></li>
+<li><code>Parent</code>コンストラクタが実行される</li>
+<li><code>print()</code>は動的ディスパッチにより<code>Child.print()</code>を呼ぶ</li>
+<li>しかし<code>Child</code>のフィールド初期化はまだ終わっていない</li>
+<li><code>message</code>は<code>null</code></li>
+</ol>
+<p>したがって、コンストラクタから次のメソッドを呼ぶのは危険です。</p>
+<ul class="article-list">
+<li>オーバーライド可能なインスタンスメソッド</li>
+<li>抽象メソッド</li>
+<li>子クラスの初期化済み状態を前提とするメソッド</li>
+</ul>
+<p>対策は次です。</p>
+<pre class="article-code"><code class="language-java">final void print() {
+}
+</code></pre>
+<p>または、</p>
+<pre class="article-code"><code class="language-java">private void print() {
+}
+</code></pre>
+<p>あるいは、コンストラクタ中では外部からオーバーライドされない処理だけを呼びます。</p>
+</section><section class="article-section" id="section-26-26"><h2>26. ポリモーフィズムと参照可能なメンバー</h2>
+<pre class="article-code"><code class="language-java">class Parent {
+    void parentMethod() {
+    }
+
+    void commonMethod() {
+        System.out.println("Parent");
+    }
+}
+
+class Child extends Parent {
+    void childMethod() {
+    }
+
+    @Override
+    void commonMethod() {
+        System.out.println("Child");
+    }
+}
+</code></pre>
+<pre class="article-code"><code class="language-java">Parent obj = new Child();
+</code></pre>
+<p>呼べるメソッドは、まず変数のコンパイル時型<code>Parent</code>で判定されます。</p>
+<pre class="article-code"><code class="language-java">obj.parentMethod(); // OK
+obj.commonMethod(); // OK。実行されるのはChild版
+// obj.childMethod(); // コンパイルエラー
+</code></pre>
+<p><code>obj</code>の実体が<code>Child</code>でも、<code>Parent</code>型に宣言されていない<code>childMethod()</code>は直接呼べません。</p>
+</section><section class="article-section" id="section-27-27"><h2>27. ダウンキャスト</h2>
+<pre class="article-code"><code class="language-java">Parent parent = new Child();
+Child child = (Child) parent;
+</code></pre>
+<p>これは成功します。</p>
+<p>しかし、次は実行時例外です。</p>
+<pre class="article-code"><code class="language-java">Parent parent = new Parent();
+Child child = (Child) parent;
+</code></pre>
+<p>コンパイルはできますが、実行時に<code>ClassCastException</code>が発生します。</p>
+<p>安全に判定するには<code>instanceof</code>を使います。</p>
+<pre class="article-code"><code class="language-java">if (parent instanceof Child child) {
+    child.childMethod();
+}
+</code></pre>
+<p>一方、型関係が完全に成立しないキャストはコンパイルエラーになることがあります。</p>
+<pre class="article-code"><code class="language-java">class A {
+}
+
+final class B {
+}
+
+A a = new A();
+// B b = (B) a; // 型関係によってはコンパイル時に不可能と判定
+</code></pre>
+<p>キャストはオブジェクト自体を別の型へ変換する処理ではありません。参照をどの型として扱うかを指定する処理です。</p>
+</section><section class="article-section" id="section-28-28-final"><h2>28. <code>final</code>クラス</h2>
+<pre class="article-code"><code class="language-java">final class Parent {
+}
+
+class Child extends Parent { // コンパイルエラー
+}
+</code></pre>
+<p><code>final</code>クラスは継承できません。</p>
+<p>代表的な用途は次です。</p>
+<ul class="article-list">
+<li>クラスの不変条件を子クラスに破壊させたくない</li>
+<li>セキュリティ上、動作の差し替えを禁止したい</li>
+<li>値オブジェクトとして振る舞いを固定したい</li>
+<li>継承ではなく合成を使わせたい</li>
+</ul>
+<p>レコードクラスは暗黙的に<code>final</code>なので、通常のクラスから継承できません。</p>
+<pre class="article-code"><code class="language-java">record Point(int x, int y) {
+}
+
+// class ChildPoint extends Point { } // コンパイルエラー
+</code></pre>
+</section><section class="article-section" id="section-29-29-sealed"><h2>29. <code>sealed</code>クラス</h2>
+<p>Java 17では、継承可能な直接のサブクラスを限定できます。</p>
+<pre class="article-code"><code class="language-java">sealed class Shape
+        permits Circle, Rectangle {
+}
+
+final class Circle extends Shape {
+}
+
+non-sealed class Rectangle extends Shape {
+}
+</code></pre>
+<p><code>Shape</code>を直接継承できるのは<code>permits</code>で指定されたクラスだけです。</p>
+<p>直接のサブクラスは原則として次のいずれかを宣言します。</p>
+<ul class="article-list">
+<li><code>final</code></li>
+<li><code>sealed</code></li>
+<li><code>non-sealed</code></li>
+</ul>
+<pre class="article-code"><code class="language-java">sealed class Shape permits Circle {
+}
+
+class Circle extends Shape { // コンパイルエラー
+}
+</code></pre>
+<p>修正：</p>
+<pre class="article-code"><code class="language-java">final class Circle extends Shape {
+}
+</code></pre>
+<p><code>non-sealed</code>を指定すると、その位置から通常の自由な継承へ戻ります。<code>sealed</code>クラスが許可していないクラスによる直接継承はコンパイルエラーです。</p>
+</section><section class="article-section" id="section-30-30"><h2>30. 同名メソッドを複数インターフェースから継承する場合</h2>
+<h3>両方とも抽象メソッド</h3>
+<pre class="article-code"><code class="language-java">interface A {
+    void execute();
+}
+
+interface B {
+    void execute();
+}
+
+class C implements A, B {
+    @Override
+    public void execute() {
+    }
+}
+</code></pre>
+<p>1つの実装で両方の契約を満たせます。</p>
+<h3>戻り値に互換性がある</h3>
+<pre class="article-code"><code class="language-java">interface A {
+    Number getValue();
+}
+
+interface B {
+    Integer getValue();
+}
+
+class C implements A, B {
+    @Override
+    public Integer getValue() {
+        return 10;
+    }
+}
+</code></pre>
+<p><code>Integer</code>は<code>Number</code>のサブタイプなので、両方を満たせます。</p>
+<h3>戻り値に互換性がない</h3>
+<pre class="article-code"><code class="language-java">interface A {
+    String getValue();
+}
+
+interface B {
+    Integer getValue();
+}
+
+class C implements A, B { // コンパイルエラー
+}
+</code></pre>
+<p>引数が同じで戻り値だけが互換性のないメソッドを、1つのクラスで両立できません。</p>
+<p>戻り値型だけではオーバーロードできないため、次も不可です。</p>
+<pre class="article-code"><code class="language-java">class C implements A, B {
+    public String getValue() {
+        return "";
+    }
+
+    public Integer getValue() { // コンパイルエラー
+        return 0;
+    }
+}
+</code></pre>
+</section><section class="article-section" id="section-31-31"><h2>31. フィールド名の競合</h2>
+<pre class="article-code"><code class="language-java">interface A {
+    int VALUE = 10;
+}
+
+interface B {
+    int VALUE = 20;
+}
+
+class C implements A, B {
+    void print() {
+        // System.out.println(VALUE); // コンパイルエラー
+        System.out.println(A.VALUE);
+        System.out.println(B.VALUE);
+    }
+}
+</code></pre>
+<p>同名フィールドを複数継承すること自体は直ちにエラーではありません。しかし、単純名<code>VALUE</code>で参照すると曖昧なのでコンパイルエラーです。</p>
+<p>型名で限定すれば参照できます。複数の同名フィールドを継承した場合、単純名での曖昧な参照がコンパイルエラーになります。</p>
+</section><section class="article-section" id="section-32-32"><h2>32. ジェネリクスと継承の注意点</h2>
+<h3>32.1 ジェネリック型は基本的に不変</h3>
+<pre class="article-code"><code class="language-java">List&lt;Integer&gt; integers = new ArrayList&lt;&gt;();
+// List&lt;Number&gt; numbers = integers; // コンパイルエラー
+</code></pre>
+<p><code>Integer</code>が<code>Number</code>のサブクラスでも、<code>List&lt;Integer&gt;</code>は<code>List&lt;Number&gt;</code>のサブタイプではありません。</p>
+<p>必要に応じてワイルドカードを使います。</p>
+<pre class="article-code"><code class="language-java">List&lt;? extends Number&gt; numbers = integers;
+</code></pre>
+<h3>32.2 型消去による名前衝突</h3>
+<pre class="article-code"><code class="language-java">class Parent {
+    void execute(List&lt;String&gt; values) {
+    }
+}
+
+class Child extends Parent {
+    void execute(List&lt;Integer&gt; values) {
+    }
+}
+</code></pre>
+<p>型消去後はどちらも概ね<code>execute(List)</code>となるため、名前衝突としてコンパイルエラーになります。</p>
+<p>ジェネリック型引数だけを変えて別メソッドとして共存させることはできません。</p>
+</section><section class="article-section" id="section-33-33"><h2>33. 継承に関する代表的なコンパイルエラー</h2>
+<table class="study-table ref-table responsive-card-table">
+<thead>
+<tr>
+<th>コード上の問題</th>
+<th>結果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="コード上の問題"><code>final</code>クラスを継承</td>
+<td data-label="結果">コンパイルエラー</td>
+</tr>
+<tr>
+<td data-label="コード上の問題">許可されていない<code>sealed</code>クラスを継承</td>
+<td data-label="結果">コンパイルエラー</td>
+</tr>
+<tr>
+<td data-label="コード上の問題"><code>private</code>コンストラクタしかない親を外部から継承</td>
+<td data-label="結果">通常はコンパイルエラー</td>
+</tr>
+<tr>
+<td data-label="コード上の問題">親に引数なしコンストラクタがないのに<code>super(...)</code>を省略</td>
+<td data-label="結果">コンパイルエラー</td>
+</tr>
+<tr>
+<td data-label="コード上の問題">コンストラクタで<code>this(...)</code>と<code>super(...)</code>を両方呼ぶ</td>
+<td data-label="結果">コンパイルエラー</td>
+</tr>
+<tr>
+<td data-label="コード上の問題">コンストラクタ呼出しが循環</td>
+<td data-label="結果">コンパイルエラー</td>
+</tr>
+<tr>
+<td data-label="コード上の問題"><code>final</code>メソッドをオーバーライド</td>
+<td data-label="結果">コンパイルエラー</td>
+</tr>
+<tr>
+<td data-label="コード上の問題">親よりアクセス範囲を狭くする</td>
+<td data-label="結果">コンパイルエラー</td>
+</tr>
+<tr>
+<td data-label="コード上の問題">親より広いチェック例外を宣言</td>
+<td data-label="結果">コンパイルエラー</td>
+</tr>
+<tr>
+<td data-label="コード上の問題">インスタンスメソッドを<code>static</code>で再宣言</td>
+<td data-label="結果">コンパイルエラー</td>
+</tr>
+<tr>
+<td data-label="コード上の問題"><code>static</code>メソッドをインスタンスメソッドで再宣言</td>
+<td data-label="結果">コンパイルエラー</td>
+</tr>
+<tr>
+<td data-label="コード上の問題">抽象メソッドを具象クラスが未実装</td>
+<td data-label="結果">コンパイルエラー</td>
+</tr>
+<tr>
+<td data-label="コード上の問題"><code>abstract final class</code></td>
+<td data-label="結果">コンパイルエラー</td>
+</tr>
+<tr>
+<td data-label="コード上の問題">抽象メソッドに<code>private</code>、<code>static</code>、<code>final</code></td>
+<td data-label="結果">コンパイルエラー</td>
+</tr>
+<tr>
+<td data-label="コード上の問題">無関係な複数<code>default</code>の競合を未解決</td>
+<td data-label="結果">コンパイルエラー</td>
+</tr>
+<tr>
+<td data-label="コード上の問題">戻り値だけ違う同名同引数メソッド</td>
+<td data-label="結果">コンパイルエラー</td>
+</tr>
+<tr>
+<td data-label="コード上の問題">不正なダウンキャスト</td>
+<td data-label="結果">実行時<code>ClassCastException</code></td>
+</tr>
+<tr>
+<td data-label="コード上の問題"><code>null</code>参照でインスタンスメソッドを呼ぶ</td>
+<td data-label="結果">実行時<code>NullPointerException</code></td>
+</tr>
+<tr>
+<td data-label="コード上の問題">コンストラクタから子の未初期化フィールドを使う</td>
+<td data-label="結果">コンパイル可能だが誤動作要因</td>
+</tr>
+</tbody>
+</table>
+</section><section class="article-section" id="section-34-34"><h2>34. 実務上の設計指針</h2>
+<h3>継承を使うべき場合</h3>
+<p>継承は、子クラスが親クラスとして完全に扱える場合に向いています。</p>
+<pre class="article-code"><code class="language-text">Child is-a Parent
+</code></pre>
+<p>例：</p>
+<pre class="article-code"><code class="language-text">Dog is an Animal
+</code></pre>
+<p>ただし、「コードを再利用したいだけ」で継承すると、親クラスの実装変更に強く依存します。</p>
+<h3>合成を優先する場合</h3>
+<pre class="article-code"><code class="language-java">class Engine {
+    void start() {
+    }
+}
+
+class Car {
+    private final Engine engine;
+
+    Car(Engine engine) {
+        this.engine = engine;
+    }
+
+    void start() {
+        engine.start();
+    }
+}
+</code></pre>
+<p>これは<code>Car extends Engine</code>ではなく、<code>Car has-an Engine</code>です。</p>
+<p>合成には次の利点があります。</p>
+<ul class="article-list">
+<li>実装を交換しやすい</li>
+<li>親クラスの内部実装に依存しにくい</li>
+<li>継承階層が深くならない</li>
+<li>テストしやすい</li>
+<li>不要なメソッドまで公開しにくい</li>
+</ul>
+<p>コード再利用だけが目的なら、継承より合成を優先する方が保守しやすい場合が多いです。</p>
+<h3>オーバーライド時の推奨事項</h3>
+<pre class="article-code"><code class="language-java">@Override
+public Result execute(Input input) throws SpecificException {
+    return super.execute(input);
+}
+</code></pre>
+<p>確認する項目は次です。</p>
+<ol>
+<li><code>@Override</code>を付けたか</li>
+<li>アクセス範囲を狭めていないか</li>
+<li>戻り値型に互換性があるか</li>
+<li>チェック例外を広げていないか</li>
+<li>親クラスの契約を壊していないか</li>
+<li>親実装を呼ぶ必要があるか</li>
+<li>コンストラクタから呼ばれる可能性がないか</li>
+<li><code>equals</code>、<code>hashCode</code>、<code>toString</code>の整合性が保たれているか</li>
+</ol>
+</section><section class="article-section" id="section-35-35"><h2>35. 最終的な判定手順</h2>
+<p>継承問題では次の順番で確認すると整理できます。</p>
+<h3>メソッドの場合</h3>
+<ol>
+<li><code>static</code>かインスタンスか</li>
+<li>親からアクセス可能か</li>
+<li><code>private</code>ではないか</li>
+<li><code>final</code>ではないか</li>
+<li>メソッド名と引数型が一致するか</li>
+<li>戻り値型に互換性があるか</li>
+<li>アクセス範囲を狭めていないか</li>
+<li>チェック例外を広げていないか</li>
+<li>オーバーロード選択はコンパイル時型で判定</li>
+<li>インスタンスメソッドの実装は実行時型で判定</li>
+</ol>
+<h3>フィールドの場合</h3>
+<ol>
+<li>フィールドはオーバーライドされない</li>
+<li>同名なら隠蔽</li>
+<li>参照変数のコンパイル時型で決まる</li>
+<li>必要なら<code>this</code>、<code>super</code>、型名で区別する</li>
+</ol>
+<h3>コンストラクタの場合</h3>
+<ol>
+<li>コンストラクタは継承されない</li>
+<li>自分で1つも宣言しなければデフォルトコンストラクタが作られる</li>
+<li>自分で1つでも宣言すれば自動生成されない</li>
+<li>Java 17では先頭で<code>this(...)</code>または<code>super(...)</code></li>
+<li>省略時は<code>super()</code></li>
+<li>親にアクセス可能な対応コンストラクタが必要</li>
+<li><code>this(...)</code>の連鎖は最終的に<code>super(...)</code>へ到達する</li>
+<li>親から子の順に初期化される</li>
+</ol>
+<p>この判定手順を使えば、継承に関するコンパイル可否、呼び出されるメソッド、出力順序の大部分を機械的に判断できます。</p>
+</section>
+</section>
+<section class="study-route-panel related-practice-panel"><h2>関連する単元別解説</h2><div class="study-route-grid"><a class="study-route-card" href="../inheritance/index.html"><span class="route-badge">関連</span><strong>継承・interface・ポリモーフィズム</strong><span>継承の基本を短く整理した記事。</span></a><a class="study-route-card" href="../type-and-instance/index.html"><span class="route-badge">関連</span><strong>「型」と「実体（インスタンス）」</strong><span>宣言型と実行時型の違いを初歩から確認。</span></a><a class="study-route-card" href="../java-silver-default-method/index.html"><span class="route-badge">関連</span><strong>defaultメソッド</strong><span>interfaceのdefaultメソッドを重点的に確認。</span></a></div></section>
+</main></div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="article-inheritance-complete.html";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body></html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="null代入とメソッド呼び出しの違いを整理します。" name="description"/>
+<title>nullとNullPointerException｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="nullとNullPointerException｜Java Practice Lab" property="og:title"/>
+<meta content="null代入とメソッド呼び出しの違いを整理します。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">nullとNullPointerException</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent"><section class="content-page article-body wide-article upgraded-article">
+<h1>nullとNullPointerException</h1>
+<p class="lead">Java 11とJava 17の共通範囲です。<code>null</code>は「空文字」や「値0」ではなく、参照型変数がオブジェクトを参照していない状態を表します。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<section class="article-section"><h2>nullを保持・比較・表示するだけでは例外にならない</h2>
+<pre class="article-code"><code>public class NullBasic {
+    public static void main(String[] args) {
+        String text = null;
+        System.out.println(text);        // null
+        System.out.println(text == null); // true
+    }
+}</code></pre>
+<p><code>text</code>はString型の参照変数ですが、どのStringオブジェクトも参照していません。<code>null</code>の代入、<code>== null</code>による比較、<code>println</code>への受け渡しは正常に実行できます。</p></section>
+<section class="article-section"><h2>メンバへ進もうとした式でNullPointerExceptionになる</h2>
+<pre class="article-code"><code>public class NullCall {
+    public static void main(String[] args) {
+        String text = null;
+        System.out.print("A");
+        System.out.println(text.length()); // ここでNullPointerException
+        System.out.print("B");             // 実行されない
+    }
+}</code></pre>
+<table class="ref-table study-table responsive-card-table"><thead><tr><th>式</th><th>判定</th></tr></thead><tbody><tr><td data-label="式"><code>text</code></td><td data-label="判定"><code>null</code>という参照値を取り出すだけ。</td></tr><tr><td data-label="式"><code>text.length()</code></td><td data-label="判定">参照先オブジェクトのメソッドへ進もうとするため例外。</td></tr></tbody></table>
+<p><code>A</code>は例外より前に表示されます。例外を捕捉していないためプログラムは異常終了し、<code>B</code>は表示しません。</p></section>
+<section class="article-section"><h2>配列自体のnullと、配列要素のnullを分ける</h2>
+<pre class="article-code"><code>String[] first = null;
+String[] second = new String[2];
+
+// first.length;       // NullPointerException: 配列自体がない
+System.out.println(second.length); // 2
+System.out.println(second[0]);     // null
+// second[0].length(); // NullPointerException: 要素がnull</code></pre>
+<p><code>second</code>は配列オブジェクトを参照しているため、<code>second.length</code>は読めます。ただし、参照型配列の各要素は初期状態で<code>null</code>です。</p></section>
+<section class="article-section"><h2>アンボクシングでも例外が起きる</h2>
+<pre class="article-code"><code>Integer boxed = null;
+// int value = boxed; // 自動アンボクシング時にNullPointerException</code></pre>
+<p>代入先が<code>int</code>なので、コンパイラは<code>boxed.intValue()</code>に相当する処理を必要とします。<code>boxed</code>が<code>null</code>のため、アンボクシング時に例外が発生します。</p></section>
+<section class="article-section"><h2>nullを受け取るオーバーロード</h2>
+<pre class="article-code"><code>static void print(Object value) { System.out.print("O"); }
+static void print(String value) { System.out.print("S"); }
+
+public static void main(String[] args) {
+    print(null); // S
+}</code></pre>
+<p><code>null</code>はどちらの参照型にも渡せますが、<code>String</code>は<code>Object</code>より具体的な型なので<code>print(String)</code>が選ばれます。互いに継承関係のない候補が残ると、曖昧な呼び出しとしてコンパイルエラーになります。</p></section>
+<section class="article-section"><h2>判定手順</h2><ol class="article-list"><li>対象がプリミティブ型か参照型かを見る。プリミティブ型へ<code>null</code>は直接代入できない。</li><li>参照値を保持・比較・表示するだけか、参照先のメンバへ進むかを分ける。</li><li>配列自体と配列要素のどちらが<code>null</code>かを確認する。</li><li>自動アンボクシングが発生していないかを見る。</li><li>例外が捕捉されるなら、対応するcatchとfinallyへ進む。</li></ol></section>
+<section class="article-section"><h2>記事末尾の確認</h2><ul class="article-list"><li><code>System.out.println(null参照)</code>と<code>null参照.toString()</code>を区別できる。</li><li>配列自体のnullと要素のnullを分けて説明できる。</li><li><code>Integer null</code>のアンボクシングで例外が起きる理由を説明できる。</li></ul></section>
+</section></main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="index.html";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

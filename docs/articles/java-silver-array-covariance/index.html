@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="コンパイルできるのに実行時例外になる配列代入を整理します。" name="description"/>
+<title>配列の共変とArrayStoreException｜Java Practice Lab</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="配列の共変とArrayStoreException｜Java Practice Lab" property="og:title"/>
+<meta content="コンパイルできるのに実行時例外になる配列代入を整理します。" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">配列の共変性とArrayStoreException</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent"><section class="content-page article-body wide-article upgraded-article">
+<h1>配列の共変性とArrayStoreException</h1>
+<p class="lead">Java 11とJava 17の共通範囲です。宣言上は代入できるのに、要素代入で実行時例外になる理由を、配列の実体型まで追って判断します。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<section class="article-section textbook-section">
+<h2>共変性は「String[]をObject[]として扱える」という規則</h2>
+<p><code>String</code>は<code>Object</code>のサブクラスなので、Javaの配列では<code>String[]</code>を<code>Object[]</code>型の変数へ代入できます。この性質を配列の共変性と呼びます。</p>
+<pre class="article-code"><code>Object[] values = new String[2]; // コンパイルできる
+values[0] = "A";                 // 実体がString[]なので格納できる
+values[1] = Integer.valueOf(10); // ここでArrayStoreException</code></pre>
+<p>変数<code>values</code>の宣言型は<code>Object[]</code>ですが、<code>new</code>で作られた実体は<code>String[]</code>です。JVMは要素代入時に実体の要素型を確認するため、<code>Integer</code>は格納できません。</p>
+<table class="ref-table study-table responsive-card-table"><thead><tr><th>時点</th><th>見る型</th><th>判定</th></tr></thead><tbody>
+<tr><td data-label="時点">配列参照の代入</td><td data-label="見る型"><code>String[]</code> → <code>Object[]</code></td><td data-label="判定">共変性によりコンパイルできる。</td></tr>
+<tr><td data-label="時点"><code>values[0] = "A"</code></td><td data-label="見る型">実体は<code>String[]</code></td><td data-label="判定"><code>String</code>なので正常。</td></tr>
+<tr><td data-label="時点"><code>values[1] = 10</code></td><td data-label="見る型">実体は<code>String[]</code></td><td data-label="判定"><code>Integer</code>なので実行時に拒否。</td></tr>
+</tbody></table>
+</section>
+<section class="article-section textbook-section">
+<h2>例外は配列を代入した行ではなく、要素を書き込む行で起きる</h2>
+<pre class="article-code"><code>public class ArrayStorePoint {
+    public static void main(String[] args) {
+        Number[] numbers = new Integer[2]; // 正常
+        System.out.println("A");
+        numbers[0] = 10;                   // 正常
+        System.out.println("B");
+        numbers[1] = 2.5;                  // ArrayStoreException
+        System.out.println("C");          // 実行されない
+    }
+}</code></pre>
+<p>出力は<code>A</code>、<code>B</code>までです。<code>2.5</code>は<code>Double</code>としてボクシングされますが、実体が<code>Integer[]</code>なので格納時に停止します。</p>
+</section>
+<section class="article-section textbook-section">
+<h2>ジェネリクスは配列と同じ規則ではない</h2>
+<p><code>List&lt;String&gt;</code>を<code>List&lt;Object&gt;</code>へ代入することはできません。ジェネリクスは基本的に不変で、危険な要素追加をコンパイル時に防ぎます。</p>
+<pre class="article-code"><code>import java.util.List;
+
+class GenericDifference {
+    void sample(List&lt;String&gt; strings) {
+        // List&lt;Object&gt; objects = strings; // コンパイルエラー
+        List&lt;? extends Object&gt; readable = strings; // 読み取り用としては扱える
+        Object first = readable.get(0);
+        // readable.add("B"); // コンパイルエラー
+    }
+}</code></pre>
+<table class="ref-table study-table responsive-card-table"><thead><tr><th>仕組み</th><th>型の関係</th><th>不一致を検出する時点</th></tr></thead><tbody>
+<tr><td data-label="仕組み">配列</td><td data-label="型の関係"><code>String[]</code> → <code>Object[]</code>が可能</td><td data-label="不一致を検出する時点">要素代入時の実行時検査。</td></tr>
+<tr><td data-label="仕組み">ジェネリクス</td><td data-label="型の関係"><code>List&lt;String&gt;</code> → <code>List&lt;Object&gt;</code>は不可</td><td data-label="不一致を検出する時点">コンパイル時。</td></tr>
+</tbody></table>
+</section>
+<section class="article-section textbook-section">
+<h2>コンパイルエラーになる配列代入</h2>
+<p>配列なら何でも共変になるわけではありません。要素型に継承関係がない場合や、プリミティブ型配列では代入できません。</p>
+<pre class="article-code"><code>class ArrayCompileErrors {
+    void sample() {
+        // String[] a = new Object[2]; // コンパイルエラー: 逆方向
+        // Object[] b = new int[2];    // コンパイルエラー: int[]はObject[]ではない
+        Object c = new int[2];         // これは可能。配列自体はObjectのサブタイプ
+    }
+}</code></pre>
+</section>
+<section class="article-section textbook-section">
+<h2>コードを読む順番</h2>
+<ol class="article-list"><li>左辺と右辺の配列型に継承関係があり、参照の代入がコンパイルできるかを見る。</li><li><code>new</code>の右側から、実際の配列要素型を記録する。</li><li>要素代入ごとに、代入する値の実体型を確認する。</li><li>実体配列の要素型に入らない値なら、その式で<code>ArrayStoreException</code>。</li><li>例外発生後の文は実行しない。</li></ol>
+<p class="inline-note article-callout">作成直後の初期値や参照型要素の<code>null</code>は、<a href="../java-silver-array-default/index.html">配列要素の初期値とnull</a>で扱います。</p>
+</section>
+<section class="article-section"><h2>記事末尾の確認</h2><ul class="article-list"><li>宣言型と配列の実体型を分けて書ける。</li><li><code>ArrayStoreException</code>をコンパイルエラーと混同しない。</li><li>配列の共変性とジェネリクスの不変性を区別できる。</li></ul></section>
+</section></main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="index.html";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>

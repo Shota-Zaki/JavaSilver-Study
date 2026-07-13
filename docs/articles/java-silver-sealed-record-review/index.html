@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Java学習サイト" name="description"/>
+<title>sealedとrecordのJava17 Silverよく使う整理</title>
+<meta content="Java Practice Lab" property="og:site_name"/>
+<meta content="website" property="og:type"/>
+<meta content="sealedとrecordのJava17 Silverよく使う整理" property="og:title"/>
+<meta content="Java学習サイト" property="og:description"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="#e9eff3" name="theme-color"/>
+<link href="../../manifest.webmanifest" rel="manifest"/>
+<link href="../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="単元別解説">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="単元別解説"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">単元別解説</span><span class="site-context-title">recordとsealedの関係</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../index.html">トップ</a><a href="../../courses/java-basic/index.html">基礎</a><a href="../../courses/bronze/index.html">Bronze</a><a href="../../courses/java11-silver/index.html">Silver 11</a><a href="../../courses/java17-silver/index.html">Silver 17</a><a href="../../courses/gold11/index.html">Gold 11</a><a href="../../courses/gold17/index.html">Gold 17</a><a aria-current="page" class="is-active" href="../index.html">単元別解説</a><a href="../../columns/index.html">コラム</a></nav></div></header>
+<div class="layout">
+<main class="main" id="mainContent"><section class="content-page article-body wide-article upgraded-article">
+<h1>recordとsealedの関係</h1>
+<p class="lead">Java 17専用の復習記事です。recordが自動生成するものと、sealedが制限する継承先を別々に整理し、両者を組み合わせたコードを読めるようにします。</p><aside aria-label="広告" class="ad-slot ad-visible ad-banner ad-placement-content-top" data-ad-placement="content-top"><span class="ad-label">広告</span><span class="ad-placeholder">スポンサーリンク表示エリア</span></aside>
+<section class="article-section"><h2>recordは値のまとまりを表す、暗黙にfinalなクラス</h2>
+<pre class="article-code"><code>record Point(int x, int y) {}</code></pre>
+<p>コンポーネント<code>x</code>と<code>y</code>から、<code>private final</code>フィールド、同名アクセサ、正規コンストラクタ、<code>equals</code>、<code>hashCode</code>、<code>toString</code>が用意されます。recordクラスは暗黙に<code>final</code>なので、別クラスが継承することはできません。</p></section>
+<section class="article-section"><h2>sealedは直接のサブタイプを列挙する</h2>
+<pre class="article-code"><code>sealed interface Shape permits Circle, Rectangle {}
+record Circle(double radius) implements Shape {}
+record Rectangle(double width, double height) implements Shape {}</code></pre>
+<p>recordは暗黙に<code>final</code>なので、sealed型の直接サブタイプに必要な<code>final</code>/<code>sealed</code>/<code>non-sealed</code>の条件を満たします。上の2つのrecordは<code>Shape</code>を実装できます。</p></section>
+<section class="article-section"><h2>コンパイル時に見る場所</h2>
+<table class="ref-table study-table responsive-card-table"><thead><tr><th>論点</th><th>record</th><th>sealed</th></tr></thead><tbody>
+<tr><td data-label="論点">宣言側</td><td data-label="record">コンポーネントの型と名前</td><td data-label="sealed"><code>permits</code>または同一コンパイル単位の直接サブタイプ</td></tr>
+<tr><td data-label="論点">継承</td><td data-label="record">他クラスを明示的に<code>extends</code>できず、record自体も継承不可</td><td data-label="sealed">許可された直接サブタイプだけが継承・実装可能</td></tr>
+<tr><td data-label="論点">子側の指定</td><td data-label="record">暗黙に<code>final</code></td><td data-label="sealed"><code>final</code>/<code>sealed</code>/<code>non-sealed</code>のいずれか</td></tr>
+<tr><td data-label="論点">コンストラクタ</td><td data-label="record">正規またはコンパクト正規コンストラクタ</td><td data-label="sealed">通常のクラス・インタフェースの規則</td></tr>
+</tbody></table></section>
+<section class="article-section"><h2>誤りになる例</h2>
+<pre class="article-code"><code>sealed interface Result permits Success {}
+record Success(String value) implements Result {}
+
+// record Failure(String message) implements Result {}
+// コンパイルエラー: permitsに含まれていない
+
+// class Child extends Success {}
+// コンパイルエラー: recordは暗黙にfinal</code></pre></section>
+<section class="article-section"><h2>個別の詳細</h2><ul class="article-list"><li><a href="../java17-silver-record-details/index.html">recordのアクセサと正規コンストラクタ</a></li><li><a href="../java17-silver-sealed-permits/index.html">sealedとpermitsの制約</a></li></ul></section>
+<section class="article-section"><h2>記事末尾の確認</h2><ul class="article-list"><li>recordを「短い普通のクラス」とだけ説明せず、自動生成と制約を挙げられる。</li><li>recordがsealed型の直接サブタイプになれる理由を説明できる。</li><li><code>permits</code>違反とrecord継承違反を別のコンパイルエラーとして判定できる。</li></ul></section>
+</section></main>
+</div>
+<footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../site/about.html">このサイトについて</a><a href="../../site/editorial-policy.html">編集方針</a><a href="../../site/site-map.html">サイトマップ</a><a href="../../site/privacy.html">プライバシーポリシー</a><a href="../../site/terms.html">利用規約</a><a href="../../site/disclaimer.html">免責事項</a><a href="../../site/advertising.html">広告・アフィリエイト</a><a href="../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
+<script>window.APP_ROOT="../../";window.CURRENT_PAGE="index.html";</script>
+<script src="../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
+<script src="../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+</body>
+</html>
