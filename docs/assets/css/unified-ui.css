@@ -3168,3 +3168,308 @@ body.unified-ui-v12.portal-home .home-reading .portal-compact-list > a {
     grid-template-columns: minmax(0, 1fr) !important;
   }
 }
+
+
+/* v29 — one-line desktop header, larger exercise cards, beginner lessons, side advertising, level colors */
+@media (min-width: 901px) {
+  body.unified-ui-v12 .site-header-inner {
+    width: min(1240px, calc(100% - 28px)) !important;
+    display: grid !important;
+    grid-template-columns: 270px minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 14px !important;
+    padding: 7px 0 !important;
+  }
+  body.unified-ui-v12 .site-header-row {
+    min-height: 44px !important;
+    display: grid !important;
+    grid-template-columns: 118px minmax(0, 1fr) !important;
+    gap: 10px !important;
+    padding: 0 !important;
+  }
+  body.unified-ui-v12 .site-brand {
+    width: 118px !important;
+    min-width: 118px !important;
+    max-width: 118px !important;
+    min-height: 32px !important;
+    padding-right: 10px !important;
+  }
+  body.unified-ui-v12 .site-brand-name {
+    font-size: .78rem !important;
+    line-height: 1.15 !important;
+    white-space: normal !important;
+  }
+  body.unified-ui-v12 .site-page-context {
+    width: auto !important;
+    max-width: none !important;
+    gap: 0 !important;
+  }
+  body.unified-ui-v12 .site-context-section {
+    font-size: .62rem !important;
+    letter-spacing: .035em !important;
+  }
+  body.unified-ui-v12 .site-context-title {
+    font-size: .78rem !important;
+    line-height: 1.2 !important;
+  }
+  body.unified-ui-v12 .site-nav,
+  body.unified-ui-v12.management-ui-page .site-nav {
+    width: 100% !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 3px !important;
+    padding: 0 !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    white-space: nowrap !important;
+  }
+  body.unified-ui-v12 .site-nav a,
+  body.unified-ui-v12.java-site-page:not(.management-ui-page) .site-nav a {
+    min-height: 34px !important;
+    padding: 6px 8px !important;
+    font-size: .76rem !important;
+  }
+}
+
+/* Larger exercise selection cards. */
+body.unified-ui-v12.exercise-selection-page .main {
+  width: min(1240px, calc(100% - 32px)) !important;
+  max-width: 1240px !important;
+}
+body.unified-ui-v12.exercise-selection-page .panel {
+  padding: 16px !important;
+  margin-top: 12px !important;
+}
+body.unified-ui-v12.exercise-selection-page .section-head-row h2 {
+  font-size: 1.08rem !important;
+}
+body.unified-ui-v12 .exercise-index-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+body.unified-ui-v12 .exercise-index-item {
+  min-height: 112px !important;
+  padding: 14px 15px !important;
+  border-radius: 10px !important;
+  gap: 6px !important;
+}
+body.unified-ui-v12 .exercise-index-title {
+  font-size: .94rem !important;
+  line-height: 1.35 !important;
+}
+body.unified-ui-v12 .exercise-index-metrics {
+  gap: 9px !important;
+  font-size: .73rem !important;
+}
+body.unified-ui-v12 .exercise-index-description {
+  font-size: .74rem !important;
+  line-height: 1.45 !important;
+  white-space: normal !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+}
+@media (max-width: 960px) {
+  body.unified-ui-v12 .exercise-index-grid { grid-template-columns: repeat(3, minmax(0,1fr)) !important; }
+}
+@media (max-width: 720px) {
+  body.unified-ui-v12 .exercise-index-grid { grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
+}
+@media (max-width: 520px) {
+  body.unified-ui-v12 .exercise-index-grid { grid-template-columns: 1fr !important; }
+}
+
+/* Basic course is a reading course: no dashboard or exercise index. */
+body.unified-ui-v12.minimal-course-index[data-page-section="Java基礎"] .main {
+  width: min(1080px, calc(100% - 32px)) !important;
+  max-width: 1080px !important;
+}
+body.unified-ui-v12.minimal-course-index[data-page-section="Java基礎"] .lesson-index-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+body.unified-ui-v12.minimal-course-index[data-page-section="Java基礎"] .lesson-index-card {
+  min-height: 132px !important;
+  padding: 16px !important;
+}
+body.unified-ui-v12.minimal-course-index[data-page-section="Java基礎"] .lesson-index-card h3 {
+  font-size: 1rem !important;
+}
+body.unified-ui-v12.minimal-course-index[data-page-section="Java基礎"] .lesson-index-card p {
+  font-size: .78rem !important;
+  line-height: 1.5 !important;
+  -webkit-line-clamp: 3 !important;
+}
+@media (max-width: 820px) {
+  body.unified-ui-v12.minimal-course-index[data-page-section="Java基礎"] .lesson-index-grid { grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
+}
+@media (max-width: 520px) {
+  body.unified-ui-v12.minimal-course-index[data-page-section="Java基礎"] .lesson-index-grid { grid-template-columns: 1fr !important; }
+}
+
+/* Beginner lesson editorial pass. */
+body.beginner-lesson .lesson-main { max-width: 900px !important; }
+body.beginner-lesson .lesson-hero { padding: 24px 26px !important; }
+body.beginner-lesson .lesson-hero .lead { max-width: 760px; font-size: 1rem !important; line-height: 1.8 !important; }
+body.beginner-lesson .goal-box { margin-top: 14px !important; padding: 14px 16px !important; }
+body.beginner-lesson .lesson-section { padding: 22px 24px !important; }
+body.beginner-lesson .lesson-section h2 { font-size: 1.35rem !important; }
+body.beginner-lesson .lesson-section :where(p, li) { line-height: 1.9 !important; }
+body.beginner-lesson .lesson-section + .lesson-section { margin-top: 14px !important; }
+
+/* Directory level backgrounds and Java 17 grouping. */
+body.unified-ui-v12.compact-directory-page .article-level-section {
+  margin-top: 14px !important;
+  padding: 18px !important;
+  border: 1px solid var(--ui-border) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--ui-shadow) !important;
+}
+body.unified-ui-v12.compact-directory-page .article-level-basic {
+  background: linear-gradient(135deg, #fffaf4, #f4e4d2) !important;
+  border-top: 5px solid #a86d36 !important;
+}
+body.unified-ui-v12.compact-directory-page .article-level-silver {
+  background: linear-gradient(135deg, #fbfcfd, #e2e8ed) !important;
+  border-top: 5px solid #7b8995 !important;
+}
+body.unified-ui-v12.compact-directory-page .article-level-gold {
+  background: linear-gradient(135deg, #fffdf4, #f3e4b3) !important;
+  border-top: 5px solid #b38a20 !important;
+}
+body.unified-ui-v12 .article-version-group {
+  margin-top: 14px !important;
+  padding: 14px !important;
+  border: 1px solid #aab6bf !important;
+  border-radius: 10px !important;
+  background: rgba(255,255,255,.72) !important;
+}
+body.unified-ui-v12 .article-version-head {
+  display: flex !important;
+  align-items: baseline !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  margin-bottom: 10px !important;
+}
+body.unified-ui-v12 .article-version-head h3,
+body.unified-ui-v12 .article-version-head p { margin: 0 !important; }
+body.unified-ui-v12 .article-version-head p { color: var(--ui-text-subtle) !important; font-size: .78rem !important; }
+body.unified-ui-v12 .article-unit-grid-java17 { grid-template-columns: repeat(4, minmax(0,1fr)) !important; margin-top: 0 !important; }
+@media (max-width: 960px) { body.unified-ui-v12 .article-unit-grid-java17 { grid-template-columns: repeat(2, minmax(0,1fr)) !important; } }
+@media (max-width: 560px) {
+  body.unified-ui-v12 .article-version-head { display: block !important; }
+  body.unified-ui-v12 .article-version-head p { margin-top: 3px !important; }
+  body.unified-ui-v12 .article-unit-grid-java17 { grid-template-columns: 1fr !important; }
+}
+
+/* Course heroes use the color named by the course. */
+body.unified-ui-v12[data-course="bronze"] .course-hero-card {
+  border-top-color: #a86d36 !important;
+  background: linear-gradient(135deg, #fffaf5, #efd8c1) !important;
+}
+body.unified-ui-v12[data-course="bronze"] .course-hero-card .eyebrow { color: #7a451f !important; }
+body.unified-ui-v12:is([data-course="silver11"],[data-course="silver17"],[data-course="silver"]) .course-hero-card {
+  border-top-color: #7b8995 !important;
+  background: linear-gradient(135deg, #fcfdfe, #dfe6eb) !important;
+}
+body.unified-ui-v12:is([data-course="silver11"],[data-course="silver17"],[data-course="silver"]) .course-hero-card .eyebrow { color: #52616d !important; }
+body.unified-ui-v12:is([data-course="gold11"],[data-course="gold17"],[data-course="gold"]) .course-hero-card {
+  border-top-color: #b38a20 !important;
+  background: linear-gradient(135deg, #fffef7, #f1e0a7) !important;
+}
+body.unified-ui-v12:is([data-course="gold11"],[data-course="gold17"],[data-course="gold"]) .course-hero-card .eyebrow { color: #765b12 !important; }
+
+/* Explicit left/right ad rails on desktop; existing in-flow position on smaller screens. */
+body.unified-ui-v12 .ad-placement-shell { display: block; }
+body.unified-ui-v12 .ad-side-rail { display: none !important; }
+body.unified-ui-v12 .ad-mobile-current { display: grid !important; }
+@media (min-width: 1400px) {
+  body.unified-ui-v12 .ad-placement-shell {
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  body.unified-ui-v12 .ad-mobile-current { display: none !important; }
+  body.unified-ui-v12 .ad-side-rail {
+    position: fixed !important;
+    top: 132px !important;
+    z-index: 20 !important;
+    width: clamp(104px, calc((100vw - 1180px) / 2 - 18px), 170px) !important;
+    min-height: 300px !important;
+    margin: 0 !important;
+    padding: 14px 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    gap: 12px !important;
+    border: 1px solid var(--ui-border) !important;
+    border-radius: 10px !important;
+    background: var(--ui-surface-soft) !important;
+    box-shadow: none !important;
+    text-align: center !important;
+  }
+  body.unified-ui-v12 .ad-side-left { left: 12px !important; }
+  body.unified-ui-v12 .ad-side-right { right: 12px !important; }
+  body.unified-ui-v12 .ad-side-rail .ad-label { align-self: center !important; }
+  body.unified-ui-v12 .ad-side-rail .ad-placeholder {
+    display: grid !important;
+    min-height: 230px !important;
+    place-items: center !important;
+    line-height: 1.5 !important;
+    writing-mode: horizontal-tb !important;
+  }
+}
+
+/* v29 ad specificity correction */
+body.unified-ui-v12 .ad-slot.ad-visible.ad-banner.ad-side-rail {
+  display: none !important;
+}
+body.unified-ui-v12 .ad-slot.ad-visible.ad-banner.ad-mobile-current {
+  display: grid !important;
+}
+@media (min-width: 1400px) {
+  body.unified-ui-v12 .ad-slot.ad-visible.ad-banner.ad-mobile-current {
+    display: none !important;
+  }
+  body.unified-ui-v12 .ad-slot.ad-visible.ad-banner.ad-side-rail {
+    position: fixed !important;
+    top: 132px !important;
+    z-index: 20 !important;
+    width: clamp(104px, calc((100vw - 1180px) / 2 - 18px), 170px) !important;
+    min-width: 0 !important;
+    max-width: 170px !important;
+    min-height: 300px !important;
+    margin: 0 !important;
+    padding: 14px 10px !important;
+    display: flex !important;
+    grid-template-columns: none !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    justify-items: stretch !important;
+    gap: 12px !important;
+    text-align: center !important;
+  }
+}
+
+@media (min-width: 1400px) {
+  body.unified-ui-v12.ad-rail-page .main {
+    width: min(1080px, calc(100% - 320px)) !important;
+    max-width: 1080px !important;
+  }
+}
+
+/* v29 selector-course hero color alignment */
+body.unified-ui-v12[data-course="silver-selector"] .course-hero-card {
+  border-top-color: #7b8995 !important;
+  background: linear-gradient(135deg, #fcfdfe, #dfe6eb) !important;
+}
+body.unified-ui-v12[data-course="silver-selector"] .course-hero-card .eyebrow { color: #52616d !important; }
+body.unified-ui-v12[data-course="gold-selector"] .course-hero-card {
+  border-top-color: #b38a20 !important;
+  background: linear-gradient(135deg, #fffef7, #f1e0a7) !important;
+}
+body.unified-ui-v12[data-course="gold-selector"] .course-hero-card .eyebrow { color: #765b12 !important; }

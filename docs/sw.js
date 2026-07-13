@@ -1,4 +1,4 @@
-const CACHE_NAME = 'java-practice-lab-v28-all-mock-cross-audit-runtime-verified';
+const CACHE_NAME = 'java-practice-lab-v29-ui-basic-editorial';
 const CORE_ASSETS = [
   './',
   './index.html',

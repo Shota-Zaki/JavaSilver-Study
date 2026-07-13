@@ -1,30 +1,31 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="newを実行したときに呼ばれるコンストラクタと、this・superの順序を追います。" name="description"/>
-<title>Lesson 14 コンストラクタ｜Java Practice Lab</title>
+<title>コンストラクタ｜Java Practice Lab</title>
 <meta content="Java Practice Lab" property="og:site_name"/>
 <meta content="website" property="og:type"/>
-<meta content="Lesson 14 コンストラクタ｜Java Practice Lab" property="og:title"/>
+<meta content="コンストラクタ｜Java Practice Lab" property="og:title"/>
 <meta content="newを実行したときに呼ばれるコンストラクタと、this・superの順序を追います。" property="og:description"/>
 <meta content="summary" name="twitter:card"/>
 <meta content="#e9eff3" name="theme-color"/>
 <link href="../../../manifest.webmanifest" rel="manifest"/>
-<link href="../../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../../assets/css/styles.css?v=v29-ui-basic-editorial" rel="stylesheet"/><link href="../../../assets/css/unified-ui.css?v=v29-ui-basic-editorial" rel="stylesheet"/>
 <link href="../../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
-<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="Java基礎">
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12 beginner-lesson" data-page-section="Java基礎">
 <a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="Java基礎"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">Java基礎</span><span class="site-context-title">コンストラクタ</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../../index.html">トップ</a><a aria-current="page" class="is-active" href="../index.html">基礎</a><a href="../../bronze/index.html">Bronze</a><a href="../../java11-silver/index.html">Silver 11</a><a href="../../java17-silver/index.html">Silver 17</a><a href="../../gold11/index.html">Gold 11</a><a href="../../gold17/index.html">Gold 17</a><a href="../../../articles/index.html">単元別解説</a><a href="../../../columns/index.html">コラム</a></nav></div></header>
 <div class="layout">
 <main class="main lesson-main" id="mainContent">
 <article class="card lesson-hero">
 <p class="meta">Java基礎 Lesson 14</p>
 <h1>コンストラクタ</h1>
-<p class="lead">コンストラクタをインスタンス初期化のための特別な宣言として定義し、this・superの呼び出し規則を説明します。</p>
-<div class="box goal-box"><strong>このレッスンのゴール</strong><p>コンストラクタとメソッドを区別し、デフォルトコンストラクタが生成される条件を説明できること。</p></div>
+<p class="lead">newすると、フィールドの準備とコンストラクタの処理が順番に行われます。thisとsuperの呼び出しも含めて追います。</p>
+<div class="box goal-box"><strong>ここまでできればOK</strong><p>コンストラクタの宣言と呼び出し順をコードから説明できるようになります。</p></div>
 </article><section class="card lesson-section basic-term-intro">
-<h2>基本用語の定義</h2>
+<h2>まず押さえる言葉</h2>
 <div class="term-side-layout">
 <div>
 <p>コンストラクタは戻り値型を持たず、クラス名と同じ名前を使います。`new`による生成時に初期化処理として呼び出されます。</p>
@@ -33,7 +34,7 @@
 <div class="term-note basic-term-mini"><strong>コンストラクタとは</strong>インスタンス生成時に実行される初期化処理。クラス名と同じ名前で戻り値型を書かない。</div><div class="term-note basic-term-mini"><strong>デフォルトコンストラクタとは</strong>コンストラクタを1つも書かない場合に、コンパイラが自動追加する引数なしコンストラクタ。</div><div class="term-note basic-term-mini"><strong><code>this</code>とは</strong>現在のインスタンス自身を指す参照。</div><div class="term-note basic-term-mini"><strong><code>this()</code>とは</strong>同じクラス内の別コンストラクタを呼ぶ構文。</div><div class="term-note basic-term-mini"><strong><code>super()</code>とは</strong>スーパークラスのコンストラクタを呼ぶ構文。</div>
 </div>
 </div>
-</section><section class="card lesson-section basic-term-check core-rule-section"><h2>コンストラクタの宣言と連鎖の規則</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>項目</th><th>定義・規則</th><th>具体例</th></tr></thead><tbody><tr><td data-label="項目"><span>名前</span></td><td data-label="定義・規則"><span>コンストラクタ名はクラス名と完全に一致します。</span></td><td data-label="具体例"><span>大文字・小文字も一致させます。</span></td></tr><tr><td data-label="項目"><span>戻り値型</span></td><td data-label="定義・規則"><span>コンストラクタには戻り値型を書きません。</span></td><td data-label="具体例"><span><code>void ClassName()</code>はメソッドです。</span></td></tr><tr><td data-label="項目"><span>オーバーロード</span></td><td data-label="定義・規則"><span>引数型の並びが異なる複数のコンストラクタを宣言できます。</span></td><td data-label="具体例"><span><code>User()</code>と<code>User(String)</code>。</span></td></tr><tr><td data-label="項目"><span>デフォルトコンストラクタ</span></td><td data-label="定義・規則"><span>コンストラクタを1つも宣言しない場合にコンパイラが補います。</span></td><td data-label="具体例"><span>1つでも宣言すると自動追加されません。</span></td></tr><tr><td data-label="項目"><span>this()</span></td><td data-label="定義・規則"><span>同じクラスの別コンストラクタを呼び出します。</span></td><td data-label="具体例"><span>コンストラクタ本体の先頭文に限ります。</span></td></tr><tr><td data-label="項目"><span>super()</span></td><td data-label="定義・規則"><span>直接の親クラスのコンストラクタを呼び出します。</span></td><td data-label="具体例"><span>明示しない場合は原則として引数なし<code>super()</code>が補われます。</span></td></tr></tbody></table></div></section>
+</section><section class="card lesson-section basic-term-check core-rule-section"><h2>コンストラクタの宣言と呼び出し</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>項目</th><th>意味・使い方</th><th>具体例</th></tr></thead><tbody><tr><td data-label="項目"><span>名前</span></td><td data-label="意味・使い方"><span>コンストラクタ名はクラス名と完全に一致します。</span></td><td data-label="具体例"><span>大文字・小文字も一致させます。</span></td></tr><tr><td data-label="項目"><span>戻り値型</span></td><td data-label="意味・使い方"><span>コンストラクタには戻り値型を書きません。</span></td><td data-label="具体例"><span><code>void ClassName()</code>はメソッドです。</span></td></tr><tr><td data-label="項目"><span>オーバーロード</span></td><td data-label="意味・使い方"><span>引数型の並びが異なる複数のコンストラクタを宣言できます。</span></td><td data-label="具体例"><span><code>User()</code>と<code>User(String)</code>。</span></td></tr><tr><td data-label="項目"><span>デフォルトコンストラクタ</span></td><td data-label="意味・使い方"><span>コンストラクタを1つも宣言しない場合にコンパイラが補います。</span></td><td data-label="具体例"><span>1つでも宣言すると自動追加されません。</span></td></tr><tr><td data-label="項目"><span>this()</span></td><td data-label="意味・使い方"><span>同じクラスの別コンストラクタを呼び出します。</span></td><td data-label="具体例"><span>コンストラクタ本体の先頭文に限ります。</span></td></tr><tr><td data-label="項目"><span>super()</span></td><td data-label="意味・使い方"><span>直接の親クラスのコンストラクタを呼び出します。</span></td><td data-label="具体例"><span>明示しない場合は原則として引数なし<code>super()</code>が補われます。</span></td></tr></tbody></table></div></section>
 <section class="card lesson-section"><h2>基本形</h2><pre><code>class Item {
     String name;
 
@@ -77,7 +78,7 @@ public class Main {
         User user = new User();
         System.out.println(user.name);
     }
-}</code></pre><p><span><code>new User()</code>は引数なしコンストラクタを呼び、最初の<code>this("unknown")</code>から引数付きコンストラクタへ処理が移ります。</span></p></section><section class="card lesson-section"><h2>関連する用語との違い</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>混同しやすいもの</th><th>違い</th><th>見分け方</th></tr></thead><tbody><tr><td data-label="混同しやすいもの">コンストラクタ / メソッド</td><td data-label="違い">コンストラクタは戻り値型なし。メソッドは戻り値型がある。</td><td data-label="見分け方"><code>void ClassName()</code>はコンストラクタにならない。</td></tr><tr><td data-label="混同しやすいもの"><code>this()</code> / <code>super()</code></td><td data-label="違い"><code>this()</code>は同じクラスの別コンストラクタ、<code>super()</code>は親コンストラクタ。</td><td data-label="見分け方">最初の文にしか書けない。</td></tr><tr><td data-label="混同しやすいもの">デフォルトコンストラクタ / 自作コンストラクタ</td><td data-label="違い">コンストラクタを書かない場合だけ、引数なしコンストラクタが自動追加される。</td><td data-label="見分け方">1つでも書いたら自動追加されない。</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>インスタンス初期化を追う規則</h2><ol><li><span><code>new</code>で選択されるコンストラクタを引数型から決める。</span></li><li><span>コンストラクタ先頭の<code>this()</code>または<code>super()</code>を確認する。</span></li><li><span>親クラス側の初期化を先に完了する。</span></li><li><span>インスタンスフィールド初期化子と初期化ブロックを記述順に処理する。</span></li><li><span>最後に選択されたコンストラクタ本体の残りを実行する。</span></li></ol><p class="code-caption">確認用コード</p><pre><code>class Item {
+}</code></pre><p><span><code>new User()</code>は引数なしコンストラクタを呼び、最初の<code>this("unknown")</code>から引数付きコンストラクタへ処理が移ります。</span></p></section><section class="card lesson-section"><h2>似た言葉との違い</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>混同しやすいもの</th><th>違い</th><th>見分け方</th></tr></thead><tbody><tr><td data-label="混同しやすいもの">コンストラクタ / メソッド</td><td data-label="違い">コンストラクタは戻り値型なし。メソッドは戻り値型がある。</td><td data-label="見分け方"><code>void ClassName()</code>はコンストラクタにならない。</td></tr><tr><td data-label="混同しやすいもの"><code>this()</code> / <code>super()</code></td><td data-label="違い"><code>this()</code>は同じクラスの別コンストラクタ、<code>super()</code>は親コンストラクタ。</td><td data-label="見分け方">最初の文にしか書けない。</td></tr><tr><td data-label="混同しやすいもの">デフォルトコンストラクタ / 自作コンストラクタ</td><td data-label="違い">コンストラクタを書かない場合だけ、引数なしコンストラクタが自動追加される。</td><td data-label="見分け方">1つでも書いたら自動追加されない。</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>インスタンス初期化の確認順</h2><ol><li><span><code>new</code>で選択されるコンストラクタを引数型から決める。</span></li><li><span>コンストラクタ先頭の<code>this()</code>または<code>super()</code>を確認する。</span></li><li><span>親クラス側の初期化を先に完了する。</span></li><li><span>インスタンスフィールド初期化子と初期化ブロックを記述順に処理する。</span></li><li><span>最後に選択されたコンストラクタ本体の残りを実行する。</span></li></ol><p class="code-caption">確認用コード</p><pre><code>class Item {
     String name;
 
     void Item(String name) {
@@ -86,73 +87,15 @@ public class Main {
 }
 
 Item item = new Item("pen");</code></pre><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>見る点</th><th>このコードでの判断</th><th>結論</th></tr></thead><tbody><tr><td data-label="見る点"><code>void Item</code></td><td data-label="このコードでの判断">戻り値型<code>void</code>がある</td><td data-label="結論">コンストラクタではなくメソッド</td></tr><tr><td data-label="見る点"><code>new Item("pen")</code></td><td data-label="このコードでの判断">String引数コンストラクタを探す</td><td data-label="結論">存在しない</td></tr><tr><td data-label="見る点">結論</td><td data-label="このコードでの判断">一致するコンストラクタなし</td><td data-label="結論">コンパイルエラー</td></tr></tbody></table></div></section>
-<section class="card lesson-section flow-section"><h2>newから初期化の順番を追う</h2>
-<p>コンストラクタは、新しく作られたインスタンスへ初期値を設定するための特別な処理です。戻り値型は書かず、クラス名と同じ名前にします。</p>
-<pre><code>class User {
-    String name;
-
-    User(String name) {
-        this.name = name;
-    }
-}</code></pre>
-<p>ここでの<code>this.name</code>はフィールド、右辺の<code>name</code>は引数です。コンストラクタは、外から受け取った値をインスタンスの状態へセットする役割を持ちます。</p>
-<div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>状況</th><th>何が起きるか</th><th>注意</th></tr></thead><tbody><tr><td data-label="状況">コンストラクタを1つも書かない</td><td data-label="何が起きるか">引数なしのデフォルトコンストラクタが用意される</td><td data-label="注意">自動で作られる</td></tr><tr><td data-label="状況">引数ありコンストラクタを書く</td><td data-label="何が起きるか">デフォルトコンストラクタは自動生成されない</td><td data-label="注意"><code>new User()</code>は不可</td></tr><tr><td data-label="状況"><code>this(...)</code>を書く</td><td data-label="何が起きるか">同じクラスの別コンストラクタを呼ぶ</td><td data-label="注意">先頭行にしか書けない</td></tr><tr><td data-label="状況"><code>super(...)</code>を書く</td><td data-label="何が起きるか">親クラスのコンストラクタを呼ぶ</td><td data-label="注意">先頭行にしか書けない</td></tr></tbody></table></div>
-<pre><code>class Item {
-    String name;
-
-    Item() {
-        this("unknown");
-    }
-
-    Item(String name) {
-        this.name = name;
-    }
-}</code></pre>
-<div class="mistake-callout"><strong>よくあるミス</strong><p>コンストラクタに<code>void</code>を書くと、コンストラクタではなく通常メソッドになります。見た目が似ていても、生成時には呼ばれません。</p></div>
-</section>
-<section class="card lesson-section basic-stumble-check"><h2>定義と規則の整理</h2><h3>コンストラクタで混同しやすい点</h3><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>つまずき</th><th>正しい考え方</th></tr></thead><tbody><tr><td data-label="つまずき">コンストラクタをメソッドだと思う</td><td data-label="正しい考え方">コンストラクタはインスタンス生成時の初期化処理。戻り値型を書かない。</td></tr><tr><td data-label="つまずき">デフォルトコンストラクタが常にあると思う</td><td data-label="正しい考え方">引数ありでも自作コンストラクタを書くと、引数なしのデフォルトコンストラクタは自動追加されない。</td></tr><tr><td data-label="つまずき"><code>this()</code>や<code>super()</code>をどこにでも書けると思う</td><td data-label="正しい考え方">コンストラクタ呼び出しはコンストラクタの先頭行でなければならない。</td></tr></tbody></table></div><h3>確認できれば次へ</h3><ul class="check-list compact-check-list"><li>コンストラクタとメソッドの違いを説明できる</li><li>デフォルトコンストラクタが追加される条件を説明できる</li><li>this()とsuper()の先頭行ルールを説明できる</li></ul><div class="lesson-note"><strong>理解の基準</strong></div></section>
-<section class="card lesson-section code-trio-section">
-<h2>成立するコードと成立しないコード</h2>
-<div class="code-trio-grid">
-<article class="code-trio-card good"><h3>成立する例：引数なしコンストラクタ</h3><pre><code>class User {
-    User() {
-        System.out.println("new");
-    }
-}</code></pre></article>
-<article class="code-trio-card bad"><h3>成立しない例：戻り値型があるためコンストラクタではなくメソッドになる</h3><pre><code>class User {
-    void User(String name) {
-        System.out.println(name);
-    }
-}</code></pre></article>
-<article class="code-trio-card fix"><h3>成立する形：戻り値型を書かずクラス名と同じ名前にする</h3><pre><code>class User {
-    User(String name) {
-        System.out.println(name);
-    }
-}</code></pre></article>
-</div>
-<div class="lesson-note"><strong>確認ポイント</strong><p>コンストラクタには戻り値型を書きません。voidを書くと同名メソッドになります。</p></div>
-</section>
-<section class="card lesson-section basic-understanding-quiz quiz-level-section"><h2>定義と規則を確認する</h2><div class="quiz-level-list"><article class="quiz-level-card"><h3>用語の確認</h3><p>コンストラクタとメソッドの違いを説明できますか。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>コンストラクタはインスタンス生成時の初期化処理で、クラス名と同じ名前で戻り値型を書きません。メソッドは通常の処理です。</p></details></article><article class="quiz-level-card"><h3>コードの確認</h3><p>次のSampleはコンストラクタを定義していますか。</p><pre><code>class Sample {
-    void Sample() {
-        System.out.println("A");
-    }
-}</code></pre><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>定義していません。voidがあるため、これはSampleという名前のメソッドです。コンストラクタではありません。</p></details></article><article class="quiz-level-card"><h3>仕組みを説明する</h3><p>this() または super() をコンストラクタの先頭行に置く必要がある理由を説明してください。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>インスタンス初期化では、どのコンストラクタを先に使うかを最初に確定する必要があります。そのためthis()やsuper()はコンストラクタ本体の先頭にしか置けません。</p></details></article></div></section><section class="card lesson-section check-section"><h2>基本ルールのまとめ</h2><ul><li>コンストラクタと同名メソッドを区別できる。</li><li>デフォルトコンストラクタが追加される条件を説明できる。</li><li>this()とsuper()による呼び出し順を追える。</li></ul></section><section class="card lesson-section"><h2>コードに規則を当てはめる</h2><p>次のコードはなぜコンパイルエラーになるか。</p><p class="code-caption">確認用コード</p><pre><code>class User {
-    User(String name) { }
-}
-
-public class Main {
-    public static void main(String[] args) {
-        User u = new User();
-    }
-}</code></pre><details class="answer-panel"><summary>説明を見る</summary><p><code>User(String name)</code>を自分で定義しているため、引数なしコンストラクタは自動生成されない。</p><p><code>new User()</code>に対応する引数なしコンストラクタが存在しないため、コンパイルエラーになる。</p></details></section><section class="card lesson-nav-bottom"><div><a class="btn ghost" href="13.html">← 前のLesson</a><a class="btn" href="../index.html">Lesson一覧</a><a class="btn primary" href="15.html">次のLesson →</a></div></section>
+<section class="card lesson-section check-section"><h2>ここまでの要点</h2><ul><li>コンストラクタと同名メソッドを区別できる。</li><li>デフォルトコンストラクタが追加される条件を説明できる。</li><li>this()とsuper()による呼び出し順を追える。</li></ul></section><section class="card lesson-nav-bottom"><div><a class="btn ghost" href="13.html">← 前のLesson</a><a class="btn" href="../index.html">Lesson一覧</a><a class="btn primary" href="15.html">次のLesson →</a></div></section>
 </main>
 </div>
 <footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../../site/about.html">このサイトについて</a><a href="../../../site/editorial-policy.html">編集方針</a><a href="../../../site/site-map.html">サイトマップ</a><a href="../../../site/privacy.html">プライバシーポリシー</a><a href="../../../site/terms.html">利用規約</a><a href="../../../site/disclaimer.html">免責事項</a><a href="../../../site/advertising.html">広告・アフィリエイト</a><a href="../../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
 <script>window.APP_ROOT="../../../";window.CURRENT_PAGE="java-basic-14.html";</script>
-<script src="../../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
-<script src="../../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
-<script src="../../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
-<script src="../../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
-<script src="../../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+<script src="../../../data/questions.js?v=v29-ui-basic-editorial"></script>
+<script src="../../../assets/js/java-storage.js?v=v29-ui-basic-editorial"></script>
+<script src="../../../assets/js/app.js?v=v29-ui-basic-editorial"></script>
+<script src="../../../assets/js/java-bridge.js?v=v29-ui-basic-editorial"></script>
+<script src="../../../pwa.js?v=v29-ui-basic-editorial"></script>
 </body>
 </html>

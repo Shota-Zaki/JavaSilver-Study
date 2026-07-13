@@ -1,30 +1,31 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="コードを上から眺めず、コンパイル可否、実行開始、値の変化の順に読みます。" name="description"/>
-<title>Lesson 20 式と文の実行規則｜Java Practice Lab</title>
+<title>コードの読み方｜Java Practice Lab</title>
 <meta content="Java Practice Lab" property="og:site_name"/>
 <meta content="website" property="og:type"/>
-<meta content="Lesson 20 コードを読む順番｜Java Practice Lab" property="og:title"/>
+<meta content="コードの読み方｜Java Practice Lab" property="og:title"/>
 <meta content="コードを上から眺めず、コンパイル可否、実行開始、値の変化の順に読みます。" property="og:description"/>
 <meta content="summary" name="twitter:card"/>
 <meta content="#e9eff3" name="theme-color"/>
 <link href="../../../manifest.webmanifest" rel="manifest"/>
-<link href="../../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../../assets/css/styles.css?v=v29-ui-basic-editorial" rel="stylesheet"/><link href="../../../assets/css/unified-ui.css?v=v29-ui-basic-editorial" rel="stylesheet"/>
 <link href="../../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
-<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="Java基礎">
-<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="Java基礎"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">Java基礎</span><span class="site-context-title">式と文の実行規則</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../../index.html">トップ</a><a aria-current="page" class="is-active" href="../index.html">基礎</a><a href="../../bronze/index.html">Bronze</a><a href="../../java11-silver/index.html">Silver 11</a><a href="../../java17-silver/index.html">Silver 17</a><a href="../../gold11/index.html">Gold 11</a><a href="../../gold17/index.html">Gold 17</a><a href="../../../articles/index.html">単元別解説</a><a href="../../../columns/index.html">コラム</a></nav></div></header>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12 beginner-lesson" data-page-section="Java基礎">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="Java基礎"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">Java基礎</span><span class="site-context-title">コードの読み方</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../../index.html">トップ</a><a aria-current="page" class="is-active" href="../index.html">基礎</a><a href="../../bronze/index.html">Bronze</a><a href="../../java11-silver/index.html">Silver 11</a><a href="../../java17-silver/index.html">Silver 17</a><a href="../../gold11/index.html">Gold 11</a><a href="../../gold17/index.html">Gold 17</a><a href="../../../articles/index.html">単元別解説</a><a href="../../../columns/index.html">コラム</a></nav></div></header>
 <div class="layout">
 <main class="main lesson-main" id="mainContent">
 <article class="card lesson-hero">
 <p class="meta">Java基礎 Lesson 20</p>
-<h1>式と文の実行規則</h1>
-<p class="lead">式、文、ブロック、スコープ、演算子の優先順位、オペランドの評価順を定義します。</p>
-<div class="box goal-box"><strong>このレッスンのゴール</strong><p>コードの構文構造と実行順序を分け、式の値と副作用を順に追跡できること。</p></div>
+<h1>コードの読み方</h1>
+<p class="lead">コードを見たら、いきなり出力だけを予想しません。コンパイル可否、実行順、値と参照の変化の順で追います。</p>
+<div class="box goal-box"><strong>ここまでできればOK</strong><p>短いコードを表やメモに分け、評価順を正確に追えるようになります。</p></div>
 </article><section class="card lesson-section basic-term-intro">
-<h2>基本用語の定義</h2>
+<h2>まず押さえる言葉</h2>
 <div class="term-side-layout">
 <div>
 <p>ソースコードの見た目の並びだけではなく、演算子の結び付きとオペランドの評価順を分けて考えます。</p>
@@ -33,7 +34,7 @@
 <div class="term-note basic-term-mini"><strong>評価順とは</strong>式やメソッド呼び出しが処理される順番。</div><div class="term-note basic-term-mini"><strong>制御フローとは</strong>if、for、return、例外などで処理が進む道筋。</div><div class="term-note basic-term-mini"><strong>スコープとは</strong>変数や名前が有効な範囲。</div><div class="term-note basic-term-mini"><strong>ライフタイムとは</strong>変数やオブジェクトが使える期間。</div><div class="term-note basic-term-mini"><strong>副作用とは</strong>値を返すだけでなく、変数変更や出力など状態を変えること。</div>
 </div>
 </div>
-</section><section class="card lesson-section basic-term-check core-rule-section"><h2>式・文・ブロック・評価の定義</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>項目</th><th>定義・規則</th><th>具体例</th></tr></thead><tbody><tr><td data-label="項目"><span>式</span></td><td data-label="定義・規則"><span>評価すると値になるコードのまとまり。</span></td><td data-label="具体例"><span><code>a + b</code>、<code>method()</code>、<code>x = 10</code>。</span></td></tr><tr><td data-label="項目"><span>文</span></td><td data-label="定義・規則"><span>実行の単位となる構文。</span></td><td data-label="具体例"><span>式文、if文、return文など。</span></td></tr><tr><td data-label="項目"><span>ブロック</span></td><td data-label="定義・規則"><span>波かっこで囲まれた文の並び。</span></td><td data-label="具体例"><span>独自のスコープを作ります。</span></td></tr><tr><td data-label="項目"><span>優先順位</span></td><td data-label="定義・規則"><span>どの演算子が強く結び付くかを決める規則。</span></td><td data-label="具体例"><span><code>1 + 2 * 3</code>は<code>1 + (2 * 3)</code>。</span></td></tr><tr><td data-label="項目"><span>評価順</span></td><td data-label="定義・規則"><span>オペランドを実際に評価する順序。</span></td><td data-label="具体例"><span>Javaでは演算子のオペランドを原則として左から評価します。</span></td></tr><tr><td data-label="項目"><span>副作用</span></td><td data-label="定義・規則"><span>値の計算以外に状態を変える動作。</span></td><td data-label="具体例"><span>代入、インクリメント、メソッド呼び出しなど。</span></td></tr></tbody></table></div></section><section class="card lesson-section"><h2>読解の基本手順</h2><ol><li>publicクラス名・ファイル名・mainの形を見る。</li><li>宣言されている変数の型を見る。</li><li>コンパイルエラーになる箇所がないか判定する。</li><li>newで作られるインスタンスや配列を図にする。</li><li>値が変わる行だけを追う。</li><li>メソッド呼び出しでどこへ移動するか判定する。</li><li>最後に出力順を判定する。</li></ol></section><section class="card lesson-section"><h2>小さい例で読む</h2><pre><code>class Item {
+</section><section class="card lesson-section basic-term-check core-rule-section"><h2>式・文・ブロック・評価の基本</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>項目</th><th>意味・使い方</th><th>具体例</th></tr></thead><tbody><tr><td data-label="項目"><span>式</span></td><td data-label="意味・使い方"><span>評価すると値になるコードのまとまり。</span></td><td data-label="具体例"><span><code>a + b</code>、<code>method()</code>、<code>x = 10</code>。</span></td></tr><tr><td data-label="項目"><span>文</span></td><td data-label="意味・使い方"><span>実行の単位となる構文。</span></td><td data-label="具体例"><span>式文、if文、return文など。</span></td></tr><tr><td data-label="項目"><span>ブロック</span></td><td data-label="意味・使い方"><span>波かっこで囲まれた文の並び。</span></td><td data-label="具体例"><span>独自のスコープを作ります。</span></td></tr><tr><td data-label="項目"><span>優先順位</span></td><td data-label="意味・使い方"><span>どの演算子が強く結び付くかを決める規則。</span></td><td data-label="具体例"><span><code>1 + 2 * 3</code>は<code>1 + (2 * 3)</code>。</span></td></tr><tr><td data-label="項目"><span>評価順</span></td><td data-label="意味・使い方"><span>オペランドを実際に評価する順序。</span></td><td data-label="具体例"><span>Javaでは演算子のオペランドを原則として左から評価します。</span></td></tr><tr><td data-label="項目"><span>副作用</span></td><td data-label="意味・使い方"><span>値の計算以外に状態を変える動作。</span></td><td data-label="具体例"><span>代入、インクリメント、メソッド呼び出しなど。</span></td></tr></tbody></table></div></section><section class="card lesson-section"><h2>読解の基本手順</h2><ol><li>publicクラス名・ファイル名・mainの形を見る。</li><li>宣言されている変数の型を見る。</li><li>コンパイルエラーになる箇所がないか確認する。</li><li>newで作られるインスタンスや配列を図にする。</li><li>値が変わる行だけを追う。</li><li>メソッド呼び出しでどこへ移動するか確認する。</li><li>最後に出力順を確認する。</li></ol></section><section class="card lesson-section"><h2>小さい例で読む</h2><pre><code>class Item {
     int price;
 }
 
@@ -54,47 +55,23 @@ public class Main {
         int result = value("A", 1) + value("B", 2) * value("C", 3);
         System.out.println("=" + result);
     }
-}</code></pre><p><span>演算の結び付きは<code>1 + (2 * 3)</code>ですが、メソッド呼び出しは左からA、B、Cの順に評価されます。出力は<code>ABC=7</code>です。</span></p></section><section class="card lesson-section"><h2>関連する用語との違い</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>混同しやすいもの</th><th>違い</th><th>見分け方</th></tr></thead><tbody><tr><td data-label="混同しやすいもの">定義順 / 実行順</td><td data-label="違い">上に書いてあるから先に実行されるとは限らない。</td><td data-label="見分け方"><code>main</code>から呼び出しを追う。</td></tr><tr><td data-label="混同しやすいもの">型 / 実体</td><td data-label="違い">変数の型と<code>new</code>された型が異なる場合がある。</td><td data-label="見分け方"><code>A a = new B()</code>を分解する。</td></tr><tr><td data-label="混同しやすいもの">宣言 / 代入</td><td data-label="違い">宣言だけでは値が入らない場合がある。</td><td data-label="見分け方">初期化済みか見る。</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>式と文を処理する規則</h2><ol><li><span>構文として成立するか、型が適合するかを先に確認する。</span></li><li><span>演算子の優先順位と結合規則で式の構造を決める。</span></li><li><span>オペランドを左から評価し、各副作用をその時点で反映する。</span></li><li><span>if・ループ・returnなどの制御文で次に実行する文を決める。</span></li><li><span>ブロックを出た後は、そのブロック内で宣言したローカル変数を参照できない。</span></li></ol><p class="code-caption">確認用コード</p><pre><code>class Item {
+}</code></pre><p><span>演算の結び付きは<code>1 + (2 * 3)</code>ですが、メソッド呼び出しは左からA、B、Cの順に評価されます。出力は<code>ABC=7</code>です。</span></p></section><section class="card lesson-section"><h2>似た言葉との違い</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>混同しやすいもの</th><th>違い</th><th>見分け方</th></tr></thead><tbody><tr><td data-label="混同しやすいもの">定義順 / 実行順</td><td data-label="違い">上に書いてあるから先に実行されるとは限らない。</td><td data-label="見分け方"><code>main</code>から呼び出しを追う。</td></tr><tr><td data-label="混同しやすいもの">型 / 実体</td><td data-label="違い">変数の型と<code>new</code>された型が異なる場合がある。</td><td data-label="見分け方"><code>A a = new B()</code>を分解する。</td></tr><tr><td data-label="混同しやすいもの">宣言 / 代入</td><td data-label="違い">宣言だけでは値が入らない場合がある。</td><td data-label="見分け方">初期化済みか見る。</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>式と文を読む順番</h2><ol><li><span>構文として成立するか、型が適合するかを先に確認する。</span></li><li><span>演算子の優先順位と結合規則で式の構造を決める。</span></li><li><span>オペランドを左から評価し、各副作用をその時点で反映する。</span></li><li><span>if・ループ・returnなどの制御文で次に実行する文を決める。</span></li><li><span>ブロックを出た後は、そのブロック内で宣言したローカル変数を参照できない。</span></li></ol><p class="code-caption">確認用コード</p><pre><code>class Item {
     int price;
     Item(int price) { this.price = price; }
     void change(int price) { this.price = price; }
 }
 Item item = new Item(100);
 item.change(200);
-System.out.println(item.price);</code></pre><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>見る点</th><th>このコードでの判断</th><th>結論</th></tr></thead><tbody><tr><td data-label="見る点"><code>new Item(100)</code></td><td data-label="このコードでの判断">コンストラクタ実行</td><td data-label="結論"><code>price=100</code></td></tr><tr><td data-label="見る点"><code>change(200)</code></td><td data-label="このコードでの判断">フィールドを200に更新</td><td data-label="結論"><code>price=200</code></td></tr><tr><td data-label="見る点">出力</td><td data-label="このコードでの判断"><code>item.price</code></td><td data-label="結論"><code>200</code></td></tr></tbody></table></div></section><section class="card lesson-section flow-section"><h2>読む順番を固定する</h2>
-<p>コード読解では、いきなり出力を計算しません。まずコンパイルできるか、次にどこから実行が始まるか、その後に変数や参照がどう変わるかを追います。</p>
-<div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>順番</th><th>判定内容</th><th>飛ばすと起きる失敗</th></tr></thead><tbody><tr><td data-label="順番">1</td><td data-label="判定内容">クラス・メソッド・型が成立しているか</td><td data-label="飛ばすと起きる失敗">コンパイル不可なのに出力を考える</td></tr><tr><td data-label="順番">2</td><td data-label="判定内容"><code>main</code>からどこへ進むか</td><td data-label="飛ばすと起きる失敗">呼ばれないメソッドの処理を読んでしまう</td></tr><tr><td data-label="順番">3</td><td data-label="判定内容">変数・参照・条件式の変化</td><td data-label="飛ばすと起きる失敗">古い値のまま計算する</td></tr><tr><td data-label="順番">4</td><td data-label="判定内容">出力、return、例外、finally</td><td data-label="飛ばすと起きる失敗">途中で制御が移る箇所を見失う</td></tr></tbody></table></div>
-<pre><code>int x = 1;
-int y = x++ + ++x;
-System.out.println(x + "," + y);</code></pre>
-<p>このようなコードを見たとき、いきなり暗算せず、式を左から分けて追います。<code>x++</code>で「式には元の値を使い、その後増える」、<code>++x</code>で「先に増えて、その値を使う」と順番に処理します。表を書けばミスは減ります。</p>
-<div class="mistake-callout"><strong>ここで整理する誤解</strong><p>コード読解は、決まった順番で値や参照を表にして追うほど正確になります。頭の中だけで一度に計算せず、変化する行を分けて記録します。</p></div>
-</section><section class="card lesson-section basic-stumble-check"><h2>定義と規則の整理</h2><h3>コード読解で順番を間違える点</h3><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>つまずき</th><th>正しい考え方</th></tr></thead><tbody><tr><td data-label="つまずき">上から全部読もうとする</td><td data-label="正しい考え方">まずコンパイル可否を確認し、コンパイルできる場合に実行時例外の有無と出力を追う。</td></tr><tr><td data-label="つまずき">予想した出力に合わせて読み方を変える</td><td data-label="正しい考え方">出力を予想する前に、コンパイルできない行と例外が発生する式を確認する。</td></tr><tr><td data-label="つまずき">状態変化を書かない</td><td data-label="正しい考え方">変数、参照、配列、フィールド値は表にしないと高確率で読み違える。</td></tr></tbody></table></div><h3>確認できれば次へ</h3><ul class="check-list compact-check-list"><li>コンパイル可否→実行可否→出力の順で説明できる</li><li>変数表が必要なコードを判断できる</li><li>参照の変化を図で説明できる</li></ul><div class="lesson-note"><strong>理解の基準</strong></div></section>
-<section class="card lesson-section code-trio-section">
-<h2>成立するコードと成立しないコード</h2>
-<div class="code-trio-grid">
-<article class="code-trio-card good"><h3>成立する例：コンパイル可否から読む</h3><pre><code>int a = 1;
-int b = ++a + a;
-System.out.println(b);</code></pre></article>
-<article class="code-trio-card bad"><h3>成立しない例：出力以前に型が合っていない</h3><pre><code>int a = "1";
-int b = ++a + a;
-System.out.println(b);</code></pre></article>
-<article class="code-trio-card fix"><h3>成立する形：型を合わせてから評価順を読む</h3><pre><code>int a = 1;
-int b = ++a + a;
-System.out.println(b); // 4</code></pre></article>
-</div>
-<div class="lesson-note"><strong>確認ポイント</strong><p>Javaコードは出力から考え始めず、最初にコンパイル可否を確認します。</p></div>
-</section>
-<section class="card lesson-section basic-understanding-quiz quiz-level-section"><h2>定義と規則を確認する</h2><div class="quiz-level-list"><article class="quiz-level-card"><h3>用語の確認</h3><p>コード読解で見る順番を説明できますか。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>まずコンパイル可否、次に実行可否、例外発生、最後に出力結果です。出力から考え始めるとコンパイルエラーを見落とします。</p></details></article><article class="quiz-level-card"><h3>コードの確認</h3><p>次のコードは出力を考える前に何を判定しますか。</p><pre><code>int n = "10";
-System.out.println(n);</code></pre><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>コンパイル可否です。Stringをintへ代入しているためコンパイルエラーです。出力はありません。</p></details></article><article class="quiz-level-card"><h3>仕組みを説明する</h3><p>同じコードについて、コンパイルエラーと実行時例外が通常は同時に成立しない理由を説明してください。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>コンパイルエラーなら実行段階に進みません。実行時例外はコンパイルできた後に起きるため、同じコードの結果としては通常同時に成立しません。</p></details></article></div></section><section class="card lesson-section check-section"><h2>基本ルールのまとめ</h2><ul><li>コンパイル可否を最初に確認できる。</li><li>mainや呼び出し元から実行順を追える。</li><li>値と参照の変化を表やメモにして確認できる。</li></ul></section><section class="card lesson-section"><h2>コードに規則を当てはめる</h2><p>コードを読むとき、出力を考える前に判定すべき最初の3点を答える。</p><details class="answer-panel"><summary>説明を見る</summary><p>1つ目は、コンパイルできる構造か。ファイル名、クラス名、main、型の整合性を見る。</p><p>2つ目は、実行入口がどこか。通常は<code>main</code>から追う。</p><p>3つ目は、変数の型と初期値。特にローカル変数、フィールド、参照型を分ける。</p></details></section><section class="card lesson-nav-bottom"><div><a class="btn ghost" href="19.html">← 前のLesson</a><a class="btn" href="../index.html">Lesson一覧</a><a class="btn primary" href="21.html">次のLesson →</a></div></section>
+System.out.println(item.price);</code></pre><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>見る点</th><th>このコードでの判断</th><th>結論</th></tr></thead><tbody><tr><td data-label="見る点"><code>new Item(100)</code></td><td data-label="このコードでの判断">コンストラクタ実行</td><td data-label="結論"><code>price=100</code></td></tr><tr><td data-label="見る点"><code>change(200)</code></td><td data-label="このコードでの判断">フィールドを200に更新</td><td data-label="結論"><code>price=200</code></td></tr><tr><td data-label="見る点">出力</td><td data-label="このコードでの判断"><code>item.price</code></td><td data-label="結論"><code>200</code></td></tr></tbody></table></div></section>
+<section class="card lesson-section check-section"><h2>ここまでの要点</h2><ul><li>コンパイル可否を最初に確認できる。</li><li>mainや呼び出し元から実行順を追える。</li><li>値と参照の変化を表やメモにして確認できる。</li></ul></section><section class="card lesson-nav-bottom"><div><a class="btn ghost" href="19.html">← 前のLesson</a><a class="btn" href="../index.html">Lesson一覧</a><a class="btn primary" href="21.html">次のLesson →</a></div></section>
 </main>
 </div>
 <footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../../site/about.html">このサイトについて</a><a href="../../../site/editorial-policy.html">編集方針</a><a href="../../../site/site-map.html">サイトマップ</a><a href="../../../site/privacy.html">プライバシーポリシー</a><a href="../../../site/terms.html">利用規約</a><a href="../../../site/disclaimer.html">免責事項</a><a href="../../../site/advertising.html">広告・アフィリエイト</a><a href="../../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
 <script>window.APP_ROOT="../../../";window.CURRENT_PAGE="java-basic-20.html";</script>
-<script src="../../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
-<script src="../../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
-<script src="../../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
-<script src="../../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
-<script src="../../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+<script src="../../../data/questions.js?v=v29-ui-basic-editorial"></script>
+<script src="../../../assets/js/java-storage.js?v=v29-ui-basic-editorial"></script>
+<script src="../../../assets/js/app.js?v=v29-ui-basic-editorial"></script>
+<script src="../../../assets/js/java-bridge.js?v=v29-ui-basic-editorial"></script>
+<script src="../../../pwa.js?v=v29-ui-basic-editorial"></script>
 </body>
 </html>

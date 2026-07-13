@@ -1,30 +1,31 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="例外が起きた行から、catchとfinallyを通ってどこへ進むかを順に追います。" name="description"/>
-<title>Lesson 17 例外処理の入口｜Java Practice Lab</title>
+<title>例外処理｜Java Practice Lab</title>
 <meta content="Java Practice Lab" property="og:site_name"/>
 <meta content="website" property="og:type"/>
-<meta content="Lesson 17 例外処理の入口｜Java Practice Lab" property="og:title"/>
+<meta content="例外処理｜Java Practice Lab" property="og:title"/>
 <meta content="例外が起きた行から、catchとfinallyを通ってどこへ進むかを順に追います。" property="og:description"/>
 <meta content="summary" name="twitter:card"/>
 <meta content="#e9eff3" name="theme-color"/>
 <link href="../../../manifest.webmanifest" rel="manifest"/>
-<link href="../../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../../assets/css/styles.css?v=v29-ui-basic-editorial" rel="stylesheet"/><link href="../../../assets/css/unified-ui.css?v=v29-ui-basic-editorial" rel="stylesheet"/>
 <link href="../../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
-<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="Java基礎">
-<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="Java基礎"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">Java基礎</span><span class="site-context-title">例外処理の入口</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../../index.html">トップ</a><a aria-current="page" class="is-active" href="../index.html">基礎</a><a href="../../bronze/index.html">Bronze</a><a href="../../java11-silver/index.html">Silver 11</a><a href="../../java17-silver/index.html">Silver 17</a><a href="../../gold11/index.html">Gold 11</a><a href="../../gold17/index.html">Gold 17</a><a href="../../../articles/index.html">単元別解説</a><a href="../../../columns/index.html">コラム</a></nav></div></header>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12 beginner-lesson" data-page-section="Java基礎">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="Java基礎"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">Java基礎</span><span class="site-context-title">例外処理</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../../index.html">トップ</a><a aria-current="page" class="is-active" href="../index.html">基礎</a><a href="../../bronze/index.html">Bronze</a><a href="../../java11-silver/index.html">Silver 11</a><a href="../../java17-silver/index.html">Silver 17</a><a href="../../gold11/index.html">Gold 11</a><a href="../../gold17/index.html">Gold 17</a><a href="../../../articles/index.html">単元別解説</a><a href="../../../columns/index.html">コラム</a></nav></div></header>
 <div class="layout">
 <main class="main lesson-main" id="mainContent">
 <article class="card lesson-hero">
 <p class="meta">Java基礎 Lesson 17</p>
-<h1>例外処理の入口</h1>
-<p class="lead">例外を通常の制御フローを中断するオブジェクトとして定義し、try・catch・finally・throw・throwsの規則を説明します。</p>
-<div class="box goal-box"><strong>このレッスンのゴール</strong><p>checked例外とunchecked例外を区別し、例外発生後にどのcatchへ移るかを説明できること。</p></div>
+<h1>例外処理</h1>
+<p class="lead">例外が起きると、その行より後の通常処理は止まり、対応するcatchへ移ります。tryからfinallyまでの流れを追います。</p>
+<div class="box goal-box"><strong>ここまでできればOK</strong><p>例外が発生する場所と、その後に実行される処理を順番に説明できるようになります。</p></div>
 </article><section class="card lesson-section basic-term-intro">
-<h2>基本用語の定義</h2>
+<h2>まず押さえる言葉</h2>
 <div class="term-side-layout">
 <div>
 <p>例外が発生すると、その地点から通常の次の文へは進まず、対応するcatchを探しながら呼び出し元へ制御が移ります。</p>
@@ -33,7 +34,7 @@
 <div class="term-note basic-term-mini"><strong>例外とは</strong>通常の処理を続けられない状態を表すオブジェクト。</div><div class="term-note basic-term-mini"><strong><code>try</code>とは</strong>例外が発生する可能性がある処理を書くブロック。</div><div class="term-note basic-term-mini"><strong><code>catch</code>とは</strong>発生した例外を受け取って処理するブロック。</div><div class="term-note basic-term-mini"><strong><code>finally</code>とは</strong>例外の有無にかかわらず実行したい処理を書くブロック。</div><div class="term-note basic-term-mini"><strong>checked例外とは</strong>コンパイラがcatchまたはthrowsを要求する例外。</div><div class="term-note basic-term-mini"><strong>unchecked例外とは</strong>catch/throwsが必須ではないRuntimeException系の例外。</div>
 </div>
 </div>
-</section><section class="card lesson-section basic-term-check core-rule-section"><h2>例外階層と処理構文の規則</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>項目</th><th>定義・規則</th><th>具体例</th></tr></thead><tbody><tr><td data-label="項目"><span>Throwable</span></td><td data-label="定義・規則"><span>Javaでthrowできるオブジェクトの最上位クラス。</span></td><td data-label="具体例"><span>主な下位型は<code>Error</code>と<code>Exception</code>です。</span></td></tr><tr><td data-label="項目"><span>checked例外</span></td><td data-label="定義・規則"><span><code>RuntimeException</code>の系統ではないException。</span></td><td data-label="具体例"><span>catchするかthrowsで宣言する必要があります。</span></td></tr><tr><td data-label="項目"><span>unchecked例外</span></td><td data-label="定義・規則"><span><code>RuntimeException</code>とそのサブクラス。</span></td><td data-label="具体例"><span>コンパイラによるcatch・throwsの強制はありません。</span></td></tr><tr><td data-label="項目"><span>try</span></td><td data-label="定義・規則"><span>例外が発生する可能性のある処理を囲むブロック。</span></td><td data-label="具体例"><span>例外発生時は残りの文を飛ばします。</span></td></tr><tr><td data-label="項目"><span>catch</span></td><td data-label="定義・規則"><span>型が一致する例外を受け取るブロック。</span></td><td data-label="具体例"><span>上から最初に適合するcatchが実行されます。</span></td></tr><tr><td data-label="項目"><span>finally</span></td><td data-label="定義・規則"><span>正常終了でも例外終了でも原則として最後に実行されるブロック。</span></td><td data-label="具体例"><span>JVMの強制終了などでは実行されない場合があります。</span></td></tr></tbody></table></div></section><section class="card lesson-section flow-section">
+</section><section class="card lesson-section basic-term-check core-rule-section"><h2>例外階層と処理構文</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>項目</th><th>意味・使い方</th><th>具体例</th></tr></thead><tbody><tr><td data-label="項目"><span>Throwable</span></td><td data-label="意味・使い方"><span>Javaでthrowできるオブジェクトの最上位クラス。</span></td><td data-label="具体例"><span>主な下位型は<code>Error</code>と<code>Exception</code>です。</span></td></tr><tr><td data-label="項目"><span>checked例外</span></td><td data-label="意味・使い方"><span><code>RuntimeException</code>の系統ではないException。</span></td><td data-label="具体例"><span>catchするかthrowsで宣言する必要があります。</span></td></tr><tr><td data-label="項目"><span>unchecked例外</span></td><td data-label="意味・使い方"><span><code>RuntimeException</code>とそのサブクラス。</span></td><td data-label="具体例"><span>コンパイラによるcatch・throwsの強制はありません。</span></td></tr><tr><td data-label="項目"><span>try</span></td><td data-label="意味・使い方"><span>例外が発生する可能性のある処理を囲むブロック。</span></td><td data-label="具体例"><span>例外発生時は残りの文を飛ばします。</span></td></tr><tr><td data-label="項目"><span>catch</span></td><td data-label="意味・使い方"><span>型が一致する例外を受け取るブロック。</span></td><td data-label="具体例"><span>上から最初に適合するcatchが実行されます。</span></td></tr><tr><td data-label="項目"><span>finally</span></td><td data-label="意味・使い方"><span>正常終了でも例外終了でも原則として最後に実行されるブロック。</span></td><td data-label="具体例"><span>JVMの強制終了などでは実行されない場合があります。</span></td></tr></tbody></table></div></section><section class="card lesson-section flow-section">
 <h2>例外処理を読む順番</h2>
 <p>例外処理は、まずコンパイルできるかを確認し、次に例外が発生する行、対応するcatch、finallyの順に追います。例外が発生した後は、tryブロックの残りへ戻りません。</p>
 <div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>順番</th><th>見ること</th><th>判断例</th></tr></thead><tbody>
@@ -58,7 +59,7 @@
     System.out.println("finish");
 } catch (ArrayIndexOutOfBoundsException e) {
     System.out.println("error");
-}</code></pre><p>配列の範囲外アクセスで例外が発生した時点で、<code>System.out.println("finish")</code>には進まない。対応する<code>catch</code>へ移動し、<code>error</code>が表示される。</p></section><section class="card lesson-section"><h2>checked例外とunchecked例外</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>分類</th><th>代表例</th><th>コンパイラの扱い</th></tr></thead><tbody><tr><td data-label="分類">checked例外</td><td data-label="代表例"><code>IOException</code>など</td><td data-label="コンパイラの扱い">catchするかthrows宣言が必要</td></tr><tr><td data-label="分類">unchecked例外</td><td data-label="代表例"><code>RuntimeException</code>系</td><td data-label="コンパイラの扱い">catchやthrowsを強制されない</td></tr><tr><td data-label="分類">Error</td><td data-label="代表例"><code>OutOfMemoryError</code>など</td><td data-label="コンパイラの扱い">通常のアプリ処理で回復を前提にしない</td></tr></tbody></table></div><p>初心者段階では、<code>RuntimeException</code>系は「実行中の値や状態が悪いと起きることが多い」と読むと整理しやすい。</p></section><section class="card lesson-section"><h2>finally</h2><p><code>finally</code> は、例外発生の有無にかかわらず原則として実行したい後処理を書きます。ファイルや接続を閉じる処理の説明でよく使われます。</p><p class="code-caption">例外がなければ A, C</p><pre><code>try {
+}</code></pre><p>配列の範囲外アクセスで例外が発生した時点で、<code>System.out.println("finish")</code>には進まない。対応する<code>catch</code>へ移動し、<code>error</code>が表示される。</p></section><section class="card lesson-section"><h2>checked例外とunchecked例外</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>分類</th><th>代表例</th><th>コンパイラの扱い</th></tr></thead><tbody><tr><td data-label="分類">checked例外</td><td data-label="代表例"><code>IOException</code>など</td><td data-label="コンパイラの扱い">catchするかthrows宣言が必要</td></tr><tr><td data-label="分類">unchecked例外</td><td data-label="代表例"><code>RuntimeException</code>系</td><td data-label="コンパイラの扱い">catchやthrowsを強制されない</td></tr><tr><td data-label="分類">Error</td><td data-label="代表例"><code>OutOfMemoryError</code>など</td><td data-label="コンパイラの扱い">通常のアプリ処理で回復を前提にしない</td></tr></tbody></table></div><p>最初の段階では、<code>RuntimeException</code>系は「実行中の値や状態が悪いと起きることが多い」と読むと整理しやすい。</p></section><section class="card lesson-section"><h2>finally</h2><p><code>finally</code> は、例外発生の有無にかかわらず原則として実行したい後処理を書きます。ファイルや接続を閉じる処理の説明でよく使われます。</p><p class="code-caption">例外がなければ A, C</p><pre><code>try {
     System.out.println("A");
 } catch (Exception e) {
     System.out.println("B");
@@ -81,7 +82,7 @@
             System.out.println("finally");
         }
     }
-}</code></pre><p><span><code>10 / 0</code>の評価時に<code>ArithmeticException</code>が発生します。直後の<code>println(value)</code>は実行されず、catch、finallyの順に進みます。</span></p></section><section class="card lesson-section"><h2>関連する用語との違い</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>混同しやすいもの</th><th>違い</th><th>見分け方</th></tr></thead><tbody><tr><td data-label="混同しやすいもの">例外発生前 / 発生後</td><td data-label="違い">例外が発生した行より後のtry内処理は飛ばされる。</td><td data-label="見分け方">どの行で例外が起きるか見る。</td></tr><tr><td data-label="混同しやすいもの">catchする / しない</td><td data-label="違い">対応するcatchがあれば処理される。なければ呼び出し元へ伝わる。</td><td data-label="見分け方">例外クラスの型を見る。</td></tr><tr><td data-label="混同しやすいもの">finally / catch</td><td data-label="違い">finallyは例外処理そのものではなく、後始末用。</td><td data-label="見分け方">catchされてもされなくても実行されうる。</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>例外発生後の制御を追う規則</h2><ol><li><span>例外が発生する式を特定する。</span></li><li><span>その式より後のtry内の文は実行されないと判断する。</span></li><li><span>catchを上から確認し、例外型に最初に適合するものを選ぶ。</span></li><li><span>適合するcatchがなければ呼び出し元へ例外を伝える。</span></li><li><span>finallyがあれば、通常の制御移動の前に原則として実行する。</span></li></ol><p class="code-caption">確認用コード</p><pre><code>try {
+}</code></pre><p><span><code>10 / 0</code>の評価時に<code>ArithmeticException</code>が発生します。直後の<code>println(value)</code>は実行されず、catch、finallyの順に進みます。</span></p></section><section class="card lesson-section"><h2>似た言葉との違い</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>混同しやすいもの</th><th>違い</th><th>見分け方</th></tr></thead><tbody><tr><td data-label="混同しやすいもの">例外発生前 / 発生後</td><td data-label="違い">例外が発生した行より後のtry内処理は飛ばされる。</td><td data-label="見分け方">どの行で例外が起きるか見る。</td></tr><tr><td data-label="混同しやすいもの">catchする / しない</td><td data-label="違い">対応するcatchがあれば処理される。なければ呼び出し元へ伝わる。</td><td data-label="見分け方">例外クラスの型を見る。</td></tr><tr><td data-label="混同しやすいもの">finally / catch</td><td data-label="違い">finallyは例外処理そのものではなく、後始末用。</td><td data-label="見分け方">catchされてもされなくても実行されうる。</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>例外発生後の処理を追う順番</h2><ol><li><span>例外が発生する式を特定する。</span></li><li><span>その式より後のtry内の文は実行されないと判断する。</span></li><li><span>catchを上から確認し、例外型に最初に適合するものを選ぶ。</span></li><li><span>適合するcatchがなければ呼び出し元へ例外を伝える。</span></li><li><span>finallyがあれば、通常の制御移動の前に原則として実行する。</span></li></ol><p class="code-caption">確認用コード</p><pre><code>try {
     int[] a = new int[0];
     a[0] = 10;
     System.out.println("A");
@@ -90,63 +91,15 @@
 } finally {
     System.out.println("C");
 }</code></pre><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>見る点</th><th>このコードでの判断</th><th>結論</th></tr></thead><tbody><tr><td data-label="見る点">例外発生</td><td data-label="このコードでの判断"><code>a[0]</code>で範囲外アクセス</td><td data-label="結論"><code>ArrayIndexOutOfBoundsException</code></td></tr><tr><td data-label="見る点">try残り</td><td data-label="このコードでの判断"><code>System.out.println("A")</code>は実行されない</td><td data-label="結論">Aは出ない</td></tr><tr><td data-label="見る点">catch/finally</td><td data-label="このコードでの判断">Bを出してからC</td><td data-label="結論">出力はB C</td></tr></tbody></table></div></section>
-<section class="card lesson-section flow-section"><h2>例外が起きた後の処理の進み方</h2>
-<p>例外処理は「エラーを除外する仕組み」ではありません。正確には、<strong>通常の流れで処理を続けられない事態が起きたとき、別の流れへ制御を移す仕組み</strong>です。</p>
-<pre><code>try {
-    int[] nums = {1, 2, 3};
-    System.out.println(nums[5]);
-    System.out.println("end");
-} catch (ArrayIndexOutOfBoundsException e) {
-    System.out.println("out of range");
-}</code></pre>
-<p><code>nums[5]</code>で例外が発生すると、その時点でtryブロックの残りは実行されません。<code>"end"</code>は表示されず、対応する<code>catch</code>へ移動します。</p>
-<div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>見ること</th><th>見る場所</th><th>判断</th></tr></thead><tbody><tr><td data-label="見ること">例外が発生する可能性</td><td data-label="見る場所">tryブロック内</td><td data-label="判断">どの行で止まるか</td></tr><tr><td data-label="見ること">catchできるか</td><td data-label="見る場所">catchの型</td><td data-label="判断">発生した例外の型と互換性があるか</td></tr><tr><td data-label="見ること">catchの順序</td><td data-label="見る場所">上から順に判定</td><td data-label="判断">親クラスを先に書くと子クラス側に届かない</td></tr><tr><td data-label="見ること">finally</td><td data-label="見る場所">最後に実行</td><td data-label="判断">例外の有無にかかわらず基本的に実行</td></tr></tbody></table></div>
-<p>checked例外とunchecked例外の違いは、まずコンパイラが処理を要求するかで見ます。<code>Exception</code>のサブクラスでも、<code>RuntimeException</code>系はuncheckedです。</p>
-<div class="mistake-callout"><strong>大まかなcatchは理解を悪くする</strong><p><code>catch (Exception e)</code>だけで済ませると、何が起きたのかを読めなくなります。学習段階では、どの例外がどのcatchに入るかを必ず言語化してください。</p></div>
-</section>
-<section class="card lesson-section basic-stumble-check"><h2>定義と規則の整理</h2><h3>例外処理で混同しやすい点</h3><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>つまずき</th><th>正しい考え方</th></tr></thead><tbody><tr><td data-label="つまずき">tryを書けば例外が消えると思う</td><td data-label="正しい考え方">tryは例外が起きそうな範囲を示すだけ。対応するcatchやthrowsの設計が必要。</td></tr><tr><td data-label="つまずき">throwとthrowsを混同する</td><td data-label="正しい考え方"><code>throw</code>は例外を投げる処理。<code>throws</code>はメソッド宣言で例外可能性を示す。</td></tr><tr><td data-label="つまずき">finallyはcatchの代わりだと思う</td><td data-label="正しい考え方">finallyは後始末用。例外を処理するブロックではない。</td></tr></tbody></table></div><h3>確認できれば次へ</h3><ul class="check-list compact-check-list"><li>checked例外とunchecked例外を区別できる</li><li>throwとthrowsの違いを説明できる</li><li>finallyが実行されるタイミングを説明できる</li></ul><div class="lesson-note"><strong>理解の基準</strong></div></section>
-<section class="card lesson-section code-trio-section">
-<h2>成立するコードと成立しないコード</h2>
-<div class="code-trio-grid">
-<article class="code-trio-card good"><h3>成立する例：例外処理</h3><pre><code>try {
-    int n = Integer.parseInt("10");
-    System.out.println(n);
-} catch (NumberFormatException e) {
-    System.out.println("error");
-}</code></pre></article>
-<article class="code-trio-card bad"><h3>成立しない例</h3><pre><code>try {
-    int n = Integer.parseInt("x");
-} catch (NullPointerException e) {
-    System.out.println("error");
-}</code></pre></article>
-<article class="code-trio-card fix"><h3>成立する形</h3><pre><code>try {
-    int n = Integer.parseInt("x");
-} catch (NumberFormatException e) {
-    System.out.println("error");
-}</code></pre></article>
-</div>
-<div class="lesson-note"><strong>確認ポイント</strong><p>catchは発生する例外型に対応している必要があります。型が違うと捕捉できません。</p></div>
-</section>
-<section class="card lesson-section basic-understanding-quiz quiz-level-section"><h2>定義と規則を確認する</h2><div class="quiz-level-list"><article class="quiz-level-card"><h3>用語の確認</h3><p>例外、try、catch、finallyを説明できますか。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>例外は実行中の異常状態、tryは例外が起きる可能性のある処理、catchは例外処理、finallyは例外有無に関係なく実行したい処理です。</p></details></article><article class="quiz-level-card"><h3>コードの確認</h3><p>次のコードは何を表示しますか。</p><pre><code>try {
-    int n = 10 / 0;
-    System.out.print("A");
-} catch (ArithmeticException e) {
-    System.out.print("B");
-}</code></pre><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>Bです。0除算でArithmeticExceptionが発生し、tryの続きであるAは実行されません。</p></details></article><article class="quiz-level-card"><h3>仕組みを説明する</h3><p>catch後にtryの続きへ戻らない理由を説明してください。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>例外が発生した時点でtryブロック内の残り処理はスキップされ、対応するcatchへ制御が移ります。catch後はtry-catch文の後へ進みます。</p></details></article></div></section><section class="card lesson-section check-section"><h2>基本ルールのまとめ</h2><ul><li>checked例外とunchecked例外を区別できる。</li><li>発生した例外がどのcatchに入るか判断できる。</li><li>finallyが実行される位置を説明できる。</li></ul></section><section class="card lesson-section"><h2>コードに規則を当てはめる</h2><p>次の出力を答える。</p><p class="code-caption">確認用コード</p><pre><code>try {
-    System.out.println("A");
-} catch (RuntimeException e) {
-    System.out.println("B");
-} finally {
-    System.out.println("C");
-}</code></pre><details class="answer-panel"><summary>説明を見る</summary><p>出力は<code>A</code>、<code>C</code>。</p><p>try内で例外は発生しないためcatchは実行されない。ただしfinallyは実行される。</p></details></section><section class="card lesson-nav-bottom"><div><a class="btn ghost" href="16.html">← 前のLesson</a><a class="btn" href="../index.html">Lesson一覧</a><a class="btn primary" href="18.html">次のLesson →</a></div></section>
+<section class="card lesson-section check-section"><h2>ここまでの要点</h2><ul><li>checked例外とunchecked例外を区別できる。</li><li>発生した例外がどのcatchに入るか判断できる。</li><li>finallyが実行される位置を説明できる。</li></ul></section><section class="card lesson-nav-bottom"><div><a class="btn ghost" href="16.html">← 前のLesson</a><a class="btn" href="../index.html">Lesson一覧</a><a class="btn primary" href="18.html">次のLesson →</a></div></section>
 </main>
 </div>
 <footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../../site/about.html">このサイトについて</a><a href="../../../site/editorial-policy.html">編集方針</a><a href="../../../site/site-map.html">サイトマップ</a><a href="../../../site/privacy.html">プライバシーポリシー</a><a href="../../../site/terms.html">利用規約</a><a href="../../../site/disclaimer.html">免責事項</a><a href="../../../site/advertising.html">広告・アフィリエイト</a><a href="../../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
 <script>window.APP_ROOT="../../../";window.CURRENT_PAGE="java-basic-17.html";</script>
-<script src="../../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
-<script src="../../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
-<script src="../../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
-<script src="../../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
-<script src="../../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+<script src="../../../data/questions.js?v=v29-ui-basic-editorial"></script>
+<script src="../../../assets/js/java-storage.js?v=v29-ui-basic-editorial"></script>
+<script src="../../../assets/js/app.js?v=v29-ui-basic-editorial"></script>
+<script src="../../../assets/js/java-bridge.js?v=v29-ui-basic-editorial"></script>
+<script src="../../../pwa.js?v=v29-ui-basic-editorial"></script>
 </body>
 </html>

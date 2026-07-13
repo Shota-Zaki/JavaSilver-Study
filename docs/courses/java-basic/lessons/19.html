@@ -1,30 +1,31 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="ソースファイル名、publicなトップレベルクラス名、実行するクラス名を分けます。" name="description"/>
-<title>Lesson 19 Javaファイルとクラス名｜Java Practice Lab</title>
+<title>ファイル名・クラス名・package｜Java Practice Lab</title>
 <meta content="Java Practice Lab" property="og:site_name"/>
 <meta content="website" property="og:type"/>
-<meta content="Lesson 19 Javaファイルとクラス名｜Java Practice Lab" property="og:title"/>
+<meta content="ファイル名・クラス名・package｜Java Practice Lab" property="og:title"/>
 <meta content="ソースファイル名、publicなトップレベルクラス名、実行するクラス名を分けます。" property="og:description"/>
 <meta content="summary" name="twitter:card"/>
 <meta content="#e9eff3" name="theme-color"/>
 <link href="../../../manifest.webmanifest" rel="manifest"/>
-<link href="../../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../../assets/css/styles.css?v=v29-ui-basic-editorial" rel="stylesheet"/><link href="../../../assets/css/unified-ui.css?v=v29-ui-basic-editorial" rel="stylesheet"/>
 <link href="../../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
-<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="Java基礎">
-<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="Java基礎"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">Java基礎</span><span class="site-context-title">Javaファイルとクラス名</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../../index.html">トップ</a><a aria-current="page" class="is-active" href="../index.html">基礎</a><a href="../../bronze/index.html">Bronze</a><a href="../../java11-silver/index.html">Silver 11</a><a href="../../java17-silver/index.html">Silver 17</a><a href="../../gold11/index.html">Gold 11</a><a href="../../gold17/index.html">Gold 17</a><a href="../../../articles/index.html">単元別解説</a><a href="../../../columns/index.html">コラム</a></nav></div></header>
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12 beginner-lesson" data-page-section="Java基礎">
+<a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="Java基礎"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">Java基礎</span><span class="site-context-title">ファイル名・クラス名・package</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../../index.html">トップ</a><a aria-current="page" class="is-active" href="../index.html">基礎</a><a href="../../bronze/index.html">Bronze</a><a href="../../java11-silver/index.html">Silver 11</a><a href="../../java17-silver/index.html">Silver 17</a><a href="../../gold11/index.html">Gold 11</a><a href="../../gold17/index.html">Gold 17</a><a href="../../../articles/index.html">単元別解説</a><a href="../../../columns/index.html">コラム</a></nav></div></header>
 <div class="layout">
 <main class="main lesson-main" id="mainContent">
 <article class="card lesson-hero">
 <p class="meta">Java基礎 Lesson 19</p>
-<h1>Javaファイルとクラス名</h1>
-<p class="lead">Javaソースファイルをコンパイル単位として定義し、package、import、トップレベル型、ファイル名の規則を説明します。</p>
-<div class="box goal-box"><strong>このレッスンのゴール</strong><p>publicトップレベル型とファイル名の対応、完全修飾名、パッケージ配置を説明できること。</p></div>
+<h1>ファイル名・クラス名・package</h1>
+<p class="lead">Javaでは、ファイル名、publicクラス名、package名、実行時のクラス名が関係します。小さな構成から確認します。</p>
+<div class="box goal-box"><strong>ここまでできればOK</strong><p>package付きクラスを正しい名前でコンパイル・実行できるようになります。</p></div>
 </article><section class="card lesson-section basic-term-intro">
-<h2>基本用語の定義</h2>
+<h2>まず押さえる言葉</h2>
 <div class="term-side-layout">
 <div>
 <p>1つの`.java`ファイルはコンパイル単位です。package宣言、import宣言、トップレベル型宣言を規定の順で記述します。</p>
@@ -33,7 +34,7 @@
 <div class="term-note basic-term-mini"><strong>トップレベルクラスとは</strong>他のクラスの中ではなく、ファイル直下に定義されたクラス。</div><div class="term-note basic-term-mini"><strong><code>public class</code>とは</strong>外部から利用できる公開クラス。1つのファイルに最大1つ。</div><div class="term-note basic-term-mini"><strong>ファイル名一致とは</strong>publicトップレベルクラスがある場合、ファイル名をそのクラス名に合わせるルール。</div><div class="term-note basic-term-mini"><strong>パッケージとは</strong>クラスを分類し、名前の衝突を避ける仕組み。</div><div class="term-note basic-term-mini"><strong>完全修飾名とは</strong>パッケージ名を含めたクラス名。例: <code>ex.Main</code>。</div>
 </div>
 </div>
-</section><section class="card lesson-section basic-term-check core-rule-section"><h2>コンパイル単位とトップレベル型の規則</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>項目</th><th>定義・規則</th><th>具体例</th></tr></thead><tbody><tr><td data-label="項目"><span>コンパイル単位</span></td><td data-label="定義・規則"><span>通常は1つの<code>.java</code>ファイルに対応するソースコード単位。</span></td><td data-label="具体例"><span>package、import、型宣言を含みます。</span></td></tr><tr><td data-label="項目"><span>package宣言</span></td><td data-label="定義・規則"><span>型が属するパッケージを指定します。</span></td><td data-label="具体例"><span>コメント等を除き、importや型宣言より前に置きます。</span></td></tr><tr><td data-label="項目"><span>import宣言</span></td><td data-label="定義・規則"><span>別パッケージの型名を単純名で使えるようにします。</span></td><td data-label="具体例"><span>package宣言の後、型宣言の前に置きます。</span></td></tr><tr><td data-label="項目"><span>トップレベル型</span></td><td data-label="定義・規則"><span>他の型の内部ではなく、コンパイル単位の直下に宣言する型。</span></td><td data-label="具体例"><span>class、interfaceなど。</span></td></tr><tr><td data-label="項目"><span>public型とファイル名</span></td><td data-label="定義・規則"><span>publicトップレベル型の名前とファイルの基本名を一致させます。</span></td><td data-label="具体例"><span><code>public class Main</code>は<code>Main.java</code>。</span></td></tr><tr><td data-label="項目"><span>完全修飾名</span></td><td data-label="定義・規則"><span>パッケージ名と型名を連結した名前。</span></td><td data-label="具体例"><span><code>sample.app.Main</code></span></td></tr></tbody></table></div></section><section class="card lesson-section"><h2>トップレベルクラス</h2><p>他のクラスの内側ではなく、ファイル直下に書かれたクラスをトップレベルクラスと呼ぶ。</p><p class="code-caption">どちらもトップレベルクラス</p><pre><code>class A { }
+</section><section class="card lesson-section basic-term-check core-rule-section"><h2>コンパイル単位とトップレベル型</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>項目</th><th>意味・使い方</th><th>具体例</th></tr></thead><tbody><tr><td data-label="項目"><span>コンパイル単位</span></td><td data-label="意味・使い方"><span>通常は1つの<code>.java</code>ファイルに対応するソースコード単位。</span></td><td data-label="具体例"><span>package、import、型宣言を含みます。</span></td></tr><tr><td data-label="項目"><span>package宣言</span></td><td data-label="意味・使い方"><span>型が属するパッケージを指定します。</span></td><td data-label="具体例"><span>コメント等を除き、importや型宣言より前に置きます。</span></td></tr><tr><td data-label="項目"><span>import宣言</span></td><td data-label="意味・使い方"><span>別パッケージの型名を単純名で使えるようにします。</span></td><td data-label="具体例"><span>package宣言の後、型宣言の前に置きます。</span></td></tr><tr><td data-label="項目"><span>トップレベル型</span></td><td data-label="意味・使い方"><span>他の型の内部ではなく、コンパイル単位の直下に宣言する型。</span></td><td data-label="具体例"><span>class、interfaceなど。</span></td></tr><tr><td data-label="項目"><span>public型とファイル名</span></td><td data-label="意味・使い方"><span>publicトップレベル型の名前とファイルの基本名を一致させます。</span></td><td data-label="具体例"><span><code>public class Main</code>は<code>Main.java</code>。</span></td></tr><tr><td data-label="項目"><span>完全修飾名</span></td><td data-label="意味・使い方"><span>パッケージ名と型名を連結した名前。</span></td><td data-label="具体例"><span><code>sample.app.Main</code></span></td></tr></tbody></table></div></section><section class="card lesson-section"><h2>トップレベルクラス</h2><p>他のクラスの内側ではなく、ファイル直下に書かれたクラスをトップレベルクラスと呼ぶ。</p><p class="code-caption">どちらもトップレベルクラス</p><pre><code>class A { }
 class B { }</code></pre></section><section class="card lesson-section"><h2>publicクラスとファイル名</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>ファイル内容</th><th>ファイル名</th><th>結果</th></tr></thead><tbody><tr><td data-label="ファイル内容"><code>public class Main { }</code></td><td data-label="ファイル名"><code>Main.java</code></td><td data-label="結果">OK</td></tr><tr><td data-label="ファイル内容"><code>public class Main { }</code></td><td data-label="ファイル名"><code>Sample.java</code></td><td data-label="結果">コンパイルエラー</td></tr><tr><td data-label="ファイル内容"><code>class Main { }</code></td><td data-label="ファイル名"><code>Sample.java</code></td><td data-label="結果">OK</td></tr><tr><td data-label="ファイル内容"><code>public class A { } public class B { }</code></td><td data-label="ファイル名">どちらでも不可</td><td data-label="結果">publicトップレベルクラスが複数あるためエラー</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>実行するクラス名</h2><p><code>java</code>コマンドで指定するのは、ファイル名ではなくクラス名。<code>main</code>メソッドを持つクラスが複数あれば、それぞれ実行できる。</p><p class="code-caption">A.javaでなくても、publicがなければ保存名の自由度がある</p><pre><code>class A {
     public static void main(String[] args) {
         System.out.println("A");
@@ -51,57 +52,22 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("package");
     }
-}</code></pre><p><span><code>javac -d out src/sample/app/Main.java</code>で出力先のパッケージ構造を作り、<code>java -cp out sample.app.Main</code>で完全修飾名を指定して実行します。</span></p></section><section class="card lesson-section"><h2>関連する用語との違い</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>混同しやすいもの</th><th>違い</th><th>見分け方</th></tr></thead><tbody><tr><td data-label="混同しやすいもの">ファイル名 / publicクラス名</td><td data-label="違い">publicトップレベルクラスがあるなら一致が必要。</td><td data-label="見分け方"><code>public class X</code>なら<code>X.java</code>。</td></tr><tr><td data-label="混同しやすいもの">public / 非public</td><td data-label="違い">publicトップレベルクラスは1ファイル1つまで。非publicは複数可。</td><td data-label="見分け方">修飾子を見る。</td></tr><tr><td data-label="混同しやすいもの">コンパイル対象 / 実行対象</td><td data-label="違い">コンパイルはファイル、実行はクラス。</td><td data-label="見分け方"><code>javac A.java</code>、<code>java A</code>。</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>ファイル名と実行名を決める規則</h2><ol><li><span>package宣言からパッケージ名を確認する。</span></li><li><span>publicトップレベル型の名前と<code>.java</code>ファイル名を一致させる。</span></li><li><span>コンパイル時の出力ルートを<code>-d</code>で決める。</span></li><li><span>実行時のクラスパスにはパッケージ階層の上のルートを指定する。</span></li><li><span>javaコマンドにはファイルパスではなく完全修飾クラス名を渡す。</span></li></ol><p class="code-caption">確認用コード</p><pre><code>// A.java
+}</code></pre><p><span><code>javac -d out src/sample/app/Main.java</code>で出力先のパッケージ構造を作り、<code>java -cp out sample.app.Main</code>で完全修飾名を指定して実行します。</span></p></section><section class="card lesson-section"><h2>似た言葉との違い</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>混同しやすいもの</th><th>違い</th><th>見分け方</th></tr></thead><tbody><tr><td data-label="混同しやすいもの">ファイル名 / publicクラス名</td><td data-label="違い">publicトップレベルクラスがあるなら一致が必要。</td><td data-label="見分け方"><code>public class X</code>なら<code>X.java</code>。</td></tr><tr><td data-label="混同しやすいもの">public / 非public</td><td data-label="違い">publicトップレベルクラスは1ファイル1つまで。非publicは複数可。</td><td data-label="見分け方">修飾子を見る。</td></tr><tr><td data-label="混同しやすいもの">コンパイル対象 / 実行対象</td><td data-label="違い">コンパイルはファイル、実行はクラス。</td><td data-label="見分け方"><code>javac A.java</code>、<code>java A</code>。</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>ファイル名と実行名の確認順</h2><ol><li><span>package宣言からパッケージ名を確認する。</span></li><li><span>publicトップレベル型の名前と<code>.java</code>ファイル名を一致させる。</span></li><li><span>コンパイル時の出力ルートを<code>-d</code>で決める。</span></li><li><span>実行時のクラスパスにはパッケージ階層の上のルートを指定する。</span></li><li><span>javaコマンドにはファイルパスではなく完全修飾クラス名を渡す。</span></li></ol><p class="code-caption">確認用コード</p><pre><code>// A.java
 public class A { }
 class B {
     public static void main(String[] args) {
         System.out.println("B");
     }
-}</code></pre><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>見る点</th><th>このコードでの判断</th><th>結論</th></tr></thead><tbody><tr><td data-label="見る点">ファイル名</td><td data-label="このコードでの判断"><code>A.java</code></td><td data-label="結論">public class A と一致</td></tr><tr><td data-label="見る点">クラスB</td><td data-label="このコードでの判断">非publicトップレベルクラス</td><td data-label="結論">同じファイルに書ける</td></tr><tr><td data-label="見る点">実行</td><td data-label="このコードでの判断"><code>B</code>にmainがある</td><td data-label="結論"><code>java B</code>で実行可能</td></tr></tbody></table></div></section><section class="card lesson-section flow-section"><h2>ファイル名と実行するクラス名は別</h2>
-<p>コンパイル時はソースファイルを指定し、実行時はmainを持つクラスを指定します。publicなトップレベルクラスがある場合だけ、ファイル名との一致が必要です。</p>
-<div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>観点</th><th>見る場所</th><th>判断</th></tr></thead><tbody><tr><td data-label="観点">保存名</td><td data-label="見る場所"><code>Sample.java</code></td><td data-label="判断"><code>public class Sample</code>があるなら一致が必要</td></tr><tr><td data-label="観点">トップレベルクラス</td><td data-label="見る場所">ファイル直下の<code>class</code></td><td data-label="判断">複数書けるが、<code>public</code>は原則1つ</td></tr><tr><td data-label="観点">実行名</td><td data-label="見る場所"><code>java クラス名</code></td><td data-label="判断"><code>main</code>を持つクラス名を指定する</td></tr></tbody></table></div>
-<pre><code>// ファイル名: A.java
-public class A {
-    public static void main(String[] args) {
-        System.out.println("A");
-    }
-}
-
-class B {
-    public static void main(String[] args) {
-        System.out.println("B");
-    }
-}</code></pre>
-<p>この場合、<code>javac A.java</code>でコンパイルできます。実行時は<code>java A</code>でも<code>java B</code>でも、対応する<code>main</code>があれば実行できます。ファイル名と実行クラス名は同じ場面で使うものではありません。</p>
-<div class="mistake-callout"><strong>ここで整理する誤解</strong><p>「ファイル名と同じクラスだけが実行できる」は誤りです。実行できるかは、対象クラスが適切な<code>main</code>メソッドを持つかで判定します。</p></div>
-</section><section class="card lesson-section basic-stumble-check"><h2>定義と規則の整理</h2><h3>ファイル名とクラス名で詰まる点</h3><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>つまずき</th><th>正しい考え方</th></tr></thead><tbody><tr><td data-label="つまずき">public classが複数書けると思う</td><td data-label="正しい考え方">トップレベルのpublic classは1ファイルに最大1つ。ファイル名と一致が必要。</td></tr><tr><td data-label="つまずき">publicでないクラスは実行できないと思う</td><td data-label="正しい考え方">publicでなくても、正しいmainがありクラス名を指定すれば実行できる場合がある。</td></tr><tr><td data-label="つまずき"><code>java A.class</code>と実行する</td><td data-label="正しい考え方">javaコマンドに指定するのはクラス名。ファイル名ではない。</td></tr></tbody></table></div><h3>確認できれば次へ</h3><ul class="check-list compact-check-list"><li>public classとファイル名の関係を説明できる</li><li>1ファイル複数classのclass生成を説明できる</li><li>javacとjavaで指定するものの違いを説明できる</li></ul><div class="lesson-note"><strong>理解の基準</strong></div></section>
-<section class="card lesson-section code-trio-section">
-<h2>成立するコードと成立しないコード</h2>
-<div class="code-trio-grid">
-<article class="code-trio-card good"><h3>成立する例：public classとファイル名が一致している</h3><pre><code>// App.java
-public class App { }
-class Helper { }</code></pre></article>
-<article class="code-trio-card bad"><h3>成立しない例：ファイル名とpublic class名が違う</h3><pre><code>// Sample.java
-public class Main { }</code></pre></article>
-<article class="code-trio-card fix"><h3>成立する形：Main.javaに保存する</h3><pre><code>// Main.java
-public class Main { }
-class Helper { }</code></pre></article>
-</div>
-<div class="lesson-note"><strong>確認ポイント</strong><p>publicトップレベルクラス名はファイル名と一致させます。</p></div>
-</section>
-<section class="card lesson-section basic-understanding-quiz quiz-level-section"><h2>定義と規則を確認する</h2><div class="quiz-level-list"><article class="quiz-level-card"><h3>用語の確認</h3><p>public class名とファイル名の関係を説明できますか。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>トップレベルのpublic classがある場合、ソースファイル名はそのクラス名.javaにする必要があります。</p></details></article><article class="quiz-level-card"><h3>コードの確認</h3><p>次のコードをMemo.javaに保存するとコンパイルできますか。</p><pre><code>public class Main { }
-class Sub { }</code></pre><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>コンパイルできません。public class Mainがあるため、ファイル名はMain.javaである必要があります。</p></details></article><article class="quiz-level-card"><h3>仕組みを説明する</h3><p>publicではないトップレベルクラスを複数書ける理由を説明してください。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>Javaでは1つのファイルに複数のトップレベルクラスを書けます。ただしpublicトップレベルクラスは最大1つで、ファイル名一致が必要です。</p></details></article></div></section><section class="card lesson-section check-section"><h2>基本ルールのまとめ</h2><ul><li>publicなトップレベルクラスとファイル名の規則を説明できる。</li><li>1ファイルに複数のトップレベルクラスを書ける条件を説明できる。</li><li>パッケージ付きクラスを完全修飾クラス名で実行できる。</li></ul></section><section class="card lesson-section"><h2>コードに規則を当てはめる</h2><p>次のコードが<code>Sample.java</code>に保存されている。コンパイルできるか。</p><p class="code-caption">確認用コード</p><pre><code>public class Main {
-}
-class Sample {
-}</code></pre><details class="answer-panel"><summary>説明を見る</summary><p>コンパイルできない。</p><p>publicなトップレベルクラスは<code>Main</code>なので、ファイル名は<code>Main.java</code>である必要がある。<code>Sample.java</code>ではコンパイルできない。</p></details></section><section class="card lesson-nav-bottom"><div><a class="btn ghost" href="18.html">← 前のLesson</a><a class="btn" href="../index.html">Lesson一覧</a><a class="btn primary" href="20.html">次のLesson →</a></div></section>
+}</code></pre><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>見る点</th><th>このコードでの判断</th><th>結論</th></tr></thead><tbody><tr><td data-label="見る点">ファイル名</td><td data-label="このコードでの判断"><code>A.java</code></td><td data-label="結論">public class A と一致</td></tr><tr><td data-label="見る点">クラスB</td><td data-label="このコードでの判断">非publicトップレベルクラス</td><td data-label="結論">同じファイルに書ける</td></tr><tr><td data-label="見る点">実行</td><td data-label="このコードでの判断"><code>B</code>にmainがある</td><td data-label="結論"><code>java B</code>で実行可能</td></tr></tbody></table></div></section>
+<section class="card lesson-section check-section"><h2>ここまでの要点</h2><ul><li>publicなトップレベルクラスとファイル名の規則を説明できる。</li><li>1ファイルに複数のトップレベルクラスを書ける条件を説明できる。</li><li>パッケージ付きクラスを完全修飾クラス名で実行できる。</li></ul></section><section class="card lesson-nav-bottom"><div><a class="btn ghost" href="18.html">← 前のLesson</a><a class="btn" href="../index.html">Lesson一覧</a><a class="btn primary" href="20.html">次のLesson →</a></div></section>
 </main>
 </div>
 <footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../../site/about.html">このサイトについて</a><a href="../../../site/editorial-policy.html">編集方針</a><a href="../../../site/site-map.html">サイトマップ</a><a href="../../../site/privacy.html">プライバシーポリシー</a><a href="../../../site/terms.html">利用規約</a><a href="../../../site/disclaimer.html">免責事項</a><a href="../../../site/advertising.html">広告・アフィリエイト</a><a href="../../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
 <script>window.APP_ROOT="../../../";window.CURRENT_PAGE="java-basic-19.html";</script>
-<script src="../../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
-<script src="../../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
-<script src="../../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
-<script src="../../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
-<script src="../../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+<script src="../../../data/questions.js?v=v29-ui-basic-editorial"></script>
+<script src="../../../assets/js/java-storage.js?v=v29-ui-basic-editorial"></script>
+<script src="../../../assets/js/app.js?v=v29-ui-basic-editorial"></script>
+<script src="../../../assets/js/java-bridge.js?v=v29-ui-basic-editorial"></script>
+<script src="../../../pwa.js?v=v29-ui-basic-editorial"></script>
 </body>
 </html>

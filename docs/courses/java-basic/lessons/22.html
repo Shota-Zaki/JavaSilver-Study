@@ -1,30 +1,31 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="charとStringを分け、Unicode、UTF-16、ソースファイルの文字コードを基礎から確認します。" name="description"/>
-<title>Lesson 22 文字コードとUnicode｜Java Practice Lab</title>
+<title>文字コードとUnicode｜Java Practice Lab</title>
 <meta content="Java Practice Lab" property="og:site_name"/>
 <meta content="website" property="og:type"/>
-<meta content="Lesson 22 文字コードとUnicode｜Java Practice Lab" property="og:title"/>
+<meta content="文字コードとUnicode｜Java Practice Lab" property="og:title"/>
 <meta content="charとStringを分け、Unicode、UTF-16、ソースファイルの文字コードを基礎から確認します。" property="og:description"/>
 <meta content="summary" name="twitter:card"/>
 <meta content="#e9eff3" name="theme-color"/>
 <link href="../../../manifest.webmanifest" rel="manifest"/>
-<link href="../../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../../assets/css/styles.css?v=v29-ui-basic-editorial" rel="stylesheet"/><link href="../../../assets/css/unified-ui.css?v=v29-ui-basic-editorial" rel="stylesheet"/>
 <link href="../../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
-<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="Java基礎">
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12 beginner-lesson" data-page-section="Java基礎">
 <a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="Java基礎"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">Java基礎</span><span class="site-context-title">文字コードとUnicode</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../../index.html">トップ</a><a aria-current="page" class="is-active" href="../index.html">基礎</a><a href="../../bronze/index.html">Bronze</a><a href="../../java11-silver/index.html">Silver 11</a><a href="../../java17-silver/index.html">Silver 17</a><a href="../../gold11/index.html">Gold 11</a><a href="../../gold17/index.html">Gold 17</a><a href="../../../articles/index.html">単元別解説</a><a href="../../../columns/index.html">コラム</a></nav></div></header>
 <div class="layout">
 <main class="main lesson-main" id="mainContent">
 <article class="card lesson-hero">
 <p class="meta">Java基礎 Lesson 22</p>
 <h1>文字コードとUnicode</h1>
-<p class="lead">Unicodeコードポイント、UTF-16コード単位、char、String、ソースエンコーディングを区別して説明します。</p>
-<div class="box goal-box"><strong>このレッスンのゴール</strong><p>charが常に人間の見た目の1文字を表すわけではない理由と、補助文字の扱いを説明できること。</p></div>
+<p class="lead">charとStringは、どちらも文字を扱いますが同じ型ではありません。UnicodeとUTF-16の関係も必要な範囲だけ見ます。</p>
+<div class="box goal-box"><strong>ここまでできればOK</strong><p>charが常に見た目の1文字と一致しない理由を説明できるようになります。</p></div>
 </article><section class="card lesson-section basic-term-intro">
-<h2>基本用語の定義</h2>
+<h2>まず押さえる言葉</h2>
 <div class="term-side-layout">
 <div>
 <p>Javaの`char`は16ビットのUTF-16コード単位を1つ保持します。Unicodeの1コードポイントがchar 1個に収まるとは限りません。</p>
@@ -34,7 +35,7 @@
 </code> や <code> </code> のように特殊文字を表す書き方。</div>
 </div>
 </div>
-</section><section class="card lesson-section basic-term-check core-rule-section"><h2>Unicode・char・Stringの定義</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>項目</th><th>定義・規則</th><th>具体例</th></tr></thead><tbody><tr><td data-label="項目"><span>コードポイント</span></td><td data-label="定義・規則"><span>Unicodeで文字や記号へ割り当てられた番号。</span></td><td data-label="具体例"><span><code>U+0041</code>はA。</span></td></tr><tr><td data-label="項目"><span>UTF-16コード単位</span></td><td data-label="定義・規則"><span>UTF-16で使う16ビット単位。</span></td><td data-label="具体例"><span>Javaの<code>char</code>が1単位を保持します。</span></td></tr><tr><td data-label="項目"><span>char</span></td><td data-label="定義・規則"><span>0から65535までの符号なし16ビット値。</span></td><td data-label="具体例"><span>BMP内の多くの文字はchar 1個で表せます。</span></td></tr><tr><td data-label="項目"><span>サロゲートペア</span></td><td data-label="定義・規則"><span>補助文字を2つのcharで表す組み合わせ。</span></td><td data-label="具体例"><span>一部の絵文字などは<code>String.length()</code>が2になります。</span></td></tr><tr><td data-label="項目"><span>String</span></td><td data-label="定義・規則"><span>charの並びとして扱われる不変オブジェクト。</span></td><td data-label="具体例"><span>コードポイント数とlengthが一致しない場合があります。</span></td></tr><tr><td data-label="項目"><span>ソースエンコーディング</span></td><td data-label="定義・規則"><span><code>.java</code>ファイルのバイト列を文字へ変換する方式。</span></td><td data-label="具体例"><span>保存時と<code>javac -encoding</code>を一致させます。</span></td></tr></tbody></table></div></section><section class="card lesson-section"><h2>charとStringの違い</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>表記</th><th>型</th><th>意味</th></tr></thead><tbody><tr><td data-label="表記"><code>'A'</code></td><td data-label="型"><code>char</code></td><td data-label="意味">UTF-16コード単位を1つ</td></tr><tr><td data-label="表記"><code>"A"</code></td><td data-label="型"><code>String</code></td><td data-label="意味">文字列オブジェクト</td></tr><tr><td data-label="表記"><code>'AB'</code></td><td data-label="型">不可</td><td data-label="意味"><code>char</code>リテラルにはUTF-16コード単位を1つだけ書ける</td></tr><tr><td data-label="表記"><code>""</code></td><td data-label="型"><code>String</code></td><td data-label="意味">長さ0の文字列</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>charは数値的な性質も持つ</h2><p><code>char</code>は文字を扱うが、内部的には文字に対応する数値を持つ。<code>'A'</code>は数値として扱うと65。</p><pre><code>char c = 'A';
+</section><section class="card lesson-section basic-term-check core-rule-section"><h2>Unicode・char・Stringの基本</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>項目</th><th>意味・使い方</th><th>具体例</th></tr></thead><tbody><tr><td data-label="項目"><span>コードポイント</span></td><td data-label="意味・使い方"><span>Unicodeで文字や記号へ割り当てられた番号。</span></td><td data-label="具体例"><span><code>U+0041</code>はA。</span></td></tr><tr><td data-label="項目"><span>UTF-16コード単位</span></td><td data-label="意味・使い方"><span>UTF-16で使う16ビット単位。</span></td><td data-label="具体例"><span>Javaの<code>char</code>が1単位を保持します。</span></td></tr><tr><td data-label="項目"><span>char</span></td><td data-label="意味・使い方"><span>0から65535までの符号なし16ビット値。</span></td><td data-label="具体例"><span>BMP内の多くの文字はchar 1個で表せます。</span></td></tr><tr><td data-label="項目"><span>サロゲートペア</span></td><td data-label="意味・使い方"><span>補助文字を2つのcharで表す組み合わせ。</span></td><td data-label="具体例"><span>一部の絵文字などは<code>String.length()</code>が2になります。</span></td></tr><tr><td data-label="項目"><span>String</span></td><td data-label="意味・使い方"><span>charの並びとして扱われる不変オブジェクト。</span></td><td data-label="具体例"><span>コードポイント数とlengthが一致しない場合があります。</span></td></tr><tr><td data-label="項目"><span>ソースエンコーディング</span></td><td data-label="意味・使い方"><span><code>.java</code>ファイルのバイト列を文字へ変換する方式。</span></td><td data-label="具体例"><span>保存時と<code>javac -encoding</code>を一致させます。</span></td></tr></tbody></table></div></section><section class="card lesson-section"><h2>charとStringの違い</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>表記</th><th>型</th><th>意味</th></tr></thead><tbody><tr><td data-label="表記"><code>'A'</code></td><td data-label="型"><code>char</code></td><td data-label="意味">UTF-16コード単位を1つ</td></tr><tr><td data-label="表記"><code>"A"</code></td><td data-label="型"><code>String</code></td><td data-label="意味">文字列オブジェクト</td></tr><tr><td data-label="表記"><code>'AB'</code></td><td data-label="型">不可</td><td data-label="意味"><code>char</code>リテラルにはUTF-16コード単位を1つだけ書ける</td></tr><tr><td data-label="表記"><code>""</code></td><td data-label="型"><code>String</code></td><td data-label="意味">長さ0の文字列</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>charは数値的な性質も持つ</h2><p><code>char</code>は文字を扱うが、内部的には文字に対応する数値を持つ。<code>'A'</code>は数値として扱うと65。</p><pre><code>char c = 'A';
 int n = c;
 System.out.println(n); // 65</code></pre></section><section class="card lesson-section"><h2>Unicodeエスケープ</h2><p>Javaでは<code>\uXXXX</code>の形でUnicodeエスケープを書ける。基礎段階では「文字にも数値的な対応がある」と理解できれば十分。</p><pre><code>char c = '\u0041';
 System.out.println(c); // A</code></pre></section><section class="card lesson-section"><h2>文字列連結での挙動</h2><p><code>char</code>同士を足すと数値計算になる場合がある。<code>String</code>が混ざると文字列連結になる。</p><pre><code>System.out.println('A' + 1);      // 66
@@ -46,50 +47,18 @@ System.out.println('A' + "B");    // AB</code></pre></section><section class="ca
         System.out.println(text.codePointCount(0, text.length()));
         System.out.println((int) 'A');
     }
-}</code></pre><p><span><code>A</code>はchar 1個、絵文字はサロゲートペアのchar 2個です。そのためlengthは3、コードポイント数は2です。</span></p></section><section class="card lesson-section"><h2>関連する用語との違い</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>混同しやすいもの</th><th>違い</th><th>見分け方</th></tr></thead><tbody><tr><td data-label="混同しやすいもの"><code>'A'</code> / <code>"A"</code></td><td data-label="違い">前者は<code>char</code>、後者は<code>String</code>。</td><td data-label="見分け方">引用符の種類を見る。</td></tr><tr><td data-label="混同しやすいもの">文字 / 文字列</td><td data-label="違い">charはUTF-16コード単位1つです。Stringは0文字以上の並びです。</td><td data-label="見分け方"><code>String</code>は空文字<code>""</code>も持てる。</td></tr><tr><td data-label="混同しやすいもの">文字としての数字 / 数値</td><td data-label="違い"><code>'1'</code>は文字、<code>1</code>は数値。</td><td data-label="見分け方">クォートされているかを見る。</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>文字データを判断する規則</h2><ol><li><span>対象がchar、String、コードポイントのどれかを区別する。</span></li><li><span>charはUTF-16コード単位1個として扱う。</span></li><li><span>補助文字ではサロゲートペアになる可能性を考える。</span></li><li><span>文字数を数える目的に応じて<code>length()</code>かコードポイントAPIかを選ぶ。</span></li><li><span>ソースファイルの文字化けでは、保存エンコーディングとコンパイラ設定を確認する。</span></li></ol><p class="code-caption">確認用コード</p><pre><code>char c = 'A';
+}</code></pre><p><span><code>A</code>はchar 1個、絵文字はサロゲートペアのchar 2個です。そのためlengthは3、コードポイント数は2です。</span></p></section><section class="card lesson-section"><h2>似た言葉との違い</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>混同しやすいもの</th><th>違い</th><th>見分け方</th></tr></thead><tbody><tr><td data-label="混同しやすいもの"><code>'A'</code> / <code>"A"</code></td><td data-label="違い">前者は<code>char</code>、後者は<code>String</code>。</td><td data-label="見分け方">引用符の種類を見る。</td></tr><tr><td data-label="混同しやすいもの">文字 / 文字列</td><td data-label="違い">charはUTF-16コード単位1つです。Stringは0文字以上の並びです。</td><td data-label="見分け方"><code>String</code>は空文字<code>""</code>も持てる。</td></tr><tr><td data-label="混同しやすいもの">文字としての数字 / 数値</td><td data-label="違い"><code>'1'</code>は文字、<code>1</code>は数値。</td><td data-label="見分け方">クォートされているかを見る。</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>文字データの確認順</h2><ol><li><span>対象がchar、String、コードポイントのどれかを区別する。</span></li><li><span>charはUTF-16コード単位1個として扱う。</span></li><li><span>補助文字ではサロゲートペアになる可能性を考える。</span></li><li><span>文字数を数える目的に応じて<code>length()</code>かコードポイントAPIかを選ぶ。</span></li><li><span>ソースファイルの文字化けでは、保存エンコーディングとコンパイラ設定を確認する。</span></li></ol><p class="code-caption">確認用コード</p><pre><code>char c = 'A';
 int n = c;
-System.out.println(n);</code></pre><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>見る点</th><th>このコードでの判断</th><th>結論</th></tr></thead><tbody><tr><td data-label="見る点"><code>c</code></td><td data-label="このコードでの判断">文字<code>A</code></td><td data-label="結論"><code>char</code></td></tr><tr><td data-label="見る点"><code>int n = c</code></td><td data-label="このコードでの判断">文字コード上の数値へ変換</td><td data-label="結論">代入可能</td></tr><tr><td data-label="見る点">出力</td><td data-label="このコードでの判断"><code>A</code>のコード値</td><td data-label="結論"><code>65</code></td></tr></tbody></table></div></section><section class="card lesson-section flow-section"><h2>charとStringは別の型</h2>
-<p>charは16ビットのUTF-16コード単位を1つ保持するプリミティブ型です。英数字や多くの基本的な文字はchar 1つで表せますが、補助文字の中には2つのcharが必要なものもあります。Stringは0文字以上の文字列を扱う参照型です。</p>
-<div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>型</th><th>例</th><th>本質</th></tr></thead><tbody><tr><td data-label="型"><code>char</code></td><td data-label="例"><code>'A'</code></td><td data-label="本質">UTF-16コード単位を1つ持つプリミティブ型です。数値的な性質もあります。</td></tr><tr><td data-label="型"><code>String</code></td><td data-label="例"><code>"A"</code></td><td data-label="本質">文字列オブジェクトへの参照。</td></tr><tr><td data-label="型">Unicode</td><td data-label="例"><code>'A'</code></td><td data-label="本質">文字を番号で表す仕組み。</td></tr></tbody></table></div>
-<pre><code>char c = 'A';
-String s = "A";
-System.out.println(c + 1); // 66
-System.out.println(s + 1); // A1</code></pre>
-<p><code>char</code>は数値的に扱われる場面があり、<code>String</code>は文字列連結になります。この差を「見た目が似ているから同じ」と処理すると、出力結果を間違えます。</p>
-<div class="mistake-callout"><strong>ここで整理する誤解</strong><p>シングルクォートとダブルクォートは見た目の好みではありません。<code>'A'</code>は<code>char</code>、<code>"A"</code>は<code>String</code>です。</p></div>
-</section><section class="card lesson-section basic-stumble-check"><h2>定義と規則の整理</h2><h3>文字コードで詰まる点</h3><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>つまずき</th><th>正しい考え方</th></tr></thead><tbody><tr><td data-label="つまずき">文字と数値が完全に別物だと思う</td><td data-label="正しい考え方">Javaの<code>char</code>はUnicodeのコード単位として数値的にも扱われる。</td></tr><tr><td data-label="つまずき">文字化けを文法エラーだと思う</td><td data-label="正しい考え方">文字コード不一致はソースの読み取り設定の問題。<code>-encoding UTF-8</code>が必要なことがある。</td></tr><tr><td data-label="つまずき">1文字=1バイトと思う</td><td data-label="正しい考え方">UnicodeやUTF-8では文字によりバイト数が異なる。日本語は特に注意。</td></tr></tbody></table></div><h3>確認できれば次へ</h3><ul class="check-list compact-check-list"><li>charとUnicodeの関係を説明できる</li><li>文字コード不一致の代表的な症状を説明できる</li><li>javacのencoding指定を説明できる</li></ul><div class="lesson-note"><strong>理解の基準</strong></div></section>
-<section class="card lesson-section code-trio-section">
-<h2>成立するコードと成立しないコード</h2>
-<div class="code-trio-grid">
-<article class="code-trio-card good"><h3>成立する例：UTF-8のソースをUTF-8としてコンパイルする</h3><pre><code>// Main.java
-public class Main {
-    public static void main(String[] args) {
-        System.out.println("こんにちは");
-    }
-}
-
-// terminal
-javac -encoding UTF-8 Main.java
-java Main</code></pre></article>
-<article class="code-trio-card bad"><h3>成立しない例：保存時の文字コードとコンパイル時の文字コードがずれている</h3><pre><code>// Main.javaはUTF-8で保存
-javac -encoding Shift_JIS Main.java</code></pre></article>
-<article class="code-trio-card fix"><h3>成立する形：保存時とjavacのencodingをそろえる</h3><pre><code>javac -encoding UTF-8 Main.java
-java Main</code></pre></article>
-</div>
-<div class="lesson-note"><strong>確認ポイント</strong><p>文字コード不一致は文法ではなく読み取りの問題です。日本語コメントや文字列で出やすいです。</p></div>
-</section>
-<section class="card lesson-section basic-understanding-quiz quiz-level-section"><h2>定義と規則を確認する</h2><div class="quiz-level-list"><article class="quiz-level-card"><h3>用語の確認</h3><p>文字コード、Unicode、エンコーディングを説明できますか。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>Unicodeは文字に番号を割り当てる体系、エンコーディングはその番号をバイト列にする方式です。文字コード問題は保存形式と読み込み指定を分けます。</p></details></article><article class="quiz-level-card"><h3>コードの確認</h3><p>UTF-8で保存したソースをWindowsでコンパイルして文字化けエラーが出る場合、まず何を指定しますか。</p><pre><code>javac Sample.java</code></pre><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>javac -encoding UTF-8 Sample.java のように、ソースの文字コードを明示します。</p></details></article><article class="quiz-level-card"><h3>仕組みを説明する</h3><p>charが1文字を常に完全に表せると言い切れない理由を説明してください。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>charは16ビットのUTF-16コード単位です。サロゲートペアが必要な文字はchar 1つで完全な1文字として扱えません。</p></details></article></div></section><section class="card lesson-section check-section"><h2>基本ルールのまとめ</h2><ul><li>シングルクォートとダブルクォートから型を判断できる。</li><li>charがUTF-16コード単位1つを持つ型だと説明できる。</li><li>ソースの保存形式とjavacのencoding指定をそろえられる。</li></ul></section><section class="card lesson-section"><h2>コードに規則を当てはめる</h2><p>次のうち型が正しいものを説明する。</p><p class="code-caption">確認用コード</p><pre><code>char a = 'A';
-String b = "A";
-char c = "A";
-String d = 'A';</code></pre><details class="answer-panel"><summary>説明を見る</summary><p>正しいのは<code>char a = 'A';</code>と<code>String b = "A";</code>。</p><p><code>char c = "A";</code>はダブルクォートなので<code>String</code>。<code>String d = 'A';</code>はシングルクォートなので<code>char</code>。どちらも型が合わない。</p></details></section><section class="card lesson-nav-bottom"><div><a class="btn ghost" href="21.html">← 前のLesson</a><a class="btn" href="../index.html">Lesson一覧</a><a class="btn primary" href="23.html">次のLesson →</a></div></section>
+System.out.println(n);</code></pre><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>見る点</th><th>このコードでの判断</th><th>結論</th></tr></thead><tbody><tr><td data-label="見る点"><code>c</code></td><td data-label="このコードでの判断">文字<code>A</code></td><td data-label="結論"><code>char</code></td></tr><tr><td data-label="見る点"><code>int n = c</code></td><td data-label="このコードでの判断">文字コード上の数値へ変換</td><td data-label="結論">代入可能</td></tr><tr><td data-label="見る点">出力</td><td data-label="このコードでの判断"><code>A</code>のコード値</td><td data-label="結論"><code>65</code></td></tr></tbody></table></div></section>
+<section class="card lesson-section check-section"><h2>ここまでの要点</h2><ul><li>シングルクォートとダブルクォートから型を判断できる。</li><li>charがUTF-16コード単位1つを持つ型だと説明できる。</li><li>ソースの保存形式とjavacのencoding指定をそろえられる。</li></ul></section><section class="card lesson-nav-bottom"><div><a class="btn ghost" href="21.html">← 前のLesson</a><a class="btn" href="../index.html">Lesson一覧</a><a class="btn primary" href="23.html">次のLesson →</a></div></section>
 </main>
 </div>
 <footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../../site/about.html">このサイトについて</a><a href="../../../site/editorial-policy.html">編集方針</a><a href="../../../site/site-map.html">サイトマップ</a><a href="../../../site/privacy.html">プライバシーポリシー</a><a href="../../../site/terms.html">利用規約</a><a href="../../../site/disclaimer.html">免責事項</a><a href="../../../site/advertising.html">広告・アフィリエイト</a><a href="../../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
 <script>window.APP_ROOT="../../../";window.CURRENT_PAGE="java-basic-22.html";</script>
-<script src="../../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
-<script src="../../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
-<script src="../../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
-<script src="../../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
-<script src="../../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+<script src="../../../data/questions.js?v=v29-ui-basic-editorial"></script>
+<script src="../../../assets/js/java-storage.js?v=v29-ui-basic-editorial"></script>
+<script src="../../../assets/js/app.js?v=v29-ui-basic-editorial"></script>
+<script src="../../../assets/js/java-bridge.js?v=v29-ui-basic-editorial"></script>
+<script src="../../../pwa.js?v=v29-ui-basic-editorial"></script>
 </body>
 </html>

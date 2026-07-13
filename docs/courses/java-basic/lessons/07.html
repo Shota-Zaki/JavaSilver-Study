@@ -1,30 +1,31 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="Stringの不変性、内容比較、文字列連結を、参照型としての動きから理解します。" name="description"/>
-<title>Lesson 7 Stringの基本｜Java Practice Lab</title>
+<title>Stringの基本｜Java Practice Lab</title>
 <meta content="Java Practice Lab" property="og:site_name"/>
 <meta content="website" property="og:type"/>
-<meta content="Lesson 7 Stringの基本｜Java Practice Lab" property="og:title"/>
+<meta content="Stringの基本｜Java Practice Lab" property="og:title"/>
 <meta content="Stringの不変性、内容比較、文字列連結を、参照型としての動きから理解します。" property="og:description"/>
 <meta content="summary" name="twitter:card"/>
 <meta content="#e9eff3" name="theme-color"/>
 <link href="../../../manifest.webmanifest" rel="manifest"/>
-<link href="../../../assets/css/styles.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/><link href="../../../assets/css/unified-ui.css?v=v27-silver11-official-scope-rebuild" rel="stylesheet"/>
+<link href="../../../assets/css/styles.css?v=v29-ui-basic-editorial" rel="stylesheet"/><link href="../../../assets/css/unified-ui.css?v=v29-ui-basic-editorial" rel="stylesheet"/>
 <link href="../../../assets/icons/icon.svg" rel="icon" sizes="any" type="image/svg+xml"/><link href="../../../assets/icons/icon-192.png" rel="icon" sizes="192x192" type="image/png"/><link href="../../../assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" type="image/png"/></head>
-<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12" data-page-section="Java基礎">
+<body class="header-layout java-site-page subject-page subject-java-page theme-java unified-ui-v10 unified-ui-v11 unified-ui-v12 beginner-lesson" data-page-section="Java基礎">
 <a class="skip-link" href="#mainContent">本文へ移動</a><header class="site-header" data-page-section="Java基礎"><div class="site-header-inner"><div class="site-header-row"><a class="site-brand" href="../../../index.html"><span class="site-brand-name">Java Practice Lab</span></a><div aria-label="現在のページ" class="site-page-context"><span class="site-context-section">Java基礎</span><span class="site-context-title">Stringの基本</span></div></div><nav aria-label="学習カテゴリ" class="site-nav"><a href="../../../index.html">トップ</a><a aria-current="page" class="is-active" href="../index.html">基礎</a><a href="../../bronze/index.html">Bronze</a><a href="../../java11-silver/index.html">Silver 11</a><a href="../../java17-silver/index.html">Silver 17</a><a href="../../gold11/index.html">Gold 11</a><a href="../../gold17/index.html">Gold 17</a><a href="../../../articles/index.html">単元別解説</a><a href="../../../columns/index.html">コラム</a></nav></div></header>
 <div class="layout">
 <main class="main lesson-main" id="mainContent">
 <article class="card lesson-hero">
 <p class="meta">Java基礎 Lesson 7</p>
 <h1>Stringの基本</h1>
-<p class="lead">Stringを文字列オブジェクトとして定義し、不変性、参照比較、内容比較、連結の規則を説明します。</p>
-<div class="box goal-box"><strong>このレッスンのゴール</strong><p>Stringメソッドが元のオブジェクトを書き換えないことと、`==`と`equals`の役割を説明できること。</p></div>
+<p class="lead">Stringは文字列を扱う型です。文字列の変更、比較、連結で起きることを、小さなコードで確認します。</p>
+<div class="box goal-box"><strong>ここまでできればOK</strong><p>==とequalsの違い、不変性、nullを含む文字列処理を説明できるようになります。</p></div>
 </article><section class="card lesson-section basic-term-intro">
-<h2>基本用語の定義</h2>
+<h2>まず押さえる言葉</h2>
 <div class="term-side-layout">
 <div>
 <p>String変数は文字列そのものを内包するのではなく、Stringオブジェクトへの参照を保持します。</p>
@@ -33,7 +34,7 @@
 <div class="term-note basic-term-mini"><strong><code>String</code>とは</strong>文字列を表す参照型。内容は変更できない。</div><div class="term-note basic-term-mini"><strong>文字列リテラルとは</strong><code>"abc"</code> のようにコードへ直接書く文字列。</div><div class="term-note basic-term-mini"><strong>文字列プールとは</strong>同じ文字列リテラルを再利用するための領域。</div><div class="term-note basic-term-mini"><strong>不変とは</strong>インスタンス生成後に内容を変更できないこと。<code>String</code>は不変。</div><div class="term-note basic-term-mini"><strong><code>equals</code>とは</strong>オブジェクトの内容比較に使うメソッド。</div>
 </div>
 </div>
-</section><section class="card lesson-section basic-term-check core-rule-section"><h2>Stringオブジェクトの基本規則</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>項目</th><th>定義・規則</th><th>具体例</th></tr></thead><tbody><tr><td data-label="項目"><span>文字列リテラル</span></td><td data-label="定義・規則"><span>二重引用符で記述するStringの値。</span></td><td data-label="具体例"><span><code>"Java"</code></span></td></tr><tr><td data-label="項目"><span>不変性</span></td><td data-label="定義・規則"><span>Stringオブジェクトの内容は生成後に変更されません。</span></td><td data-label="具体例"><span><code>toUpperCase()</code>などは結果のStringを返します。</span></td></tr><tr><td data-label="項目"><span>文字列プール</span></td><td data-label="定義・規則"><span>同じ文字列リテラルを共有できる領域・仕組み。</span></td><td data-label="具体例"><span>リテラル同士の参照が同じになる場合があります。</span></td></tr><tr><td data-label="項目"><span><code>==</code></span></td><td data-label="定義・規則"><span>2つの参照が同じオブジェクトを指すか比較します。</span></td><td data-label="具体例"><span>文字列内容の比較には使いません。</span></td></tr><tr><td data-label="項目"><span><code>equals</code></span></td><td data-label="定義・規則"><span>Stringでは文字列の内容を比較します。</span></td><td data-label="具体例"><span><code>a.equals(b)</code></span></td></tr><tr><td data-label="項目"><span>連結</span></td><td data-label="定義・規則"><span>一方がStringになると<code>+</code>は文字列連結として処理されます。</span></td><td data-label="具体例"><span>左結合なので評価の途中結果を追います。</span></td></tr></tbody></table></div></section><section class="card lesson-section"><h2>Stringは不変</h2><p><code>replace</code>、<code>substring</code>、<code>toUpperCase</code>などは、元の<code>String</code>を書き換えない。戻り値を受け取らないと、結果は捨てられる。</p><p class="code-caption">戻り値を受け取らない例</p><pre><code>String s = "java";
+</section><section class="card lesson-section basic-term-check core-rule-section"><h2>Stringの基本</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>項目</th><th>意味・使い方</th><th>具体例</th></tr></thead><tbody><tr><td data-label="項目"><span>文字列リテラル</span></td><td data-label="意味・使い方"><span>二重引用符で記述するStringの値。</span></td><td data-label="具体例"><span><code>"Java"</code></span></td></tr><tr><td data-label="項目"><span>不変性</span></td><td data-label="意味・使い方"><span>Stringオブジェクトの内容は生成後に変更されません。</span></td><td data-label="具体例"><span><code>toUpperCase()</code>などは結果のStringを返します。</span></td></tr><tr><td data-label="項目"><span>文字列プール</span></td><td data-label="意味・使い方"><span>同じ文字列リテラルを共有できる領域・仕組み。</span></td><td data-label="具体例"><span>リテラル同士の参照が同じになる場合があります。</span></td></tr><tr><td data-label="項目"><span><code>==</code></span></td><td data-label="意味・使い方"><span>2つの参照が同じオブジェクトを指すか比較します。</span></td><td data-label="具体例"><span>文字列内容の比較には使いません。</span></td></tr><tr><td data-label="項目"><span><code>equals</code></span></td><td data-label="意味・使い方"><span>Stringでは文字列の内容を比較します。</span></td><td data-label="具体例"><span><code>a.equals(b)</code></span></td></tr><tr><td data-label="項目"><span>連結</span></td><td data-label="意味・使い方"><span>一方がStringになると<code>+</code>は文字列連結として処理されます。</span></td><td data-label="具体例"><span>左結合なので評価の途中結果を追います。</span></td></tr></tbody></table></div></section><section class="card lesson-section"><h2>Stringは不変</h2><p><code>replace</code>、<code>substring</code>、<code>toUpperCase</code>などは、元の<code>String</code>を書き換えない。戻り値を受け取らないと、結果は捨てられる。</p><p class="code-caption">戻り値を受け取らない例</p><pre><code>String s = "java";
 s.toUpperCase();
 System.out.println(s); // java</code></pre><p class="code-caption">戻り値を受け取る</p><pre><code>String s = "java";
 s = s.toUpperCase();
@@ -53,51 +54,18 @@ System.out.println("A" + 1 + 2); // A12</code></pre></section><section class="ca
         System.out.println(original == copy);
         System.out.println(original.equals(copy));
     }
-}</code></pre><p><span><code>toUpperCase()</code>の戻り値を<code>upper</code>が参照し、<code>original</code>は引き続き<code>"java"</code>を表します。<code>copy</code>は内容が同じでも別のオブジェクトです。</span></p></section><section class="card lesson-section"><h2>関連する用語との違い</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>混同しやすいもの</th><th>違い</th><th>見分け方</th></tr></thead><tbody><tr><td data-label="混同しやすいもの"><code>==</code> / <code>equals</code></td><td data-label="違い"><code>==</code>は同じ参照か、<code>equals</code>は内容が同じか。</td><td data-label="見分け方">文字列内容を見たいなら<code>equals</code>。</td></tr><tr><td data-label="混同しやすいもの">文字列リテラル / <code>new String</code></td><td data-label="違い">リテラルは文字列プールが絡む。<code>new</code>は新規オブジェクト。</td><td data-label="見分け方">参照比較で差が出る。</td></tr><tr><td data-label="混同しやすいもの">変更 / 新規作成</td><td data-label="違い"><code>String</code>は変更されず、新しい結果が作られる。</td><td data-label="見分け方">返り値を代入しているか見る。</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>String式を判断する規則</h2><ol><li><span>変数が参照しているStringオブジェクトを区別する。</span></li><li><span>メソッドの戻り値を受け取っているか確認する。</span></li><li><span><code>==</code>なら参照、<code>equals</code>なら内容を比較する。</span></li><li><span><code>+</code>を左から評価し、どの時点でString連結になるか確認する。</span></li><li><span>参照が<code>null</code>の場合、インスタンスメソッド呼び出しで<code>NullPointerException</code>が発生する。</span></li></ol><p class="code-caption">確認用コード</p><pre><code>String s = "Java";
+}</code></pre><p><span><code>toUpperCase()</code>の戻り値を<code>upper</code>が参照し、<code>original</code>は引き続き<code>"java"</code>を表します。<code>copy</code>は内容が同じでも別のオブジェクトです。</span></p></section><section class="card lesson-section"><h2>似た言葉との違い</h2><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>混同しやすいもの</th><th>違い</th><th>見分け方</th></tr></thead><tbody><tr><td data-label="混同しやすいもの"><code>==</code> / <code>equals</code></td><td data-label="違い"><code>==</code>は同じ参照か、<code>equals</code>は内容が同じか。</td><td data-label="見分け方">文字列内容を見たいなら<code>equals</code>。</td></tr><tr><td data-label="混同しやすいもの">文字列リテラル / <code>new String</code></td><td data-label="違い">リテラルは文字列プールが絡む。<code>new</code>は新規オブジェクト。</td><td data-label="見分け方">参照比較で差が出る。</td></tr><tr><td data-label="混同しやすいもの">変更 / 新規作成</td><td data-label="違い"><code>String</code>は変更されず、新しい結果が作られる。</td><td data-label="見分け方">返り値を代入しているか見る。</td></tr></tbody></table></div></section><section class="card lesson-section"><h2>Stringを読む順番</h2><ol><li><span>変数が参照しているStringオブジェクトを区別する。</span></li><li><span>メソッドの戻り値を受け取っているか確認する。</span></li><li><span><code>==</code>なら参照、<code>equals</code>なら内容を比較する。</span></li><li><span><code>+</code>を左から評価し、どの時点でString連結になるか確認する。</span></li><li><span>参照が<code>null</code>の場合、インスタンスメソッド呼び出しで<code>NullPointerException</code>が発生する。</span></li></ol><p class="code-caption">確認用コード</p><pre><code>String s = "Java";
 s.concat("Java");
 System.out.println(s);</code></pre><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>見る点</th><th>このコードでの判断</th><th>結論</th></tr></thead><tbody><tr><td data-label="見る点">初期値</td><td data-label="このコードでの判断"><code>s</code>は<code>"Java"</code>を参照</td><td data-label="結論">OK</td></tr><tr><td data-label="見る点"><code>concat</code></td><td data-label="このコードでの判断">新しい文字列を返すが代入していない</td><td data-label="結論"><code>s</code>は変わらない</td></tr><tr><td data-label="見る点">出力</td><td data-label="このコードでの判断"><code>s</code>の参照先は元のまま</td><td data-label="結論"><code>Java</code></td></tr></tbody></table></div></section>
-<section class="card lesson-section flow-section"><h2>Stringは元の文字列を書き換えない</h2>
-<p>Stringは不変のクラスです。concatやsubstringなどを呼び出すと、元の文字列を変更するのではなく、結果となる別のStringを返します。</p>
-<pre><code>String s = "abc";
-s.substring(1);
-System.out.println(s); // abc</code></pre>
-<p>このコードで<code>bc</code>が表示されると思ったなら、まだ<code>String</code>を「書き換わる箱」として見ています。<code>substring</code>は新しい文字列を返すだけです。戻り値を受け取らない限り、変数<code>s</code>の参照先は変わりません。</p>
-<pre><code>String s = "abc";
-s = s.substring(1);
-System.out.println(s); // bc</code></pre>
-<div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>比較</th><th>何を見ているか</th><th>使う場面</th></tr></thead><tbody><tr><td data-label="比較"><code>a == b</code></td><td data-label="何を見ているか">同じオブジェクトを参照しているか</td><td data-label="使う場面">参照そのものを判定したいとき</td></tr><tr><td data-label="比較"><code>a.equals(b)</code></td><td data-label="何を見ているか">文字列の内容が同じか</td><td data-label="使う場面">通常の文字列比較</td></tr><tr><td data-label="比較"><code>"x".equals(a)</code></td><td data-label="何を見ているか">定数側から比較</td><td data-label="使う場面"><code>a</code>がnullの可能性があるとき</td></tr></tbody></table></div>
-<div class="mistake-callout"><strong>ここで整理する誤解</strong><p><code>==</code>がtrueになる文字列の例を見て「文字列は<code>==</code>で比較できる」と結論づけるのは間違いです。たまたま同じ参照を見ているだけの場合があります。</p></div>
-</section>
-<section class="card lesson-section basic-stumble-check"><h2>定義と規則の整理</h2><h3>Stringで詰まる典型</h3><div class="table-scroll"><table class="study-table responsive-card-table"><thead><tr><th>つまずき</th><th>正しい考え方</th></tr></thead><tbody><tr><td data-label="つまずき">Stringが変更されると思う</td><td data-label="正しい考え方"><code>String</code>は不変。<code>replace</code>や<code>substring</code>は新しい文字列を返す。</td></tr><tr><td data-label="つまずき"><code>==</code>で文字列内容比較をする</td><td data-label="正しい考え方"><code>==</code>は参照比較。内容比較は通常<code>equals</code>。</td></tr><tr><td data-label="つまずき">インデックスの終端を含むと思う</td><td data-label="正しい考え方"><code>substring(begin,end)</code>の<code>end</code>は含まない。</td></tr></tbody></table></div><h3>確認できれば次へ</h3><ul class="check-list compact-check-list"><li>Stringが不変である意味を説明できる</li><li><code>==</code>と<code>equals</code>の違いを説明できる</li><li><code>substring</code>の第2引数が含まれないことを説明できる</li></ul><div class="lesson-note"><strong>理解の基準</strong></div></section>
-<section class="card lesson-section code-trio-section">
-<h2>成立するコードと成立しないコード</h2>
-<div class="code-trio-grid">
-<article class="code-trio-card good"><h3>成立する例：戻り値を別変数で受け取る</h3><pre><code>String s = "Java";
-String upper = s.toUpperCase();
-System.out.println(upper);</code></pre></article>
-<article class="code-trio-card bad"><h3>成立しない例：戻り値を捨てている</h3><pre><code>String s = "Java";
-s.toUpperCase();
-System.out.println(s);</code></pre></article>
-<article class="code-trio-card fix"><h3>成立する形：戻り値を元の変数へ代入する</h3><pre><code>String s = "Java";
-s = s.toUpperCase();
-System.out.println(s);</code></pre></article>
-</div>
-<div class="lesson-note"><strong>確認ポイント</strong><p>Stringのメソッドは元の文字列を変更せず、新しい結果を返すものが多いです。</p></div>
-</section>
-<section class="card lesson-section basic-understanding-quiz quiz-level-section"><h2>定義と規則を確認する</h2><div class="quiz-level-list"><article class="quiz-level-card"><h3>用語の確認</h3><p>Stringが不変であるとはどういう意味ですか。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>Stringオブジェクトの中身は変更されません。replaceやsubstringは新しいStringを返します。</p></details></article><article class="quiz-level-card"><h3>コードの確認</h3><p>次の出力は何ですか。</p><pre><code>String s = "abc";
-s.replace("a", "x");
-System.out.println(s);</code></pre><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>abcです。replaceの戻り値を受け取っていないため、変数sの参照先は変わりません。</p></details></article><article class="quiz-level-card"><h3>仕組みを説明する</h3><p>== と equals の違いをStringで説明できる状態にします。</p><details class="answer-panel compact-answer-panel"><summary>説明を見る</summary><p>==は参照先が同じかを比べ、equalsは文字列の内容を比べます。new Stringで作ったオブジェクトと文字列リテラルは、内容が同じでも同じ参照とは限りません。</p></details></article></div></section><section class="card lesson-section check-section"><h2>基本ルールのまとめ</h2><ul><li>Stringが参照型であり、不変だと説明できる。</li><li>内容比較にはequalsを使う理由を説明できる。</li><li>文字列操作メソッドの戻り値を受け取る必要があると判断できる。</li></ul></section><section class="card lesson-section"><h2>コードに規則を当てはめる</h2><p>次の出力を答え、理由を説明する。</p><p class="code-caption">確認用コード</p><pre><code>String a = "ab";
-String b = new String("ab");
-System.out.println(a == b);
-System.out.println(a.equals(b));</code></pre><details class="answer-panel"><summary>説明を見る</summary><p>1行目は<code>false</code>。<code>a</code>と<code>b</code>は同じ内容だが、参照先が同じとは限らない。<code>new String</code>で別オブジェクトを作っている。</p><p>2行目は<code>true</code>。<code>equals</code>は文字列内容を比較するため。</p></details></section><section class="card lesson-nav-bottom"><div><a class="btn ghost" href="06.html">← 前のLesson</a><a class="btn" href="../index.html">Lesson一覧</a><a class="btn primary" href="08.html">次のLesson →</a></div></section>
+<section class="card lesson-section check-section"><h2>ここまでの要点</h2><ul><li>Stringが参照型であり、不変だと説明できる。</li><li>内容比較にはequalsを使う理由を説明できる。</li><li>文字列操作メソッドの戻り値を受け取る必要があると判断できる。</li></ul></section><section class="card lesson-nav-bottom"><div><a class="btn ghost" href="06.html">← 前のLesson</a><a class="btn" href="../index.html">Lesson一覧</a><a class="btn primary" href="08.html">次のLesson →</a></div></section>
 </main>
 </div>
 <footer class="site-footer global-footer"><div class="site-footer-inner"><div class="footer-brand">Java Practice Lab</div><nav aria-label="フッターリンク" class="footer-links"><a href="../../../site/about.html">このサイトについて</a><a href="../../../site/editorial-policy.html">編集方針</a><a href="../../../site/site-map.html">サイトマップ</a><a href="../../../site/privacy.html">プライバシーポリシー</a><a href="../../../site/terms.html">利用規約</a><a href="../../../site/disclaimer.html">免責事項</a><a href="../../../site/advertising.html">広告・アフィリエイト</a><a href="../../../site/contact.html">お問い合わせ</a></nav><p>© Java Practice Lab. Java学習を支援する非公式の学習サイトです。</p></div></footer>
 <script>window.APP_ROOT="../../../";window.CURRENT_PAGE="java-basic-07.html";</script>
-<script src="../../../data/questions.js?v=v27-silver11-official-scope-rebuild"></script>
-<script src="../../../assets/js/java-storage.js?v=v27-silver11-official-scope-rebuild"></script>
-<script src="../../../assets/js/app.js?v=v27-silver11-official-scope-rebuild"></script>
-<script src="../../../assets/js/java-bridge.js?v=v27-silver11-official-scope-rebuild"></script>
-<script src="../../../pwa.js?v=v717-v716-authoritative-site-runtime"></script>
+<script src="../../../data/questions.js?v=v29-ui-basic-editorial"></script>
+<script src="../../../assets/js/java-storage.js?v=v29-ui-basic-editorial"></script>
+<script src="../../../assets/js/app.js?v=v29-ui-basic-editorial"></script>
+<script src="../../../assets/js/java-bridge.js?v=v29-ui-basic-editorial"></script>
+<script src="../../../pwa.js?v=v29-ui-basic-editorial"></script>
 </body>
 </html>
