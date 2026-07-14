@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="noindex, nofollow, noarchive, nosnippet" name="robots"/>
+<meta content="noindex, nofollow, noarchive, nosnippet" name="googlebot"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Java Silver Study - 型・変数・リテラル</title>
+<link href="assets/css/styles.css?v=round-wrong-groups-v15" rel="stylesheet"/>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<p class="brand"><a href="index.html">Java Silver Study</a></p>
+<nav aria-label="章一覧" class="nav-list" id="chapterNav"></nav>
+</aside>
+<main class="main reference-main article-main">
+<section class="hero reference-hero compact-hero article-hero">
+<p class="eyebrow">Java Silver Reference</p>
+<h1>型・変数・リテラル</h1>
+<p>プリミティブ型、参照型、初期値、識別子、null、参照コピーを、Java Silverでそのまま使える判定手順まで掘り下げます。</p>
+</section>
+<section class="article-section article-card important">
+<h2>値・参照・型を同じものとして扱わない</h2>
+<p>型・変数・リテラルの問題は、暗記だけで解くと崩れます。毎回、次の順番で機械的に判定します。</p>
+<ol class="article-list priority-list">
+<li><strong>変数の型</strong>を見る。プリミティブ型か参照型か。</li>
+<li><strong>右辺の式の型</strong>を見る。リテラル、演算式、メソッド戻り値、<code>null</code> のどれか。</li>
+<li><strong>代入・比較・メソッド呼び出しが可能か</strong>を見る。</li>
+<li>最後に、問題が聞いているのが <strong>コンパイルエラー</strong>、<strong>実行時例外</strong>、<strong>表示結果</strong> のどれかを分ける。</li>
+</ol>
+<div class="article-callout warn"><strong>雑に読むと落ちる点:</strong> 「値としては入りそう」ではなく「その式の型として代入できるか」で判断します。Java Silverではここを狙われます。</div>
+</section>
+<section class="article-section">
+<h2>型とは「値の扱い方」を決めるルール</h2>
+<p>Javaの変数は、必ず型を持ちます。型は単なる入れ物の名前ではなく、次の3つを決めます。</p>
+<div class="article-card-grid">
+<div class="article-card"><h3>保持できるもの</h3><p><code>int</code> は整数値、<code>boolean</code> は <code>true</code>/<code>false</code>、参照型はオブジェクトへの参照を保持します。</p></div>
+<div class="article-card"><h3>できる操作</h3><p><code>int</code> は算術演算できますが、<code>boolean</code> は数値演算できません。参照型はメソッド呼び出しできます。</p></div>
+<div class="article-card"><h3>代入できる範囲</h3><p>型が違えば、値が似ていても代入できない場合があります。暗黙変換できるかが判定軸です。</p></div>
+</div>
+<p>試験では「同じ値に見えるが型が違う」コードがよく出ます。例として <code>1</code>、<code>1L</code>、<code>1.0</code>、<code>'1'</code>、<code>"1"</code> はすべて意味が違います。</p>
+</section>
+<section class="article-section">
+<h2>プリミティブ型と参照型の根本差</h2>
+<table class="ref-table">
+<thead><tr><th>分類</th><th>代表例</th><th>変数が直接持つもの</th><th><code>null</code></th><th>比較の注意</th></tr></thead>
+<tbody>
+<tr><td>プリミティブ型</td><td><code>byte short int long float double char boolean</code></td><td>値そのもの</td><td>不可</td><td><code>==</code> は値比較</td></tr>
+<tr><td>参照型</td><td><code>String</code>、配列、自作クラス、ラッパークラス、<code>Object</code></td><td>オブジェクトへの参照</td><td>可</td><td><code>==</code> は参照先の同一性比較</td></tr>
+</tbody>
+</table>
+<pre class="article-code"><code>int a = 10;
+String s = "java";
+Object o = new Object();
+
+// a は 10 という値そのものを持つ
+// s と o は、オブジェクトそのものではなく参照を持つ</code></pre>
+<p>参照型変数は「オブジェクトの実体」ではなく「オブジェクトへ到達するための参照」を持ちます。この理解がないと、<code>==</code>、ガベージコレクション、<code>null</code>、メソッド引数の問題で誤答します。</p>
+</section><section class="article-section">
+<h2>プリミティブ型と参照型の差を演習へつなげる</h2>
+<div class="table-wrap"><table class="ref-table"><thead><tr><th>観点</th><th>プリミティブ型</th><th>参照型</th></tr></thead><tbody><tr><td>変数が保持するもの</td><td>数値・真偽値などの値</td><td>オブジェクトへの参照または<code>null</code></td></tr><tr><td>代入の効果</td><td>値をコピー</td><td>参照をコピー</td></tr><tr><td>既定値</td><td>フィールド・配列要素には型ごとの既定値</td><td>フィールド・配列要素は<code>null</code></td></tr><tr><td>ローカル変数</td><td>使用前に明示的初期化が必要</td><td>同じく使用前に明示的初期化が必要</td></tr><tr><td>比較</td><td><code>==</code>は値比較</td><td><code>==</code>は同一参照の比較</td></tr></tbody></table></div>
+<pre class="article-code"><code>class Box {
+          int count;      // 0
+          String name;    // null
+      
+          void test() {
+              int local;
+              // System.out.println(local); // コンパイルエラー
+          }
+      }</code></pre>
+<div class="article-callout"><strong>初期値の境界：</strong>フィールドと配列要素には既定値がありますが、ローカル変数は使用前に確実な代入が必要です。</div>
+<details class="article-card"><summary><strong>ローカル変数の初期化</strong></summary><p>条件が<code>true</code>のとき必ず代入されるように見えます。コンパイルできますか。</p><pre class="article-code"><code>boolean flag = true;
+      int value;
+      if (flag) {
+          value = 10;
+      }
+      System.out.println(value);</code></pre><div class="article-callout"><strong>確実な代入：</strong>コンパイルエラーです。コンパイラは一般の変数<code>flag</code>の実行時値を使って確実な代入を保証しません。</div></details></section>
+<section class="article-section">
+<h2>8つのプリミティブ型を試験用に整理</h2>
+<p>全部を均等に覚える必要はありません。Java Silverで特に問われるのは <code>byte</code>、<code>short</code>、<code>char</code>、<code>int</code>、<code>long</code>、<code>float</code>、<code>double</code>、<code>boolean</code> の互換性です。</p>
+<table class="ref-table">
+<thead><tr><th>型</th><th>分類</th><th>範囲・特徴</th><th>試験での狙われ方</th></tr></thead>
+<tbody>
+<tr><td><code>byte</code></td><td>整数</td><td>-128〜127</td><td><code>byte b = 128;</code> は不可。演算すると原則 <code>int</code>。</td></tr>
+<tr><td><code>short</code></td><td>整数</td><td>-32768〜32767</td><td>範囲内の定数式は代入可。変数を含む式は <code>int</code> になりやすい。</td></tr>
+<tr><td><code>char</code></td><td>文字・整数的</td><td>0〜65535相当</td><td><code>'A'</code>、<code>65</code>、演算後の <code>int</code> 昇格に注意。</td></tr>
+<tr><td><code>int</code></td><td>整数</td><td>整数リテラルの標準</td><td>何も付かない整数リテラルは基本 <code>int</code>。</td></tr>
+<tr><td><code>long</code></td><td>整数</td><td><code>int</code> より広い</td><td><code>L</code> 接尾辞。<code>l</code> は読みにくいので実務では避ける。</td></tr>
+<tr><td><code>float</code></td><td>浮動小数</td><td>単精度</td><td><code>1.0</code> は <code>double</code> なので <code>float f = 1.0;</code> は不可。</td></tr>
+<tr><td><code>double</code></td><td>浮動小数</td><td>倍精度</td><td>小数リテラルの標準。</td></tr>
+<tr><td><code>boolean</code></td><td>真偽値</td><td><code>true</code> / <code>false</code> のみ</td><td>数値と互換性なし。<code>if (1)</code> は不可。</td></tr>
+</tbody>
+</table>
+</section>
+<section class="article-section">
+<h2>booleanは数値ではない</h2>
+<p>C言語系の感覚で <code>0</code> を false、<code>1</code> を true のように扱うとJavaでは即アウトです。</p>
+<pre class="article-code"><code>boolean a = true;
+boolean b = false;
+
+// boolean c = 1;    // NG
+// int x = true;     // NG
+// if (1) { }        // NG
+
+if (a == true) {     // OK。ただし実務では if (a) が自然
+    System.out.println("ok");
+}</code></pre>
+<p>試験では <code>if</code>、<code>while</code>、三項演算子の条件部に数値を置くひっかけが出ます。条件部は必ず <code>boolean</code> です。</p>
+</section>
+<section class="article-section">
+<h2>リテラルは「見た目」ではなく「型」で読む</h2>
+<table class="ref-table">
+<thead><tr><th>リテラル</th><th>型</th><th>意味</th><th>注意点</th></tr></thead>
+<tbody>
+<tr><td><code>10</code></td><td><code>int</code></td><td>整数</td><td><code>byte</code>/<code>short</code> へは範囲内定数なら代入可。</td></tr>
+<tr><td><code>10L</code></td><td><code>long</code></td><td>long整数</td><td><code>int x = 10L;</code> は不可。</td></tr>
+<tr><td><code>1.0</code></td><td><code>double</code></td><td>小数</td><td><code>float f = 1.0;</code> は不可。</td></tr>
+<tr><td><code>1.0F</code></td><td><code>float</code></td><td>float小数</td><td><code>F</code> が必要。</td></tr>
+<tr><td><code>'A'</code></td><td><code>char</code></td><td>1文字</td><td><code>"A"</code> とは別物。</td></tr>
+<tr><td><code>"A"</code></td><td><code>String</code></td><td>文字列オブジェクトへの参照</td><td>参照型。</td></tr>
+<tr><td><code>null</code></td><td>null型</td><td>参照なし</td><td>参照型にだけ代入可。</td></tr>
+</tbody>
+</table>
+</section>
+<section class="article-section">
+<h2>変数の宣言・初期化・代入を分ける</h2>
+<p>宣言、初期化、代入は似ていますが、試験では分けて読む必要があります。</p>
+<pre class="article-code"><code>int a;        // 宣言。ローカル変数ならまだ使えない
+int b = 10;   // 宣言 + 初期化
+b = 20;       // 代入</code></pre>
+<table class="ref-table">
+<thead><tr><th>操作</th><th>意味</th><th>試験での注意</th></tr></thead>
+<tbody>
+<tr><td>宣言</td><td>変数名と型を決める</td><td>ローカル変数は宣言だけでは使えない。</td></tr>
+<tr><td>初期化</td><td>最初の値を入れる</td><td>使用前に必須。</td></tr>
+<tr><td>代入</td><td>既存変数に値を入れ直す</td><td><code>final</code> 変数は再代入不可。</td></tr>
+</tbody>
+</table>
+</section>
+<section class="article-section">
+<h2>フィールドとローカル変数の初期値</h2>
+<p>フィールドにはデフォルト値があります。ローカル変数にはありません。ここは非常に落としやすいです。</p>
+<table class="ref-table">
+<thead><tr><th>変数の種類</th><th>宣言場所</th><th>自動初期化</th><th>例</th></tr></thead>
+<tbody>
+<tr><td>フィールド</td><td>クラス直下</td><td>される</td><td><code>int</code> は <code>0</code>、<code>boolean</code> は <code>false</code>、参照型は <code>null</code></td></tr>
+<tr><td>ローカル変数</td><td>メソッド・コンストラクタ・ブロック内</td><td>されない</td><td>使う前に全経路で初期化が必要</td></tr>
+</tbody>
+</table>
+<pre class="article-code"><code>class Sample {
+    int field;          // 0
+    boolean flag;       // false
+    String text;        // null
+
+    void test() {
+        int local;
+        // System.out.println(local); // NG: 初期化されていない
+        System.out.println(field);    // OK: 0
+    }
+}</code></pre>
+</section>
+<section class="article-section">
+<h2>確定代入: 分岐があるローカル変数</h2>
+<p>ローカル変数は「実行時にたまたま初期化されそう」では足りません。コンパイラが全経路で初期化済みだと判断できる必要があります。</p>
+<pre class="article-code"><code>void test(boolean condition) {
+    int x;
+    if (condition) {
+        x = 10;
+    }
+    // System.out.println(x); // NG: condition が false の経路で未初期化
+}</code></pre>
+<pre class="article-code"><code>void test(boolean condition) {
+    int x;
+    if (condition) {
+        x = 10;
+    } else {
+        x = 20;
+    }
+    System.out.println(x); // OK: どちらの経路でも初期化される
+}</code></pre>
+<div class="article-callout"><strong>判断:</strong> ローカル変数の問題は「実行したらどうなるか」より前に、コンパイラが初期化済みと証明できるかを見ます。</div>
+</section>
+<section class="article-section">
+<h2>参照型変数とnull</h2>
+<p><code>null</code> は「参照先がない」ことを表す特別なリテラルです。参照型には代入できますが、プリミティブ型には代入できません。</p>
+<pre class="article-code"><code>String s = null;   // OK
+Object o = null;   // OK
+int[] array = null;// OK
+
+// int n = null;   // NG
+// boolean b = null; // NG</code></pre>
+<p><code>null</code> を出力するだけなら <code>"null"</code> と表示されますが、メソッドを呼ぶと <code>NullPointerException</code> です。</p>
+<pre class="article-code"><code>String s = null;
+System.out.println(s);  // null
+// System.out.println(s.length()); // 実行時にNullPointerException</code></pre>
+</section>
+<section class="article-section">
+<h2>nullと空文字は完全に別物</h2>
+<table class="ref-table">
+<thead><tr><th>値</th><th>意味</th><th>メソッド呼び出し</th><th>表示</th></tr></thead>
+<tbody>
+<tr><td><code>null</code></td><td>参照先がない</td><td>不可。呼ぶと <code>NullPointerException</code></td><td><code>println</code> では <code>null</code> と出る</td></tr>
+<tr><td><code>""</code></td><td>長さ0のStringオブジェクト</td><td>可</td><td>見た目は何も出ない</td></tr>
+</tbody>
+</table>
+<pre class="article-code"><code>String a = null;
+String b = "";
+
+System.out.println(a);        // null
+System.out.println(b);        // 空文字なので見た目は空
+System.out.println(b.length());// 0
+// System.out.println(a.length()); // NullPointerException</code></pre>
+</section>
+<section class="article-section">
+<h2>参照のコピー: オブジェクトはコピーされない</h2>
+<p>参照型変数を別の変数に代入しても、オブジェクト本体が複製されるわけではありません。参照がコピーされます。</p>
+<pre class="article-code"><code>StringBuilder a = new StringBuilder("A");
+StringBuilder b = a;
+b.append("B");
+System.out.println(a); // AB</code></pre>
+<p><code>a</code> と <code>b</code> は同じ <code>StringBuilder</code> を参照しています。これは配列、自作クラス、<code>ArrayList</code> でも同じです。</p>
+</section><section class="article-section">
+<h2>型・変数・参照・インスタンスを分離する</h2>
+<p>参照型の代入を正確に読むには、左辺の変数と右辺で生成されるオブジェクトを分けます。変数にはオブジェクトそのものではなく、オブジェクトを指す参照が入ります。</p>
+<pre class="article-code"><code>Dog dog = new Dog();
+      // Dog : 変数dogの型
+      // dog : 参照を保持する変数
+      // new Dog() : Dogインスタンスを生成する式</code></pre>
+<div class="table-wrap"><table class="ref-table"><thead><tr><th>用語</th><th>意味</th><th>試験での役割</th></tr></thead><tbody><tr><td>型</td><td>値を何として扱うかを決める規則</td><td>代入可能性・呼べるメンバー・演算を制限する</td></tr><tr><td>変数</td><td>値または参照を保持する名前付き領域</td><td>宣言時の型は後から変わらない</td></tr><tr><td>参照</td><td>オブジェクトを指し示す値</td><td>複数変数が同じ参照を持てる</td></tr><tr><td>インスタンス</td><td>クラスから生成された具体的なオブジェクト</td><td>フィールド状態を持ち、実行時型を持つ</td></tr></tbody></table></div>
+<details class="article-card"><summary><strong>参照コピー</strong></summary><p>出力は何ですか。</p><pre class="article-code"><code>class Box { int value; }
+      Box b = new Box();
+      Box c = b;
+      c.value = 20;
+      System.out.println(b.value);</code></pre><div class="article-callout"><strong>参照の共有結果：</strong><code>20</code>です。<code>b</code>と<code>c</code>は同じインスタンスを参照しています。</div></details></section>
+<section class="article-section">
+<h2>識別子: 変数名・クラス名に使えるもの</h2>
+<p>識別子は「名前」です。英字、数字、<code>_</code>、<code>$</code> を使えますが、数字始まりは不可です。予約語も使えません。</p>
+<table class="ref-table">
+<thead><tr><th>例</th><th>可否</th><th>理由</th></tr></thead>
+<tbody>
+<tr><td><code>int a1 = 10;</code></td><td>OK</td><td>数字始まりではない。</td></tr>
+<tr><td><code>int $price = 100;</code></td><td>OK</td><td><code>$</code> は使える。ただし実務では避ける。</td></tr>
+<tr><td><code>int _value = 1;</code></td><td>OK</td><td><code>_</code> を含む名前は可。</td></tr>
+<tr><td><code>int 1st = 1;</code></td><td>NG</td><td>数字始まり。</td></tr>
+<tr><td><code>int class = 1;</code></td><td>NG</td><td><code>class</code> は予約語。</td></tr>
+<tr><td><code>int _ = 1;</code></td><td>NG</td><td><code>_</code> 単独は識別子として使えない。</td></tr>
+</tbody>
+</table>
+</section>
+<section class="article-section">
+<h2>予約語・文脈キーワードの読み方</h2>
+<p>予約語は識別子にできません。さらにJava 17では <code>var</code>、<code>record</code>、<code>sealed</code>、<code>permits</code>、<code>non-sealed</code> など、文脈によって特別な意味を持つ語があります。</p>
+<pre class="article-code"><code>// int class = 1;   // NG: 予約語
+int var = 10;       // OK: var は予約語ではない
+var value = 20;     // OK: ここではローカル変数型推論
+
+// record は record 宣言では特別な意味を持つ
+record Point(int x, int y) {}</code></pre>
+<p><code>var</code> は「どこでも型推論できる魔法」ではありません。ローカル変数の宣言で、初期化式がある場合にだけ使うのが基本です。</p>
+</section>
+<section class="article-section">
+<h2>charは文字だが、数値的にも扱われる</h2>
+<p><code>char</code> は1文字を表しますが、内部的にはUnicodeコード値を持ちます。そのため、範囲内の整数定数を代入できる場合があります。</p>
+<pre class="article-code"><code>char a = 'A';   // OK
+char b = 65;    // OK。'A' 相当
+// char c = -1; // NG。char の範囲外
+
+char x = 'A';
+// char y = x + 1; // NG: x + 1 は int
+char z = (char)(x + 1); // OK</code></pre>
+<div class="article-callout warn"><strong>注意:</strong> <code>'A'</code> は <code>char</code>、<code>"A"</code> は <code>String</code> です。シングルクォートとダブルクォートの違いは頻出です。</div>
+</section>
+<section class="article-section">
+<h2>配列も参照型</h2>
+<p>配列変数も参照型です。配列そのものではなく、配列オブジェクトへの参照を持ちます。</p>
+<pre class="article-code"><code>int[] a = {1, 2, 3};
+int[] b = a;
+b[0] = 99;
+System.out.println(a[0]); // 99</code></pre>
+<p><code>a</code> と <code>b</code> は同じ配列オブジェクトを参照します。配列問題で <code>==</code> が出たら、要素比較ではなく参照比較です。</p>
+</section>
+<section class="article-section">
+<h2>ラッパークラス: プリミティブに見えて参照型</h2>
+<p><code>Integer</code>、<code>Long</code>、<code>Double</code>、<code>Boolean</code> などはラッパークラスです。プリミティブ型に対応する参照型です。</p>
+<pre class="article-code"><code>Integer a = 10;  // オートボクシング
+int b = a;       // アンボクシング
+
+Integer n = null;
+// int x = n;    // 実行時にNullPointerException</code></pre>
+<p>ラッパークラスは参照型なので <code>null</code> を持てます。しかし、<code>int</code> などに戻すアンボクシング時に <code>null</code> だと実行時例外になります。</p>
+</section><section class="article-section">
+<h2>オートボクシングは型が同じになる仕組みではない</h2>
+<p>プリミティブ型とラッパークラスの間では自動変換が行われる場合がありますが、両者は別の型です。<code>int</code>と<code>Integer</code>がオーバーライド判定で同一になることはありません。</p>
+<pre class="article-code"><code>Integer boxed = 10; // ボクシング
+      int value = boxed;   // アンボクシング
+      
+      Integer n = null;
+      // int x = n;        // 実行時にNullPointerException</code></pre>
+<div class="article-callout"><strong>アンボクシングの失敗地点：</strong><code>null</code>の代入時ではなく、プリミティブ値を取り出す時点で例外が発生します。</div>
+<details class="article-card"><summary><strong>アンボクシング</strong></summary><p><code>Integer value = null;</code>の後に<code>value + 1</code>を評価するとどうなりますか。</p><div class="article-callout"><strong>例外発生点：</strong>コンパイルはできますが、演算前のアンボクシングで<code>NullPointerException</code>が発生します。</div></details></section>
+<section class="article-section">
+<h2>代入可否の判断表</h2>
+<table class="ref-table">
+<thead><tr><th>コード</th><th>結果</th><th>理由</th></tr></thead>
+<tbody>
+<tr><td><code>long a = 10;</code></td><td>OK</td><td><code>int</code> リテラルから <code>long</code> への拡大変換。</td></tr>
+<tr><td><code>int a = 10L;</code></td><td>NG</td><td><code>long</code> から <code>int</code> への縮小変換。</td></tr>
+<tr><td><code>float f = 1.0;</code></td><td>NG</td><td><code>1.0</code> は <code>double</code>。</td></tr>
+<tr><td><code>double d = 1.0F;</code></td><td>OK</td><td><code>float</code> から <code>double</code> への拡大変換。</td></tr>
+<tr><td><code>byte b = 127;</code></td><td>OK</td><td>範囲内の整数定数。</td></tr>
+<tr><td><code>byte b = 128;</code></td><td>NG</td><td><code>byte</code> の範囲外。</td></tr>
+<tr><td><code>Object o = "text";</code></td><td>OK</td><td><code>String</code> は <code>Object</code> のサブクラス。</td></tr>
+<tr><td><code>String s = new Object();</code></td><td>NG</td><td>スーパークラス型からサブクラス型へ暗黙代入不可。</td></tr>
+</tbody>
+</table>
+</section><section class="article-section">
+<h2>代入可能性は値だけでなく式の型で判断する</h2>
+<p>数値が範囲内に見えても、式の型が代入先と一致しなければコンパイルエラーです。一方、定数式には小さい整数型への特別な代入規則があります。</p>
+<pre class="article-code"><code>byte a = 10;          // OK: int定数式10はbyte範囲内
+      int x = 10;
+      // byte b = x;       // NG: xは変数であり定数式ではない
+      byte c = (byte) x;   // OK: 明示的キャスト
+      
+      byte d = 10;
+      // byte e = d + 1;   // NG: d + 1の型はint
+      byte f = (byte) (d + 1);</code></pre>
+<div class="article-callout"><strong>代入問題の読み方：</strong>右辺を値ではなくコンパイル時の型に置き換え、代入変換が許可されるかを確認します。</div>
+</section>
+<section class="article-section">
+<h2>初期値と参照で起きる誤読</h2>
+<div class="article-card-grid">
+<div class="article-card"><h3>値だけで判断する</h3><p><code>byte b = 1 + 2;</code> はOKですが、<code>byte b = x + 2;</code> は <code>x</code> が変数ならNGになりやすいです。式の型を見てください。</p></div>
+<div class="article-card"><h3>nullを文字列だと思う</h3><p><code>null</code> は文字列 <code>"null"</code> ではありません。参照先がない状態です。</p></div>
+<div class="article-card"><h3>参照コピーを値コピーと誤解する</h3><p>参照型の代入ではオブジェクト本体は複製されません。同じオブジェクトを共有する場合があります。</p></div>
+<div class="article-card"><h3>ローカル変数に初期値があると思う</h3><p>フィールドには初期値がありますが、ローカル変数にはありません。</p></div>
+</div>
+</section>
+<section class="article-section">
+<h2>型と初期化をコードで見分ける</h2>
+<details class="article-card"><summary><strong>Q1. <code>Object obj = null; System.out.println(obj);</code> の結果は？</strong></summary><p><code>null</code> と表示されます。<code>println</code> に <code>null</code> 参照を渡すこと自体は可能です。ただし <code>obj.toString()</code> を明示的に呼ぶと <code>NullPointerException</code> です。</p></details>
+<details class="article-card"><summary><strong>Q2. <code>char c = 65;</code> はコンパイルできる？</strong></summary><p>できます。<code>65</code> は <code>char</code> の範囲内の整数定数です。ただし <code>int x = 65; char c = x;</code> は暗黙には代入できません。</p></details>
+<details class="article-card"><summary><strong>Q3. <code>Integer n = null; int x = n;</code> は？</strong></summary><p>コンパイルは通りますが、実行時に <code>NullPointerException</code> です。<code>Integer</code> から <code>int</code> へアンボクシングしようとして、参照先がないためです。</p></details>
+<details class="article-card"><summary><strong>Q4. <code>String a = ""; System.out.println(a.length());</code> は？</strong></summary><p><code>0</code> と表示されます。空文字は長さ0の <code>String</code> オブジェクトです。<code>null</code> とは違います。</p></details>
+</section>
+<section class="article-section">
+<h2>型判定を終える前の確認</h2>
+<ul class="article-list check-list">
+<li>プリミティブ型と参照型の違いを説明できる。</li>
+<li><code>null</code> を代入できる型とできない型を即答できる。</li>
+<li>フィールドとローカル変数の初期値の違いを判断できる。</li>
+<li><code>"A"</code> と <code>'A'</code> の違いを説明できる。</li>
+<li>参照型変数の代入が「参照のコピー」であることを追跡できる。</li>
+<li>識別子として使える名前・使えない名前を判定できる。</li>
+</ul>
+<p class="inline-note">次に読む: <a href="numeric-rules.html">数値・型昇格</a> / 関連: <a href="var-scope.html">var・スコープ</a> / <a href="equality.html">同一性・同値性</a></p>
+</section>
+
+
+
+
+
+</main>
+</div>
+<script src="data/questions.js?v=round-wrong-groups-v15"></script>
+<script src="assets/js/app.js?v=round-wrong-groups-v15"></script>
+</body>
+</html>

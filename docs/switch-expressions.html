@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="noindex, nofollow, noarchive, nosnippet" name="robots"/>
+<meta content="noindex, nofollow, noarchive, nosnippet" name="googlebot"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Java Silver Study - switch式</title>
+<link href="assets/css/styles.css?v=round-wrong-groups-v15" rel="stylesheet"/>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<p class="brand"><a href="index.html">Java Silver Study</a></p>
+<nav aria-label="章一覧" class="nav-list" id="chapterNav"></nav>
+</aside>
+<main class="main reference-main article-main">
+<section class="hero reference-hero compact-hero article-hero">
+<p class="eyebrow">Java Silver Reference</p>
+<h1>switch式</h1>
+<p>switch文との違い、yield、網羅性、case定数、結果型、副作用を、式が値を生成する経路に沿って追います。</p>
+</section>
+
+<section class="article-section">
+<h2>最初に「文」か「式」かを判定する</h2>
+<p><code>switch</code>を見つけても、すぐcaseを追ってはいけません。switch全体が処理の分岐なのか、値を生成する式なのかで、必要な終端とコンパイル条件が変わります。</p>
+<div class="grid-two">
+<div class="article-card"><h3>switch文</h3><pre class="article-code"><code>switch (code) {
+    case 1 -&gt; System.out.println("one");
+    default -&gt; System.out.println("other");
+}</code></pre><p>値を返しません。代入式の右辺には置けません。</p></div>
+<div class="article-card"><h3>switch式</h3><pre class="article-code"><code>String label = switch (code) {
+    case 1 -&gt; "one";
+    default -&gt; "other";
+};</code></pre><p>式全体が値を生成します。閉じ波括弧の後のセミコロンも代入文の一部です。</p></div>
+</div>
+<p>矢印ラベル<code>-&gt;</code>はswitch式専用ではなく、switch文でも使えます。「矢印があるから式」と決めつけず、switch全体がどこに置かれているかを確認します。</p>
+</section>
+<section class="article-section">
+<h2>1つのcaseが値へ到達する経路を追う</h2>
+<p>矢印の右側が単一式なら、その式の値がswitch式の値になります。複数の文を実行するブロックでは、<code>yield</code>で値を渡します。</p>
+<pre class="article-code"><code>int score = 75;
+String rank = switch (score / 10) {
+    case 10, 9 -&gt; "A";
+    case 8 -&gt; "B";
+    case 7 -&gt; {
+        System.out.println("border");
+        yield "C";
+    }
+    default -&gt; "D";
+};</code></pre>
+<p><code>yield</code>はメソッドを終了する<code>return</code>ではありません。現在のswitch式へ値を返し、そのswitch式の評価を終えます。</p>
+<pre class="article-code"><code>String value = switch (n) {
+    case 1 -&gt; {
+        // return "one"; // このメソッド自体を終了するため用途が違う
+        yield "one";
+    }
+    default -&gt; throw new IllegalArgumentException();
+};</code></pre>
+<p><code>throw</code>の分岐は正常値を生成しませんが、必ず例外で終了するため、値を返す経路として不足とは扱われません。</p>
+</section>
+<section class="article-section">
+<h2>矢印形式とコロン形式では流れが異なる</h2>
+<table class="ref-table"><thead><tr><th>形式</th><th>次のcaseへ進むか</th><th>switch式で値を返す方法</th></tr></thead><tbody>
+<tr><td><code>case 1 -&gt;</code></td><td>進まない</td><td>右辺の式、ブロック内のyield、throw</td></tr>
+<tr><td><code>case 1:</code></td><td>明示的に終端しなければ進む</td><td>最終的にyieldへ到達</td></tr>
+</tbody></table>
+<pre class="article-code"><code>int value = switch (n) {
+    case 1:
+        System.out.println("one");
+        yield 10;
+    case 2:
+    case 3:
+        yield 20;
+    default:
+        yield 0;
+};</code></pre>
+<p>コロン形式のswitch式で<code>break 10;</code>は使いません。Java 17では値の返却に<code>yield 10;</code>を使います。</p>
+</section>
+<section class="article-section">
+<h2>switch式はすべての入力を処理できなければならない</h2>
+<p>式は値を必要とするため、どの入力でも値または例外へ到達する必要があります。整数や文字列では通常<code>default</code>が必要です。</p>
+<pre class="article-code"><code>int result = switch (n) {
+    case 1 -&gt; 10;
+    case 2 -&gt; 20;
+    // defaultがなく、他の整数で値が決まらないためエラー
+};</code></pre>
+<p>enumの全定数をcaseで覆うなど、コンパイラが網羅的だと判断できる場合は、明示的なdefaultを省略できます。</p>
+<pre class="article-code"><code>enum Size { SMALL, LARGE }
+
+int price = switch (size) {
+    case SMALL -&gt; 100;
+    case LARGE -&gt; 200;
+};</code></pre>
+<p>「今ある定数を全部書いたように見えるか」ではなく、セレクタ型に対してswitch式が網羅的かを判断します。</p>
+</section>
+<section class="article-section">
+<h2>セレクタ型とcaseラベルを別々に検査する</h2>
+<table class="ref-table"><thead><tr><th>検査対象</th><th>代表的に使用できるもの</th><th>使用できない代表例</th></tr></thead><tbody>
+<tr><td>switchのセレクタ</td><td><code>byte</code>、<code>short</code>、<code>char</code>、<code>int</code>とラッパー、<code>String</code>、enum</td><td><code>long</code>、<code>float</code>、<code>double</code>、<code>boolean</code></td></tr>
+<tr><td>caseラベル</td><td>セレクタ型に適合する定数式、enum定数、文字列リテラル</td><td>実行時に決まる変数、重複値</td></tr>
+</tbody></table>
+<pre class="article-code"><code>final int A = 1;
+int b = 2;
+
+switch (n) {
+    case A -&gt; System.out.println("A"); // 定数式なので可
+    // case b -&gt; ...                  // bは定数式ではない
+}</code></pre>
+<p><code>final</code>が付いているだけでは定数変数になるとは限りません。初期値がコンパイル時定数式であることまで確認します。</p>
+</section>
+<section class="article-section">
+<h2>分岐ごとの型からswitch式全体の型が決まる</h2>
+<pre class="article-code"><code>var value = switch (n) {
+    case 1 -&gt; 10;
+    default -&gt; 2.5;
+};</code></pre>
+<p>各分岐の値が<code>int</code>と<code>double</code>なので、数値昇格を考慮した式全体の型は<code>double</code>です。<code>var</code>は右辺のswitch式からその型を推論します。</p>
+<pre class="article-code"><code>Number number = switch (n) {
+    case 1 -&gt; Integer.valueOf(10);
+    default -&gt; Double.valueOf(2.5);
+};</code></pre>
+<p>代入先がある場合は、その文脈に適合するかも確認します。caseを選ぶ処理と、式全体の型を決める処理は別です。</p>
+</section>
+<section class="article-section">
+<h2>nullとプレビュー構文を混ぜない</h2>
+<p>通常のJava 17のswitchで、セレクタが<code>null</code>なら実行時に<code>NullPointerException</code>が発生します。</p>
+<pre class="article-code"><code>String text = null;
+String result = switch (text) {
+    case "A" -&gt; "alpha";
+    default -&gt; "other";
+}; // 実行時にNullPointerException</code></pre>
+<p>Java 17にはswitchのパターンマッチングも存在しますが、これはプレビュー機能です。通常のJava 17問題として、型パターンのcaseや<code>case null</code>を無条件に使用できると判断してはいけません。プレビュー有効化の明示がない問題では、正式機能のswitch式として読みます。</p>
+</section>
+<section class="article-section">
+<h2>出力問題ではセレクタを一度だけ評価する</h2>
+<pre class="article-code"><code>int x = 1;
+int result = switch (x++) {
+    case 1 -&gt; x + 10;
+    default -&gt; 0;
+};
+System.out.println(x + ":" + result);</code></pre>
+<p>セレクタ式<code>x++</code>を評価した時点で、照合に使う値は1、変数xは2です。その後case 1が選ばれ、右辺の<code>x + 10</code>は12になります。出力は<code>2:12</code>です。caseを追う前にセレクタ式の副作用を確定します。</p>
+</section>
+<section class="article-section">
+<h2>switch式の読解順</h2>
+<ol class="article-list priority-list"><li>switch全体が文か式かを確認する。</li><li>セレクタ式を一度評価し、副作用後の値を記録する。</li><li>セレクタ型がswitchに使用可能か確認する。</li><li>caseラベルが定数で、重複していないか確認する。</li><li>選ばれるcaseを決める。</li><li>矢印なら右辺、ブロックならyield、コロンなら到達するyieldまで追う。</li><li>全分岐の網羅性と、生成される値の型を確認する。</li></ol>
+</section>
+<section class="article-section"><h2>式の型と評価順へ広げる</h2><p class="inline-note"><a href="operators-control.html">演算子・制御構造</a> / <a href="numeric-rules.html">数値・型昇格</a> / <a href="output-tracing.html">出力追跡</a></p></section>
+
+</main>
+</div>
+<script src="data/questions.js?v=round-wrong-groups-v15"></script>
+<script src="assets/js/app.js?v=round-wrong-groups-v15"></script>
+</body>
+</html>

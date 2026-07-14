@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="noindex, nofollow, noarchive, nosnippet" name="robots"/>
+<meta content="noindex, nofollow, noarchive, nosnippet" name="googlebot"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Java Silver Study - sealedクラスとインターフェース</title>
+<link href="assets/css/styles.css?v=round-wrong-groups-v15" rel="stylesheet"/>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<p class="brand"><a href="index.html">Java Silver Study</a></p>
+<nav aria-label="章一覧" class="nav-list" id="chapterNav"></nav>
+</aside>
+<main class="main reference-main article-main">
+<section class="hero reference-hero compact-hero article-hero">
+<p class="eyebrow">Java Silver Reference</p>
+<h1>sealedクラスとsealedインターフェース</h1>
+<p>許可関係を直接の親子単位で読み、permits、final、sealed、non-sealedの役割を階層図から判断します。</p>
+</section>
+
+<section class="article-section">
+<h2>sealedは「直接の子」を固定する宣言</h2>
+<p>sealed階層は、すべての子孫クラスを1枚のリストで固定する仕組みではありません。各sealed型が、自分を直接継承・実装できる型だけを管理します。この「直接」という範囲を先に押さえると、<code>permits</code>と<code>non-sealed</code>の働きが明確になります。</p>
+<pre class="article-code"><code>sealed interface Result permits Success, Failure {}
+
+record Success(String value) implements Result {}
+final class Failure implements Result {}</code></pre>
+<p><code>Result</code>が直接許可しているのは<code>Success</code>と<code>Failure</code>です。<code>Success</code>はレコードなので暗黙的にfinal、<code>Failure</code>は明示的にfinalです。</p>
+</section>
+<section class="article-section">
+<h2>階層図は矢印1本ずつ検査する</h2>
+<pre class="article-code"><code>sealed class A permits B, C {}
+final class B extends A {}
+sealed class C extends A permits D {}
+non-sealed class D extends C {}
+class E extends D {}</code></pre>
+<table class="ref-table"><thead><tr><th>矢印</th><th>検査する宣言</th><th>結果</th></tr></thead><tbody>
+<tr><td><code>B → A</code></td><td><code>A</code>のpermitsにBがあるか</td><td>許可</td></tr>
+<tr><td><code>C → A</code></td><td><code>A</code>のpermitsにCがあるか</td><td>許可</td></tr>
+<tr><td><code>D → C</code></td><td><code>C</code>のpermitsにDがあるか</td><td>許可</td></tr>
+<tr><td><code>E → D</code></td><td>Dは<code>non-sealed</code>か</td><td>通常の継承へ戻るため許可</td></tr>
+</tbody></table>
+<p><code>A</code>のpermitsに<code>D</code>や<code>E</code>を書く必要はありません。Aが管理するのはBとCへの直接の矢印だけです。</p>
+</section>
+<section class="article-section">
+<h2>直接サブタイプは次の継承方針を必ず決める</h2>
+<p>sealed型から許可された直接サブタイプは、階層をそこで閉じるか、さらに限定して続けるか、制限を解除するかを宣言します。</p>
+<div class="grid-two">
+<div class="article-card"><h3><code>final</code></h3><p>その型で継承を終了します。</p><pre class="article-code"><code>sealed class Shape permits Circle {}
+final class Circle extends Shape {}</code></pre></div>
+<div class="article-card"><h3><code>sealed</code></h3><p>次の直接サブタイプを再び限定します。</p><pre class="article-code"><code>sealed class Shape permits Polygon {}
+sealed class Polygon extends Shape
+        permits Triangle {}</code></pre></div>
+<div class="article-card"><h3><code>non-sealed</code></h3><p>その位置から先を通常の継承へ戻します。</p><pre class="article-code"><code>sealed class Shape permits OpenShape {}
+non-sealed class OpenShape extends Shape {}
+class CustomShape extends OpenShape {}</code></pre></div>
+<div class="article-card"><h3>修飾子なし</h3><p>通常クラスでは不正です。直接サブタイプは方針を明示します。</p><pre class="article-code"><code>sealed class Shape permits Bad {}
+class Bad extends Shape {} // エラー</code></pre></div>
+</div>
+<p>レコードは暗黙的にfinalなので、sealedインターフェースの許可された実装として使用した場合、追加の<code>final</code>は書きません。</p>
+</section>
+<section class="article-section">
+<h2>permitsを省略できる配置と、省略できない配置</h2>
+<p>許可する直接サブタイプが同じコンパイル単位に宣言されている場合、コンパイラが候補を推論できるため、<code>permits</code>を省略できます。</p>
+<pre class="article-code"><code>sealed class Token {}
+final class NumberToken extends Token {}
+final class WordToken extends Token {}</code></pre>
+<p>別ファイルに分かれるなら、親側で<code>permits</code>を明示します。コード断片を読むときは、ファイル境界をコメントやクラス配置から確認します。</p>
+<p>さらに、名前付きモジュール内では許可型は同じモジュールに所属する必要があります。名前のないモジュールでは同じパッケージに属する必要があります。単にimportできることと、sealed階層へ参加できることは別です。</p>
+</section>
+<section class="article-section">
+<h2>sealed interfaceではextendsとimplementsを混同しない</h2>
+<pre class="article-code"><code>sealed interface Service permits BaseService, LocalService {}
+
+non-sealed interface BaseService extends Service {}
+final class LocalService implements Service {}</code></pre>
+<p>インターフェースがインターフェースを継承するときは<code>extends</code>、クラスがインターフェースを実装するときは<code>implements</code>です。permitsにはクラスとインターフェースの両方を列挙できますが、実際の関係を表すキーワードは通常の型関係と同じです。</p>
+</section>
+<section class="article-section">
+<h2>コンパイルエラーを親側・子側・配置の3方向から切る</h2>
+<table class="ref-table"><thead><tr><th>コード上の異常</th><th>確認場所</th><th>理由</th></tr></thead><tbody>
+<tr><td>permitsにない型が直接継承</td><td>親側</td><td>許可リスト外</td></tr>
+<tr><td>許可型だが親を直接継承していない</td><td>親子関係</td><td>permitsは直接サブタイプを列挙する</td></tr>
+<tr><td>直接サブタイプに方針修飾子がない</td><td>子側</td><td>final / sealed / non-sealedが必要</td></tr>
+<tr><td>通常の親に対してnon-sealed</td><td>子側</td><td>解除対象となるsealed制限がない</td></tr>
+<tr><td>異なるモジュール・不正なパッケージ配置</td><td>配置</td><td>許可型の所在制約に反する</td></tr>
+</tbody></table>
+<pre class="article-code"><code>class Normal {}
+// non-sealed class Child extends Normal {} // コンパイルエラー</code></pre>
+</section>
+<section class="article-section">
+<h2>sealedはポリモーフィズムを禁止しない</h2>
+<p>sealedは利用できる実体を限定しますが、親型変数によるポリモーフィズムは通常どおり働きます。</p>
+<pre class="article-code"><code>sealed interface Command permits Start, Stop {
+    void execute();
+}
+record Start() implements Command {
+    public void execute() { System.out.println("start"); }
+}
+record Stop() implements Command {
+    public void execute() { System.out.println("stop"); }
+}
+
+Command command = new Start();
+command.execute(); // start</code></pre>
+<p>宣言型は<code>Command</code>、実行時型は<code>Start</code>です。sealedで変わるのは、どの型が階層へ入れるかであり、オーバーライドされたメソッドの実行規則ではありません。</p>
+</section>
+<section class="article-section">
+<h2>設問では階層全体を一気に見ない</h2>
+<ol class="article-list priority-list"><li>sealedと宣言された親型を1つ選ぶ。</li><li>その親を直接継承・実装する型だけを拾う。</li><li>permitsへの登録または同一コンパイル単位での推論を確認する。</li><li>各直接サブタイプがfinal・sealed・non-sealedのどれかを確認する。</li><li>sealedが続く型について同じ確認を繰り返す。</li></ol>
+<p>この読み方なら、孫クラスを祖父のpermitsと比較する誤りを防げます。</p>
+</section>
+<section class="article-section"><h2>通常の継承規則との接続</h2><p class="inline-note"><a href="oop-relations.html">継承・interface・override</a> / <a href="modifiers-access.html">修飾子・アクセス制御</a> / <a href="polymorphism-cast.html">ポリモーフィズム・キャスト</a></p></section>
+
+</main>
+</div>
+<script src="data/questions.js?v=round-wrong-groups-v15"></script>
+<script src="assets/js/app.js?v=round-wrong-groups-v15"></script>
+</body>
+</html>

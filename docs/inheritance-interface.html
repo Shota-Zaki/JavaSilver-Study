@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="noindex, nofollow, noarchive, nosnippet" name="robots"/>
+<meta content="noindex, nofollow, noarchive, nosnippet" name="googlebot"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Java Silver Study - 継承とインタフェース詳細</title>
+<link href="assets/css/styles.css?v=round-wrong-groups-v15" rel="stylesheet"/>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<p class="brand"><a href="index.html">Java Silver Study</a></p>
+<nav aria-label="章一覧" class="nav-list" id="chapterNav"></nav>
+</aside>
+<main class="main reference-main article-main">
+<section class="hero reference-hero compact-hero article-hero">
+<p class="eyebrow">Java Silver Reference</p>
+<h1>継承とインタフェース詳細</h1>
+<p>defaultメソッド、interfaceの暗黙修飾子、sealed、protectedなど、試験で落とされやすい細部を整理します。</p>
+</section>
+<section class="article-section">
+<h2>継承問題をメンバー種別へ分解する</h2>
+<p>ここでは、継承・interfaceの中でも試験でひっかけにされやすい細部を扱います。特に次の論点は、表面理解だと落ちます。</p>
+<ul>
+<li>interfaceの暗黙修飾子</li>
+<li>defaultメソッドの衝突と優先順位</li>
+<li>interfaceのstatic/privateメソッド</li>
+<li>abstractクラスとinterfaceの実装義務</li>
+<li>sealed / non-sealed / permits</li>
+<li>protectedと別パッケージのアクセス</li>
+<li>フィールド解決とメソッド解決の違い</li>
+</ul>
+</section><section class="article-section">
+<h2>継承・interface問題の全体地図</h2>
+<p>継承の問題は、型関係、メソッド、フィールド、アクセス制御、抽象性、コンストラクタ、例外、初期化順序を混ぜて出題されます。最初に対象を分類し、その後で各規則を適用します。</p>
+<div class="table-wrap"><table class="ref-table"><thead><tr><th>対象</th><th>継承先で起きること</th><th>選択基準</th></tr></thead><tbody><tr><td>インスタンスメソッド</td><td>オーバーライド可能</td><td>呼べるかは宣言型、実装は実行時型</td></tr><tr><td>staticメソッド</td><td>隠蔽</td><td>コンパイル時型・型名</td></tr><tr><td>フィールド</td><td>隠蔽</td><td>コンパイル時型</td></tr><tr><td>コンストラクタ</td><td>継承されない</td><td>子コンストラクタから親を呼ぶ</td></tr><tr><td>初期化子</td><td>継承されない</td><td>各クラスの初期化手順で実行</td></tr><tr><td>privateメンバー</td><td>子へ継承されない</td><td>親クラス内部からのみ直接利用</td></tr></tbody></table></div>
+<details class="article-card"><summary><strong>フィールドとメソッド</strong></summary><p>出力を判定してください。</p><pre class="article-code"><code>class Parent {
+          String name = "P";
+          String getName() { return "P"; }
+      }
+      class Child extends Parent {
+          String name = "C";
+          @Override String getName() { return "C"; }
+      }
+      Parent x = new Child();
+      System.out.println(x.name + " " + x.getName());</code></pre><div class="article-callout"><strong>選択されるメンバー：</strong><code>P C</code>です。フィールドは宣言型<code>Parent</code>、インスタンスメソッドは実体<code>Child</code>で選ばれます。</div></details></section>
+<section class="article-section">
+<h2>interfaceの暗黙修飾子</h2>
+<p>interfaceに書いたメンバは、クラスと同じ感覚で読むと間違えます。抽象メソッドとフィールドには暗黙の修飾子があります。</p>
+<table class="ref-table">
+<thead><tr><th>書いた形</th><th>実質的な意味</th><th>注意点</th></tr></thead>
+<tbody>
+<tr><td><code>void test();</code></td><td><code>public abstract void test();</code></td><td>実装側は <code>public</code> 必須</td></tr>
+<tr><td><code>int MAX = 10;</code></td><td><code>public static final int MAX = 10;</code></td><td>代入し直せない</td></tr>
+<tr><td><code>default void test(){}</code></td><td>実装付きインスタンスメソッド</td><td><code>public</code> 扱い。private/protected不可</td></tr>
+<tr><td><code>static void test(){}</code></td><td>interfaceに属するstaticメソッド</td><td>実装クラスへ継承されない</td></tr>
+<tr><td><code>private void helper(){}</code></td><td>interface内部の補助メソッド</td><td>外部から呼べない。実装クラスからも呼べない</td></tr>
+</tbody>
+</table>
+<pre class="article-code"><code>interface A {
+    int VALUE = 10;
+    void run();
+}
+
+class B implements A {
+    public void run() {          // publicが必要
+        // VALUE = 20;           // NG: static final
+        System.out.println(VALUE);
+    }
+}</code></pre>
+</section>
+<section class="article-section">
+<h2>defaultメソッドの基本</h2>
+<p>defaultメソッドは、interfaceに実装を持たせる仕組みです。実装クラスがoverrideしなければ、そのまま使えます。</p>
+<pre class="article-code"><code>interface A {
+    default void test() {
+        System.out.println("A");
+    }
+}
+
+class B implements A { }
+
+new B().test(); // A</code></pre>
+<p>ただし、defaultメソッドは「interfaceの通常メソッド」ではありません。<code>default</code> を付けずに本体を書くとコンパイルエラーです。</p>
+<pre class="article-code"><code>interface A {
+    // void test() { } // NG: default, static, privateのいずれでもない実装付きメソッド
+}</code></pre>
+</section>
+<section class="article-section">
+<h2>defaultメソッドの衝突</h2>
+<p>複数のinterfaceから同じシグネチャのdefaultメソッドを受け継ぐと、クラス側でどちらを使うか決めなければいけません。</p>
+<pre class="article-code"><code>interface A {
+    default void test() { System.out.println("A"); }
+}
+interface B {
+    default void test() { System.out.println("B"); }
+}
+
+class C implements A, B {
+    public void test() {
+        A.super.test();
+    }
+}</code></pre>
+<p><code>A.super.test()</code> は、interfaceのdefault実装を明示的に呼ぶ構文です。<code>super.test()</code> ではありません。</p>
+</section><section class="article-section">
+<h2>defaultメソッドの優先順位をアルゴリズム化する</h2>
+<ol class="article-list"><li>クラス階層に同じシグネチャの具体的インスタンスメソッドがあれば、そのクラス側が優先される。</li><li>複数interfaceに候補がある場合、より具体的なサブinterfaceのdefaultが優先される。</li><li>無関係な複数interfaceのdefaultが残る場合、実装クラスで明示的にオーバーライドする。</li><li>必要なら<code>InterfaceName.super.method()</code>で直接のスーパーinterfaceのdefault実装を呼ぶ。</li></ol>
+<pre class="article-code"><code>interface A {
+          default void run() { System.out.print("A"); }
+      }
+      interface B extends A {
+          @Override default void run() { System.out.print("B"); }
+      }
+      class C implements A, B { }
+      // new C().run() -&gt; B</code></pre>
+<div class="article-callout"><strong>Objectメソッド：</strong><code>toString</code>、<code>equals</code>、<code>hashCode</code>などObjectの公開インスタンスメソッドと同等のシグネチャを、defaultメソッドとして宣言することはできません。</div>
+<details class="article-card"><summary><strong>default競合</strong></summary><p>無関係な2つのinterfaceから同じdefaultメソッドを継承し、実装クラスが空の場合どうなりますか。</p><div class="article-callout"><strong>override成立性：</strong>コンパイルエラーです。実装クラスでオーバーライドし、必要なら各interfaceのdefaultを明示的に呼びます。</div></details><details class="article-card"><summary><strong>InterfaceName.super</strong></summary><p>直接実装していない祖先interfaceを飛び越えて<code>A.super.m()</code>と書けますか。</p><div class="article-callout"><strong>明示呼び出しの制約：</strong>原則として書けません。明示的なdefault呼び出しは直接のスーパーinterfaceを基準にします。</div></details></section>
+<section class="article-section">
+<h2>クラスの具象メソッドがdefaultより優先される</h2>
+<p>スーパークラスに具象メソッドがあり、interfaceにも同じシグネチャのdefaultメソッドがある場合、クラス側が優先されます。</p>
+<pre class="article-code"><code>class A {
+    public void test() {
+        System.out.println("class");
+    }
+}
+
+interface B {
+    default void test() {
+        System.out.println("interface");
+    }
+}
+
+class C extends A implements B { }
+
+new C().test(); // class</code></pre>
+<p>優先順位は、ざっくり「クラスが勝つ」です。defaultメソッドは、クラス階層に実装がないときの補助と考えると判断しやすくなります。</p>
+</section>
+<section class="article-section">
+<h2>interfaceのstaticメソッドは継承されない</h2>
+<p>interfaceのstaticメソッドは、そのinterface名で呼び出します。実装クラス名やインスタンスから呼ぶものではありません。</p>
+<pre class="article-code"><code>interface A {
+    static void test() {
+        System.out.println("A");
+    }
+}
+
+class B implements A { }
+
+A.test();
+// B.test();       // NG
+// new B().test(); // NG</code></pre>
+<p>クラスのstaticメソッドとは感覚が違います。interface staticは「継承されない」と覚えてください。</p>
+</section>
+<section class="article-section">
+<h2>interfaceのprivateメソッド</h2>
+<p>privateメソッドは、defaultメソッドやstaticメソッド内の共通処理を切り出すためのものです。実装クラスから呼ぶためのものではありません。</p>
+<pre class="article-code"><code>interface A {
+    default void test() {
+        log();
+    }
+
+    private void log() {
+        System.out.println("log");
+    }
+}
+
+class B implements A {
+    void sample() {
+        // log(); // NG: interfaceのprivateメソッドは呼べない
+    }
+}</code></pre>
+</section><section class="article-section">
+<h2>interfaceのstatic・private・フィールド</h2>
+<div class="table-wrap"><table class="ref-table"><thead><tr><th>宣言</th><th>実質的な性質</th><th>継承先からの扱い</th></tr></thead><tbody><tr><td><code>void m();</code></td><td><code>public abstract</code></td><td>実装側は<code>public</code>必須</td></tr><tr><td><code>int X = 1;</code></td><td><code>public static final</code></td><td>再代入不可。曖昧ならinterface名で限定</td></tr><tr><td><code>static void m(){}</code></td><td>interface固有のstaticメソッド</td><td>実装クラスへ継承されない</td></tr><tr><td><code>private void helper(){}</code></td><td>defaultメソッド等の補助</td><td>実装クラスから利用不可</td></tr><tr><td><code>private static void helper(){}</code></td><td>static処理の補助</td><td>interface内部だけで利用</td></tr></tbody></table></div>
+</section>
+<section class="article-section">
+<h2>interface同士の継承</h2>
+<p>interfaceはinterfaceを <code>extends</code> で継承します。クラスのように <code>implements</code> は使いません。また、interfaceは複数のinterfaceを継承できます。</p>
+<pre class="article-code"><code>interface A {
+    void a();
+}
+
+interface B {
+    void b();
+}
+
+interface C extends A, B {
+    void c();
+}
+
+class D implements C {
+    public void a() {}
+    public void b() {}
+    public void c() {}
+}</code></pre>
+<p><code>D</code> は <code>C</code> だけでなく、<code>A</code> と <code>B</code> の抽象メソッドも実装する必要があります。</p>
+</section><section class="article-section">
+<h2>同名メソッド・戻り値・ジェネリクスの競合</h2>
+<pre class="article-code"><code>interface A { Number value(); }
+      interface B { Integer value(); }
+      class C implements A, B {
+          public Integer value() { return 1; } // 両方を満たす
+      }</code></pre>
+<p>戻り値型に共通の互換実装がない場合は両立できません。また、ジェネリック型引数だけが違うメソッドは、型消去後に同じシグネチャとなり名前衝突を起こす場合があります。</p>
+<pre class="article-code"><code>class Parent {
+          void test(java.util.List&lt;String&gt; list) { }
+      }
+      class Child extends Parent {
+          // void test(java.util.List&lt;Integer&gt; list) { }
+          // 型消去後にtest(List)で衝突
+      }</code></pre>
+</section><section class="article-section">
+<h2>コンストラクタ・例外・初期化順序</h2>
+<p>子クラスのコンストラクタは親コンストラクタを呼ぶ必要があります。親コンストラクタがチェック例外を投げる場合、子コンストラクタも宣言するか、例外を投げない別の親コンストラクタを選びます。Java 17では<code>super(...)</code>より前に通常のtry文を置いて囲むことはできません。</p>
+<pre class="article-code"><code>class Parent {
+          Parent() throws java.io.IOException { }
+      }
+      class Child extends Parent {
+          Child() throws java.io.IOException {
+              super();
+          }
+      }</code></pre>
+<p>初期化は、親static→子static→親インスタンス→親コンストラクタ→子インスタンス→子コンストラクタの大枠で進みます。親コンストラクタからオーバーライド可能メソッドを呼ぶと、子フィールド初期化前に子実装が動くため危険です。</p>
+</section>
+<section class="article-section">
+<h2>抽象クラスはinterfaceメソッドを未実装のままにできる</h2>
+<p>interfaceを実装したクラスが抽象クラスなら、すべての抽象メソッドを実装しなくても構いません。ただし、最終的な具象クラスでは実装が必要です。</p>
+<pre class="article-code"><code>interface A {
+    void test();
+}
+
+abstract class B implements A {
+    // testを実装しなくてもOK。B自身がabstractだから
+}
+
+class C extends B {
+    public void test() {
+        System.out.println("C");
+    }
+}</code></pre>
+</section><section class="article-section">
+<h2>abstractクラスの細部</h2>
+<p>抽象クラスは直接インスタンス化できませんが、フィールド、コンストラクタ、通常メソッド、staticメソッド、finalメソッド、初期化子を持てます。抽象メソッドだけを持つ仕組みではありません。</p>
+<pre class="article-code"><code>abstract class Base {
+          private final String name;
+          Base(String name) { this.name = name; }
+          final String name() { return name; }
+          abstract void execute();
+      }
+      
+      abstract class Middle extends Base {
+          Middle() { super("M"); }
+          // executeを未実装のまま持ち越せる
+      }</code></pre>
+<p>具象メソッドを中間の抽象クラスで再び抽象化し、さらに下位の具象クラスへ実装を要求することもできます。ただし親メソッドがfinalなら不可能です。</p>
+</section>
+<section class="article-section">
+<h2>protectedの別パッケージアクセス</h2>
+<p><code>protected</code> は「同じパッケージならアクセス可」「別パッケージでも継承関係があれば条件付きでアクセス可」です。別パッケージのサブクラスから、親型の別インスタンス経由で自由に触れるわけではありません。</p>
+<pre class="article-code"><code>// package p1;
+public class A {
+    protected void test() {}
+}
+
+// package p2;
+class B extends A {
+    void ok() {
+        test();       // OK: 自分自身の継承メンバとして呼ぶ
+        this.test();  // OK
+    }
+
+    void ng(A a) {
+        // a.test();  // NGになり得る: 別パッケージで親型参照経由
+    }
+}</code></pre>
+<p>protectedは「サブクラスなら何でもOK」ではありません。この誤解はかなり危険です。</p>
+</section>
+<section class="article-section"><h2>sealed階層は独立記事で扱う</h2><p>sealed型は、通常の継承規則に追加される「直接サブタイプの許可関係」を持ちます。permits、final、sealed、non-sealedを階層図から読む方法は、<a href="sealed-types.html">sealedクラスとsealedインターフェース</a>で扱います。</p></section>
+
+<section class="article-section">
+<h2>メソッドとフィールドの解決を分ける</h2>
+<p>継承/interfaceの詳細問題では、出力追跡と組み合わされます。特に、同名フィールドとoverrideメソッドの混在に注意します。</p>
+<pre class="article-code"><code>class A {
+    String value = "A";
+    String getValue() { return value; }
+}
+
+class B extends A {
+    String value = "B";
+    String getValue() { return value; }
+}
+
+A a = new B();
+System.out.println(a.value);      // A
+System.out.println(a.getValue()); // B</code></pre>
+<p>フィールドは宣言型、インスタンスメソッドは実体。ここは機械的に分けてください。</p>
+</section><section class="article-section">
+<h2>オーバーライドの成立条件を完全に確認する</h2>
+<pre class="article-code"><code>class Parent {
+          protected Number create() throws java.io.IOException {
+              return 1;
+          }
+      }
+      class Child extends Parent {
+          @Override
+          public Integer create() throws java.io.FileNotFoundException {
+              return 1;
+          }
+      }</code></pre>
+<ol class="article-list"><li>親子関係があり、対象がインスタンスメソッドである。</li><li>メソッド名と引数リストがオーバーライド可能な関係である。自動ボクシングは引数型一致の代わりにならない。</li><li>戻り値は同じか、参照型なら親戻り値のサブタイプである。</li><li>アクセス範囲を狭めていない。</li><li>チェック例外を広げていない。</li><li>親メソッドがprivateまたはfinalではない。</li></ol>
+<div class="article-callout"><strong>@Overrideの役割：</strong>オーバーライドする意図をコンパイラへ伝え、引数違いによる偶発的なオーバーロードを検出できます。</div>
+<details class="article-card"><summary><strong>例外のoverride</strong></summary><p>親が<code>throws IOException</code>、子が<code>throws Exception</code>なら有効ですか。</p><div class="article-callout"><strong>default競合：</strong>無効です。子側がより広いチェック例外を追加しています。<code>FileNotFoundException</code>や例外なしなら可能です。</div></details><details class="article-card"><summary><strong>privateメソッド</strong></summary><p>子に同名メソッドを書き<code>@Override</code>を付けるとどうなりますか。</p><div class="article-callout"><strong>throws互換性：</strong>親メソッドがprivateならオーバーライド対象ではないため、<code>@Override</code>でコンパイルエラーです。</div></details></section>
+<section class="article-section">
+<h2>defaultメソッドとObjectメソッド</h2>
+<p>interfaceのdefaultメソッドでは、<code>Object</code> の <code>equals</code>、<code>hashCode</code>、<code>toString</code> などをdefault実装として提供することはできません。すべてのクラスがObjectを継承するため、クラス側のルールと衝突するからです。</p>
+<pre class="article-code"><code>interface A {
+    // default String toString() { return "A"; } // NG
+}</code></pre>
+<p>これは細かいですが、interface問題で出されると落としやすい論点です。</p>
+</section>
+<section class="article-section">
+<h2>継承・interface競合の解決順</h2>
+<ol>
+<li><strong>宣言を読む</strong>：class / abstract class / interface / sealed interface を分類する。</li>
+<li><strong>継承関係を読む</strong>：extends / implements / permits を線でつなぐ。</li>
+<li><strong>未実装メソッドを見る</strong>：具象クラスが抽象メソッドを残していないか確認する。</li>
+<li><strong>メソッド修飾子を見る</strong>：public不足、static/instance不一致、戻り値型、例外を確認する。</li>
+<li><strong>衝突を見る</strong>：複数default、クラス具象メソッド、同名フィールドを確認する。</li>
+<li><strong>実行を追う</strong>：コンパイルできる場合だけ、宣言型と実体を分けて出力を追う。</li>
+</ol>
+</section>
+<section class="article-section">
+<h2>メンバー種別ごとに選択規則を適用する</h2>
+<details class="article-card"><summary><strong>Q1. interfaceの <code>void test();</code> を実装するとき、<code>void test(){}</code> でよい？</strong></summary><p>ダメです。interfaceの抽象メソッドは暗黙にpublicなので、実装側は <code>public void test(){}</code> にします。</p></details>
+<details class="article-card"><summary><strong>Q2. 2つのinterfaceに同じdefaultメソッドがある場合、実装クラスは空でよい？</strong></summary><p>ダメです。どちらを使うか曖昧なので、実装クラス側でoverrideして解決します。</p></details>
+<details class="article-card"><summary><strong>Q3. interfaceのstaticメソッドは実装クラス名で呼べる？</strong></summary><p>呼べません。<code>InterfaceName.method()</code> の形で呼びます。</p></details>
+<details class="article-card"><summary><strong>Q4. sealedクラスを継承したクラスは、何も修飾子を付けなくてよい？</strong></summary><p>ダメです。<code>final</code>、<code>sealed</code>、<code>non-sealed</code> のいずれかが必要です。</p></details>
+<p class="inline-note">関連: <a href="oop-relations.html">継承・interface・override</a> / <a href="modifiers-access.html">修飾子・アクセス制御</a> / <a href="polymorphism-cast.html">ポリモーフィズム・キャスト</a></p>
+</section>
+</main>
+</div>
+<script src="data/questions.js?v=round-wrong-groups-v15"></script>
+<script src="assets/js/app.js?v=round-wrong-groups-v15"></script>
+</body>
+</html>

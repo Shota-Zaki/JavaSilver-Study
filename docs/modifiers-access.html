@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="noindex, nofollow, noarchive, nosnippet" name="robots"/>
+<meta content="noindex, nofollow, noarchive, nosnippet" name="googlebot"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Java Silver Study - 修飾子・アクセス制御</title>
+<link href="assets/css/styles.css?v=round-wrong-groups-v15" rel="stylesheet"/>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<p class="brand"><a href="index.html">Java Silver Study</a></p>
+<nav aria-label="章一覧" class="nav-list" id="chapterNav"></nav>
+</aside>
+<main class="main reference-main article-main">
+<section class="hero reference-hero compact-hero article-hero">
+<p class="eyebrow">Java Silver Reference</p>
+<h1>修飾子・アクセス制御</h1>
+<p>public/protected/default/private、abstract、final、static、sealedを、宣言場所・アクセス範囲・継承ルールで整理します。</p>
+</section>
+<section class="article-section">
+<h2>アクセス可否と継承可否を別々に判定する</h2>
+<p>修飾子の問題は、知識問題に見えて実際は「どこに書けるか」「誰から見えるか」「継承・overrideと矛盾しないか」を切る問題です。暗記だけだと、<code>protected</code>、<code>private</code>、<code>abstract</code>、<code>final</code>、<code>sealed</code> の組み合わせで崩れます。</p>
+<p>アクセス制御は、修飾子名だけでは決まりません。宣言場所、利用場所、継承関係を照合し、コンパイル時に参照できるかを判断します。</p>
+</section>
+<section class="article-section">
+<h2>アクセス可否を決める3情報</h2>
+<ol class="article-list ordered">
+<li><strong>宣言場所を見る</strong>: トップレベルクラス、メンバクラス、フィールド、メソッド、コンストラクタ、インタフェースのどれか。</li>
+<li><strong>その修飾子をそこに書けるかを見る</strong>: 例: トップレベルに <code>private</code> や <code>static</code> は不可。</li>
+<li><strong>アクセス範囲を見る</strong>: 同じクラス、同じパッケージ、別パッケージのサブクラス、その他で切る。</li>
+<li><strong>継承・overrideと矛盾しないかを見る</strong>: <code>private</code>、<code>final</code>、<code>static</code>、<code>abstract</code> の関係を確認する。</li>
+<li><strong>sealed系の継承方針を見る</strong>: <code>sealed</code> の子は <code>final</code> / <code>sealed</code> / <code>non-sealed</code> のいずれかが必要。</li>
+</ol>
+<div class="article-callout warn">修飾子問題は、意味を先に考えるより「その場所に書けるか」を先に見る方が速いです。書けない修飾子なら、その時点でコンパイルエラーです。</div>
+</section>
+<section class="article-section">
+<h2>アクセス修飾子の基本表</h2>
+<table class="ref-table"><thead><tr><th>修飾子</th><th>同じクラス</th><th>同じパッケージ</th><th>別パッケージのサブクラス</th><th>別パッケージの非サブクラス</th></tr></thead><tbody>
+<tr><td><code>private</code></td><td>可</td><td>不可</td><td>不可</td><td>不可</td></tr>
+<tr><td>指定なし</td><td>可</td><td>可</td><td>不可</td><td>不可</td></tr>
+<tr><td><code>protected</code></td><td>可</td><td>可</td><td>条件付きで可</td><td>不可</td></tr>
+<tr><td><code>public</code></td><td>可</td><td>可</td><td>可</td><td>可</td></tr>
+</tbody></table>
+<p>指定なしは「デフォルトアクセス」または「パッケージアクセス」です。<code>default</code> という修飾子を書くわけではありません。<code>default</code> キーワードはインタフェースのデフォルトメソッドで出てきます。ここを混同しないでください。</p>
+</section><section class="article-section">
+<h2>アクセス制御は「宣言場所・利用場所・継承関係」の3軸で判定する</h2>
+<p>修飾子だけを見て即答せず、対象がトップレベル型かメンバーか、利用側が同一パッケージか、別パッケージのサブクラスかを確認します。</p>
+<div class="table-wrap"><table class="ref-table"><thead><tr><th>修飾子</th><th>同じクラス</th><th>同じパッケージ</th><th>別パッケージのサブクラス</th><th>その他</th></tr></thead><tbody><tr><td><code>public</code></td><td>○</td><td>○</td><td>○</td><td>○</td></tr><tr><td><code>protected</code></td><td>○</td><td>○</td><td>条件付き○</td><td>×</td></tr><tr><td>パッケージアクセス</td><td>○</td><td>○</td><td>×</td><td>×</td></tr><tr><td><code>private</code></td><td>○</td><td>×</td><td>×</td><td>×</td></tr></tbody></table></div>
+<div class="article-callout"><strong>重要：</strong>「継承されるか」と「その式からアクセスできるか」は別の判定です。</div>
+<details class="article-card"><summary><strong>privateメソッド</strong></summary><p>親と子に同じシグネチャのprivateメソッドがある場合、オーバーライドですか。</p><div class="article-callout"><strong>メソッドの関係：</strong>オーバーライドではありません。親のprivateメソッドは子へ継承されず、子側は別の新規メソッドです。</div></details><details class="article-card"><summary><strong>overrideのアクセス</strong></summary><p>親が<code>protected</code>、子が<code>public</code>なら有効ですか。</p><div class="article-callout"><strong>可視性の変化：</strong>有効です。アクセス範囲を広げています。逆に狭めるとコンパイルエラーです。</div></details></section>
+<section class="article-section">
+<h2>トップレベルクラスに使える修飾子</h2>
+<p>トップレベルクラスとは、他のクラスの中に入っていないクラスです。トップレベルクラスに使えるアクセス修飾子は <code>public</code> または指定なしです。</p>
+<pre class="article-code"><code>public class A { }     // OK
+class B { }            // OK: デフォルトアクセス
+
+// private class C { } // NG
+// protected class D { } // NG
+// static class E { }  // NG: トップレベルでは不可</code></pre>
+<p>トップレベルクラスでは、<code>abstract</code>、<code>final</code>、<code>sealed</code>、<code>non-sealed</code> などの継承方針に関係する修飾子も出題されます。ただし、<code>private</code>、<code>protected</code>、<code>static</code> はトップレベルクラスには使えません。</p>
+</section><section class="article-section">
+<h2>トップレベル型とメンバー型</h2>
+<p>トップレベル型に指定できるアクセス修飾子は<code>public</code>またはパッケージアクセスです。<code>private</code>・<code>protected</code>はメンバー型には使えますが、トップレベル型には使えません。</p>
+<pre class="article-code"><code>// public class A { }      // OK
+      class B { }               // OK
+      // private class C { }     // NG: トップレベル
+      
+      class Outer {
+          private class Inner { } // OK: メンバークラス
+      }</code></pre>
+</section>
+<section class="article-section">
+<h2>メンバに使うアクセス修飾子</h2>
+<p>フィールド、メソッド、コンストラクタには、<code>public</code>、<code>protected</code>、指定なし、<code>private</code> を使えます。</p>
+<pre class="article-code"><code>class Sample {
+    public int a;
+    protected int b;
+    int c;          // デフォルトアクセス
+    private int d;
+
+    public Sample() {}
+    private void helper() {}
+}</code></pre>
+<p>ただし、使えることと、外部からアクセスできることは別です。宣言として正しくても、呼び出し側の場所によってはアクセスエラーになります。</p>
+</section>
+<section class="article-section">
+<h2>privateメンバは継承先から直接見えない</h2>
+<p><code>private</code> メンバは同じクラス内からだけ使えます。サブクラスであっても直接アクセスできません。</p>
+<pre class="article-code"><code>class Parent {
+    private int value = 10;
+    private void test() {}
+}
+
+class Child extends Parent {
+    void sample() {
+        // System.out.println(value); // NG
+        // test();                    // NG
+    }
+}</code></pre>
+<p>ただし、privateメンバが「インスタンス内に存在しない」という意味ではありません。アクセスできないだけです。publicなメソッド経由で値を使うことはできます。</p>
+<pre class="article-code"><code>class Parent {
+    private int value = 10;
+    public int getValue() { return value; }
+}
+
+class Child extends Parent {
+    void sample() {
+        System.out.println(getValue()); // OK
+    }
+}</code></pre>
+</section>
+<section class="article-section">
+<h2>privateメソッドはoverrideされない</h2>
+<p>privateメソッドはサブクラスから見えません。そのため、サブクラスで同じシグネチャのメソッドを書いてもoverrideではありません。別メソッドです。</p>
+<pre class="article-code"><code>class A {
+    private void test() {
+        System.out.println("A");
+    }
+}
+
+class B extends A {
+    void test() {
+        System.out.println("B");
+    }
+}</code></pre>
+<p><code>@Override</code> を付けると、overrideではないことが検出され、コンパイルエラーになります。</p>
+<pre class="article-code"><code>class B extends A {
+    // @Override
+    void test() { }
+}</code></pre>
+</section>
+<section class="article-section">
+<h2>protectedの正しい理解</h2>
+<p><code>protected</code> は「同じパッケージなら継承関係なしでアクセス可能」です。さらに、別パッケージでもサブクラスから条件付きでアクセスできます。</p>
+<pre class="article-code"><code>package p1;
+public class A {
+    protected int value;
+}
+
+package p1;
+public class X {
+    void test() {
+        A a = new A();
+        a.value = 10; // OK: 同じパッケージ
+    }
+}</code></pre>
+<p>別パッケージのサブクラスでは、単に「継承しているから何でもOK」ではありません。サブクラス自身またはサブクラス型の参照を通じたアクセスとして考える必要があります。</p>
+<pre class="article-code"><code>package p2;
+public class B extends p1.A {
+    void test(B b, p1.A a) {
+        this.value = 1; // OK
+        b.value = 2;    // OK
+        // a.value = 3; // NGになりうる典型形
+    }
+}</code></pre>
+<div class="article-callout warn">protectedを「別パッケージのサブクラスなら親型参照からでも自由に触れる」と覚えるのは危険です。Silverの問題では、この雑な理解を狙われます。</div>
+</section><section class="article-section">
+<h2>別パッケージのprotectedは参照式の型まで見る</h2>
+<pre class="article-code"><code>// package p1;
+      public class Parent {
+          protected int value = 10;
+      }
+      
+      // package p2;
+      class Child extends Parent {
+          void test(Parent p, Child c) {
+              System.out.println(this.value);  // OK
+              System.out.println(super.value); // OK
+              System.out.println(c.value);     // OK
+              // System.out.println(p.value);  // コンパイルエラー
+          }
+      }</code></pre>
+<p>別パッケージのサブクラスでは、継承を通じて自分または自分のサブタイプのオブジェクトに対してアクセスする必要があります。実体が子クラスでも、式の型が親型なら許可されない場合があります。</p>
+</section>
+<section class="article-section">
+<h2>コンストラクタのアクセス修飾子</h2>
+<p>コンストラクタにもアクセス修飾子を付けられます。コンストラクタのアクセス範囲は、インスタンス生成できる範囲を決めます。</p>
+<pre class="article-code"><code>class Sample {
+    private Sample() {}
+
+    static Sample create() {
+        return new Sample(); // 同じクラス内なのでOK
+    }
+}
+
+// new Sample(); // クラス外ならNG</code></pre>
+<p>また、サブクラスのコンストラクタは、スーパークラスのコンストラクタを直接または間接的に呼び出す必要があります。スーパークラスの利用可能なコンストラクタがなければ、サブクラス側でコンパイルエラーになります。</p>
+<pre class="article-code"><code>class A {
+    private A() {}
+}
+
+class B extends A {
+    // B() { super(); } が暗黙に入るが、A()がprivateなのでNG
+}</code></pre>
+<p>一方、<code>protected</code> コンストラクタなら、サブクラスから <code>super()</code> で呼べます。</p>
+<pre class="article-code"><code>class A {
+    protected A() {}
+}
+
+class B extends A {
+    public B() {
+        super(); // OK
+    }
+}</code></pre>
+</section>
+<section class="article-section">
+<h2>abstract classとabstract method</h2>
+<p><code>abstract</code> クラスは、インスタンス化できないクラスです。抽象メソッドは本体を持たないメソッドです。</p>
+<pre class="article-code"><code>abstract class A {
+    abstract void test(); // 本体なし
+
+    void common() {       // 通常メソッドも持てる
+        System.out.println("common");
+    }
+}
+
+class B extends A {
+    @Override
+    void test() {
+        System.out.println("B");
+    }
+}</code></pre>
+<p>抽象メソッドを持つクラスは、必ずabstractクラスでなければなりません。</p>
+<pre class="article-code"><code>// class A {
+//     abstract void test(); // NG: クラスもabstractにする必要あり
+// }</code></pre>
+<p>逆に、abstractクラスに抽象メソッドが必ず必要というわけではありません。抽象メソッドなしのabstractクラスも作れます。</p>
+</section>
+<section class="article-section">
+<h2>abstractと矛盾する修飾子</h2>
+<p>抽象メソッドは、サブクラスで実装されることが前提です。そのため、実装やoverrideを妨げる修飾子とは相性が悪いです。</p>
+<table class="ref-table"><thead><tr><th>組み合わせ</th><th>判定</th><th>理由</th></tr></thead><tbody>
+<tr><td><code>abstract final class</code></td><td>不可</td><td>継承前提と継承禁止が矛盾</td></tr>
+<tr><td><code>private abstract</code> メソッド</td><td>不可</td><td>サブクラスから見えず、実装できない</td></tr>
+<tr><td><code>final abstract</code> メソッド</td><td>不可</td><td>override必須とoverride禁止が矛盾</td></tr>
+<tr><td><code>static abstract</code> メソッド</td><td>不可</td><td>staticメソッドはoverride対象ではない</td></tr>
+</tbody></table>
+<pre class="article-code"><code>abstract class A {
+    // private abstract void a(); // NG
+    // final abstract void b();   // NG
+    // static abstract void c();  // NG
+}</code></pre>
+</section>
+<section class="article-section">
+<h2>finalの3つの意味</h2>
+<p><code>final</code> は付ける対象によって意味が変わります。</p>
+<table class="ref-table"><thead><tr><th>対象</th><th>意味</th><th>例</th></tr></thead><tbody>
+<tr><td>変数</td><td>再代入不可</td><td><code>final int x = 10;</code></td></tr>
+<tr><td>メソッド</td><td>override不可</td><td><code>final void test()</code></td></tr>
+<tr><td>クラス</td><td>継承不可</td><td><code>final class A</code></td></tr>
+</tbody></table>
+<pre class="article-code"><code>final class A {}
+// class B extends A {} // NG
+
+class C {
+    final void test() {}
+}
+class D extends C {
+    // void test() {} // NG
+}</code></pre>
+<p>final変数の注意点は、参照型の場合です。再代入は不可ですが、可変オブジェクトの中身変更は別問題です。</p>
+</section>
+<section class="article-section">
+<h2>staticはoverrideではなく隠蔽</h2>
+<p>staticメソッドはインスタンスではなくクラスに属します。そのため、サブクラスで同じシグネチャのstaticメソッドを定義してもoverrideではありません。メソッドの隠蔽です。</p>
+<pre class="article-code"><code>class A {
+    static void test() {
+        System.out.println("A");
+    }
+}
+
+class B extends A {
+    static void test() {
+        System.out.println("B");
+    }
+}
+
+A a = new B();
+a.test(); // A: 宣言型A側のstaticメソッド</code></pre>
+<p>staticメソッド呼び出しは、実体型による動的ディスパッチではなく、宣言型・クラス名に寄ると考えると整理できます。</p>
+<div class="article-callout warn">staticメソッドに <code>@Override</code> を付けるとコンパイルエラーです。overrideではありません。</div>
+</section>
+<section class="article-section">
+<h2>override時のアクセス修飾子</h2>
+<p>オーバーライドでは、アクセス範囲を狭くできません。同じか、より広いアクセスにする必要があります。</p>
+<table class="ref-table"><thead><tr><th>親メソッド</th><th>子メソッドで可能</th><th>子メソッドで不可</th></tr></thead><tbody>
+<tr><td><code>public</code></td><td><code>public</code></td><td><code>protected</code>、指定なし、<code>private</code></td></tr>
+<tr><td><code>protected</code></td><td><code>protected</code>、<code>public</code></td><td>指定なし、<code>private</code></td></tr>
+<tr><td>指定なし</td><td>指定なし、<code>protected</code>、<code>public</code></td><td><code>private</code></td></tr>
+</tbody></table>
+<pre class="article-code"><code>class A {
+    protected void test() {}
+}
+
+class B extends A {
+    public void test() {} // OK: 広くしている
+}
+
+class C extends A {
+    // void test() {} // NG: protectedより狭い
+}</code></pre>
+<p>privateメソッドはoverride対象ではないため、この表とは別扱いです。</p>
+</section>
+<section class="article-section">
+<h2>インタフェースの暗黙修飾子</h2>
+<p>インタフェースでは、暗黙に付く修飾子が多いです。ここは問題でよく省略されます。</p>
+<table class="ref-table"><thead><tr><th>宣言</th><th>暗黙の扱い</th><th>注意</th></tr></thead><tbody>
+<tr><td>フィールド</td><td><code>public static final</code></td><td>定数。必ず初期化が必要</td></tr>
+<tr><td>抽象メソッド</td><td><code>public abstract</code></td><td>実装クラスではpublicで実装が必要</td></tr>
+<tr><td><code>default</code> メソッド</td><td>publicなインスタンスメソッド</td><td>本体が必要</td></tr>
+<tr><td><code>static</code> メソッド</td><td>インタフェース名で呼ぶ</td><td>実装クラスに継承された通常メソッド扱いではない</td></tr>
+<tr><td><code>private</code> メソッド</td><td>インタフェース内の補助</td><td>default/staticメソッドから使う</td></tr>
+</tbody></table>
+<pre class="article-code"><code>interface A {
+    int NUM = 10;        // public static final int NUM = 10;
+    void test();         // public abstract void test();
+
+    default void call() {
+        helper();
+    }
+
+    private void helper() {}
+}
+
+class B implements A {
+    public void test() {} // publicが必要
+}</code></pre>
+<div class="article-callout warn">インタフェースの抽象メソッドはpublicです。実装クラス側で指定なしにすると、アクセスを狭くすることになりコンパイルエラーです。</div>
+</section>
+<section class="article-section"><h2>sealed修飾子の詳細</h2><p>sealed、non-sealed、permitsは、単独の修飾子表だけでは判断できません。親子の直接関係と配置条件を含むため、<a href="sealed-types.html">sealedクラスとsealedインターフェース</a>で独立して扱います。</p></section>
+<section class="article-section">
+<h2>修飾子の組み合わせ早見表</h2>
+<table class="ref-table"><thead><tr><th>コード断片</th><th>判定</th><th>理由</th></tr></thead><tbody>
+<tr><td><code>private class A</code></td><td>不可</td><td>トップレベルクラスにprivate不可</td></tr>
+<tr><td><code>static class A</code></td><td>トップレベルなら不可</td><td>staticなトップレベルクラスはない</td></tr>
+<tr><td><code>abstract final class A</code></td><td>不可</td><td>継承前提と継承禁止が矛盾</td></tr>
+<tr><td><code>private abstract void test();</code></td><td>不可</td><td>サブクラスで実装できない</td></tr>
+<tr><td><code>final void test()</code></td><td>可</td><td>override不可の通常メソッド</td></tr>
+<tr><td><code>abstract void test() {}</code></td><td>不可</td><td>abstractメソッドは本体を持てない</td></tr>
+<tr><td><code>interface A { int x = 1; }</code></td><td>可</td><td>xはpublic static final</td></tr>
+<tr><td><code>class B implements A { void test(){} }</code></td><td>不可になりうる</td><td>Aのtestがpublicなら、実装もpublicが必要</td></tr>
+</tbody></table>
+</section><section class="article-section">
+<h2>修飾子の組合せを意味から判断する</h2>
+<div class="table-wrap"><table class="ref-table"><thead><tr><th>組合せ</th><th>可否</th><th>理由</th></tr></thead><tbody><tr><td><code>abstract final class</code></td><td>×</td><td>継承して完成させる要求と継承禁止が矛盾</td></tr><tr><td><code>abstract private void m();</code></td><td>×</td><td>サブクラスへ見えず実装不能</td></tr><tr><td><code>abstract static void m();</code></td><td>×</td><td>staticメソッドはオーバーライド対象ではない</td></tr><tr><td><code>final static</code>フィールド</td><td>○</td><td>クラス定数として一般的</td></tr><tr><td><code>private static</code>メソッド</td><td>○</td><td>クラス内部の補助処理</td></tr><tr><td><code>final abstract</code>メソッド</td><td>×</td><td>実装要求とオーバーライド禁止が矛盾</td></tr></tbody></table></div>
+<details class="article-card"><summary><strong>final参照変数</strong></summary><p><code>final List&lt;String&gt; list</code>なら<code>list.add</code>も禁止ですか。</p><div class="article-callout"><strong>finalが固定するもの：</strong>禁止されるのは変数<code>list</code>への再代入です。参照先オブジェクトが可変なら、その状態変更は可能です。</div></details></section>
+<section class="article-section">
+<h2>private・protected・finalの誤読</h2>
+<ul class="article-list">
+<li><code>protected</code> を「同じパッケージのサブクラスだけ」と覚えてしまう。</li>
+<li>デフォルトアクセスを <code>default</code> と書けると思う。</li>
+<li>トップレベルクラスに <code>private</code>、<code>protected</code>、<code>static</code> を付ける。</li>
+<li>privateメソッドをoverrideできると思う。</li>
+<li>overrideでアクセス範囲を狭くしてしまう。</li>
+<li><code>abstract</code> と <code>final</code> を同時に使えると思う。</li>
+<li>staticメソッドをoverrideだと思う。</li>
+<li>インタフェースのメソッド実装で <code>public</code> を忘れる。</li>
+<li>sealedクラスの子に <code>final</code> / <code>sealed</code> / <code>non-sealed</code> を付け忘れる。</li>
+</ul>
+</section>
+<section class="article-section">
+<h2>宣言場所と利用場所を照合する</h2>
+<details class="article-card"><summary><strong>Q1. 次はコンパイルできる？</strong></summary>
+<pre class="article-code"><code>private class A {}</code></pre>
+<p><strong>答え:</strong> トップレベルクラスならコンパイルエラー。トップレベルクラスに <code>private</code> は使えません。</p></details>
+<details class="article-card"><summary><strong>Q2. 次はoverride？</strong></summary>
+<pre class="article-code"><code>class A {
+    private void test() {}
+}
+class B extends A {
+    void test() {}
+}</code></pre>
+<p><strong>答え:</strong> overrideではありません。privateメソッドはサブクラスから見えません。</p></details>
+<details class="article-card"><summary><strong>Q3. 次はなぜエラー？</strong></summary>
+<pre class="article-code"><code>interface A {
+    void test();
+}
+class B implements A {
+    void test() {}
+}</code></pre>
+<p><strong>答え:</strong> インタフェースの <code>test</code> は暗黙にpublicです。実装側で指定なしにするとアクセスを狭くするため、<code>public void test()</code> が必要です。</p></details>
+<details class="article-card"><summary><strong>Q4. 次のsealed継承は正しい？</strong></summary>
+<pre class="article-code"><code>sealed class A permits B {}
+class B extends A {}</code></pre>
+<p><strong>答え:</strong> コンパイルエラー。sealedクラスの直接の子は <code>final</code>、<code>sealed</code>、<code>non-sealed</code> のいずれかで修飾する必要があります。</p></details>
+<p class="inline-note">関連: <a href="object-oriented.html">クラス・static・record</a> / <a href="oop-relations.html">継承・interface</a> / <a href="inheritance-interface.html">継承/interface詳細</a> / <a href="sealed-types.html">sealed型詳細</a></p>
+</section>
+</main>
+</div>
+<script src="data/questions.js?v=round-wrong-groups-v15"></script>
+<script src="assets/js/app.js?v=round-wrong-groups-v15"></script>
+</body>
+</html>
