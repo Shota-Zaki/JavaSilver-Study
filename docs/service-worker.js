@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "java-study-pwa-";
-const CACHE_NAME = `${CACHE_PREFIX}v1`;
+const CACHE_NAME = `${CACHE_PREFIX}v2`;
 const CORE_URLS = [
   "./index.html",
   "./reference.html",
@@ -61,7 +61,10 @@ async function cacheUrls(values) {
 }
 
 self.addEventListener("install", event => {
-  event.waitUntil(cacheUrls(CORE_URLS));
+  event.waitUntil((async () => {
+    await cacheUrls(CORE_URLS);
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener("activate", event => {
