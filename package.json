@@ -1,0 +1,11 @@
+{
+  "name": "java-silver-study-verification",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "verify:agent": "node scripts/verify-agent.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
